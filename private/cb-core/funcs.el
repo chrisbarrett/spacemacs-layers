@@ -130,6 +130,10 @@ FEATURES may be a symbol or list of symbols."
      (interactive)
      ,@body))
 
+(defmacro true? (sym)
+  "Test whether SYM is bound and non-nil."
+  `(and (boundp ',sym) (eval ',sym))) 
+
 
 ;;; Useful functions
 
