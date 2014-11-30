@@ -87,8 +87,8 @@ Embed in elisp blocks to trigger messages within snippets."
            (group (+ (not space)))))
       ;; Find the commonest prefix.
       (-map 'cadr)
-      (-filter (~ s-matches? ns-separators))
-      (-map (C car (~ s-match (rx (group (* nonl) (or ":" "--" "/"))))))
+      (--filter (s-matches? ns-separators it))
+      (--map (car (s-match (rx (group (* nonl) (or ":" "--" "/"))) it)))
       (-group-by 'identity)
       (-max-by (-on '>= 'length))
       (car))))
@@ -112,10 +112,12 @@ falling back to the file name sans extension."
      (ignore-errors
        (cond
         ((listp it)
-         (-first (-andfn 'symbolp (C (N (~ s-starts-with? "&")) symbol-name))
+         (-first (lambda (x)
+                   (and (symbolp x)
+                        (not (s-starts-with? "&" (symbol-name x)))))
                  it))
         ((symbolp it) it))))
-    (-remove (C (~ s-starts-with? "&") symbol-name))))
+    (--remove (s-starts-with? "&" (symbol-name it)))))
 
 (defun yas/cl-arglist? (text)
   "Non-nil if TEXT is a Common Lisp arglist."
@@ -137,7 +139,7 @@ is a Common Lisp arglist."
   "Format a function docstring for a snippet.
 TEXT is the content of the docstring."
   (let ((docs (->> (yas/simplify-arglist text)
-                (-map (C s-upcase symbol-name))
+                (--map (s-upcase (symbol-name it)))
                 (s-join "\n\n"))))
     (unless (s-blank? docs)
       (concat "\n\n" docs))))

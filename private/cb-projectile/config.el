@@ -18,4 +18,5 @@
      "_darcs"
      ".tox"
      ".svn"
+     "snippets"
      "build")))
