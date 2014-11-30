@@ -24,7 +24,7 @@
                                      cb-smartparens
                                      )
  ;; A list of packages and/or extensions that will not be install and loaded.
- dotspacemacs-excluded-packages '(rainbow-delimiters 
+ dotspacemacs-excluded-packages '(rainbow-delimiters
                                   )
 )
 
