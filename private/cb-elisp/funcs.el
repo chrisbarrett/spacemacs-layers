@@ -31,7 +31,7 @@
    (t
     (sp-up-sexp)
     (newline-and-indent)
-    (when (true? evil-mode)
+    (when evil-mode
       (evil-insert-state)))))
 
 ;;; C-c C-c eval command
@@ -52,11 +52,12 @@
 
    ((ignore-errors (preceding-sexp))
     (call-interactively 'eval-last-sexp)
-    (cl-destructuring-bind (beg . end)
-        (save-excursion
-          (backward-char)
-          (bounds-of-thing-at-point 'sexp))
-      (list :beg beg :end end)))))
+    (cl-destructuring-bind (&optional beg . end)
+        (when (and beg end)
+          (save-excursion
+            (backward-char)
+            (bounds-of-thing-at-point 'sexp))
+          (list :beg beg :end end))))))
 
 (defun elisp/eval-dwim ()
   "Perform a context-sensitive eval command.

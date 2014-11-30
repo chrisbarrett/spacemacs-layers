@@ -16,10 +16,12 @@
                                      ack
                                      cb-core
                                      cb-elisp
+                                     cb-cosmetic
                                      cb-git
                                      cb-yasnippet
                                      cb-flycheck
                                      cb-projectile
+                                     cb-smartparens
                                      )
  ;; A list of packages and/or extensions that will not be install and loaded.
  dotspacemacs-excluded-packages '(rainbow-delimiters 
@@ -47,7 +49,7 @@
  ;; The default package repository used if no explicit repository has been
  ;; specified with an installed package.
  ;; Not used for now.
- dotspacemacs-default-package-repository nil 
+ dotspacemacs-default-package-repository nil
 )
 
 ;; Initialization Hooks

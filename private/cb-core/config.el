@@ -52,3 +52,19 @@
  `(tab-width 4)
  `(x-select-enable-clipboard t)
  )
+
+
+;;; Custom faces
+
+(defface core/bg-flash
+  '((((class color) (background light))
+     :background "darkseagreen2")
+    (((class color) (background dark))
+     :background "royalblue4"))
+  "Face for flashing with a green background."
+  :group 'cb-faces)
+
+(defface core/bg-flash-red
+  '((t (:background "rosybrown1")))
+  "Face for flashing with a red background."
+  :group 'cb-faces)

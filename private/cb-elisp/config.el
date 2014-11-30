@@ -10,16 +10,27 @@
               (paredit-mode +1))))
 
 
-(add-hook 'emacs-lisp-mode-hook 'elisp-slime-nav-mode)
 (add-hook 'emacs-lisp-mode-hook 'cl-lib-highlight-initialize)
 (add-hook 'emacs-lisp-mode-hook 'cl-lib-highlight-warn-cl-initialize)
-(add-hook 'emacs-lisp-mode-hook 'eldoc-mode)
+(add-hook 'emacs-lisp-mode-hook 'elisp-slime-nav-mode)
+(add-hook 'lisp-mode-hook 'eldoc-mode)
 
 
 (defadvice eval-buffer (after buffer-evaluated-feedback activate)
   "Print feedback."
   (when (called-interactively-p nil)
     (message "Buffer evaluated.")))
+
+
+;;; eval-sexp-fu
+
+(add-to-list 'face-remapping-alist '(eval-sexp-fu-flash . core/bg-flash))
+(add-to-list 'face-remapping-alist '(eval-sexp-fu-flash-error . core/bg-flash-red)) 
+
+(define-eval-sexp-fu-flash-command elisp/eval-dwim
+  (eval-sexp-fu-flash
+   (cl-destructuring-bind (&key beg end &allow-other-keys) (elisp/thing-for-eval)
+     (cons beg end))))
 
 
 ;;; Font-lock
@@ -78,7 +89,3 @@
     (2 font-lock-function-name-face)))
  )
 
-(define-eval-sexp-fu-flash-command elisp/eval-dwim
-  (eval-sexp-fu-flash
-   (cl-destructuring-bind (&key beg end &allow-other-keys) (elisp/thing-for-eval)
-     (cons beg end))))

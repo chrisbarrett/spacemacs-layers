@@ -113,6 +113,23 @@ in BODY.
      (cl-destructuring-bind ,arglist args
        ,@body)))
 
+(defmacro after (features &rest body)
+  "Like `eval-after-load' - once all FEATURES are loaded, execute the BODY.
+FEATURES may be a symbol or list of symbols."
+  (declare (indent 1))
+  ;; Wrap body in a descending list of `eval-after-load' forms.
+  ;; The last form is eval'd to remove its quote.
+  (eval (->> (-listify (eval features))
+          (--map `(eval-after-load ',it))
+          (--reduce-from `'(,@it ,acc)
+                         `'(progn ,@body)))))
+
+(defmacro command (&rest body)
+  "Declare an `interactive' command with BODY forms."
+  `(lambda (&optional _arg &rest _args)
+     (interactive)
+     ,@body))
+
 
 ;;; Useful functions
 

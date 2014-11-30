@@ -10,3 +10,5 @@
 (evil-global-set-key 'normal (kbd "SPC g h") 'git-gutter:popup-hunk)
 (evil-global-set-key 'normal (kbd "SPC g x") 'git-gutter:revert-hunk)
 (evil-global-set-key 'normal (kbd "SPC g a") 'git-gutter:stage-hunk)
+
+(evil-set-initial-state 'git-commit-mode 'insert)

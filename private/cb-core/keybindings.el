@@ -1,3 +1,5 @@
+(global-set-key (kbd "C-c e e") 'toggle-debug-on-error)
+
 (bind-key (kbd "C-SPC") 'helm-mini)
 (bind-key (kbd "S-SPC") 'execute-extended-command)
 (bind-key (kbd "C-<backspace>") 'core/kill-this-buffer)

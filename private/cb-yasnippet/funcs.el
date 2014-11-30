@@ -174,7 +174,7 @@ Otherwise delete backwards."
                 (eq (point) (marker-position (yas--field-start field))))
            (yas--skip-and-clear field)
            (yas-next-field 1))
-          ((true? smartparens-mode)
+          (smartparens-mode
            (call-interactively 'sp-backward-delete-char))
           (t
            (call-interactively 'backward-delete-char)))))
