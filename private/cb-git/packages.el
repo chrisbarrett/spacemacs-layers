@@ -32,4 +32,10 @@ which require an initialization must be listed explicitly in the list.")
     :config
     (progn
       (add-hook 'git-commit-mode-hook 'turn-on-auto-fill)
-      (put 'git-commit-mode 'fill-column 72))))
+      (put 'git-commit-mode 'fill-column 72)
+
+      (defadvice git-commit-commit (after kill-commit-buffer activate)
+          "Ensure the commit buffer is killed."
+          (-when-let (buf (get-buffer "COMMIT_EDITMSG"))
+            (when (buffer-live-p buf)
+              (kill-buffer buf)))))))
