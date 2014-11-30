@@ -1,0 +1,6 @@
+# key: wi
+# name: with
+# condition: (yas/bol?)
+# --
+with ${1:expr}${2: as ${3:alias}}:
+    $0

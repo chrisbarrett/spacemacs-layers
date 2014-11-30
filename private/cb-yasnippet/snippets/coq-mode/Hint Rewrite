@@ -1,0 +1,7 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: Hint Rewrite
+# key: hr
+# binding: direct-keybinding
+# condition: (yas/bol?)
+# --
+Hint Rewrite $0.

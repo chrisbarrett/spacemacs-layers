@@ -1,0 +1,8 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: else
+# key: e
+# condition: (yas/line-matches-up-to-point? (rx bol (* space) (? "}") (* space) eol))
+# --
+else {
+    $0
+}

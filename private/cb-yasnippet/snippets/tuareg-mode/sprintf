@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# key: sp
+# name: sprintf
+# --
+sprintf "$0"`

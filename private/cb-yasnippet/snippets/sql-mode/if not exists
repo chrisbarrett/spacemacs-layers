@@ -1,0 +1,6 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: if not exists
+# key: ine
+# binding: direct-keybinding
+# --
+`(just-one-space)`IF NOT EXISTS`(just-one-space)`

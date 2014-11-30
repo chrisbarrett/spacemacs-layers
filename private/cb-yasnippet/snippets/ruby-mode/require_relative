@@ -1,0 +1,7 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: require_relative
+# key: rr
+# binding: direct-keybinding
+# condition: (yas/bol?)
+# --
+require_relative '$0'

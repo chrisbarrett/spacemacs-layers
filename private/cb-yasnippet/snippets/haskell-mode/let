@@ -1,0 +1,6 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: let
+# key: l
+# binding: direct-keybinding
+# --
+let ${1:x} = ${2:expr}$0

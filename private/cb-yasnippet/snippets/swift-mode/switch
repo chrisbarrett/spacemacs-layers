@@ -1,0 +1,10 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: switch
+# key: sw
+# binding: direct-keybinding
+# condition: (yas/bol?)
+# --
+switch ${1:x} {
+case ${2:c}:
+     $0
+}

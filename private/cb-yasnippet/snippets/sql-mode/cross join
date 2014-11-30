@@ -1,0 +1,7 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: cross join
+# key: cj
+# binding: direct-keybinding
+# --
+CROSS JOIN ${1:rel}
+$0

@@ -1,0 +1,7 @@
+# key: sh
+# name: src sh
+# condition: (yas/bol?)
+# --
+#+begin_src sh
+$0
+#+end_src

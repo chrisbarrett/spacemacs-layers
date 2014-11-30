@@ -1,0 +1,8 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: match
+# key: m
+# binding: direct-keybinding
+# --
+match ${1:expr} with
+| ${2:case} => $0
+end

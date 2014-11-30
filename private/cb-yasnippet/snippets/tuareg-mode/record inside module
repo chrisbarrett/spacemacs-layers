@@ -1,0 +1,12 @@
+# -*- mode: snippet -*-
+# name: record inside module
+# key: mrec
+# condition: (yas/bol?)
+# --
+module ${1:modid} = struct
+  type t =
+    {
+      $0
+    }
+  with fields
+end

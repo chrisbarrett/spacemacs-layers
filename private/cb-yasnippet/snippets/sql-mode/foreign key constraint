@@ -1,0 +1,6 @@
+# key: fk
+# name: foreign key constraint
+# expand-env: ((yas-indent-line (quote fixed)) (yas-wrap-around-region (quote t)))
+# --
+CONSTRAINT FK_$1 FOREIGN KEY (${1:col})
+  REFERENCES ${2:f_table} (${3:f_col})

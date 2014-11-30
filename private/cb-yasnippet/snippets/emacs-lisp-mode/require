@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: require
+# key: r
+# condition: (yas/bol?)
+# --
+(require '$0)

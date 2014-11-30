@@ -1,0 +1,7 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: Hypothesis
+# key: hy
+# binding: direct-keybinding
+# condition: (yas/bol?)
+# --
+Hypothesis ${1:ident} : ${2:T}.

@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: with-current-buffer
+# key: wcb
+# --
+(with-current-buffer $0)

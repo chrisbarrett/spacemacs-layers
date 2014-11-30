@@ -1,0 +1,6 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: Require Export
+# key: re
+# condition: (yas/bol?)
+# --
+Require Export ${1:modids}.

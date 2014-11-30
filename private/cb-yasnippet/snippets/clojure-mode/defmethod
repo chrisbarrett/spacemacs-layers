@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: defmethod
+# key: dm
+# condition: (yas/bol?)
+# --
+(defmethod ${1:name} ${2:dispatch-value} ${4:${5:instance-name} }${6:impl...})

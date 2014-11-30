@@ -1,0 +1,5 @@
+# key: l
+# name: let (top-level)
+# condition: (zerop (current-indentation))
+# --
+let ${1:binding} = $0

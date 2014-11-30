@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: search-backward
+# key: sb
+# --
+(search-backward $0)

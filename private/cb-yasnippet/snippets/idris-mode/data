@@ -1,0 +1,5 @@
+# key: d
+# name: data
+# condition: (yas/bol?)
+# --
+data ${1:ident} = ${2:Mk$1} $0

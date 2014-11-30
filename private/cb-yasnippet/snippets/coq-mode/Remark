@@ -1,0 +1,12 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: Remark
+# key: rm
+# expand-env: ((yas-indent-line (quote fixed)))
+# condition: (yas/bol?)
+# --
+Remark ${1:name} :
+  forall $0.
+Proof.
+  intros.
+  reflexivity.
+Qed.

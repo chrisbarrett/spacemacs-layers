@@ -1,0 +1,7 @@
+# key: m
+# name: module
+# condition: (yas/bol?)
+# --
+module `(s-capitalize (f-no-ext (f-filename (buffer-file-name))))`
+
+$0

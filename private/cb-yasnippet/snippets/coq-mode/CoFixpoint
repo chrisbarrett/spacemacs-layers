@@ -1,0 +1,9 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: CoFixpoint
+# key: cof
+# binding: direct-keybinding
+# expand-env: ((yas-indent-line (quote fixed)))
+# condition: (yas/bol?)
+# --
+CoFixpoint ${1:name and params} : ${3:T} :=
+  $0.

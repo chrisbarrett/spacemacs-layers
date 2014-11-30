@@ -1,0 +1,10 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: case
+# key: c
+# binding: direct-keybinding
+# expand-env: ((yas-indent-line 'fixed) (yas-wrap-around-region 't))
+# --
+CASE ${1:?value}
+  $0
+  ELSE ${2:default}
+END

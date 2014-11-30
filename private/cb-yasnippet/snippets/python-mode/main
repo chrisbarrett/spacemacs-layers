@@ -1,0 +1,6 @@
+# key: main
+# name: main
+# condition: (yas/bol?)
+# --
+if __name__ == '__main__':
+    $0

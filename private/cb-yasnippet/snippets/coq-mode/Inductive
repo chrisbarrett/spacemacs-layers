@@ -1,0 +1,5 @@
+# key: in
+# name: Inductive
+# condition: (yas/bol?)
+# --
+Inductive ${1:name} := $0.

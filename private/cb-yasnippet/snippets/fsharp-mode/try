@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: try
+# key: try
+# --
+try
+  ${1:expr}
+with
+  ${2:exn} -> $0

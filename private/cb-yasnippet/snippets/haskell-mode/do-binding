@@ -1,0 +1,4 @@
+# key: do-binding
+# name: do-binding
+# --
+${1:x} <- $0

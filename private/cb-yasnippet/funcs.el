@@ -1,0 +1,178 @@
+;;; Utilities 
+
+(defmacro yas-with-field-restriction (&rest body)
+  "Narrow the buffer to the current active field and execute BODY.
+If no field is active, no narrowing will take place."
+  (declare (indent 0))
+  `(save-restriction
+     (when (yas/current-field)
+       (narrow-to-region (yas/beginning-of-field) (yas/end-of-field)))
+     ,@body))
+
+(defun yas/bol? ()
+  "Non-nil if point is on an empty line or at the first word.
+The rest of the line must be blank."
+  (s-matches? (rx bol (* space) (* word) (* space) eol)
+              (buffer-substring (line-beginning-position) (line-end-position))))
+
+(defun yas/msg (fmt &rest args)
+  "Like `message', but returns the empty string.
+Embed in elisp blocks to trigger messages within snippets."
+  (apply 'message (s-prepend "[yas] " fmt) args)
+  "")
+
+(defun yas-insert-first-snippet (predicate)
+  "Choose a snippet to expand according to PREDICATE."
+  (setq yas--condition-cache-timestamp (current-time))
+  (let ((yas-buffer-local-condition 'always))
+    (-if-let (yas--current-template
+              (-first predicate (yas--all-templates (yas--get-snippet-tables))))
+        (let ((where (if (region-active-p)
+                         (cons (region-beginning) (region-end))
+                       (cons (point) (point)))))
+          (yas-expand-snippet (yas--template-content yas--current-template)
+                              (car where)
+                              (cdr where)
+                              (yas--template-expand-env yas--current-template)))
+      (error "No snippet matching predicate"))))
+
+(defun yas/current-field ()
+  "Return the current active field."
+  (and (boundp 'yas--active-field-overlay)
+       yas--active-field-overlay
+       (overlay-buffer yas--active-field-overlay)
+       (overlay-get yas--active-field-overlay 'yas--field)))
+
+(defun yas/beginning-of-field ()
+  (-when-let (field (yas/current-field))
+    (marker-position (yas--field-start field))))
+
+(defun yas/end-of-field ()
+  (-when-let (field (yas/current-field))
+    (marker-position (yas--field-end field))))
+
+(defun yas/current-field-text ()
+  "Return the text in the active snippet field."
+  (-when-let (field (yas/current-field))
+    (yas--field-text-for-display field)))
+
+(defun yas/clear-blank-field ()
+  "Clear the current field if it is blank."
+  (-when-let* ((beg (yas/beginning-of-field))
+               (end (yas/end-of-field))
+               (str (yas/current-field-text)))
+    (when (s-matches? (rx bos (+ space) eos) str)
+      (delete-region beg end)
+      t)))
+
+(defun yas/maybe-goto-field-end ()
+  "Move to the end of the current field if it has been modified."
+  (-when-let (field (yas/current-field))
+    (when (and (yas--field-modified-p field)
+               (yas--field-contains-point-p field))
+      (goto-char (yas/end-of-field)))))
+
+
+;;; Elisp 
+
+(defun yas/find-identifier-prefix ()
+  "Find the commonest identifier prefix in use in this buffer."
+  (let ((ns-separators (rx (or ":" "--" "/"))))
+    (->> (buffer-string)
+      ;; Extract the identifiers from declarations.
+      (s-match-strings-all
+       (rx bol (* space)
+           "(" (? "cl-") (or "defun" "defmacro" "defvar" "defconst")
+           (+ space)
+           (group (+ (not space)))))
+      ;; Find the commonest prefix.
+      (-map 'cadr)
+      (-filter (~ s-matches? ns-separators))
+      (-map (C car (~ s-match (rx (group (* nonl) (or ":" "--" "/"))))))
+      (-group-by 'identity)
+      (-max-by (-on '>= 'length))
+      (car))))
+
+(defun yas/find-group-for-snippet ()
+  "Find the first group defined in the current file,
+falling back to the file name sans extension."
+  (or
+   (cadr (s-match (rx "(defgroup" (+ space) (group (+ (not
+                                                       space))))
+                  (buffer-string)))
+   (cadr (s-match (rx ":group" (+ space) "'" (group (+ (any "-" alnum))))
+                  (buffer-string)))
+   (f-no-ext (f-filename buffer-file-name))))
+
+(defun yas/simplify-arglist (text)
+  "Return a simplified docstring of arglist TEXT."
+  (->> (ignore-errors
+         (read (format "(%s)" text)))
+    (--keep
+     (ignore-errors
+       (cond
+        ((listp it)
+         (-first (-andfn 'symbolp (C (N (~ s-starts-with? "&")) symbol-name))
+                 it))
+        ((symbolp it) it))))
+    (-remove (C (~ s-starts-with? "&") symbol-name))))
+
+(defun yas/cl-arglist? (text)
+  "Non-nil if TEXT is a Common Lisp arglist."
+  (let ((al (ignore-errors (read (format "(%s)" text)))))
+    (or (-any? 'listp al)
+        (-intersection al '(&key &allow-other-keys &body)))))
+
+(defun yas/defun-form-for-arglist (text)
+  "Return either 'defun or 'cl-defun depending on whether TEXT
+is a Common Lisp arglist."
+  (if (yas/cl-arglist? text) 'cl-defun 'defun))
+
+(defun yas/defmacro-form-for-arglist (text)
+  "Return either 'defmacro or 'cl-defmacro depending on whether TEXT
+is a Common Lisp arglist."
+  (if (yas/cl-arglist? text) 'cl-defmacro 'defmacro))
+
+(defun yas/process-docstring (text)
+  "Format a function docstring for a snippet.
+TEXT is the content of the docstring."
+  (let ((docs (->> (yas/simplify-arglist text)
+                (-map (C s-upcase symbol-name))
+                (s-join "\n\n"))))
+    (unless (s-blank? docs)
+      (concat "\n\n" docs))))
+
+
+;;; Editing commands
+
+(defun yas/reload-all ()
+  (interactive)
+  (yas-recompile-all)
+  (yas-reload-all))
+
+(defun yas/space ()
+  "Clear and skip this field if it is unmodified. Otherwise insert a space."
+  (interactive "*")
+  (let ((field (yas/current-field)))
+    (cond ((and field
+                (not (yas--field-modified-p field))
+                (eq (point) (marker-position (yas--field-start field))))
+           (yas--skip-and-clear field)
+           (yas-next-field 1))
+          (t
+           (insert " ")))))
+
+(defun yas/backspace ()
+  "Clear the current field if the current snippet is unmodified.
+Otherwise delete backwards."
+  (interactive "*")
+  (let ((field (yas/current-field)))
+    (cond ((and field
+                (not (yas--field-modified-p field))
+                (eq (point) (marker-position (yas--field-start field))))
+           (yas--skip-and-clear field)
+           (yas-next-field 1))
+          ((true? smartparens-mode)
+           (call-interactively 'sp-backward-delete-char))
+          (t
+           (call-interactively 'backward-delete-char)))))

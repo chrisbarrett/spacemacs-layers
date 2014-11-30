@@ -1,0 +1,9 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: for
+# key: for
+# binding: direct-keybinding
+# condition: (yas/bol?)
+# --
+for var ${1:x} = 0; $1 != ${2:limit}; ++$1 {
+    $0
+}

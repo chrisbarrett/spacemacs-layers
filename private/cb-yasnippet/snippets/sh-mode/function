@@ -1,0 +1,7 @@
+# key: f
+# name: function
+# condition: (yas/bol?)
+# --
+function ${1:fname} {
+    $0
+}

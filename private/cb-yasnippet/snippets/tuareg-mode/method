@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: method
+# key: me
+# condition: (yas/bol?)
+# --
+method $1 =
+  $0

@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: defadvice
+# key: da
+# --
+(defadvice $1 (${2:around} ${3:desc} ${4:activate})
+  ${5:"$6"}
+  $0)

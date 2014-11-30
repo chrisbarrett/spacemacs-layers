@@ -1,0 +1,6 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: printf
+# key: p
+# condition: (yas/bol?)
+# --
+printf("${1:%s}"$2);$0

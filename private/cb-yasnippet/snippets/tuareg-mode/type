@@ -1,0 +1,5 @@
+# key: t
+# name: type
+# condition: (yas/bol?)
+# --
+type ${1:indent} = $0

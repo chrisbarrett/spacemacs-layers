@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: with-open
+# key: wo
+# --
+(with-open [${1:r} ${2:(java.io.FileReader. ${3:path})}]
+  $0)

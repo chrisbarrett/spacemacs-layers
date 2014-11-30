@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: point-min
+# key: pm
+# --
+(point-min)

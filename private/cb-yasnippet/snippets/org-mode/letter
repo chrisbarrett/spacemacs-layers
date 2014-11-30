@@ -1,0 +1,18 @@
+# -*- mode: snippet -*-
+# name: letter
+# key: letter
+# --
+#+TITLE: ${1:Untitled Letter}
+#+LATEX_CLASS: koma-letter
+#+LCO: CBLetter CBAddress UScommercial9
+#+DATE: `(format-time-string "%B %-d, %Y")`
+
+#+TO_ADDRESS: ${2:Name}\\\\
+#+TO_ADDRESS: ${3:Street}\\\\
+#+TO_ADDRESS: ${4:Town}
+
+#+OPENING: ${5:To whom it may concern},
+
+$0
+
+#+CLOSING: Sincerely,

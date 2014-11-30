@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: %empty
+# key: e
+# --
+%empty $0

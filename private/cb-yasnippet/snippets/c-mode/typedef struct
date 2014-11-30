@@ -1,0 +1,7 @@
+# key: tds
+# name: typedef struct
+# --
+typedef struct $1
+{
+  $0
+} $1;

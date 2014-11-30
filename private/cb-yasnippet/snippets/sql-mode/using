@@ -1,0 +1,7 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: using
+# key: u
+# binding: direct-keybinding
+# --
+USING (${1:attr})
+$0

@@ -1,0 +1,4 @@
+# key: lo
+# name: cl-loop
+# --
+(cl-loop${1: for ${2:x} in }$0)

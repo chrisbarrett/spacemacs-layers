@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: when-not
+# key: u
+# --
+(when-not $0)

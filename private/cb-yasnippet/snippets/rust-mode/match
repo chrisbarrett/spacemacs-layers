@@ -1,0 +1,7 @@
+# key: m
+# name: match
+# --
+match ${1:expr} {
+    ${2:x} => $0,
+    _ =>
+}

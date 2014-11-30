@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: %define
+# key: d
+# condition: (yas/bol?)
+# --
+%define api.value.type {$0}

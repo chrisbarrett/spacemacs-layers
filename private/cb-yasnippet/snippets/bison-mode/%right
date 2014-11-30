@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: %right
+# key: r
+# condition: (yas/bol?)
+# --
+%right $0

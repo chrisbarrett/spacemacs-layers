@@ -1,0 +1,6 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: group by
+# key: g
+# binding: direct-keybinding
+# --
+GROUP BY $0

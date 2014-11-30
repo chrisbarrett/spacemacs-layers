@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name: defcustom
+# key: dc
+# condition: (yas/bol?)
+# --
+(defcustom ${1:name} ${2:value}
+  "$3"
+  :group '`(yas/find-group-for-snippet)`
+  :type '$4)

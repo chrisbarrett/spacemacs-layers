@@ -1,0 +1,6 @@
+# key: t
+# name: transaction
+# expand-env: ((yas-indent-line (quote fixed)))
+# --
+`(s-replace "-" "/" (org-read-date ))` ${2:(${3:REF}) }${4:PAYEE}
+  $0

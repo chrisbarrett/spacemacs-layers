@@ -1,0 +1,9 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: public function
+# key: pf
+# binding: direct-keybinding
+# condition: (cbrs:bol-or-after-accessibility-modifier?)
+# --
+pub fn ${1:name}(${2:args})${3: -> ${4:T}} {
+    $0
+}

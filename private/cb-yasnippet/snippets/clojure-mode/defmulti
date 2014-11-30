@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: defmulti
+# key: dmul
+# condition: (yas/bol?)
+# --
+(defmulti ${1:name}
+  "$2"
+  (fn [${$3:x}] ${4:impl...}))

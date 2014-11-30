@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: after
+# key: a
+# --
+(after '$0)

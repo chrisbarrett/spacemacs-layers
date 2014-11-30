@@ -1,0 +1,11 @@
+# key: th
+# name: Theorem
+# expand-env: ((yas-indent-line (quote fixed)))
+# condition: (yas/bol?)
+# --
+Theorem ${1:name} :
+  forall $0.
+Proof.
+  intros.
+  reflexivity.
+Qed.

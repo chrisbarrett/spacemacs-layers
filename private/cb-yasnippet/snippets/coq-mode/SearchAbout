@@ -1,0 +1,5 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: SearchAbout
+# key: sa
+# --
+SearchAbout ${1:query}. $0

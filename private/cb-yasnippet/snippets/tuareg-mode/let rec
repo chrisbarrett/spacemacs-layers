@@ -1,0 +1,7 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: let rec
+# key: lr
+# binding: direct-keybinding
+# condition: (zerop (current-indentation))
+# --
+let rec ${1:binding} = $0

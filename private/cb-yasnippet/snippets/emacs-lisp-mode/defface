@@ -1,0 +1,9 @@
+# key: df
+# name: defface
+# condition: (yas/bol?)
+# --
+(defface $1
+  '((t
+     ($0)))
+  "Face for $3"
+  :group '${4:`(yas/find-group-for-snippet)`})

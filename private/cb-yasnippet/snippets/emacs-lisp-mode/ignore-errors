@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: ignore-errors
+# key: ie
+# --
+(ignore-errors $0)

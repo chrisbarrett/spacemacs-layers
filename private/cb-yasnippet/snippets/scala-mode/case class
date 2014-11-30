@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: case class
+# key: ccls
+# --
+case class $1 ${2:(${3:arg} : ${4:type}) }extends ${5:`(cbscala:find-case-class-parent)`}
+$0

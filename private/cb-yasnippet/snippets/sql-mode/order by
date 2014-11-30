@@ -1,0 +1,7 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: order by
+# key: ob
+# binding: direct-keybinding
+# --
+ORDER BY ${1:attrs}
+$0

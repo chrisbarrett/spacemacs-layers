@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: protect
+# key: protect
+# --
+protect ~f:(fun () -> ${1:expr})
+  ~finally:(fun () -> $0)

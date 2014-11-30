@@ -1,0 +1,7 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: type
+# key: t
+# binding: direct-keybinding
+# condition: (yas/bol?)
+# --
+type ${1:alias} = ${2:name};

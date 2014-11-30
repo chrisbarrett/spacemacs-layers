@@ -1,0 +1,12 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: if...else
+# key: i
+# binding: direct-keybinding
+# condition: (yas/bol?)
+# --
+if (${1:test}) {
+    ${2:then}
+}
+else {
+    ${3:else}
+}

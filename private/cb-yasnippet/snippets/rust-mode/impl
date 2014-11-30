@@ -1,0 +1,8 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: impl
+# key: im
+# binding: direct-keybinding
+# --
+impl ${1:`(cbrs:previous-struct-def)`} {
+    $0
+}

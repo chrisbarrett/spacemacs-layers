@@ -1,0 +1,7 @@
+# key: py
+# name: src python
+# condition: (yas/bol?)
+# --
+#+begin_src python
+$0
+#+end_src

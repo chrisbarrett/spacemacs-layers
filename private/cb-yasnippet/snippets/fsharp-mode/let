@@ -1,0 +1,5 @@
+# key: l
+# name: let
+# condition: (yas/bol?)
+# --
+let ${1:binding} = $0

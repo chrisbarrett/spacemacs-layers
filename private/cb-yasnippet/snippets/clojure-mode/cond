@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: cond
+# key: c
+# --
+(cond
+  ${1:test} ${2:expr}${3:
+  :else ${4:expr}})

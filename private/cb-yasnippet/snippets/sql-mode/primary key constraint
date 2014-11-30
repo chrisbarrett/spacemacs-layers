@@ -1,0 +1,6 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: primary key constraint
+# key: pk
+# binding: direct-keybinding
+# --
+CONSTRAINT pk_$1 PRIMARY KEY (${1:col})

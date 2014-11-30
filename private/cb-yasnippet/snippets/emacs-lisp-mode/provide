@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: provide
+# key: prov
+# --
+(provide '`(file-name-sans-extension (file-name-nondirectory buffer-file-name))`)

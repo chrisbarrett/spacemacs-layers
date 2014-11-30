@@ -1,0 +1,6 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: when...then
+# key: wh
+# binding: direct-keybinding
+# --
+WHEN ${1:test} THEN $0

@@ -1,0 +1,5 @@
+# key: u
+# name: use
+# condition: (yas/bol?)
+# --
+use ${1:ident};

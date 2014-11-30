@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: search-forward-regexp
+# key: sfr
+# --
+(search-forward-regexp (rx $0))

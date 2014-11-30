@@ -1,0 +1,13 @@
+# key: d
+# name: def
+# condition: (yas/bol?)
+# --
+def ${1:$$(s-downcase yas/text)} ($2):
+    ${3:"""$4
+    ${2:$(yas/python-docstring yas/text)}
+
+    ${5:Returns:
+    $6
+
+    }"""
+    }$0

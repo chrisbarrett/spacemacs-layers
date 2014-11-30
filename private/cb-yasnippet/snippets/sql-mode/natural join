@@ -1,0 +1,7 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: natural join
+# key: nj
+# binding: direct-keybinding
+# --
+NATURAL JOIN ${1:rel}
+$0

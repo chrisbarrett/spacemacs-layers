@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: with-out-str
+# key: wos
+# --
+(with-out-str
+  $0)

@@ -1,0 +1,18 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: gnuplot graph
+# key: plot
+# --
+#+TBLNAME: ${1:tblname}
+#+PLOT: title:"${2:$1}" ind:1
+| ${3:X} | ${4:Y} |
+|---+---|
+| $0  |   |
+
+#+begin_src gnuplot :var data="$1" :file "$1.png"
+reset
+set title "$2"
+set xlabel "$3"
+set ylabel "$4"
+unset key
+plot data u 1:2 w lines
+#+end_src

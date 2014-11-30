@@ -1,0 +1,13 @@
+# key: m
+# name: method
+# condition: (yas/bol?)
+# --
+def ${1:$$(s-downcase yas/text)} (self${2:, $3}):
+    ${4:"""$5
+    ${3:$(yas/python-docstring yas/text)}
+
+    ${6:Returns:
+    $7
+
+    }"""
+    }$0

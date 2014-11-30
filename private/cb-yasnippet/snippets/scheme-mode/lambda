@@ -1,0 +1,4 @@
+# key: \
+# name: lambda
+# --
+(lambda ($1) $0)

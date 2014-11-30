@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: when
+# key: w
+# --
+(when $0)

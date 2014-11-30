@@ -1,0 +1,6 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: format!
+# key: fmt
+# binding: direct-keybinding
+# --
+format!("$1"${1:$(cbrs:fmt-println-args yas/text)});

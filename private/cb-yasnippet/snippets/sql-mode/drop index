@@ -1,0 +1,6 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: drop index
+# key: di
+# binding: direct-keybinding
+# --
+DROP INDEX ${1:name}_idx ON ${2:table};

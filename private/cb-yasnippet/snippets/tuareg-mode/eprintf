@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# key: ep
+# name: eprintf
+# --
+eprintf "$0 %!"`(yas/msg "Note that \"%%!\" causes printf to flush the channel")`

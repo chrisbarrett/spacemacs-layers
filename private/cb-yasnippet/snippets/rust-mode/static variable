@@ -1,0 +1,7 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: static variable
+# key: st
+# binding: direct-keybinding
+# condition: (cbrs:bol-or-after-accessibility-modifier?)
+# --
+static ${1:NAME$(upcase yas/text)} : ${2:type} = ${3:val};

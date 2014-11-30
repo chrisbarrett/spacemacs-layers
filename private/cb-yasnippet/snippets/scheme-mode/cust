@@ -1,0 +1,7 @@
+# key: cust
+# name: cust
+# --
+(define ${1:cust} (make-custodian))
+(parameterize ([current-custodian $1])
+  $0
+  )

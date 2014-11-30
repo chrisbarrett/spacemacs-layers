@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: for
+# key: for
+# --
+(for [${1:binding} ${2:expr}] $0)

@@ -1,0 +1,6 @@
+# key: in
+# name: instance
+# condition: (yas/bol?)
+# --
+instance ${2:class} where
+  $0

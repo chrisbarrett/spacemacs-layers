@@ -1,0 +1,6 @@
+# key: l
+# name: let...in
+# condition: (plusp (current-indentation))
+# --
+let ${1:binding} = ${2:expr} in
+$0

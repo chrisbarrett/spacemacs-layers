@@ -1,0 +1,6 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: uniqueness constraint
+# key: uc
+# binding: direct-keybinding
+# --
+CONSTRAINT ${2:name}_ak UNIQUE (${3:cols})

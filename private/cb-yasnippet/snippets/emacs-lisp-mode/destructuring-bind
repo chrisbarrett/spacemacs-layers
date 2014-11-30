@@ -1,0 +1,5 @@
+# key: b
+# name: destructuring-bind
+# --
+(cl-destructuring-bind ($1) $2
+  $0)

@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: setq
+# key: s
+# condition: (yas/bol?)
+# --
+(setq $0)

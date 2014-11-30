@@ -1,0 +1,4 @@
+# key: #
+# name: keyword
+# --
+#+${1:$$(s-upcase yas/text)}: $0

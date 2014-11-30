@@ -1,0 +1,8 @@
+# key: t
+# name: try
+# condition: (yas/bol?)
+# --
+try:
+    ${1:expr}
+except ${2:Exception}:
+    $0

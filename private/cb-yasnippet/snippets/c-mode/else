@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name: else
+# key: e
+# condition: (yas/bol?)
+# --
+else
+{
+    $0
+}

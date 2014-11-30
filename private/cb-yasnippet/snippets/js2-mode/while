@@ -1,0 +1,9 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: while
+# key: wh
+# binding: direct-keybinding
+# condition: (yas/bol?)
+# --
+while (${1:test}) {
+    $0
+}

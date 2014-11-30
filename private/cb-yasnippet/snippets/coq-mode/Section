@@ -1,0 +1,11 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: Section
+# key: sec
+# binding: direct-keybinding
+# condition: (yas/bol?)
+# expand-env: ((yas-indent-line (quote fixed)))
+# --
+Section ${1:name}.
+  $0
+
+End $1.

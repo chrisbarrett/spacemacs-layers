@@ -1,0 +1,6 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: type instance
+# key: ti
+# condition: (yas/bol?)
+# --
+type instance $0

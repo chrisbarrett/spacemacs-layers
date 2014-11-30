@@ -1,0 +1,7 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: rollback to savepoint
+# key: rbt
+# binding: direct-keybinding
+# --
+ROLLBACK TO SAVEPOINT ${1:name};
+$0

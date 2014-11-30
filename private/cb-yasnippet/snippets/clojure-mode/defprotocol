@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: defprotocol
+# key: dp
+# condition: (yas/bol?)
+# --
+(defprotocol ${1:Name}
+  "$2"
+  (${3:fname} [this${4:$$(cbclj:pad-for-arglist yas/text)}] "$5"))

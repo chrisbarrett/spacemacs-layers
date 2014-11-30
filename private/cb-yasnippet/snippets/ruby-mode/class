@@ -1,0 +1,9 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: class
+# key: cl
+# binding: direct-keybinding
+# condition: (yas/bol?)
+# --
+class ${1:Name}
+  $0
+end

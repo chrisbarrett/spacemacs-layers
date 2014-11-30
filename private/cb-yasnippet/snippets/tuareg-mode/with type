@@ -1,0 +1,4 @@
+# key: wt
+# name: with type
+# --
+with type ${1:t1} := ${2:t2}

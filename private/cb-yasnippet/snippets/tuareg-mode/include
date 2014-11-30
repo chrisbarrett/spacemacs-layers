@@ -1,0 +1,5 @@
+# key: inc
+# name: include
+# condition: (yas/bol?)
+# --
+include $0

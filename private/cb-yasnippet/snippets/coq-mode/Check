@@ -1,0 +1,5 @@
+# key: ch
+# name: Check
+# condition: (yas/bol?)
+# --
+Check $0.

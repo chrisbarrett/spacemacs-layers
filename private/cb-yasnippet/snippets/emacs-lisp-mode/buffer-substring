@@ -1,0 +1,4 @@
+# key: bs
+# name: buffer-substring
+# --
+(buffer-substring ${1:beg} ${2:end})$0

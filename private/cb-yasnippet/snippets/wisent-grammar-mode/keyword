@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: keyword with documentation
+# key: %keyword
+# key: kw
+# --
+%keyword ${1:$(upcase yas/text)} "$1"
+%put     ${1:$(upcase yas/text)} summary
+"$0"

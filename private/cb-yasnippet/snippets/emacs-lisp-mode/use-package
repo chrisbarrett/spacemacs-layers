@@ -1,0 +1,7 @@
+# key: up
+# name: use-package
+# condition: (yas/bol?)
+# --
+;; `${1:$(format "%s" yas/text)}' $2
+(use-package $1
+  $0)

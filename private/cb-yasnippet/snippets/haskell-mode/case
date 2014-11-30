@@ -1,0 +1,8 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: case
+# key: c
+# binding: direct-keybinding
+# condition: (yas/bol?)
+# --
+case ${1:expr} of
+  ${2:ctor} -> $0

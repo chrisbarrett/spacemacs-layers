@@ -1,0 +1,11 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: data record
+# key: d
+# binding: direct-keybinding
+# condition: (yas/bol?)
+# expand-env: ((yas-indent-line 'fixed) (yas-wrap-around-region 't))
+# --
+data ${1:Name} = ${2:$1}
+  { ${5:member} :: ${6:type}
+  , ${7:member} :: ${8:type} $0
+  } ${3:deriving (${4:Show, Eq})}

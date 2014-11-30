@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: income
+# key: i
+# condition: (yas/bol?)
+# --
+Income:${1:ACCOUNT}                              \$ -${2:AMOUNT}

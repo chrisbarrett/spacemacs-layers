@@ -1,0 +1,5 @@
+# key: eg
+# name: env-gen
+# condition: (true? overtone-mode)
+# --
+(env-gen ${1:(env-lin ${2:att sus rel})}$3 :action FREE)

@@ -1,0 +1,7 @@
+# key: f
+# name: Fixpoint
+# expand-env: ((yas-indent-line (quote fixed)))
+# condition: (yas/bol?)
+# --
+Fixpoint ${1:name and params} : ${3:T} :=
+  $0.

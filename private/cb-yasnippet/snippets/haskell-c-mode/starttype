@@ -1,0 +1,10 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: #starttype...#stoptype
+# key: st
+# binding: direct-keybinding
+# condition: (yas/bol?)
+# expand-env: ((yas-indent-line (quote fixed)) (yas-wrap-around-region (quote nil)))
+# --
+#starttype ${1:structname}
+#field ${2:fields , types...}
+#stoptype

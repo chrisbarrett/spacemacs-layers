@@ -1,0 +1,5 @@
+# key: sc
+# name: set comprehension
+# --
+{${1:x} for ${2:x} in ${3:xs}}
+$0

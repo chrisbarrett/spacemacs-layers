@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: let
+# key: l
+# condition: (cb-ocaml:at-prompt-bol?)
+# --
+let $0

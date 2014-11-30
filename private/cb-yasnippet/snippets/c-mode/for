@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name: for
+# key: f
+# condition: (yas/bol?)
+# --
+for (${1:int i = 0}; ${2: i != ${3:n}}; ${4:i++})
+{
+    $0
+}

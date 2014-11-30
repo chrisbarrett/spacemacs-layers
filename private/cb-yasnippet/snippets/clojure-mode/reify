@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: reify
+# key: r
+# --
+(reify ${1:Class}
+  (${2:method} [this${3:$$(cbclj:pad-for-arglist yas/text)}]
+    ${4:impl...}))

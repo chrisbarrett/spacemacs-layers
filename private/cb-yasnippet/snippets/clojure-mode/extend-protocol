@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: extend-protocol
+# key: ep
+# condition: (yas/bol?)
+# --
+(extend-protocol ${1:Protocol}
+  ${2:Type}
+  (${3:method} [this${4:$$(cbclj:pad-for-arglist yas/text)}] ${5:impl...}))

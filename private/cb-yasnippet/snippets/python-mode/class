@@ -1,0 +1,9 @@
+# key: c
+# name: class
+# condition: (yas/bol?)
+# --
+class ${1:$$(s-upper-camel-case yas/text)}${2: ($3)}:
+
+    ${4:'''$5'''
+
+    }$0

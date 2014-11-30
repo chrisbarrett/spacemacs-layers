@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: ctl
+# key: c
+# --
+(ctl ${1:synth} :${2:keyword} ${3:value})

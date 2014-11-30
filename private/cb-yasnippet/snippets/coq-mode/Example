@@ -1,0 +1,6 @@
+# key: ex
+# name: Example
+# condition: (yas/bol?)
+# --
+Example ${1:name} : $0.
+Proof. reflexivity. Qed.

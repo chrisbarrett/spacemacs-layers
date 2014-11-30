@@ -1,0 +1,8 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: else-if
+# key: ei
+# binding: direct-keybinding
+# --
+else if ${1:expr} {
+  $0
+}

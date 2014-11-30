@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: exception
+# key: ex
+# conditon: (yas/bol?)
+# --
+exception ${1:exid} of ${2:type}

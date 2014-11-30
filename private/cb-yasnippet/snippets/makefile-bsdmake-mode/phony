@@ -1,0 +1,6 @@
+# key: p
+# name: .PHONY
+# expand-env: ((yas/indent-line (quote fixed)))
+# --
+.PHONY: $1
+$1 : $0

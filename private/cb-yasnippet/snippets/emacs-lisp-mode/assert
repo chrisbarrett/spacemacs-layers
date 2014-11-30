@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: assert
+# key: as
+# --
+(cl-assert $0)

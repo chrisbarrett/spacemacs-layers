@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: struct
+# key: st
+# --
+struct
+  $0
+end

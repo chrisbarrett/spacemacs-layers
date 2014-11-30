@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: elsif
+# key: ei
+# --
+elsif $1
+  $0

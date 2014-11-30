@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: let open
+# key: lo
+# condition: (yas/bol?)
+# --
+let open ${1:modid} in
+$0

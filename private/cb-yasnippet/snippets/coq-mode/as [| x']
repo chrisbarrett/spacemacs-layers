@@ -1,0 +1,4 @@
+# key: a
+# name: as [| x']
+# --
+`(just-one-space)`as [| ${1:x'}]

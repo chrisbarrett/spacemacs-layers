@@ -1,0 +1,6 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: cast
+# key: cast
+# binding: direct-keybinding
+# --
+cast(${1:value} as ${2:type})

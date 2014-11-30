@@ -1,0 +1,6 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: crate_attribute
+# key: #!
+# binding: direct-keybinding
+# --
+#![crate_${1:attrname} = ${2:val}]

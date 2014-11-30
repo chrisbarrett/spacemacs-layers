@@ -1,0 +1,7 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: include
+# key: inc
+# binding: direct-keybinding
+# condition: (yas/bol?)
+# --
+#include <$0>

@@ -1,0 +1,6 @@
+# key: d
+# name: def
+# --
+def ${1:fname}${2:(${3:arglist})}
+  $0
+end

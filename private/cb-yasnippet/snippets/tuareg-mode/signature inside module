@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name: signature inside module
+# key: msig
+# condition: (yas/bol?)
+# --
+module type ${1:Modname} = sig
+  type t
+  $0
+end

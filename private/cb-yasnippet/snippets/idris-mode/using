@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: using
+# key: u
+# expand-env: ((yas-indent-line 'fixed))
+# --
+using ($1)
+  $0

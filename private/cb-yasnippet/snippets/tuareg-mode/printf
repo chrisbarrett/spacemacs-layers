@@ -1,0 +1,4 @@
+# key: p
+# name: printf
+# --
+printf "$0 %!"`(yas/msg "Note that \"%%!\" causes printf to flush the channel")`

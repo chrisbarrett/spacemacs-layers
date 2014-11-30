@@ -1,0 +1,10 @@
+# -*- mode: snippet -*-
+# name: ns
+# key: ns
+# condition: (yas/bol?)
+# --
+(ns ${1:`(cbclj:ns-for-current-buf)`}
+  "$2"${3:
+  (:use [${4:ns}${5: :only [${6:syms...}]}]$7)}${8:
+  (:require [${9:ns}${10: :as ${11:alias}}]$12)}${13:
+  (:import ${14:symbols/lists...})})

@@ -1,0 +1,6 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: setq-local
+# key: sl
+# binding: direct-keybinding
+# --
+(setq-local ${1:var} ${2:value})$0

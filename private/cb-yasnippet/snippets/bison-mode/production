@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name: production
+# key: p
+# expand-env: ((yas-indent-line 'fixed) (yas-wrap-around-region 'nil))
+# condition: (yas/bol?)
+# --
+${1:name}:
+  $0
+;

@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: record update
+# key: ru
+# --
+{ ${1:record} with ${2:field} = ${3:value} }

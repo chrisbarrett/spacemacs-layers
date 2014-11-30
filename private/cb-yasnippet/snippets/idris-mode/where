@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: where
+# key: w
+# condition: (cbidris:at-data-decl?)
+# --
+where

@@ -1,0 +1,7 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: savepoint
+# key: sp
+# binding: direct-keybinding
+# --
+SAVEPOINT ${1:name};
+$0

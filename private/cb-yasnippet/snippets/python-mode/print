@@ -1,0 +1,5 @@
+# key: p
+# name: print
+# condition: (yas/bol?)
+# --
+print($0)

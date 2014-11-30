@@ -1,0 +1,10 @@
+# key: mod
+# name: Module
+# expand-env: ((yas-indent-line (quote fixed)))
+# condition: (yas/bol?)
+# --
+Module ${1:Name}.
+
+  $0
+
+End $1.

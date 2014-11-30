@@ -1,0 +1,7 @@
+# key: dm
+# name: defmacro
+# condition: (yas/bol?)
+# --
+(${3:$(yas/defmacro-form-for-arglist yas/text)} ${1:`(yas/find-identifier-prefix)`$2} ($3)
+  ${4:"$5${6:${3:$(yas/process-docstring yas/text)}}"
+  }$0)

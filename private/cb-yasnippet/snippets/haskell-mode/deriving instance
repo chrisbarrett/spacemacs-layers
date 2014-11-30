@@ -1,0 +1,7 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: deriving instance
+# key: di
+# binding: direct-keybinding
+# condition: (yas/bol?)
+# --
+deriving instance $0

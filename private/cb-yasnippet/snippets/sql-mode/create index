@@ -1,0 +1,8 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: create index
+# key: ci
+# binding: direct-keybinding
+# expand-env: ((yas-indent-line 'fixed) (yas-wrap-around-region 't))
+# --
+CREATE INDEX ${1:name}_idx
+ON ${2:table} (${3:col});

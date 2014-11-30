@@ -1,0 +1,7 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: autoload
+# key: al
+# binding: direct-keybinding
+# condition: (yas/bol?)
+# --
+(autoload '${1:ident} "${2:file}")

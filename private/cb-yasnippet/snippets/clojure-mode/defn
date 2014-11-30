@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name: defn
+# key: d
+# condition: (yas/bol?)
+# --
+(defn ${1:name} ${2:
+  "$3"
+  }[$4]
+  $0)

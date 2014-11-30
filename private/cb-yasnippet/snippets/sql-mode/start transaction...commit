@@ -1,0 +1,11 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: start transaction...commit
+# key: st
+# binding: direct-keybinding
+# expand-env: ((yas-indent-line 'fixed) (yas-wrap-around-region 't))
+# --
+START TRANSACTION;
+
+$0
+
+COMMIT;

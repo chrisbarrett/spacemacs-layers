@@ -1,0 +1,7 @@
+# key: f
+# name: fn
+# condition: (cbrs:bol-or-after-accessibility-modifier?)
+# --
+fn ${1:name}(${2:args})${3: -> ${4:T}} {
+    $0
+}

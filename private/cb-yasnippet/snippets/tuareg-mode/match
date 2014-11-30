@@ -1,0 +1,4 @@
+# key: m
+# name: match
+# --
+match $0 with

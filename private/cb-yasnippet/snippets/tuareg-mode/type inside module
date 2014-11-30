@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: type inside module
+# key: mt
+# condition: (yas/bol?)
+# --
+module ${1:modid} = struct
+  type t = $0
+end

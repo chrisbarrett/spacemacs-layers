@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: src ruby
+# key: rb
+# condition: (yas/bol?)
+# --
+#+begin_src ruby
+$0
+#+end_src

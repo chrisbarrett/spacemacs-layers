@@ -1,0 +1,5 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: generalize dependent
+# key: gd
+# --
+generalize dependent ${1:x}. $0

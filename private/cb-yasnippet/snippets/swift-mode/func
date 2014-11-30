@@ -1,0 +1,9 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: func
+# key: f
+# binding: direct-keybinding
+# condition: (yas/bol?)
+# --
+func ${1:name} (${2:args}) -> ${3:ret} {
+  $0
+}

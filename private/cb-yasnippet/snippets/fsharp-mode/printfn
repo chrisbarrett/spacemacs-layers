@@ -1,0 +1,4 @@
+# key: p
+# name: printf
+# --
+printfn "${1:%A}" $0

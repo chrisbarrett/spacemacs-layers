@@ -1,0 +1,8 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: custom-set-faces
+# key: csf
+# binding: direct-keybinding
+# condition: (yas/bol?)
+# --
+(custom-set-faces
+  '($0))

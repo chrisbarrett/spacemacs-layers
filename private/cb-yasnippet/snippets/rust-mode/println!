@@ -1,0 +1,5 @@
+# key: p
+# name: println!
+# condition: (yas/bol?)
+# --
+println!("$1"${1:$(cbrs:fmt-println-args yas/text)});

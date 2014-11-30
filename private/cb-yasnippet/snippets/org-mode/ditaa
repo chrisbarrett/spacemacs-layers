@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: ditaa
+# key: ditaa
+# condition: (yas/bol?)
+# --
+#+begin_src ditaa :file ${1:filename}.png
+$0
+#+end_src

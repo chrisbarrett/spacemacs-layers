@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: main
+# key: main
+# condition: (yas/bol?)
+# --
+(* Program entry-point *)
+let () =
+  $0

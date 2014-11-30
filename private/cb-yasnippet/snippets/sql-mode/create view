@@ -1,0 +1,12 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: create view
+# key: cv
+# binding: direct-keybinding
+# expand-env: ((yas-indent-line 'fixed) (yas-wrap-around-region 't))
+# --
+CREATE VIEW ${1:name}_vw (
+  ${2:attrs}
+)
+AS
+SELECT ${3:attrs}
+FROM $0;

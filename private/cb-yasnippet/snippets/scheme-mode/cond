@@ -1,0 +1,6 @@
+# key: cond
+# name: cond
+# --
+(cond
+  ($1)
+  (else $0))

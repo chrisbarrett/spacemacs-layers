@@ -1,0 +1,5 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: inversion
+# key: inv
+# --
+inversion ${1:hyp}. $0

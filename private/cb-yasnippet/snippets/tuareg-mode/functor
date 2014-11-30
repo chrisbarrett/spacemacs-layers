@@ -1,0 +1,7 @@
+# key: fu
+# name: functor
+# condition: (yas/bol?)
+# --
+module ${1:FunctorName} (${2:M} : ${3:Constraint}) = struct
+  $0
+end

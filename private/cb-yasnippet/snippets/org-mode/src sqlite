@@ -1,0 +1,8 @@
+# key: sqlite
+# name: src sqlite
+# condition: (yas/bol?)
+# --
+#+header: :db ${1:name} :header :csv :nullvalue NULL
+#+begin_src sqlite
+$0
+#+end_src

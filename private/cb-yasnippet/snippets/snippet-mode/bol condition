@@ -1,0 +1,6 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: bol condition
+# key: c
+# binding: direct-keybinding
+# --
+# condition: (yas/bol?)

@@ -1,0 +1,7 @@
+# key: nt
+# name: newtype
+# condition: (yas/bol?)
+# expand-env: ((yas-indent-line 'fixed) (yas-wrap-around-region 't))
+# --
+newtype ${1:name} = $1 { un$1 :: ${2:type} }
+  ${3:deriving (${4:Show, Eq})}

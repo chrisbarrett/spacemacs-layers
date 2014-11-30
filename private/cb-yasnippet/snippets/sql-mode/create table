@@ -1,0 +1,10 @@
+# key: ct
+# name: create table
+# expand-env: ((yas-indent-line (quote fixed)) (yas-wrap-around-region (quote t)))
+# --
+CREATE TABLE ${1:IF NOT EXISTS }${2:name} (
+    ${3:$2_id} INTEGER NOT NULL,
+    $0
+
+    CONSTRAINT PK_$2 PRIMARY KEY ($3)
+);

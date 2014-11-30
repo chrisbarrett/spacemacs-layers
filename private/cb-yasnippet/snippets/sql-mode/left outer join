@@ -1,0 +1,7 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: left outer join
+# key: loj
+# binding: direct-keybinding
+# --
+LEFT OUTER JOIN ${1:rel}
+$0

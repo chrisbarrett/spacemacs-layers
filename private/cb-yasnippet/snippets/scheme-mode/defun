@@ -1,0 +1,5 @@
+# key: df
+# name: defun
+# --
+(define ($1)
+  $0)

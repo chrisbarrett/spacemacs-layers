@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: %precedence
+# key: pr
+# condition: (yas/bol?)
+# --
+%precedence $0

@@ -1,0 +1,7 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: Package-Requires
+# key: pr
+# binding: direct-keybinding
+# condition: (yas/bol?)
+# --
+;; Package-Requires: ((s "1.9.0") (f "0.16.0") (dash "2.5.0") (cl-lib "0.3"))

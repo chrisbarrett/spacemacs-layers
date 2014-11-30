@@ -1,0 +1,6 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: let
+# key: l
+# condition: (yas/bol?)
+# --
+let ${1:x} = $0;

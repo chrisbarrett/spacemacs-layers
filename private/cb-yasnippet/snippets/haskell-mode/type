@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: type
+# key: t
+# condition: (yas/bol?)
+# --
+type ${1:name} = $0

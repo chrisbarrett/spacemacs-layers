@@ -1,0 +1,8 @@
+# key: as
+# name: assert
+# expand-env: ((yas-indent-line (quote fixed)))
+# condition: (yas/bol?)
+# --
+assert (${1:H} : $2).
+- $0
+- rewrite $1.

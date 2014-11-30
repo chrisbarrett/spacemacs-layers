@@ -1,0 +1,8 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: while
+# key: wh
+# condition: (yas/bol?)
+# --
+while ${1:pred} {
+    $0
+}

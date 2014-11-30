@@ -1,0 +1,5 @@
+# key: lr
+# name: letrec
+# --
+(letrec (($1))
+  $0)
