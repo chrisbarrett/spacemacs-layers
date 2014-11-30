@@ -22,6 +22,7 @@
                                      cb-flycheck
                                      cb-projectile
                                      cb-smartparens
+                                     cb-iedit
                                      )
  ;; A list of packages and/or extensions that will not be install and loaded.
  dotspacemacs-excluded-packages '(rainbow-delimiters
