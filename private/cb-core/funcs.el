@@ -340,3 +340,10 @@ With prefix argument ARG, justify text."
   (save-excursion
     (goto-char (line-beginning-position))
     (delete-horizontal-space)))
+
+;;; Elisp
+
+(defun core/config-elisp-surround-pairs ()
+  "Configure backtick pair for Elisp docstrings."
+  (make-local-variable 'evil-surround-pairs-alist)
+  (push '(?\` . ("`" . "'")) evil-surround-pairs-alist))

@@ -58,10 +58,12 @@ which require an initialization must be listed explicitly in the list.")
         (yas/clear-blank-field))
 
       (defadvice yas-next-field (after goto-field-end activate)
-        (yas/maybe-goto-field-end))
+        (yas/maybe-goto-field-end)
+        (evil-insert-state))
 
       (defadvice yas-prev-field (after goto-field-end activate)
-        (yas/maybe-goto-field-end))
+        (yas/maybe-goto-field-end)
+        (evil-insert-state))
 
       ;; FIX: yasnippet often errors when trying to save existing snippets.
 

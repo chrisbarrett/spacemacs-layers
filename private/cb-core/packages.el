@@ -6,6 +6,8 @@
     s
     f
     noflet
+    evil
+    evil-surround
     )
   "List of all packages to install and/or initialize. Built-in packages
 which require an initialization must be listed explicitly in the list.")
@@ -22,3 +24,35 @@ which require an initialization must be listed explicitly in the list.")
 ;; Often the body of an initialize function uses `use-package'
 ;; For more info on `use-package', see readme:
 ;; https://github.com/jwiegley/use-package
+
+(defun cb-core/init-evil ()
+  (use-package evil
+    :init nil
+    :config
+    (custom-set-variables
+     '(evil-want-visual-char-semi-exclusive t)
+     '(evil-shift-width 2)
+     '(evil-symbol-word-search 'symbol))))
+
+(defun cb-core/init-evil-surround ()
+  (use-package evil-surround
+    :config
+    (progn
+      (custom-set-variables
+       '(evil-surround-pairs-alist '((?\( . ("(" . ")"))
+                                     (?\[ . ("[" . "]"))
+                                     (?\{ . ("{" . "}"))
+
+                                     (?\) . ("(" . ")"))
+                                     (?\] . ("[" . "]"))
+                                     (?\} . ("{" . "}"))
+
+                                     (?# . ("#{" . "}"))
+                                     (?b . ("(" . ")"))
+                                     (?B . ("{" . "}"))
+                                     (?> . ("<" . ">"))
+                                     (?t . surround-read-tag)
+                                     (?< . surround-read-tag)
+                                     (?f . surround-function))))
+
+      (add-hook 'emacs-lisp-mode-hook 'core/config-elisp-surround-pairs))))
