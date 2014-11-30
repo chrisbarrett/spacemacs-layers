@@ -16,12 +16,14 @@
                                      ack
                                      cb-core
                                      cb-elisp
+                                     cb-git
                                      cb-yasnippet
                                      cb-flycheck
                                      cb-projectile
                                      )
  ;; A list of packages and/or extensions that will not be install and loaded.
- dotspacemacs-excluded-packages '()
+ dotspacemacs-excluded-packages '(rainbow-delimiters 
+                                  )
 )
 
 ;; Settings

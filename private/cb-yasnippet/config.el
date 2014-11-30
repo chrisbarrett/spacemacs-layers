@@ -1,4 +1,5 @@
 (require 'f)
+(require 'yasnippet)
 
 (custom-set-variables
  '(yas-snippet-dirs (list (f-join spacemacs-private-directory "cb-yasnippet" "snippets")))
@@ -8,7 +9,7 @@
 
 (add-hook 'prog-mode-hook 'yas-minor-mode)
 (add-hook 'text-mode-hook 'yas-minor-mode)
-
+(yas-global-mode +1)
 
 ;;; Advise editing commands.
 ;;;

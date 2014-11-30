@@ -9,4 +9,4 @@
 (evil-global-set-key 'normal (kbd "SPC g p") 'git-gutter:previous-hunk)
 (evil-global-set-key 'normal (kbd "SPC g h") 'git-gutter:popup-hunk)
 (evil-global-set-key 'normal (kbd "SPC g x") 'git-gutter:revert-hunk)
-(evil-global-set-key 'normal (kbd "SPC g s") 'git-gutter:stage-hunks)
+(evil-global-set-key 'normal (kbd "SPC g a") 'git-gutter:stage-hunk)

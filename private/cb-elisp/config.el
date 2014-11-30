@@ -13,6 +13,7 @@
 (add-hook 'emacs-lisp-mode-hook 'elisp-slime-nav-mode)
 (add-hook 'emacs-lisp-mode-hook 'cl-lib-highlight-initialize)
 (add-hook 'emacs-lisp-mode-hook 'cl-lib-highlight-warn-cl-initialize)
+(add-hook 'emacs-lisp-mode-hook 'eldoc-mode)
 
 
 (defadvice eval-buffer (after buffer-evaluated-feedback activate)
