@@ -1,4 +1,5 @@
 (global-set-key (kbd "C-c e e") 'toggle-debug-on-error)
+(global-set-key (kbd "C-x a a") 'align-regexp)
 
 (bind-key (kbd "C-SPC") 'helm-mini)
 (bind-key (kbd "S-SPC") 'execute-extended-command)

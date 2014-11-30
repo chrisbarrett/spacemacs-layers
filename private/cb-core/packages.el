@@ -13,9 +13,9 @@ which require an initialization must be listed explicitly in the list.")
 (defvar cb-core-excluded-packages '()
   "List of packages to exclude.")
 
-;; For each package, define a function core/init-<package-core>
+;; For each package, define a function cb-core/init-<package-core>
 ;;
-;; (defun core/init-my-package ()
+;; (defun cb-core/init-my-package ()
 ;;   "Initialize my package"
 ;;   )
 ;;

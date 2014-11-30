@@ -16,11 +16,12 @@
 
 ;;; lambda-mode
 
-(custom-set-variables
- '(lambda-symbol (string (make-char 'greek-iso8859-7 107))))
+(defvar lambda-symbol (string (make-char 'greek-iso8859-7 107)))
 
-(add-hook 'cb:scheme-modes-hook    'lambda-mode)
+(diminish 'lambda-mode) 
+
+(add-hook 'scheme-mode-hook        'lambda-mode)
 (add-hook 'inferior-lisp-mode-hook 'lambda-mode)
 (add-hook 'lisp-mode-hook          'lambda-mode)
-(add-hook 'cb:elisp-modes-hook     'lambda-mode)
-(add-hook 'cb:python-modes-hook    'lambda-mode)
+(add-hook 'emacs-lisp-mode-hook    'lambda-mode)
+(add-hook 'python-mode-hook        'lambda-mode)

@@ -1,4 +1,6 @@
 (require 'f)
+(require 'dash)
+(require 'dash-functional)
 
 ;; Menu-bar looks acceptable in OS X. Otherwise it adds clutter.
 (when (fboundp 'menu-bar-mode)
@@ -52,6 +54,17 @@
  `(tab-width 4)
  `(x-select-enable-clipboard t)
  )
+
+;;; Colours
+
+(defvar solarized-hl-yellow    "#b58900")
+(defvar solarized-hl-orange    "#cb4b16")
+(defvar solarized-hl-red       "#dc322f")
+(defvar solarized-hl-magenta   "#d33682")
+(defvar solarized-hl-violet    "#6c71c4")
+(defvar solarized-hl-blue      "#268bd2")
+(defvar solarized-hl-cyan      "#2aa198")
+(defvar solarized-hl-green     "#859900")
 
 
 ;;; Custom faces

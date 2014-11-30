@@ -20,3 +20,7 @@
 ;; Often the body of an initialize function uses `use-package'
 ;; For more info on `use-package', see readme:
 ;; https://github.com/jwiegley/use-package
+
+(defun cb-cosmetic/init-lambda-mode ()
+  (use-package lambda-mode
+    :commands lambda-mode)) 
