@@ -18,3 +18,9 @@ which require an initialization must be listed explicitly in the list.")
 ;; Often the body of an initialize function uses `use-package'
 ;; For more info on `use-package', see readme:
 ;; https://github.com/jwiegley/use-package
+
+(defun cb-iedit/init-iedit ()
+  (use-package iedit
+    :config
+    (custom-set-faces
+     `(iedit-occurrence ((t (:background ,solarized-hl-orange :foreground "white")))))))

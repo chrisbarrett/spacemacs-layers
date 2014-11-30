@@ -4,6 +4,7 @@
     magit
     git-gutter
     git-auto-commit-mode
+    git-commit-mode
     )
   "List of all packages to install and/or initialize. Built-in packages
 which require an initialization must be listed explicitly in the list.")
@@ -20,3 +21,15 @@ which require an initialization must be listed explicitly in the list.")
 ;; Often the body of an initialize function uses `use-package'
 ;; For more info on `use-package', see readme:
 ;; https://github.com/jwiegley/use-package
+
+(defun cb-git/init-git-auto-commit-mode ()
+  (use-package git-auto-commit-mode
+    :init
+    (add-to-list 'safe-local-variable-values '(gac-automatically-push-p . t))))
+
+(defun cb-git/init-git-commit-mode ()
+  (use-package git-commit-mode
+    :config
+    (progn
+      (add-hook 'git-commit-mode-hook 'turn-on-auto-fill)
+      (put 'git-commit-mode 'fill-column 72))))

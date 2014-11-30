@@ -1,22 +1,4 @@
-;;; Enable smartparens
-
-(smartparens-global-mode)
-(show-smartparens-global-mode +1)
-
-(custom-set-variables
- '(sp-autoinsert-if-followed-by-word t)
- '(sp-navigate-close-if-unbalanced t)
- '(sp-message-width nil))
-
-(add-hook 'prog-mode-hook 'smartparens-strict-mode)
-(add-hook 'markdown-mode-hook 'smartparens-strict-mode)
-(add-hook 'ielm-mode-hook 'smartparens-strict-mode)
-
-(add-hook 'minibuffer-setup-hook 'sp/maybe-enable-smartparens t)
-(add-hook 'minibuffer-inactive-mode-hook 'sp/maybe-enable-smartparens t)
-
-(add-hook 'smartparens-mode-hook 'sp/hacky-set-sp-bindings t)
-(add-hook 'smartparens-strict-mode-hook 'sp/hacky-set-sp-bindings t)
+(require 'smartparens)
 
 ;;; Remove apostrophe pair for some modes
 

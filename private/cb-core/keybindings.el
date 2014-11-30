@@ -13,6 +13,14 @@
 (evil-global-set-key 'normal (kbd "C-<down>") 'core/move-line-down)
 (evil-global-set-key 'normal (kbd "TAB") 'indent-line)
 
+;;; Indentation
+
+(define-key prog-mode-map (kbd "M-q") 'core/indent-dwim)
+(evil-define-key 'normal  prog-mode-map (kbd "M-q") 'core/indent-dwim)
+
+(global-set-key (kbd "<backtab>") 'core/outdent)
+(evil-global-set-key 'normal (kbd "<backtab>") 'core/outdent)
+
 ;;; Exiting Emacs
 
 (bind-key (kbd "C-c k k") 'core/exit-emacs)

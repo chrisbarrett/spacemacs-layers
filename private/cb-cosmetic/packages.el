@@ -3,6 +3,7 @@
     ;; package cb-cosmetic go here
     paren-face
     whitespace
+    auto-highlight-symbol
     )
   "List of all packages to install and/or initialize. Built-in packages
 which require an initialization must be listed explicitly in the list.")
@@ -54,3 +55,11 @@ which require an initialization must be listed explicitly in the list.")
         (condition-case _
             ad-do-it
           (void-function))))))
+
+
+(defun cb-cosmetic/init-auto-highlight-symbol ()
+  (use-package auto-highlight-symbol
+    :config
+    (progn
+      (add-hook 'yas-after-exit-snippet-hook (lambda () (auto-highlight-symbol-mode +1)))
+      (add-hook 'yas-before-expand-snippet-hook (lambda () (auto-highlight-symbol-mode -1))))))

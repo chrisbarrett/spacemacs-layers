@@ -1,4 +1,4 @@
-;;; Utilities 
+;;; Utilities
 
 (defmacro yas-with-field-restriction (&rest body)
   "Narrow the buffer to the current active field and execute BODY.
@@ -73,7 +73,7 @@ Embed in elisp blocks to trigger messages within snippets."
       (goto-char (yas/end-of-field)))))
 
 
-;;; Elisp 
+;;; Elisp
 
 (defun yas/find-identifier-prefix ()
   "Find the commonest identifier prefix in use in this buffer."
@@ -147,7 +147,7 @@ TEXT is the content of the docstring."
 
 ;;; Editing commands
 
-(defun yas/reload-all ()
+(defun yas//reload-all ()
   (interactive)
   (yas-recompile-all)
   (yas-reload-all))
@@ -178,3 +178,42 @@ Otherwise delete backwards."
            (call-interactively 'sp-backward-delete-char))
           (t
            (call-interactively 'backward-delete-char)))))
+
+
+;;; Utilities for working around internal yasnippet errors
+
+(defun yas//other-buffer-major-mode ()
+  "Guess the mode to use for a snippet.
+Use the mode of the last editing buffer."
+  (with-current-buffer (-first (-not 'minibufferp) (cdr (buffer-list)))
+    major-mode))
+
+(defun yas//new-snippet? (template)
+  "Return whether TEMPLATE should be saved as a new snippet.
+
+Only offer to save this if it looks like a library or new
+snippet (loaded from elisp, from a dir in `yas-snippet-dirs'which
+is not the first, or from an unwritable file)."
+  (or (not (yas--template-file template))
+      (not (f-writable? (yas--template-file template)))
+      (and (listp yas-snippet-dirs)
+           (< 1 (length yas-snippet-dirs))
+           (not (f-child-of? (yas--template-file template)
+                             (car yas-snippet-dirs))))))
+
+(defun yas//create-dir-for-template (template)
+  (-when-let* ((snippet-dirs (yas--guess-snippet-directories (yas--template-table template))))
+    (yas--make-directory-maybe (car snippet-dirs))))
+
+(defun yas//snippet-file-name (template)
+  (-if-let (file (yas--template-file template))
+      (f-filename file)
+    (yas--template-name template)))
+
+(defun yas//maybe-write-new-template (template)
+  (cl-assert template () "Attempting to access null yas template")
+  (when (yas//new-snippet? template)
+    (-when-let* ((snippet-dir (yas//create-dir-for-template template))
+                 (file-name (yas//snippet-file-name template)))
+      (write-file (f-join snippet-dir file-name))
+      (setf (yas--template-file template) (buffer-file-name)))))

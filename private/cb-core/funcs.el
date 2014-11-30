@@ -132,7 +132,7 @@ FEATURES may be a symbol or list of symbols."
 
 (defmacro true? (sym)
   "Test whether SYM is bound and non-nil."
-  `(and (boundp ',sym) (eval ',sym))) 
+  `(and (boundp ',sym) (eval ',sym)))
 
 
 ;;; Useful functions
@@ -279,7 +279,7 @@ If this buffer is a member of `core/kill-buffer-ignored-list', bury it rather th
     (forward-line 1)
     (transpose-lines 1)
     (forward-line -1)
-    (indent-according-to-mode))) 
+    (indent-according-to-mode)))
 
 ;;; Misc interactive commands
 
@@ -299,3 +299,44 @@ If this buffer is a member of `core/kill-buffer-ignored-list', bury it rather th
 (defun core/warn-exit-emacs-rebound ()
   (interactive)
   (user-error "Type <C-c k k> to exit Emacs"))
+
+
+;;; Indentation
+
+(defun core/indent-buffer ()
+  "Indent the whole buffer."
+  (interactive)
+  (ignore-errors
+    (save-excursion
+      (goto-char (point-min))
+      (while (not (eobp))
+        (indent-for-tab-command)
+        (forward-line)))))
+
+(defun core/indent-dwim (&optional arg)
+  "Perform a context-sensitive indentation action.
+With prefix argument ARG, justify text."
+  (interactive "P")
+  (let ((in-string? (nth 8 (syntax-ppss))))
+    (cond
+     ((region-active-p)
+      (indent-region (region-beginning) (region-end))
+      (message "Indented region."))
+
+     (in-string?
+      (if (apply 'derived-mode-p cb:lisp-modes)
+          (lisp-fill-paragraph arg)
+        (or (fill-comment-paragraph)
+            (fill-paragraph arg)))
+      (message "Filled paragraph."))
+
+     (t
+      (core/indent-buffer)
+      (message "Indented buffer.")))))
+
+(defun core/outdent ()
+  "Remove indentation on the current line."
+  (interactive "*")
+  (save-excursion
+    (goto-char (line-beginning-position))
+    (delete-horizontal-space)))

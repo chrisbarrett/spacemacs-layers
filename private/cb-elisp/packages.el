@@ -33,8 +33,8 @@ which require an initialization must be listed explicitly in the list.")
 
 (defun cb-elisp/init-cl-lib-highlight ()
   (use-package cl-lib-highlight
-    :commands '(cl-lib-highlight-initialize
-                cl-lib-highlight-warn-cl-initialize)
+    :commands (cl-lib-highlight-initialize
+               cl-lib-highlight-warn-cl-initialize)
     :init
     (add-hook 'emacs-lisp-mode-hook 'cl-lib-highlight-initialize)
     (add-hook 'emacs-lisp-mode-hook 'cl-lib-highlight-warn-cl-initialize)))
