@@ -1,7 +1,10 @@
 # key: up
 # name: use-package
 # condition: (yas/bol?)
+# expand-env: ((yas-indent-line 'fixed) (yas-wrap-around-region 't))
 # --
-;; `${1:$(format "%s" yas/text)}' $2
-(use-package $1
-  $0)
+(use-package ${1:name}
+  ; :diminish
+  ; :commands
+  :init nil
+  :config nil)
