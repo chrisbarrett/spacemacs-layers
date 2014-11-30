@@ -61,5 +61,12 @@ which require an initialization must be listed explicitly in the list.")
   (use-package auto-highlight-symbol
     :config
     (progn
+
+      ;;; Compatability with other packages
+
       (add-hook 'yas-after-exit-snippet-hook (lambda () (auto-highlight-symbol-mode +1)))
-      (add-hook 'yas-before-expand-snippet-hook (lambda () (auto-highlight-symbol-mode -1))))))
+      (add-hook 'yas-before-expand-snippet-hook (lambda () (auto-highlight-symbol-mode -1)))
+
+      (add-hook 'iedit-mode-end-hook (lambda () (auto-highlight-symbol-mode +1)))
+      (add-hook 'iedit-aborting-hook (lambda () (auto-highlight-symbol-mode +1)))
+      (add-hook 'iedit-mode-hook (lambda () (auto-highlight-symbol-mode -1))))))
