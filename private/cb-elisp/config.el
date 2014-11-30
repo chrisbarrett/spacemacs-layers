@@ -1,43 +1,11 @@
-(autoload 'paredit-mode "paredit")
-(require 'eval-sexp-fu)
-(require 'cl-lib-highlight)
-
 (add-to-list 'auto-mode-alist '("Cask$" . emacs-lisp-mode))
-
-(add-hook 'minibuffer-setup-hook
-          (lambda ()
-            (when (equal this-command 'eval-expression)
-              (paredit-mode +1))))
-
-
-(add-hook 'emacs-lisp-mode-hook 'cl-lib-highlight-initialize)
-(add-hook 'emacs-lisp-mode-hook 'cl-lib-highlight-warn-cl-initialize)
-(add-hook 'emacs-lisp-mode-hook 'elisp-slime-nav-mode)
-(add-hook 'emacs-lisp-mode-hook 'eldoc-mode)
-
-(diminish 'eldoc-mode) 
-
 
 (defadvice eval-buffer (after buffer-evaluated-feedback activate)
   "Print feedback."
   (when (called-interactively-p nil)
     (message "Buffer evaluated.")))
 
-
-;;; eval-sexp-fu
-
-(add-to-list 'face-remapping-alist '(eval-sexp-fu-flash . core/bg-flash))
-(add-to-list 'face-remapping-alist '(eval-sexp-fu-flash-error . core/bg-flash-red)) 
-
-(define-eval-sexp-fu-flash-command elisp/eval-dwim
-  (eval-sexp-fu-flash
-   (cl-destructuring-bind (&key beg end &allow-other-keys) (elisp/thing-for-eval)
-     (cons beg end))))
-
-
 ;;; Font-lock
-
-(dash-enable-font-lock)
 
 (font-lock-add-keywords
  'emacs-lisp-mode
@@ -90,4 +58,3 @@
     (1 font-lock-keyword-face)
     (2 font-lock-function-name-face)))
  )
-

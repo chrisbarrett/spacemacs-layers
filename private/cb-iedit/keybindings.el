@@ -2,8 +2,8 @@
 
 (bind-key "M-r" 'iedit-mode)
 
+(bind-key "M-r M-r" 'iedit-mode iedit-mode-keymap)
 (bind-key "M-r c" 'iedit-toggle-case-sensitive iedit-mode-keymap)
-(bind-key "M-r d" 'iedit-done iedit-mode-keymap)
 (bind-key "M-r f" 'iedit-restrict-function iedit-mode-keymap)
 (bind-key "M-r g" 'iedit-goto-first-occurrence iedit-mode-keymap)
 (bind-key "M-r G" 'iedit-goto-last-occurrence iedit-mode-keymap)

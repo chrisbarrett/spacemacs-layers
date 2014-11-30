@@ -1,7 +1,6 @@
 (require 'f)
 
 (custom-set-variables
- '(projectile-known-projects-file (f-join cb:tmp-dir "projectile-bookmarks.eld"))
  '(projectile-cache-file (f-join spacemacs-cache-directory "projectile.cache"))
  '(projectile-ignored-projects '("/usr/local/"))
  '(projectile-switch-project-action (lambda () (call-interactively 'magit-status)))

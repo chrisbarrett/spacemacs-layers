@@ -1,6 +1,7 @@
 (require 'f)
 (require 'dash)
 (require 'dash-functional)
+(require 'noflet)
 
 ;; Menu-bar looks acceptable in OS X. Otherwise it adds clutter.
 (when (fboundp 'menu-bar-mode)
@@ -81,3 +82,42 @@
   '((t (:background "rosybrown1")))
   "Face for flashing with a red background."
   :group 'cb-faces)
+
+;;; Saving behaviour
+
+(add-hook 'after-save-hook   'executable-make-buffer-file-executable-if-script-p)
+(add-hook 'before-save-hook  'whitespace-cleanup)
+(add-hook 'before-save-hook  'delete-trailing-whitespace)
+
+;;; Editing advice
+
+(defadvice save-buffers-kill-emacs (around no-query-kill-emacs activate)
+  "Do not prompt for confirmation for active processes."
+  (noflet ((process-list () nil))
+    ad-do-it))
+
+(defadvice whitespace-cleanup (around whitespace-cleanup-indent-tab activate)
+  "Use the current buffer's tab settings when cleaning whitespace."
+  (let ((whitespace-indent-tabs-mode indent-tabs-mode)
+        (whitespace-tab-width tab-width))
+    ad-do-it))
+
+(defadvice comment-indent-new-line (after add-space activate)
+  "Insert a leading space after comment start for new comment lines."
+  (when (and comment-start
+             (thing-at-point-looking-at (regexp-quote comment-start)))
+    (unless (or (thing-at-point-looking-at (rx (+ space))))
+      (just-one-space))))
+
+(defadvice insert-for-yank (after clean-whitespace)
+  "Clean up whitespace when inserting yanked text."
+  (whitespace-cleanup)
+  (delete-trailing-whitespace))
+
+(defadvice display-message-or-buffer (before ansi-color activate)
+  "Process ANSI color codes in shell output."
+  (let ((buf (ad-get-arg 0)))
+    (and (bufferp buf)
+         (string= (buffer-name buf) "*Shell Command Output*")
+         (with-current-buffer buf
+           (ansi-color-apply-on-region (point-min) (point-max))))))
