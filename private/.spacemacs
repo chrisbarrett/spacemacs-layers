@@ -18,7 +18,7 @@
                                      cb-git
                                      cb-yasnippet
                                      cb-flycheck
-                                     cb-projectile
+                                     cb-project
                                      cb-smartparens
                                      cb-iedit
                                      cb-ledger

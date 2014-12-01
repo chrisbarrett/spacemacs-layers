@@ -1,18 +1,18 @@
-(defvar cb-projectile-packages
+(defvar cb-project-packages
   '(
-    ;; package cb-projectiles go here
+    ;; package cb-projects go here
     ack-and-a-half
     projectile
     )
   "List of all packages to install and/or initialize. Built-in packages
 which require an initialization must be listed explicitly in the list.")
 
-(defvar cb-projectile-excluded-packages '()
+(defvar cb-project-excluded-packages '()
   "List of packages to exclude.")
 
-;; For each package, define a function cb-projectile/init-<package-cb-projectile>
+;; For each package, define a function cb-project/init-<package-cb-project>
 ;;
-;; (defun cb-projectile/init-my-package ()
+;; (defun cb-project/init-my-package ()
 ;;   "Initialize my package"
 ;;   )
 ;;
@@ -20,7 +20,7 @@ which require an initialization must be listed explicitly in the list.")
 ;; For more info on `use-package', see readme:
 ;; https://github.com/jwiegley/use-package
 
-(defun cb-projectile/init-projectile ()
+(defun cb-project/init-projectile ()
   (use-package projectile
     :config
     (setq projectile-cache-file (concat spacemacs-cache-directory "projectile.cache"))

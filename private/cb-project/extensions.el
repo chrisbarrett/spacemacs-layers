@@ -1,18 +1,18 @@
-(defvar cb-projectile-pre-extensions
+(defvar cb-project-pre-extensions
   '(
-    ;; pre extension cb-projectiles go here
+    ;; pre extension cb-projects go here
     )
   "List of all extensions to load before the packages.")
 
-(defvar cb-projectile-post-extensions
+(defvar cb-project-post-extensions
   '(
-    ;; post extension cb-projectiles go here
+    ;; post extension cb-projects go here
     )
   "List of all extensions to load after the packages.")
 
-;; For each extension, define a function cb-projectile/init-<extension-cb-projectile>
+;; For each extension, define a function cb-project/init-<extension-cb-project>
 ;;
-;; (defun cb-projectile/init-my-extension ()
+;; (defun cb-project/init-my-extension ()
 ;;   "Initialize my extension"
 ;;   )
 ;;
