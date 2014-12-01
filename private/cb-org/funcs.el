@@ -364,7 +364,7 @@ The PDF will be created at DEST."
               (f-move exported dest)
             (error "Export failed"))
         (kill-buffer)))
-    (async-shell-command "open" (shell-quote-argument dest))
+    (async-shell-command (format "open %s" (shell-quote-argument dest)))
     (message "opening %s..." dest)))
 
 (defun org/C-c-C-c-export-koma-letter ()
