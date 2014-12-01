@@ -49,6 +49,7 @@
   (define-key shm-map (kbd "#") nil)
   (define-key shm-map (kbd "-") nil)
   (define-key shm-map (kbd "DEL") nil)
+  (define-key shm-map (kbd "C-<backspace>") nil)
   (define-key shm-map (kbd "<backtab>") nil)
   (define-key shm-map (kbd "TAB") nil)
   (define-key shm-map (kbd "M-r") nil)
