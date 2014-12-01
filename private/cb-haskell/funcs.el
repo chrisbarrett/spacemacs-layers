@@ -443,7 +443,7 @@
         (newline)))))
 
 (defvar haskell/language-pragmas
-  (s-split "\n" (shell-command-to-string "ghc --supported-languages"))
+  (s-split "\n" (s-trim (shell-command-to-string "ghc --supported-languages")))
   "List the language pragmas available in GHC.")
 
 (defun haskell/language-pragmas-in-file ()
@@ -592,3 +592,11 @@
                                       (group (+ graphic)))
                                   nil t)
       (match-string-no-properties 1))))
+
+;;; Commands
+
+(defun haskell/join-line ()
+  (interactive)
+  (forward-line 1)
+  (goto-char (line-beginning-position))
+  (call-interactively 'shm/delete-indentation))

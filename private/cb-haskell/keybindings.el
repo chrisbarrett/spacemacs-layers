@@ -4,6 +4,8 @@
   (evil-define-key 'normal haskell-mode-map (kbd "SPC i l") 'haskell/insert-language-pragma)
   (evil-define-key 'normal haskell-mode-map (kbd "SPC i o") 'haskell/insert-ghc-option)
 
+  (evil-define-key 'normal haskell-mode-map (kbd "M-.") 'haskell-mode-tag-find)
+
   (define-key haskell-mode-map (kbd "M-.")           'haskell-mode-tag-find)
   (define-key haskell-mode-map (kbd "M-,")           'pop-tag-mark)
   (define-key haskell-mode-map (kbd "M-P")           'flymake-goto-prev-error)
@@ -38,6 +40,8 @@
   )
 
 (after 'shm
+  (evil-define-key 'normal shm-map "J" 'haskell/join-line)
+
   (define-key shm-map (kbd "C-k")        'shm/kill-node)
   (define-key shm-map (kbd "C-c C-s")    'shm/case-split)
   (define-key shm-map (kbd "C-<return>") 'shm/newline-indent)
