@@ -247,7 +247,7 @@
 
       (org-clock-persistence-insinuate)
 
-      (add-hook 'org-clock-out-hook org/remove-empty-clock-drawers t))))
+      (add-hook 'org-clock-out-hook 'org/remove-empty-clock-drawers t))))
 
 (defun cb-org/init-org-crypt ()
   (use-package org-crypt
