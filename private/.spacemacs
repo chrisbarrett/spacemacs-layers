@@ -62,7 +62,8 @@
 (defun dotspacemacs/init ()
   "User initialization for Spacemacs. This function is called at the very
  startup."
-)
+ (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/"))
+ )
 
 (defun dotspacemacs/config ()
   "This is were you can ultimately override default Spacemacs configuration.
