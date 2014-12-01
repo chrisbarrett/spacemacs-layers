@@ -21,7 +21,7 @@ which require an initialization must be listed explicitly in the list.")
 ;; https://github.com/jwiegley/use-package
 
 (defun cb-ledger/init-ledger-mode ()
-  (use-package ledger
+  (use-package ledger-mode
     :init
     (add-to-list 'auto-mode-alist (cons "\\.ledger$" 'ledger-mode))
     :config
