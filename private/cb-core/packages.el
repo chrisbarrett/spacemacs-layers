@@ -62,21 +62,22 @@ which require an initialization must be listed explicitly in the list.")
   (use-package evil-surround
     :config
     (progn
-       (setq evil-surround-pairs-alist '((?\( . ("(" . ")"))
-                                         (?\[ . ("[" . "]"))
-                                         (?\{ . ("{" . "}"))
+      (setq-default evil-surround-pairs-alist
+                    '((?\( . ("(" . ")"))
+                      (?\[ . ("[" . "]"))
+                      (?\{ . ("{" . "}"))
 
-                                         (?\) . ("(" . ")"))
-                                         (?\] . ("[" . "]"))
-                                         (?\} . ("{" . "}"))
+                      (?\) . ("(" . ")"))
+                      (?\] . ("[" . "]"))
+                      (?\} . ("{" . "}"))
 
-                                         (?# . ("#{" . "}"))
-                                         (?b . ("(" . ")"))
-                                         (?B . ("{" . "}"))
-                                         (?> . ("<" . ">"))
-                                         (?t . surround-read-tag)
-                                         (?< . surround-read-tag)
-                                         (?f . surround-function)))
+                      (?# . ("#{" . "}"))
+                      (?b . ("(" . ")"))
+                      (?B . ("{" . "}"))
+                      (?> . ("<" . ">"))
+                      (?t . surround-read-tag)
+                      (?< . surround-read-tag)
+                      (?f . surround-function)))
 
       (add-hook 'emacs-lisp-mode-hook 'core/config-elisp-surround-pairs))))
 
