@@ -15,6 +15,7 @@
                                      projectile
                                      ack
                                      cb-core
+                                     cb-org
                                      cb-elisp
                                      cb-cosmetic
                                      cb-git
@@ -24,7 +25,6 @@
                                      cb-smartparens
                                      cb-iedit
                                      cb-ledger
-                                     cb-org
                                      )
  ;; A list of packages and/or extensions that will not be install and loaded.
  dotspacemacs-excluded-packages '(rainbow-delimiters

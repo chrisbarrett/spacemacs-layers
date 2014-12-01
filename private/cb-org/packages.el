@@ -2,6 +2,7 @@
   '(
     ;; package cb-orgs go here
     org
+    org-drill-table
     )
   "List of all packages to install and/or initialize. Built-in packages
 which require an initialization must be listed explicitly in the list.")
@@ -21,6 +22,8 @@ which require an initialization must be listed explicitly in the list.")
 
 (defun cb-org/init-org ()
   (use-package org
+    :init
+    (setq org-directory (file-name-as-directory org-directory))
     :config
     (progn
 
@@ -28,7 +31,6 @@ which require an initialization must be listed explicitly in the list.")
       (add-hook 'org-mode-hook 'abbrev-mode)
       (add-hook 'org-mode-hook 'auto-fill-mode)
 
-      (setq org-directory (file-name-as-directory org-directory))
       (setq org-default-notes-file (concat org-directory "notes.org"))
       (setq org-M-RET-may-split-line nil)
       (setq org-attach-directory (concat org-directory "data"))
@@ -61,79 +63,79 @@ which require an initialization must be listed explicitly in the list.")
       (setq org-stuck-projects '("-ignore+TODO={TODO_OUT\\|PROJECT}/-MAYBE-DONE-CANCELLED" ("NEXT") nil "\\<IGNORE\\>"))
       (setq org-support-shift-select t)
       (setq org-todo-keywords '((type "MAYBE(m)" "TODO(t)" "NEXT(n)" "WAITING(w@/!)" "|" "DONE(d!)" "CANCELLED(c@)")
-                               (type "PROJECT(p)")))
+                                (type "PROJECT(p)")))
       (setq org-hierarchical-todo-statistics nil)
       (setq org-checkbox-hierarchical-statistics t)
       (setq org-tag-persistent-alist
-           '((:startgroup)
-             ("@computer" . 99)
-             ("@errand" . 101)
-             ("@home" . 104)
-             ("@leisure" . 108)
-             ("@phone" . 112)
-             ("@work" . 119)
-             (:endgroup)))
+            '((:startgroup)
+              ("@computer" . 99)
+              ("@errand" . 101)
+              ("@home" . 104)
+              ("@leisure" . 108)
+              ("@phone" . 112)
+              ("@work" . 119)
+              (:endgroup)))
       (setq org-capture-templates
-           `(("t" "Todo" entry
-              (file+olp org-default-notes-file "Tasks")
-              "* TODO %?"
-              :clock-keep t)
+            `(("t" "Todo" entry
+               (file+olp org-default-notes-file "Tasks")
+               "* TODO %?"
+               :clock-keep t)
 
-             ("d" "Diary" entry
-              (file+datetree org-agenda-diary-file)
-              "* %?\n%^t"
-              :clock-keep t)
+              ("d" "Diary" entry
+               (file+datetree org-agenda-diary-file)
+               "* %?\n%^t"
+               :clock-keep t)
 
-             ("h" "Habit" entry
-              (file+olp org-default-notes-file "Habits/Recurring")
-              ,(s-unlines
-                "* TODO %?"
-                "SCHEDULED: %t"
-                ":PROPERTIES:"
-                ":STYLE: habit"
-                ":END:")
-              :clock-keep t)
+              ("h" "Habit" entry
+               (file+olp org-default-notes-file "Habits/Recurring")
+               ,(s-unlines
+                 "* TODO %?"
+                 "SCHEDULED: %t"
+                 ":PROPERTIES:"
+                 ":STYLE: habit"
+                 ":END:")
+               :clock-keep t)
 
-             ("l" "Link" entry
-              (file+olp org-default-notes-file "Links")
-              "* %c\n%i"
-              :immediate-finish t
-              :clock-keep t)
+              ("l" "Link" entry
+               (file+olp org-default-notes-file "Links")
+               "* %c\n%i"
+               :immediate-finish t
+               :clock-keep t)
 
-             ("s" "Someday" entry
-              (file+olp org-default-notes-file "Someday")
-              "* MAYBE %?"
-              :clock-keep t)
+              ("s" "Someday" entry
+               (file+olp org-default-notes-file "Someday")
+               "* MAYBE %?"
+               :clock-keep t)
 
-             ("S" "Shopping" checkitem
-              (file+olp org-default-notes-file "Tasks" "Shopping")
-              "- [ ] %?"
-              :clock-keep t)
+              ("S" "Shopping" checkitem
+               (file+olp org-default-notes-file "Tasks" "Shopping")
+               "- [ ] %?"
+               :clock-keep t)
 
-             ("z" "Note" entry
-              (file+olp org-default-notes-file "Notes")
-              "* %i%?"
-              :clock-keep t)
+              ("z" "Note" entry
+               (file+olp org-default-notes-file "Notes")
+               "* %i%?"
+               :clock-keep t)
 
-             ("m" "Listening" entry
-              (file+olp org-default-notes-file "Media" "Listening")
-              "* MAYBE Listen to %i%?"
-              :clock-keep t)
+              ("m" "Listening" entry
+               (file+olp org-default-notes-file "Media" "Listening")
+               "* MAYBE Listen to %i%?"
+               :clock-keep t)
 
-             ("v" "Viewing" entry
-              (file+olp org-default-notes-file "Media" "Viewing")
-              "* MAYBE Watch %i%?"
-              :clock-keep t)
+              ("v" "Viewing" entry
+               (file+olp org-default-notes-file "Media" "Viewing")
+               "* MAYBE Watch %i%?"
+               :clock-keep t)
 
-             ("r" "Reading" entry
-              (file+olp org-default-notes-file "Media" "Reading")
-              "* MAYBE Read %i%?"
-              :clock-keep t)))
+              ("r" "Reading" entry
+               (file+olp org-default-notes-file "Media" "Reading")
+               "* MAYBE Read %i%?"
+               :clock-keep t)))
 
       (setq org-global-properties
-           `(("Effort_ALL" . ,(concat "1:00 2:00 3:00 4:00 "
-                                      "5:00 6:00 7:00 8:00 9:00 "
-                                      "0:05 0:10 0:30"))))
+            `(("Effort_ALL" . ,(concat "1:00 2:00 3:00 4:00 "
+                                       "5:00 6:00 7:00 8:00 9:00 "
+                                       "0:05 0:10 0:30"))))
 
       ;; Faces
 
@@ -181,3 +183,8 @@ which require an initialization must be listed explicitly in the list.")
       (add-hook 'org-mode-hook 'org/add-local-hooks)
       (add-hook 'org-after-todo-state-change-hook 'org/set-next-todo-state)
       (add-hook 'org-after-todo-statistics-hook 'org/children-done-parent-done))))
+
+(defun cb-org/init-org-drill-table ()
+  (use-package org-drill-table
+    :config
+    (add-hook 'org-ctrl-c-ctrl-c-hook 'org-drill-table-update)))

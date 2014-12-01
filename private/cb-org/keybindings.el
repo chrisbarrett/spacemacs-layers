@@ -17,3 +17,6 @@
 (evil-global-set-key 'normal (kbd "SPC o w") 'org/goto-work)
 (evil-global-set-key 'normal (kbd "SPC o t") 'org/todo-list)
 (evil-global-set-key 'normal (kbd "SPC o v") 'org/tags-list)
+
+(define-key org-agenda-mode-map (kbd "C-f") 'evil-scroll-page-down)
+(define-key org-agenda-mode-map (kbd "C-b") 'evil-scroll-page-up)

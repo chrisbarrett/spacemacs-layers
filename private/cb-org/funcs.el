@@ -274,6 +274,107 @@ are between the current date (DATE) and Easter Sunday."
       (appt-check 'force))))
 
 
+;;; Archiving
+
+(defun org/:archive-done-tasks ()
+  (interactive)
+  (atomic-change-group
+    (org-map-entries (lambda ()
+                       ;; Ensure point does not move past the next item to
+                       ;; archive.
+                       (setq org-map-continue-from (point))
+                       (org-archive-subtree))
+                     "/DONE|PAID|VOID|CANCELLED" 'tree)))
+
+
+;;; Tables
+
+(defun org/recalculate-whole-table ()
+  "Recalculate the current table using `org-table-recalculate'."
+  (interactive "*")
+  (when (org-at-table-p)
+    (let ((before (buffer-substring (org-table-begin) (org-table-end))))
+      (org-table-recalculate '(16))
+      (let ((after (buffer-substring (org-table-begin) (org-table-end))))
+        (if (equal before after)
+            (message "Table up-to-date")
+          (message "Table updated"))))))
+
+
+;;; Clocks
+
+(defun org/remove-empty-clock-drawers ()
+  "Remove empty clock drawers at point."
+  (save-excursion
+    (beginning-of-line 0)
+    (org-remove-empty-drawer-at "LOGBOOK" (point))))
+
+(defun org/clock-in-to-next-state (_kw)
+  "Move a task from TODO to NEXT when clocking in.
+Skips capture tasks, projects, and subprojects.
+Switch projects and subprojects from NEXT back to TODO."
+  (unless (true? org-capture-mode)
+    (cond
+     ((and (-contains? '("TODO") (org-get-todo-state))
+           (org/task?))
+      "NEXT")
+     ((and (-contains? '("NEXT") (org-get-todo-state))
+           (org/project?))
+      "TODO"))))
+
+
+;;; Crypt
+
+(defun org/looking-at-pgp-section? ()
+  (unless (org-before-first-heading-p)
+    (save-excursion
+      (org-back-to-heading t)
+      (let ((heading-point (point))
+            (heading-was-invisible-p
+             (save-excursion
+               (outline-end-of-heading)
+               (outline-invisible-p))))
+        (forward-line)
+        (looking-at "-----BEGIN PGP MESSAGE-----")))))
+
+(defun org/decrypt-entry ()
+  (when (org/looking-at-pgp-section?)
+    (org-decrypt-entry)
+    t))
+
+
+;;; Export
+
+(defun org-export/koma-letter-at-subtree (dest)
+  "Define a command to export the koma letter subtree at point to PDF.
+With a prefix arg, prompt for the output destination. Otherwise
+generate use the name of the current file to generate the
+exported file's name.
+The PDF will be created at DEST."
+  (interactive
+   (list (if current-prefix-arg
+             (ido-read-file-name "Destination: " nil nil nil ".pdf")
+           (concat (f-no-ext (buffer-file-name)) ".pdf"))))
+
+  (let ((tmpfile (make-temp-file "org-export-" nil ".org")))
+    (org-write-subtree-content tmpfile)
+    (with-current-buffer (find-file-noselect tmpfile)
+      (unwind-protect
+          (-if-let (exported (org-koma-letter-export-to-pdf))
+              (f-move exported dest)
+            (error "Export failed"))
+        (kill-buffer)))
+    (async-shell-command "open" (shell-quote-argument dest))
+    (message "opening %s..." dest)))
+
+(defun org/C-c-C-c-export-koma-letter ()
+  "Export the koma letter at point."
+  (when (ignore-errors
+          (s-matches? (rx "latex_class:" (* space) "koma")
+                      (org-subtree-content)))
+    (call-interactively 'org-export-koma-letter-at-subtree)
+    'export-koma-letter))
+
 ;;; Config support
 
 (defun org/add-local-hooks ()
