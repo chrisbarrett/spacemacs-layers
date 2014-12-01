@@ -27,6 +27,7 @@ which require an initialization must be listed explicitly in the list.")
     :config
     (progn
       (custom-set-variables
+       '(ledger-master-file (concat org-directory "accounts.ledger"))
        '(ledger-post-account-alignment-column 2)
        '(ledger-post-use-completion-engine :ido)
        '(ledger-fontify-xact-state-overrides nil)
@@ -44,6 +45,7 @@ which require an initialization must be listed explicitly in the list.")
            ("payee" . cbledger:read-payee)
            ("ledger-file" . ledger-report-ledger-file-format-specifier)
            ("value" . ledger-report-value-format-specifier))))
+
       (custom-set-faces
        '(ledger-occur-xact-face
          ((((background dark))  :background "#073642")

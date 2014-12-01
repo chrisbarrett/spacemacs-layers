@@ -24,6 +24,7 @@ which require an initialization must be listed explicitly in the list.")
 
 (defun cb-git/init-git-auto-commit-mode ()
   (use-package git-auto-commit-mode
+    :diminish git-auto-commit-mode
     :init
     (add-to-list 'safe-local-variable-values '(gac-automatically-push-p . t))))
 

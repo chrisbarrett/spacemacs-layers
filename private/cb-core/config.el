@@ -11,10 +11,11 @@
 
 
 ;;; Use larger font
-(spacemacs/set-font "SourceCodePro" 12)
+(defvar core/monospace-font "SourceCodePro")
+(spacemacs/set-font core/monospace-font 12)
 
 (defvar spacemacs-private-directory (concat user-emacs-directory "private/"))
-(defvar spacemacs-autosaves-directory (concat user-emacs-directory "autosaves/")) 
+(defvar spacemacs-autosaves-directory (concat user-emacs-directory "autosaves/"))
 
 ;;; Compatibility
 
@@ -39,9 +40,9 @@
 ;;; Set variables
 
 (custom-set-variables
- `(abbrev-file-name (f-join spacemacs-cache-directory "abbrev_defs"))
- `(backup-directory-alist '((".*" . ,(f-join spacemacs-autosaves-directory))))
- `(bookmark-default-file (f-join spacemacs-cache-directory "bookmarks"))
+ `(abbrev-file-name (concat spacemacs-cache-directory "abbrev_defs"))
+ `(backup-directory-alist '((".*" . spacemacs-autosaves-directory)))
+ `(bookmark-default-file (concat spacemacs-cache-directory "bookmarks"))
  `(comint-prompt-read-only t)
  `(confirm-nonexistent-file-or-buffer  nil)
  `(default-input-method "TeX")

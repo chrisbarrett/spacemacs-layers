@@ -21,7 +21,7 @@ which require an initialization must be listed explicitly in the list.")
 (require 'f)
 
 (defvar cb-yasnippet/dirs
-  (f-join spacemacs-private-directory "cb-yasnippet" "snippets"))
+  (concat spacemacs-private-directory "cb-yasnippet/snippets"))
 
 (defun cb-yasnippet/init-yasnippet ()
   (use-package yasnippet

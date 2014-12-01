@@ -9,6 +9,8 @@
     evil
     evil-surround
     company
+    autorevert
+    hideshow
     )
   "List of all packages to install and/or initialize. Built-in packages
 which require an initialization must be listed explicitly in the list.")
@@ -36,10 +38,27 @@ which require an initialization must be listed explicitly in the list.")
   (use-package evil
     :init nil
     :config
-    (custom-set-variables
-     '(evil-want-visual-char-semi-exclusive t)
-     '(evil-shift-width 2)
-     '(evil-symbol-word-search 'symbol))))
+    (progn
+      (custom-set-variables
+       '(evil-want-visual-char-semi-exclusive t)
+       '(evil-shift-width 2)
+       '(evil-symbol-word-search 'symbol))
+
+      ;; Make window management work for all modes
+
+      (bind-keys
+       :prefix "C-w"
+       :prefix-map evil/window-emu
+       ("C-w" . evil-window-prev)
+       ("C-s" . split-window-vertically)
+       ("C-v" . split-window-horizontally)
+       ("C-o" . delete-other-windows)
+       ("C-c" . delete-window)
+       ("w" . evil-window-prev)
+       ("s" . split-window-vertically)
+       ("v" . split-window-horizontally)
+       ("o" . delete-other-windows)
+       ("c" . delete-window)))))
 
 (defun cb-core/init-evil-surround ()
   (use-package evil-surround
@@ -63,3 +82,11 @@ which require an initialization must be listed explicitly in the list.")
                                      (?f . surround-function))))
 
       (add-hook 'emacs-lisp-mode-hook 'core/config-elisp-surround-pairs))))
+
+(defun cb-core/init-autorevert ()
+  (use-package autorevert
+    :diminish auto-revert-mode))
+
+(defun cb-core/init-hideshow ()
+  (use-package hideshow
+    :diminish hs-minor-mode))

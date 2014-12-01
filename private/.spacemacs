@@ -24,6 +24,7 @@
                                      cb-smartparens
                                      cb-iedit
                                      cb-ledger
+                                     cb-org
                                      )
  ;; A list of packages and/or extensions that will not be install and loaded.
  dotspacemacs-excluded-packages '(rainbow-delimiters
@@ -65,6 +66,7 @@
 (defun dotspacemacs/config ()
   "This is were you can ultimately override default Spacemacs configuration.
 This function is called at the very end of Spacemacs initialization."
+  (require 'personal-config nil t)
 )
 
 ;; Custom variables
@@ -79,19 +81,7 @@ This function is called at the very end of Spacemacs initialization."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(ac-ispell-requires 4)
- '(ahs-case-fold-search nil)
- '(ahs-default-range (quote ahs-range-whole-buffer))
- '(ahs-idle-interval 0.25)
- '(ahs-inhibit-face-list nil)
  '(custom-safe-themes
    (quote
     ("d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default)))
- '(magit-diff-use-overlays nil)
- '(ring-bell-function (quote ignore) t))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
+ '(safe-local-variable-values (quote ((gac-automatically-push-p . t)))))

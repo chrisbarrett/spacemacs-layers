@@ -25,7 +25,7 @@ which require an initialization must be listed explicitly in the list.")
     :config
     (progn
       (custom-set-variables
-       '(recentf-save-file (f-join spacemacs-cache-directory "recentf"))
+       '(recentf-save-file (concat spacemacs-cache-directory "recentf"))
        '(recentf-max-saved-items 50)
        '(recentf-max-menu-items 10)
        '(recentf-keep '(file-remote-p file-readable-p))
