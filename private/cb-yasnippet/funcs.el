@@ -230,3 +230,20 @@ is not the first, or from an unwritable file)."
                  (file-name (yas//snippet-file-name template)))
       (write-file (f-join snippet-dir file-name))
       (setf (yas--template-file template) (buffer-file-name)))))
+
+;;; Scala
+
+(defun yas/scala-find-case-class-parent ()
+  (save-excursion
+    (if (search-backward-regexp
+         (rx (or
+              (and bol (* space)
+                   (or (and (? "abstract" (+ space)) "class")
+                       "trait")
+                   (+ space) (group-n 1 (+ alnum)))
+              (and bol (* space)
+                   "case" (+ space) "class" (* anything) space
+                   "extends" (+ space) (group-n 1 (+ alnum)) (* space) eol)))
+         nil t)
+        (match-string 1)
+      "")))
