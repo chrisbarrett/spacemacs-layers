@@ -4,5 +4,5 @@
 # --
 foreign import ccall ${1:unsafe }"${2:header} ${3:function}"
   ${4:c_$3} :: $0
-`(cb-hs:insert-import "Foreign")`
-`(cb-hs:insert-import "Foreign.C.Types")`
+`(yas/haskell-insert-import "Foreign")`
+`(yas/haskell-insert-import "Foreign.C.Types")`
