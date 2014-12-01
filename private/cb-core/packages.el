@@ -31,18 +31,16 @@ which require an initialization must be listed explicitly in the list.")
 (defun cb-core/init-company ()
   (use-package company
     :config
-    (custom-set-variables
-     '(company-minimum-prefix-length 3))))
+    (setq company-minimum-prefix-length 3)))
 
 (defun cb-core/init-evil ()
   (use-package evil
     :init nil
     :config
     (progn
-      (custom-set-variables
-       '(evil-want-visual-char-semi-exclusive t)
-       '(evil-shift-width 2)
-       '(evil-symbol-word-search 'symbol))
+      (setq evil-want-visual-char-semi-exclusive t)
+      (setq evil-shift-width 2)
+      (setq evil-symbol-word-search 'symbol)
 
       ;; Make window management work for all modes
 
@@ -64,22 +62,21 @@ which require an initialization must be listed explicitly in the list.")
   (use-package evil-surround
     :config
     (progn
-      (custom-set-variables
-       '(evil-surround-pairs-alist '((?\( . ("(" . ")"))
-                                     (?\[ . ("[" . "]"))
-                                     (?\{ . ("{" . "}"))
+       (setq evil-surround-pairs-alist '((?\( . ("(" . ")"))
+                                         (?\[ . ("[" . "]"))
+                                         (?\{ . ("{" . "}"))
 
-                                     (?\) . ("(" . ")"))
-                                     (?\] . ("[" . "]"))
-                                     (?\} . ("{" . "}"))
+                                         (?\) . ("(" . ")"))
+                                         (?\] . ("[" . "]"))
+                                         (?\} . ("{" . "}"))
 
-                                     (?# . ("#{" . "}"))
-                                     (?b . ("(" . ")"))
-                                     (?B . ("{" . "}"))
-                                     (?> . ("<" . ">"))
-                                     (?t . surround-read-tag)
-                                     (?< . surround-read-tag)
-                                     (?f . surround-function))))
+                                         (?# . ("#{" . "}"))
+                                         (?b . ("(" . ")"))
+                                         (?B . ("{" . "}"))
+                                         (?> . ("<" . ">"))
+                                         (?t . surround-read-tag)
+                                         (?< . surround-read-tag)
+                                         (?f . surround-function)))
 
       (add-hook 'emacs-lisp-mode-hook 'core/config-elisp-surround-pairs))))
 

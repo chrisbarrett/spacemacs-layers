@@ -46,9 +46,8 @@ which require an initialization must be listed explicitly in the list.")
     (add-hook 'prog-mode-hook 'core/set-whitespace-mode)
     :config
     (progn
-      (custom-set-variables
-       '(whitespace-line-column 80)
-       '(whitespace-style '(face lines-tail)))
+      (setq whitespace-line-column 80)
+      (setq whitespace-style '(face lines-tail))
 
       (defadvice whitespace-turn-on (around ignore-errors activate)
         "Ignore void-function errors when starting whitespace mode."

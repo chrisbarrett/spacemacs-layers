@@ -24,31 +24,30 @@ which require an initialization must be listed explicitly in the list.")
     :commands recentf-mode
     :config
     (progn
-      (custom-set-variables
-       '(recentf-save-file (concat spacemacs-cache-directory "recentf"))
-       '(recentf-max-saved-items 50)
-       '(recentf-max-menu-items 10)
-       '(recentf-keep '(file-remote-p file-readable-p))
-       '(recentf-exclude
-         '("\\.elc$"
-           "TAGS"
-           "\\.gz$"
-           "#$"
-           "/elpa/"
-           "/tmp/"
-           "/temp/"
-           "/snippets/"
-           ".emacs.d/url/"
-           "/\\.git/"
-           "/Emacs.app/"
-           "/var/folders/"
-           "^/?sudo"
-           "\\.bbdb"
-           "\\.newsrc"
-           "/gnus$"
-           "/gnus.eld$"
-           "\\.ido\\.last"
-           "\\.org-clock-save\\.el$")))
+      (setq recentf-save-file (concat spacemacs-cache-directory "recentf"))
+      (setq recentf-max-saved-items 50)
+      (setq recentf-max-menu-items 10)
+      (setq recentf-keep '(file-remote-p file-readable-p))
+      (setq recentf-exclude
+           '("\\.elc$"
+             "TAGS"
+             "\\.gz$"
+             "#$"
+             "/elpa/"
+             "/tmp/"
+             "/temp/"
+             "/snippets/"
+             ".emacs.d/url/"
+             "/\\.git/"
+             "/Emacs.app/"
+             "/var/folders/"
+             "^/?sudo"
+             "\\.bbdb"
+             "\\.newsrc"
+             "/gnus$"
+             "/gnus.eld$"
+             "\\.ido\\.last"
+             "\\.org-clock-save\\.el$"))
 
       (defadvice recentf-cleanup (around hide-messages activate)
         "Do not message when cleaning up recentf list."

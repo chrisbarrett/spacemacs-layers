@@ -28,10 +28,9 @@ which require an initialization must be listed explicitly in the list.")
       (show-smartparens-global-mode +1))
     :config
     (progn
-      (custom-set-variables
-       '(sp-autoinsert-if-followed-by-word t)
-       '(sp-navigate-close-if-unbalanced t)
-       '(sp-message-width nil))
+      (setq sp-autoinsert-if-followed-by-word t)
+      (setq sp-navigate-close-if-unbalanced t)
+      (setq sp-message-width nil)
 
       (add-hook 'prog-mode-hook 'smartparens-strict-mode)
       (add-hook 'markdown-mode-hook 'smartparens-strict-mode)

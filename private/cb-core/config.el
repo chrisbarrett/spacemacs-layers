@@ -5,10 +5,12 @@
 
 ;; Menu-bar looks acceptable in OS X. Otherwise it adds clutter.
 (when (fboundp 'menu-bar-mode)
-  (unless (and (eq system-type 'darwin)
-               (not noninteractive))
+  (if (and (eq system-type 'darwin)
+           (not noninteractive))
+      (menu-bar-mode +1)
     (menu-bar-mode -1)))
 
+(diminish 'auto-fill-function " ≣")
 
 ;;; Use larger font
 (defvar core/monospace-font "SourceCodePro")
@@ -39,23 +41,21 @@
 
 ;;; Set variables
 
-(custom-set-variables
- `(abbrev-file-name (concat spacemacs-cache-directory "abbrev_defs"))
- `(backup-directory-alist '((".*" . spacemacs-autosaves-directory)))
- `(bookmark-default-file (concat spacemacs-cache-directory "bookmarks"))
- `(comint-prompt-read-only t)
- `(confirm-nonexistent-file-or-buffer  nil)
- `(default-input-method "TeX")
- `(delete-by-moving-to-trash nil)
- `(delete-old-versions t)
- `(fill-column 80)
- `(initial-major-mode 'org-mode)
- `(kept-new-versions 6)
- `(require-final-newline t)
- `(sentence-end-double-space nil)
- `(tab-width 4)
- `(x-select-enable-clipboard t)
- )
+(setq abbrev-file-name (concat spacemacs-cache-directory "abbrev_defs"))
+(setq backup-directory-alist '((".*" . spacemacs-autosaves-directory)))
+(setq bookmark-default-file (concat spacemacs-cache-directory "bookmarks"))
+(setq comint-prompt-read-only t)
+(setq confirm-nonexistent-file-or-buffer  nil)
+(setq default-input-method "TeX")
+(setq delete-by-moving-to-trash nil)
+(setq delete-old-versions t)
+(setq fill-column 80)
+(setq initial-major-mode 'org-mode)
+(setq kept-new-versions 6)
+(setq require-final-newline t)
+(setq sentence-end-double-space nil)
+(setq tab-width 4)
+(setq x-select-enable-clipboard t)
 
 ;;; Colours
 

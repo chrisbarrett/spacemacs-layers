@@ -43,28 +43,27 @@
                   (run-hooks 'org-agenda-customise-window-hook))))
     :config
     (progn
-      (custom-set-variables
-       '(org-agenda-auto-exclude-function 'org/exclude-tasks-on-hold)
-       '(org-agenda-diary-file (concat org-directory "diary.org"))
-       '(org-agenda-hide-tags-regexp (rx (or "noexport" "someday")))
-       '(org-agenda-insert-diary-extract-time t)
-       '(org-agenda-ndays 7)
-       '(org-agenda-search-view-always-boolean t)
-       '(org-agenda-show-all-dates nil)
-       '(org-agenda-show-inherited-tags nil)
-       '(org-agenda-skip-deadline-if-done t)
-       '(org-agenda-skip-deadline-prewarning-if-scheduled t)
-       '(org-agenda-skip-scheduled-if-done t)
-       '(org-agenda-sorting-strategy
+      (setq org-agenda-auto-exclude-function 'org/exclude-tasks-on-hold)
+      (setq org-agenda-diary-file (concat org-directory "diary.org"))
+      (setq org-agenda-hide-tags-regexp (rx (or "noexport" "someday")))
+      (setq org-agenda-insert-diary-extract-time t)
+      (setq org-agenda-ndays 7)
+      (setq org-agenda-search-view-always-boolean t)
+      (setq org-agenda-show-all-dates nil)
+      (setq org-agenda-show-inherited-tags nil)
+      (setq org-agenda-skip-deadline-if-done t)
+      (setq org-agenda-skip-deadline-prewarning-if-scheduled t)
+      (setq org-agenda-skip-scheduled-if-done t)
+      (setq org-agenda-sorting-strategy
          '((agenda habit-down time-up priority-down category-keep)
            (todo priority-down category-keep scheduled-up)
            (tags priority-down category-keep)
            (search category-keep)))
-       '(org-agenda-span 'week)
-       '(org-agenda-start-on-weekday nil)
-       '(org-agenda-text-search-extra-files '(agenda-archives))
+      (setq org-agenda-span 'week)
+      (setq org-agenda-start-on-weekday nil)
+      (setq org-agenda-text-search-extra-files '(agenda-archives))
 
-       '(org-agenda-custom-commands
+      (setq org-agenda-custom-commands
          (->> '(
                 ("A" "Agenda and next actions"
                  ((tags-todo "-someday-media/NEXT"
@@ -140,7 +139,7 @@
             (listp
              (cdr it))
             (append it
-                    '(((org-agenda-customise-window-hook 'delete-other-windows))))))))
+                    '(((org-agenda-customise-window-hook 'delete-other-windows)))))))
 
       (add-hook 'org-agenda-mode-hook 'org-agenda-to-appt)
       (add-to-list 'org-agenda-files org-directory)

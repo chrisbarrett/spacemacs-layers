@@ -28,7 +28,7 @@ which require an initialization must be listed explicitly in the list.")
       (add-hook 'nxml-mode-hook 'flyspell-prog-mode)
       (add-hook 'sgml-mode-hook 'flyspell-prog-mode))
     :config
-    (custom-set-variables
-     '(ispell-program-name "aspell")
-     '(ispell-dictionary "en_GB")
-     '(ispell-silently-savep t))))
+    (progn
+      (setq ispell-program-name "aspell")
+      (setq ispell-dictionary "en_GB")
+      (setq ispell-silently-savep t))))

@@ -75,13 +75,27 @@ This function is called at the very end of Spacemacs initialization."
 ;; Do not write anything in this section. This is where Emacs will
 ;; auto-generate custom variable definitions.
 
-
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(custom-safe-themes
-   (quote
-    ("d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default)))
- '(safe-local-variable-values (quote ((gac-automatically-push-p . t)))))
+ '(company-tooltip-common ((t (:inherit company-tooltip :weight bold :underline nil))))
+ '(company-tooltip-common-selection ((t (:inherit company-tooltip-selection :weight bold :underline nil))))
+ '(iedit-occurrence ((t (:background "#cb4b16" :foreground "white"))))
+ '(org-block-background ((((background light)) :background "#f8f1dc") (((background dark)) :background "#11303b")))
+ '(org-block-begin-line ((((background light)) :italic t :foreground "#2aa198") (((background dark)) :italic t :foreground "#2aa198")) t)
+ '(org-block-end-line ((((background light)) :italic t :foreground "#2aa198") (((background dark)) :italic t :foreground "#2aa198")) t)
+ '(org-document-info-keyword ((t :foreground unspecified :inherit org-meta-line)))
+ '(org-hide ((t :background unspecified)))
+ '(org-level-1 ((t :font "SourceCodePro")))
+ '(org-level-2 ((t :font "SourceCodePro")))
+ '(org-level-3 ((t :font "SourceCodePro")))
+ '(org-level-4 ((t :font "SourceCodePro")))
+ '(org-level-5 ((t :font "SourceCodePro")))
+ '(org-level-6 ((t :font "SourceCodePro")))
+ '(org-level-7 ((t :font "SourceCodePro")))
+ '(org-level-8 ((t :font "SourceCodePro")))
+ '(org-meta-line ((t :italic nil :inherit font-lock-comment-face)))
+ '(parenthesis ((((background light)) :foreground "grey80") (((background dark)) :foreground "#505070")))
+ '(yas-field-highlight-face ((((background light)) :background "lightgreen") (((background dark)) :background "green4" :foreground "grey80"))))

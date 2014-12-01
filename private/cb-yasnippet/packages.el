@@ -32,11 +32,10 @@ which require an initialization must be listed explicitly in the list.")
       (yas-global-mode +1))
     :config
     (progn
-      (custom-set-variables
-       '(yas-snippet-dirs (list cb-yasnippet/dirs))
-       '(yas-prompt-functions '(yas-ido-prompt))
-       '(yas-wrap-around-region t)
-       '(yas-verbosity 0))
+      (setq yas-snippet-dirs (list cb-yasnippet/dirs))
+      (setq yas-prompt-functions '(yas-ido-prompt))
+      (setq yas-wrap-around-region t)
+      (setq yas-verbosity 0)
 
       (custom-set-faces
        '(yas-field-highlight-face

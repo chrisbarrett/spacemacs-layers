@@ -23,22 +23,21 @@ which require an initialization must be listed explicitly in the list.")
 (defun cb-projectile/init-projectile ()
   (use-package projectile
     :config
-    (custom-set-variables
-     '(projectile-cache-file (concat spacemacs-cache-directory "projectile.cache"))
-     '(projectile-ignored-projects '("/usr/local/"))
-     '(projectile-switch-project-action (lambda () (call-interactively 'magit-status)))
-     '(projectile-globally-ignored-directories
-       '(".cask"
-         ".cabal-sandbox"
-         "dist"
-         ".idea"
-         ".eunit"
-         ".git"
-         ".hg"
-         ".fslckout"
-         ".bzr"
-         "_darcs"
-         ".tox"
-         ".svn"
-         "snippets"
-         "build")))))
+    (setq projectile-cache-file (concat spacemacs-cache-directory "projectile.cache"))
+    (setq projectile-ignored-projects '("/usr/local/"))
+    (setq projectile-switch-project-action (lambda () (call-interactively 'magit-status)))
+    (setq projectile-globally-ignored-directories
+         '(".cask"
+           ".cabal-sandbox"
+           "dist"
+           ".idea"
+           ".eunit"
+           ".git"
+           ".hg"
+           ".fslckout"
+           ".bzr"
+           "_darcs"
+           ".tox"
+           ".svn"
+           "snippets"
+           "build"))))
