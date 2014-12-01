@@ -341,7 +341,7 @@ With prefix argument ARG, justify text."
       (message "Indented region."))
 
      (in-string?
-      (if (apply 'derived-mode-p cb:lisp-modes)
+      (if (apply 'derived-mode-p core/lisp-modes)
           (lisp-fill-paragraph arg)
         (or (fill-comment-paragraph)
             (fill-paragraph arg)))

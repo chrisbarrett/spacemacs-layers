@@ -93,24 +93,7 @@
 
 ;;; Lisp modes
 
-(defvar sp/lisp-modes
-  `(cider-repl-mode
-    clojure-mode
-    clojurescript-mode
-    common-lisp-mode
-    emacs-lisp-mode
-    geiser-repl-mode
-    inferior-emacs-lisp-mode
-    inferior-lisp-mode
-    inferior-scheme-mode
-    lisp-mode
-    repl-mode
-    scheme-mode
-    slime-mode
-    slime-repl-mode))
-
-
-(sp-with-modes sp/lisp-modes
+(sp-with-modes core/lisp-modes
   (sp-local-pair "\"" "\"" :post-handlers '(:add sp/lisp-just-one-space))
   (sp-local-pair "{" "}"   :post-handlers '(:add sp/lisp-just-one-space))
   (sp-local-pair "[" "]"   :post-handlers '(:add sp/lisp-just-one-space))
@@ -120,7 +103,7 @@
 
 ;; Extend `sp-navigate-reindent-after-up' to all lisps.
 (let ((ls (assoc 'interactive sp-navigate-reindent-after-up)))
-  (setcdr ls (-uniq (-concat (cdr ls) sp/lisp-modes))))
+  (setcdr ls (-uniq (-concat (cdr ls) core/lisp-modes))))
 
 ;;; Markdown
 
