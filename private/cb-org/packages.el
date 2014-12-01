@@ -180,6 +180,29 @@ which require an initialization must be listed explicitly in the list.")
         (when (minibufferp (window-buffer (selected-window)))
           (other-window 1)))
 
+      (defadvice org-insert-heading (after insert-state activate)
+        (when (called-interactively-p nil)
+          (evil-insert-state)))
+
+      (defadvice org-insert-heading-respect-content (after insert-state activate)
+        (when (called-interactively-p nil)
+          (evil-insert-state)))
+
+      (defadvice org-insert-todo-heading (after insert-state activate)
+        (when (called-interactively-p nil)
+          (evil-insert-state)))
+
+      (defadvice org-insert-todo-heading-respect-content (after insert-state activate)
+        (when (called-interactively-p nil)
+          (evil-insert-state)))
+
+      (defadvice org-toggle-heading (after goto-line-end activate)
+        "Prevent point from being moved to the line beginning."
+        (when (s-matches? (rx bol (+ "*") (* space) eol) (current-line))
+          (goto-char (line-end-position))))
+
+      ;; Hooks
+
       (add-hook 'org-mode-hook 'org/add-local-hooks)
       (add-hook 'org-after-todo-state-change-hook 'org/set-next-todo-state)
       (add-hook 'org-after-todo-statistics-hook 'org/children-done-parent-done))))
