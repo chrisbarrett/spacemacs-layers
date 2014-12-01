@@ -203,7 +203,7 @@
 
 (defun cb-org/init-org-babel ()
   (use-package org-babel
-    :init nil
+    :defer t
     :config
     (progn
       (org-babel-do-load-languages
@@ -277,7 +277,7 @@
 
 (defun cb-org/init-org-export ()
   (use-package org-export
-    :init nil
+    :defer t
     :config
     (progn
       (setq org-export-exclude-tags '("noexport" "crypt"))

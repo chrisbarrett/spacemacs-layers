@@ -35,6 +35,7 @@ which require an initialization must be listed explicitly in the list.")
   (use-package cl-lib-highlight
     :commands (cl-lib-highlight-initialize
                cl-lib-highlight-warn-cl-initialize)
+    :defer t
     :init
     (add-hook 'emacs-lisp-mode-hook 'cl-lib-highlight-initialize)
     (add-hook 'emacs-lisp-mode-hook 'cl-lib-highlight-warn-cl-initialize)))
@@ -42,6 +43,7 @@ which require an initialization must be listed explicitly in the list.")
 (defun cb-elisp/init-paredit ()
   (use-package paredit
     :commands paredit-mode
+    :defer t
     :init
     (add-hook 'minibuffer-setup-hook
               (lambda ()
@@ -49,7 +51,7 @@ which require an initialization must be listed explicitly in the list.")
                  (paredit-mode +1))))))
 
 (defun cb-elisp/init-elisp-slime-nav ()
-  (use-package
+  (use-package elisp-slime-nav
     :commands elisp-slime-nav-mode
     :init
     (add-hook 'emacs-lisp-mode-hook 'elisp-slime-nav-mode)))
