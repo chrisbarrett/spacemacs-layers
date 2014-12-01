@@ -27,13 +27,10 @@
 
 (defun core/init-file-template ()
   (use-package file-template
-    :defer t
-    :commands file-template-find-file-not-found-hook
-    :init
-    (add-hook 'find-file-not-found-hooks 'file-template-find-file-not-found-hook t)
     :config
     (progn
       (require 'f)
+
       (setq core/file-templates-dir (f-join spacemacs-private-directory
                                             "cb-core/extensions/file-template"
                                             "templates"))
@@ -44,4 +41,5 @@
               (-map 'f-filename)
               (--map (cons (format "\\.%s$" (f-ext it)) it))))
 
+      (add-hook 'find-file-not-found-hooks 'file-template-find-file-not-found-hook t)
       (add-hook 'file-template-insert-hook 'core/reset-buffer-undo-history))))
