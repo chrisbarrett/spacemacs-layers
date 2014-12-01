@@ -240,8 +240,8 @@ If this buffer is a member of `core/kill-buffer-ignored-list', bury it rather th
           (set-visited-file-name new-name)
           (set-buffer-modified-p nil)))))))
 
-(defalias 'rfb 'core/rename-file-buffer)
-(defalias 'rbf 'core/rename-file-buffer)
+(defalias 'rfb 'core/rename-file-and-buffer)
+(defalias 'rbf 'core/rename-file-and-buffer)
 
 
 (defun core/delete-file-and-buffer ()
