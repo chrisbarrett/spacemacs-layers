@@ -20,19 +20,16 @@ which require an initialization must be listed explicitly in the list.")
 
 (require 'f)
 
-(defvar cb-yasnippet/dirs
-  (concat spacemacs-private-directory "cb-yasnippet/snippets"))
-
 (defun cb-yasnippet/init-yasnippet ()
   (use-package yasnippet
     :init
     (progn
+      (setq yas-snippet-dirs (list (concat spacemacs-private-directory "cb-yasnippet/snippets")))
       (add-hook 'prog-mode-hook 'yas-minor-mode)
       (add-hook 'text-mode-hook 'yas-minor-mode)
       (yas-global-mode +1))
     :config
     (progn
-      (setq yas-snippet-dirs (list cb-yasnippet/dirs))
       (setq yas-prompt-functions '(yas-ido-prompt))
       (setq yas-wrap-around-region t)
       (setq yas-verbosity 0)
