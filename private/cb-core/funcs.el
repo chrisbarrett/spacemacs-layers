@@ -405,3 +405,17 @@ REPLACEMENT is the string to substitute for the match in REGEX."
         `(0 (progn (compose-region (match-beginning ,group) (match-end ,group)
                                    ,replacement 'decompose-region)
                    nil))))
+
+;;; File template
+
+(defun core/template-org-skeleton-title (filename)
+  "Format the title to use for the given FILENAME."
+  (->> (f-filename (f-no-ext filename))
+    s-split-words
+    (-map 's-capitalize)
+    (s-join " ")))
+
+(defun core/reset-buffer-undo-history ()
+  "Set file-local vars for expanded file templates."
+  (setq-local buffer-undo-list nil)
+  (setq-local buffer-undo-tree nil))

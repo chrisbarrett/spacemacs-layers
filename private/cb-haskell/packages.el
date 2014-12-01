@@ -82,7 +82,9 @@ which require an initialization must be listed explicitly in the list.")
     :diminish hi2-mode
     :commands turn-on-hi2
     :init
-    (add-hook 'haskell-mode-hook 'turn-on-hi2)
+    (progn
+      (add-hook 'haskell-mode-hook 'turn-on-hi2)
+      (add-hook 'haskell-mode-hook 'turn-off-haskell-simple-indent))
     :config
     (progn
       ;; Show indentation guides for hi2 only in insert state.
