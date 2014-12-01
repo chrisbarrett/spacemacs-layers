@@ -22,7 +22,7 @@ which require an initialization must be listed explicitly in the list.")
 
 (defun cb-rust/init-rust-mode ()
   (use-package rust-mode
-    :modes "\\.rs\\'"
+    :mode "\\.rs\\'"
     :config
     (add-hook 'rust-mode-hook 'rust/set-rust-library-path)))
 
