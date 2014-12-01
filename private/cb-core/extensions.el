@@ -9,6 +9,7 @@
 (defvar cb-core-post-extensions
   '(
     ;; post extension cores go here
+    ido
     )
   "List of all extensions to load after the packages.")
 
@@ -43,3 +44,14 @@
 
       (add-hook 'find-file-not-found-hooks 'file-template-find-file-not-found-hook t)
       (add-hook 'file-template-insert-hook 'core/reset-buffer-undo-history))))
+
+(defun core/init-ido ()
+  (use-package ido
+    :config
+    (progn
+      (setq ido-use-filename-at-point 'guess)
+      (add-to-list 'ido-ignore-buffers "\\*helm.*")
+      (add-to-list 'ido-ignore-buffers "\\*Minibuf.*")
+      (add-to-list 'ido-ignore-files "flycheck_")
+      (add-to-list 'ido-ignore-files "\\.swp")
+      (add-to-list 'ido-ignore-files "\\.DS_Store"))))
