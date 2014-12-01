@@ -25,6 +25,7 @@
                                      cb-smartparens
                                      cb-iedit
                                      cb-ledger
+                                     cb-proof
                                      )
  ;; A list of packages and/or extensions that will not be install and loaded.
  dotspacemacs-excluded-packages '(rainbow-delimiters

@@ -259,6 +259,7 @@ If this buffer is a member of `core/kill-buffer-ignored-list', bury it rather th
 (defalias 'dfb 'core/delete-file-and-buffer)
 (defalias 'dbf 'core/delete-file-and-buffer)
 
+
 ;;; Line transposition
 
 (defun core/move-line-up ()
@@ -282,6 +283,7 @@ If this buffer is a member of `core/kill-buffer-ignored-list', bury it rather th
     (forward-line -1)
     (indent-according-to-mode)))
 
+
 ;;; Misc interactive commands
 
 (defun remove-line-breaks ()
@@ -300,6 +302,20 @@ If this buffer is a member of `core/kill-buffer-ignored-list', bury it rather th
 (defun core/warn-exit-emacs-rebound ()
   (interactive)
   (user-error "Type <C-c k k> to exit Emacs"))
+
+(defun core/comma-then-space ()
+  (interactive)
+  (let ((in-string-or-comment? (nth 8 (syntax-ppss))))
+    (if in-string-or-comment?
+        (insert ",")
+      (save-restriction
+        (narrow-to-region (line-beginning-position) (point))
+        (atomic-change-group
+          (when (thing-at-point-looking-at (rx (not space) (* space)))
+            (delete-horizontal-space t))
+          (insert-char ?\,)
+          (just-one-space))))))
+
 
 
 ;;; Indentation
@@ -373,3 +389,19 @@ With prefix argument ARG, justify text."
 
 (defun core/ansi-colourise-compilation ()
   (ansi-color-apply-on-region compilation-filter-start (point)))
+
+
+;;; Font lock
+
+(defun core/font-lock-replace-match (regex group replacement)
+  "Return a font-lock replacement spec for.
+
+REGEX surrounds the text to be replaced with a group.
+
+GROUP is the number of the group.
+
+REPLACEMENT is the string to substitute for the match in REGEX."
+  (list regex
+        `(0 (progn (compose-region (match-beginning ,group) (match-end ,group)
+                                   ,replacement 'decompose-region)
+                   nil))))
