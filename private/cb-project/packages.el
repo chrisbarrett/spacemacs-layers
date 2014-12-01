@@ -3,6 +3,7 @@
     ;; package cb-projects go here
     ack-and-a-half
     projectile
+    skeletor
     )
   "List of all packages to install and/or initialize. Built-in packages
 which require an initialization must be listed explicitly in the list.")
@@ -41,3 +42,9 @@ which require an initialization must be listed explicitly in the list.")
            ".svn"
            "snippets"
            "build"))))
+
+(defun cb-project/init-skeletor ()
+  (use-package skeletor
+    :commands (skeletor-create-project skeletor-create-project-at)
+    :config
+    (setq skeletor-show-project-command 'magit-status)))
