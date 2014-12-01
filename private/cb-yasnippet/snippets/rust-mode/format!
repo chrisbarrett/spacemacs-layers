@@ -3,4 +3,4 @@
 # key: fmt
 # binding: direct-keybinding
 # --
-format!("$1"${1:$(cbrs:fmt-println-args yas/text)});
+format!("$1"${1:$(yas/rust-fmt-println-args yas/text)});

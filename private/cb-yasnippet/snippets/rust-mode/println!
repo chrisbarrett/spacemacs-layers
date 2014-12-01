@@ -2,4 +2,4 @@
 # name: println!
 # condition: (yas/bol?)
 # --
-println!("$1"${1:$(cbrs:fmt-println-args yas/text)});
+println!("$1"${1:$(yas/rust-fmt-println-args yas/text)});

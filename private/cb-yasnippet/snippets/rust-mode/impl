@@ -3,6 +3,6 @@
 # key: im
 # binding: direct-keybinding
 # --
-impl ${1:`(cbrs:previous-struct-def)`} {
+impl ${1:`(yas/rust-previous-struct-def)`} {
     $0
 }

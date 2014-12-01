@@ -2,7 +2,7 @@
 # name: enum
 # key: e
 # binding: direct-keybinding
-# condition: (cbrs:bol-or-after-accessibility-modifier?)
+# condition: (yas/rust-bol-or-after-accessibility-modifier?)
 # --
 enum ${1:Name} {
     $0

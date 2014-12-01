@@ -2,7 +2,7 @@
 # name: trait
 # key: tr
 # binding: direct-keybinding
-# condition: (cbrs:bol-or-after-accessibility-modifier?)
+# condition: (yas/rust-bol-or-after-accessibility-modifier?)
 # --
 trait ${1:Name} {
     $0
