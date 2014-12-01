@@ -144,3 +144,15 @@
     scheme-mode
     slime-mode
     slime-repl-mode))
+
+(defvar core/prompt-modes
+  '(comint-mode
+    inf-ruby-mode
+    inferior-python-mode
+    ielm-mode
+    erc-mode
+    utop-mode
+    slime-repl-mode
+    inferior-scheme-mode
+    inferior-haskell-mode
+    sclang-post-buffer-mode))

@@ -2,19 +2,7 @@
 
 ;;; Remove apostrophe pair for some modes
 
-(defvar sp/prompt-modes
-  '(comint-mode
-    inf-ruby-mode
-    inferior-python-mode
-    ielm-mode
-    erc-mode
-    utop-mode
-    slime-repl-mode
-    inferior-scheme-mode
-    inferior-haskell-mode
-    sclang-post-buffer-mode))
-
-(sp-with-modes sp/prompt-modes
+(sp-with-modes core/prompt-modes
   (sp-local-pair "'" "'" :actions '(:rem insert)))
 
 (sp-local-pair 'org-mode                 "'" "'" :actions '(:rem insert))
