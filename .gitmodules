@@ -28,3 +28,6 @@
 [submodule "spacemacs/extensions/yasnippet-snippets"]
 	path = spacemacs/extensions/yasnippet-snippets
 	url = http://github.com/AndreaCrotti/yasnippet-snippets.git
+[submodule "private/cb-proof/extensions/proofgeneral"]
+	path = private/cb-proof/extensions/proofgeneral
+	url = https://github.com/emacsattic/proofgeneral.git
