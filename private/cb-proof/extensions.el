@@ -26,6 +26,10 @@
 
 (defun cb-proof/init-proof-site ()
   (use-package proof-site
+    :load-path "private/cb-proof/extensions/proofgeneral/generic"
+    :defer t
+    :init
+    (require 'proof-site)
     :config
     (progn
       (setq proof-splash-enable nil)
@@ -76,6 +80,7 @@
 
 (defun cb-proof/init-coq ()
   (use-package coq
+    :defer t
     :config
     (progn
       (setq coq-compile-before-require t)
@@ -110,6 +115,7 @@
 
 (defun cb-proof/init-proof-script ()
   (use-package proof-script
+    :defer t
     :config
     (progn
       (define-key proof-mode-map (kbd "C-<return>") nil))))
@@ -118,11 +124,10 @@
   (use-package super-smart-ops
     :config
     (progn
-      (super-smart-ops-configure-for-mode
-       'coq-mode
-       :add '("$" "?" "^" "~" "\\")
-       :custom
-       '(("|" . coq/smart-pipe)
-         (":" . coq/smart-colon)
-         ("!" . self-insert-command)
-         ("," . core/comma-then-space))))))
+      (super-smart-ops-configure-for-mode 'coq-mode
+                                          :add '("$" "?" "^" "~" "\\")
+                                          :custom
+                                          '(("|" . coq/smart-pipe)
+                                            (":" . coq/smart-colon)
+                                            ("!" . self-insert-command)
+                                            ("," . core/comma-then-space))))))
