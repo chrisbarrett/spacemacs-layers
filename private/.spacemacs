@@ -11,9 +11,6 @@
  dotspacemacs-configuration-layer-path '()
  ;; List of configuration layers to load.
  dotspacemacs-configuration-layers '(company-mode
-                                     flycheck
-                                     projectile
-                                     ack
                                      cb-core
                                      cb-org
                                      cb-elisp
