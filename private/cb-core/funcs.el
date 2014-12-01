@@ -2,6 +2,7 @@
 (autoload 'org-move-item-up "org-list")
 (require 'cl-lib)
 (require 'dash)
+(require 's)
 
 
 ;;; Dash extensions
@@ -347,3 +348,28 @@ With prefix argument ARG, justify text."
   "Configure backtick pair for Elisp docstrings."
   (make-local-variable 'evil-surround-pairs-alist)
   (push '(?\` . ("`" . "'")) evil-surround-pairs-alist))
+
+
+;;; Compilation
+
+(defun core/compile-autoclose (buf string)
+  "Automatically close the compile window."
+  (cond
+   ;; Ignore if this isn't a normal compilation window.
+   ((not (equal (buffer-name buf) "*compilation*")))
+
+   ((not (s-contains? "finished" string))
+    (message "Compilation exited abnormally: %s" string))
+
+   ((s-contains? "warning"
+                 (with-current-buffer buf (buffer-string))
+                 t)
+    (message "Compilation succeeded with warnings"))
+
+   (t
+    (ignore-errors
+      (delete-window (get-buffer-window buf)))
+    (message "Compilation succeeded"))))
+
+(defun core/ansi-colourise-compilation ()
+  (ansi-color-apply-on-region compilation-filter-start (point)))

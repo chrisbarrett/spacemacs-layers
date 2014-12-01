@@ -56,6 +56,10 @@
 (setq sentence-end-double-space nil)
 (setq tab-width 4)
 (setq x-select-enable-clipboard t)
+(setq compilation-scroll-output 'first-error)
+
+(add-to-list 'compilation-finish-functions 'core/compile-autoclose)
+(add-hook 'compilation-filter-hook 'core/ansi-colourise-compilation)
 
 ;;; Colours
 
