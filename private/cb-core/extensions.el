@@ -1,6 +1,7 @@
 (defvar cb-core-pre-extensions
   '(
     ;; pre extension cores go here
+    super-smart-ops
     )
   "List of all extensions to load before the packages.")
 
@@ -19,3 +20,6 @@
 ;; Often the body of an initialize function uses `use-package'
 ;; For more info on `use-package', see readme:
 ;; https://github.com/jwiegley/use-package
+
+(defun core/init-super-smart-ops ()
+  (use-package super-smart-ops))
