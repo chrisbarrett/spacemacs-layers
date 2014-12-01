@@ -11,6 +11,7 @@
     company
     autorevert
     hideshow
+    helm
     )
   "List of all packages to install and/or initialize. Built-in packages
 which require an initialization must be listed explicitly in the list.")
@@ -88,3 +89,12 @@ which require an initialization must be listed explicitly in the list.")
 (defun cb-core/init-hideshow ()
   (use-package hideshow
     :diminish hs-minor-mode))
+
+(defun cb-core/init-helm ()
+  (use-package helm
+    :config
+    (progn
+      (custom-set-faces
+       '(helm-selection
+         ((((background light)) :background "gray90" :foreground "black" :underline nil)
+          (((background dark))  :background "black"  :foreground "white" :underline nil)))))))
