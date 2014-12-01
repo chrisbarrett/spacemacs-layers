@@ -104,3 +104,10 @@ This function is called at the very end of Spacemacs initialization."
  '(org-meta-line ((t :italic nil :inherit font-lock-comment-face)))
  '(parenthesis ((((background light)) :foreground "grey80") (((background dark)) :foreground "#505070")))
  '(yas-field-highlight-face ((((background light)) :background "lightgreen") (((background dark)) :background "green4" :foreground "grey80"))))
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(ring-bell-function (quote ignore) t)
+ '(safe-local-variable-values (quote ((gac-automatically-push-p . t)))))
