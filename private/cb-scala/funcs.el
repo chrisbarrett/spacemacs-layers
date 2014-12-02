@@ -2,13 +2,11 @@
 
 (defun scala/equals ()
   (interactive)
-  (super-smart-ops-insert "=")
-  (just-one-space))
+  (super-smart-ops-insert "="))
 
 (defun scala/colon ()
   (interactive)
-  (super-smart-ops-insert ":")
-  (just-one-space))
+  (core/insert-smart-op-no-leading-space ":"))
 
 (defmacro define-scala-variance-op-command (sym op)
   "Define command named SYM to insert a variance operator OP."
