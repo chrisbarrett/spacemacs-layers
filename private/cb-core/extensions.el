@@ -14,9 +14,9 @@
     )
   "List of all extensions to load after the packages.")
 
-;; For each extension, define a function core/init-<extension-core>
+;; For each extension, define a function cb-core/init-<extension-core>
 ;;
-;; (defun core/init-my-extension ()
+;; (defun cb-core/init-my-extension ()
 ;;   "Initialize my extension"
 ;;   )
 ;;
@@ -24,10 +24,10 @@
 ;; For more info on `use-package', see readme:
 ;; https://github.com/jwiegley/use-package
 
-(defun core/init-super-smart-ops ()
+(defun cb-core/init-super-smart-ops ()
   (use-package super-smart-ops))
 
-(defun core/init-file-template ()
+(defun cb-core/init-file-template ()
   (use-package file-template
     :config
     (progn
@@ -46,7 +46,7 @@
       (add-hook 'find-file-not-found-hooks 'file-template-find-file-not-found-hook t)
       (add-hook 'file-template-insert-hook 'core/reset-buffer-undo-history))))
 
-(defun core/init-ido ()
+(defun cb-core/init-ido ()
   (use-package ido
     :config
     (progn
