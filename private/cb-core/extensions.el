@@ -3,6 +3,7 @@
     ;; pre extension cores go here
     super-smart-ops
     file-template
+    recentf
     )
   "List of all extensions to load before the packages.")
 
@@ -55,3 +56,37 @@
       (add-to-list 'ido-ignore-files "flycheck_")
       (add-to-list 'ido-ignore-files "\\.swp")
       (add-to-list 'ido-ignore-files "\\.DS_Store"))))
+
+(defun cb-core/init-recentf ()
+  (use-package recentf
+    :commands recentf-mode
+    :config
+    (progn
+      (setq recentf-save-file (concat spacemacs-cache-directory "recentf"))
+      (setq recentf-max-saved-items 50)
+      (setq recentf-max-menu-items 10)
+      (setq recentf-keep '(file-remote-p file-readable-p))
+      (setq recentf-exclude
+            '("\\.elc$"
+              "TAGS"
+              "\\.gz$"
+              "#$"
+              "/elpa/"
+              "/tmp/"
+              "/temp/"
+              "/snippets/"
+              ".emacs.d/url/"
+              "/\\.git/"
+              "/Emacs.app/"
+              "/var/folders/"
+              "^/?sudo"
+              "\\.bbdb"
+              "\\.newsrc"
+              "/gnus$"
+              "/gnus.eld$"
+              "\\.ido\\.last"
+              "\\.org-clock-save\\.el$"))
+
+      (defadvice recentf-cleanup (around hide-messages activate)
+        "Do not message when cleaning up recentf list."
+        (noflet ((message (&rest args))) ad-do-it)))))
