@@ -38,6 +38,7 @@ server/
 *.db
 python-*-docs-html
 .yas-compiled-snippets.el
+/custom.el
 
 # Private directory
 !private/README.md

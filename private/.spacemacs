@@ -68,6 +68,7 @@
   "User initialization for Spacemacs. This function is called at the very
  startup."
  (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/"))
+ (setq custom-file (concat user-emacs-directory "custom.el"))
  )
 
 (defun dotspacemacs/config ()
@@ -75,41 +76,3 @@
 This function is called at the very end of Spacemacs initialization."
   (require 'personal-config nil t)
 )
-
-;; Custom variables
-;; ----------------
-
-;; Do not write anything in this section. This is where Emacs will
-;; auto-generate custom variable definitions.
-
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(company-tooltip-common ((t (:inherit company-tooltip :weight bold :underline nil))))
- '(company-tooltip-common-selection ((t (:inherit company-tooltip-selection :weight bold :underline nil))))
- '(iedit-occurrence ((t (:background "#cb4b16" :foreground "white"))))
- '(org-block-background ((((background light)) :background "#f8f1dc") (((background dark)) :background "#11303b")))
- '(org-block-begin-line ((((background light)) :italic t :foreground "#2aa198") (((background dark)) :italic t :foreground "#2aa198")) t)
- '(org-block-end-line ((((background light)) :italic t :foreground "#2aa198") (((background dark)) :italic t :foreground "#2aa198")) t)
- '(org-document-info-keyword ((t :foreground unspecified :inherit org-meta-line)))
- '(org-hide ((t :background unspecified)))
- '(org-level-1 ((t :font "Source Code Pro")))
- '(org-level-2 ((t :font "Source Code Pro")))
- '(org-level-3 ((t :font "Source Code Pro")))
- '(org-level-4 ((t :font "Source Code Pro")))
- '(org-level-5 ((t :font "Source Code Pro")))
- '(org-level-6 ((t :font "Source Code Pro")))
- '(org-level-7 ((t :font "Source Code Pro")))
- '(org-level-8 ((t :font "Source Code Pro")))
- '(org-meta-line ((t :italic nil :inherit font-lock-comment-face)))
- '(parenthesis ((((background light)) :foreground "grey80") (((background dark)) :foreground "#505070")))
- '(yas-field-highlight-face ((((background light)) :background "lightgreen") (((background dark)) :background "green4" :foreground "grey80"))))
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(ring-bell-function (quote ignore) t)
- '(safe-local-variable-values (quote ((gac-automatically-push-p . t)))))
