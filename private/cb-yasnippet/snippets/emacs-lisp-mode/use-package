@@ -4,7 +4,7 @@
 # condition: (yas/bol?)
 # --
 (use-package ${1:`(or (yas/find-ident-for-use-package) "ident")`}${2:
-  :diminish ${3:mode}} ${4:
+  :diminish ${3:mode}}${4:
   :commands ${5:cmds}}${6:
   :init nil}
   :config

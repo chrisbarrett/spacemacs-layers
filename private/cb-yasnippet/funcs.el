@@ -147,14 +147,15 @@ TEXT is the content of the docstring."
 (defun yas/find-prefix-for-use-package ()
   "Infer the name of the package being configured by the name of the enclosing defun."
   (save-excursion
-    (search-backward-regexp (rx "defun" (? "*") (+ space) (group (+ anything)) "/init-")
-                            nil t)
-    (match-string 1)))
+    (if (search-backward-regexp (rx "defun" (? "*") (+ space) (group (+ nonl)) "/init-")
+                                nil t)
+        (match-string 1)
+      "FIXME")))
 
 (defun yas/find-ident-for-use-package ()
   "Infer the name of the package being configured by the name of the enclosing defun."
   (save-excursion
-    (search-backward-regexp (rx "defun" (? "*") (+ space) (+ anything) "/init-" (group (+ (not space))))
+    (search-backward-regexp (rx "defun" (? "*") (+ space) (+ nonl) "/init-" (group (+ (not space))))
                             nil t)
     (match-string 1)))
 
