@@ -46,7 +46,7 @@ which require an initialization must be listed explicitly in the list.")
 
       ;; Make window management work for all modes
 
-      (bind-keys
+      (bind-keys*
        :prefix "C-w"
        :prefix-map evil/window-emu
        ("C-w" . evil-window-prev)

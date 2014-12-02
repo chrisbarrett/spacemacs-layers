@@ -20,3 +20,7 @@
 (evil-global-set-key 'normal (kbd "g r") 'git-gutter:revert-hunk)
 (evil-global-set-key 'normal (kbd "g n") 'git-gutter:next-hunk)
 (evil-global-set-key 'normal (kbd "g p") 'git-gutter:previous-hunk)
+
+(after 'magit
+  (define-key magit-mode-map (kbd "C-k") 'magit-copy-item-as-kill)
+  )
