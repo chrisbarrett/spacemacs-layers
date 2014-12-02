@@ -8,6 +8,7 @@
 
 (bind-key* "<f12>" 'org-work-toggle-at-work)
 
+(spacemacs/declare-prefix "o" "org")
 (evil-leader/set-key "oa" 'org/agenda-dwim)
 (evil-leader/set-key "oc" 'org-clock-goto)
 (evil-leader/set-key "od" 'org/goto-diary)
