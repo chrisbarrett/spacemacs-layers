@@ -40,3 +40,9 @@ which require an initialization must be listed explicitly in the list.")
           (-when-let (buf (get-buffer "COMMIT_EDITMSG"))
             (when (buffer-live-p buf)
               (kill-buffer buf)))))))
+
+(defun cb-git/init-git-gutter ()
+  (use-package git-gutter
+    :defer t
+    :config
+    (global-git-gutter-mode +1)))
