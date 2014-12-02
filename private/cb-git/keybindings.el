@@ -12,3 +12,10 @@
 (evil-leader/set-key "ga" 'git-gutter:stage-hunk)
 
 (evil-set-initial-state 'git-commit-mode 'insert)
+
+(evil-global-set-key 'normal (kbd "g c") 'magit-key-mode-popup-committing)
+(evil-global-set-key 'normal (kbd "g l") 'magit-key-mode-popup-logging)
+(evil-global-set-key 'normal (kbd "g s") 'git-gutter:stage-hunk)
+(evil-global-set-key 'normal (kbd "g r") 'git-gutter:revert-hunk)
+(evil-global-set-key 'normal (kbd "g n") 'git-gutter:next-hunk)
+(evil-global-set-key 'normal (kbd "g p") 'git-gutter:previous-hunk)
