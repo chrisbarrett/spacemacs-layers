@@ -8,3 +8,5 @@
 (evil-leader/set-key "yn" 'yas/new-snippet)
 (evil-leader/set-key "yy" 'yas/insert-snippet)
 (evil-leader/set-key "yr" 'yas//reload-all)
+
+(evil-set-initial-state 'snippet-mode 'insert)
