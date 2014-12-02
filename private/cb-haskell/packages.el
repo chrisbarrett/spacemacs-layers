@@ -41,7 +41,6 @@ which require an initialization must be listed explicitly in the list.")
       (setq haskell-process-type 'cabal-repl)
       (setq haskell-interactive-prompt "\nλ> ")
 
-      (put 'haskell-mode 'tab-width 2)
       (put 'haskell-mode 'evil-shift-width 2)
       (add-hook 'haskell-mode-hook 'haskell/configure-flyspell))))
 

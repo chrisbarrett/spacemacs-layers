@@ -54,9 +54,10 @@
 (setq kept-new-versions 6)
 (setq require-final-newline t)
 (setq sentence-end-double-space nil)
-(setq tab-width 4)
 (setq x-select-enable-clipboard t)
 (setq compilation-scroll-output 'first-error)
+
+(setq-default tab-width 4)
 
 (add-to-list 'compilation-finish-functions 'core/compile-autoclose)
 (add-hook 'compilation-filter-hook 'core/ansi-colourise-compilation)

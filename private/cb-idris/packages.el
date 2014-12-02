@@ -45,7 +45,6 @@ which require an initialization must be listed explicitly in the list.")
       (setq idris-repl-animate nil)
       (setq idris-repl-prompt-style 'long)
 
-      (put 'idris-mode 'tab-width 2)
       (put 'idris-mode 'evil-shift-width 2)
 
       (add-to-list 'face-remapping-alist '(idris-semantic-type-face     . font-lock-type-face))
