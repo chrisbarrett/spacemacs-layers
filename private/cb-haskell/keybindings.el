@@ -6,33 +6,23 @@
 
   (evil-define-key 'normal haskell-mode-map (kbd "M-.") 'haskell-mode-tag-find)
 
-  (define-key haskell-mode-map (kbd "M-.")           'haskell-mode-tag-find)
   (define-key haskell-mode-map (kbd "M-,")           'pop-tag-mark)
   (define-key haskell-mode-map (kbd "M-P")           'flymake-goto-prev-error)
   (define-key haskell-mode-map (kbd "M-N")           'flymake-goto-next-error)
   (define-key haskell-mode-map (kbd "C-,")           'haskell-move-nested-left)
   (define-key haskell-mode-map (kbd "C-.")           'haskell-move-nested-right)
-  (define-key haskell-mode-map (kbd "C-c c")         'haskell-process-cabal)
-  (define-key haskell-mode-map (kbd "C-c C-c")       'haskell-process-cabal-build)
   (define-key haskell-mode-map (kbd "C-c C-d")       'haskell-w3m-open-haddock)
-  (define-key haskell-mode-map (kbd "C-c C-l")       'haskell-process-load-file)
   (define-key haskell-mode-map (kbd "C-c C-f")       'haskell-cabal-visit-file)
   (define-key haskell-mode-map (kbd "C-c C-h")       'haskell-hoogle)
-  (define-key haskell-mode-map (kbd "C-c C-t")       'haskell-process-do-type)
-  (define-key haskell-mode-map (kbd "C-c C-i")       'haskell-process-do-info)
   (define-key haskell-mode-map (kbd "C-c C-c")       'haskell-process-cabal-build)
   (define-key haskell-mode-map (kbd "C-c C-k")       'haskell-interactive-mode-clear)
   (define-key haskell-mode-map (kbd "M-q")           'haskell/format-dwim)
   (define-key haskell-mode-map (kbd "M-RET")         'haskell/meta-ret)
   (define-key haskell-mode-map (kbd "DEL")           'haskell/del)
-  (define-key haskell-mode-map (kbd "C-c C-z")       'haskell-interactive-switch)
   )
 
 (after 'haskell-cabal-mode
-  (define-key haskell-cabal-mode-map (kbd "C-`")     'haskell-interactive-bring)
   (define-key haskell-cabal-mode-map (kbd "C-c C-k") 'haskell-interactive-mode-clear)
-  (define-key haskell-cabal-mode-map (kbd "C-c C-c") 'haskell-process-cabal-build)
-  (define-key haskell-cabal-mode-map (kbd "C-c c")   'haskell-process-cabal)
   )
 
 (after 'haskell-interactive-mode
