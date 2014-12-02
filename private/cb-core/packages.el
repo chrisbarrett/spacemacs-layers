@@ -12,6 +12,7 @@
     autorevert
     hideshow
     helm
+    flycheck
     )
   "List of all packages to install and/or initialize. Built-in packages
 which require an initialization must be listed explicitly in the list.")
@@ -98,3 +99,8 @@ which require an initialization must be listed explicitly in the list.")
        '(helm-selection
          ((((background light)) :background "gray90" :foreground "black" :underline nil)
           (((background dark))  :background "black"  :foreground "white" :underline nil)))))))
+
+(defun cb-core/init-flycheck ()
+  (use-package flycheck
+    :config
+    (global-flycheck-mode +1)))
