@@ -2,7 +2,6 @@
 (global-set-key (kbd "C-x a a") 'align-regexp)
 
 (bind-key (kbd "C-SPC") 'helm-mini)
-(bind-key (kbd "S-SPC") 'execute-extended-command)
 (bind-key (kbd "C-<backspace>") 'core/kill-this-buffer)
 (bind-key (kbd "C-c k b") 'core/clean-buffers)
 

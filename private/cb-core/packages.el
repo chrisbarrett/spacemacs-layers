@@ -105,4 +105,5 @@ which require an initialization must be listed explicitly in the list.")
     :config
     (progn
       (evil-leader/set-key ":" 'smex)
+      (bind-key* "M-x" 'smex)
       (bind-key* "S-SPC" 'smex))))
