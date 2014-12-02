@@ -13,7 +13,7 @@
 (diminish 'auto-fill-function " ≣")
 
 ;;; Use larger font
-(defvar core/monospace-font "SourceCodePro")
+(defvar core/monospace-font "Source Code Pro")
 (spacemacs/set-font core/monospace-font 12)
 
 (defvar spacemacs-private-directory (concat user-emacs-directory "private/"))
