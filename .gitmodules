@@ -31,3 +31,6 @@
 [submodule "private/cb-proof/extensions/proofgeneral"]
 	path = private/cb-proof/extensions/proofgeneral
 	url = https://github.com/emacsattic/proofgeneral.git
+[submodule "private/cb-core/extensions/super-smart-ops"]
+	path = private/cb-core/extensions/super-smart-ops
+	url = https://github.com/chrisbarrett/super-smart-ops.git
