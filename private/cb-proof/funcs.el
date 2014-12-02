@@ -69,7 +69,8 @@
     (goto-char (line-end-position))
     (newline-and-indent)
     (goto-char (max (line-beginning-position) (- (point) 2)))
-    (yas-insert-first-snippet (C (~ equal "match-case") yas--template-name)))
+    (yas-insert-first-snippet (lambda (sn)
+                                (equal "match-case" (yas--template-name sn)))))
 
    ;; Insert new case below the current type decl.
    ((s-matches? (rx bol (* space) (? "Co") "Inductive") (current-line))
@@ -93,7 +94,8 @@
    ;; Insert match case below the current one.
    ((s-matches? (rx bol (* space) "|" (* nonl) "=>") (current-line))
     (coq/newline-and-expand-snippet-at-col
-     (C (~ equal "match-case") yas--template-name)
+     (lambda (sn)
+       (equal "match-case" (yas--template-name sn)))
      (coq/case-start-col)))
 
    ;; Insert any other kind of case below the current one.
@@ -103,7 +105,8 @@
    ;; Insert check.
    ((s-matches? (rx bol "Check") (current-line))
     (coq/newline-and-expand-snippet-at-col
-     (C (~ equal "Check") yas--template-name)
+     (lambda (sn)
+       (equal "Check" (yas--template-name sn)))
      (coq/rx-start-column "Check")))
 
    (t
