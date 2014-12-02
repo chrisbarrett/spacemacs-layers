@@ -7,6 +7,7 @@
     eval-sexp-fu
     eldoc
     dash
+    flycheck-cask
     )
   "List of all packages to install and/or initialize. Built-in packages
 which require an initialization must be listed explicitly in the list.")
@@ -73,3 +74,7 @@ which require an initialization must be listed explicitly in the list.")
 (defun cb-elisp/init-dash ()
   (use-package dash
     :config (dash-enable-font-lock)))
+
+(defun cb-elisp/init-flycheck-cask ()
+  (use-package flycheck-cask
+    :commands flycheck-cask-setup))
