@@ -4,6 +4,8 @@
   (setq ispell-pdict-modified-p '(t))
   (ispell-pdict-save ispell-silently-savep))
 
+
+;;; Evil compatibility
 
 (defun evil/mark-word-as-good (word)
   "Add WORD at point to the Ispell dictionary."

@@ -72,7 +72,7 @@ Embed in elisp blocks to trigger messages within snippets."
                (yas--field-contains-point-p field))
       (goto-char (yas/end-of-field)))))
 
-
+
 ;;; Elisp
 
 (defun yas/find-identifier-prefix ()
@@ -159,6 +159,7 @@ TEXT is the content of the docstring."
                             nil t)
     (match-string 1)))
 
+
 ;;; Editing commands
 
 (defun yas//reload-all ()
@@ -193,7 +194,7 @@ Otherwise delete backwards."
           (t
            (call-interactively 'backward-delete-char)))))
 
-
+
 ;;; Utilities for working around internal yasnippet errors
 
 (defun yas//other-buffer-major-mode ()
@@ -232,6 +233,7 @@ is not the first, or from an unwritable file)."
       (write-file (f-join snippet-dir file-name))
       (setf (yas--template-file template) (buffer-file-name)))))
 
+
 ;;; Scala
 
 (defun yas/scala-find-case-class-parent ()
@@ -249,7 +251,7 @@ is not the first, or from an unwritable file)."
         (match-string 1)
       "")))
 
-
+
 ;;; Rust
 
 (defun yas/rust-bol-or-after-accessibility-modifier? ()

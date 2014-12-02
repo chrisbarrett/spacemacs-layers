@@ -64,7 +64,7 @@
    (t
     (super-smart-ops-insert "?"))))
 
-
+
 ;;; Commands
 
 (defun idris/switch-to-src ()

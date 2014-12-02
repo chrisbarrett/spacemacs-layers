@@ -2,6 +2,7 @@
   "Set buffer local variables and hooks."
   (setq-local compile-command (concat "coqc " (buffer-name))))
 
+
 ;;; Smart operators
 
 (defun coq/smart-pipe ()
@@ -25,7 +26,7 @@
    (t
     (super-smart-ops-insert ":"))))
 
-
+
 ;;; Smart M-RET
 
 (defun coq/case-start-col ()

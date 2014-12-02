@@ -19,6 +19,7 @@
     (core/font-lock-replace-match (rx (or space eow) (group "|-")  (or space eol bow)) 1 (string-to-char "⸠"))
     )))
 
+
 ;; Redefine `proof-mode' to derive from `prog-mode'.
 (after 'proof-script
   (define-derived-mode proof-mode prog-mode

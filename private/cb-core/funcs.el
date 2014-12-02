@@ -4,7 +4,7 @@
 (require 'dash)
 (require 's)
 
-
+
 ;;; Dash extensions
 
 (defun -true-fn (&rest _)
@@ -43,7 +43,7 @@
   "Return the non-nil elements in LIST."
   (-keep 'identity list))
 
-
+
 ;;; S extensions
 
 (defun s-alnum-only (s)
@@ -87,7 +87,7 @@
 
       (-remove 's-blank? (nreverse acc)))))
 
-
+
 ;;; Core forms
 
 (defmacro until (test &rest body)
@@ -135,7 +135,7 @@ FEATURES may be a symbol or list of symbols."
   "Test whether SYM is bound and non-nil."
   `(and (boundp ',sym) (eval ',sym)))
 
-
+
 ;;; Useful functions
 
 (defun current-region (&optional no-properties)
@@ -176,7 +176,7 @@ TO-N-LINES is the number of blank lines to insert afterwards."
                   (push atom acc))))
     acc))
 
-
+
 ;;; Buffer utils
 
 (cl-defmacro --filter-buffers (pred-form &optional (bufs '(buffer-list)))
@@ -198,7 +198,7 @@ TO-N-LINES is the number of blank lines to insert afterwards."
 Find the first window where PRED-FORM is not nil."
   `(-first-window (lambda (it) ,pred-form)))
 
-
+
 ;;; Buffer management
 
 (defun core/clean-buffers ()
@@ -259,7 +259,7 @@ If this buffer is a member of `core/kill-buffer-ignored-list', bury it rather th
 (defalias 'dfb 'core/delete-file-and-buffer)
 (defalias 'dbf 'core/delete-file-and-buffer)
 
-
+
 ;;; Line transposition
 
 (defun core/move-line-up ()
@@ -283,7 +283,7 @@ If this buffer is a member of `core/kill-buffer-ignored-list', bury it rather th
     (forward-line -1)
     (indent-according-to-mode)))
 
-
+
 ;;; Misc interactive commands
 
 (defun remove-line-breaks ()
@@ -303,7 +303,7 @@ If this buffer is a member of `core/kill-buffer-ignored-list', bury it rather th
   (interactive)
   (user-error "Type <C-c k k> to exit Emacs"))
 
-
+
 ;;; Indentation
 
 (defun core/indent-buffer ()
@@ -344,6 +344,7 @@ With prefix argument ARG, justify text."
     (goto-char (line-beginning-position))
     (delete-horizontal-space)))
 
+
 ;;; Elisp
 
 (defun core/config-elisp-surround-pairs ()
@@ -351,7 +352,7 @@ With prefix argument ARG, justify text."
   (make-local-variable 'evil-surround-pairs-alist)
   (push '(?\` . ("`" . "'")) evil-surround-pairs-alist))
 
-
+
 ;;; Compilation
 
 (defun core/compile-autoclose (buf string)
@@ -376,7 +377,7 @@ With prefix argument ARG, justify text."
 (defun core/ansi-colourise-compilation ()
   (ansi-color-apply-on-region compilation-filter-start (point)))
 
-
+
 ;;; Font lock
 
 (defun core/font-lock-replace-match (regex group replacement)
@@ -392,6 +393,7 @@ REPLACEMENT is the string to substitute for the match in REGEX."
                                    ,replacement 'decompose-region)
                    nil))))
 
+
 ;;; File template
 
 (defun core/template-org-skeleton-title (filename)
@@ -406,7 +408,7 @@ REPLACEMENT is the string to substitute for the match in REGEX."
   (setq-local buffer-undo-list nil)
   (setq-local buffer-undo-tree nil))
 
-
+
 ;;; Global insertion commands
 
 (defun core/insert-timestamp ()
@@ -497,7 +499,7 @@ PARAGRAPH-LENGTH is one of short, medium, long or verylong."
               (search-forward "\n\n")
               (s-trim (buffer-substring (point) (point-max)))))))
 
-
+
 ;;; Super smart ops
 
 (defun core/insert-smart-op-no-leading-space (op)

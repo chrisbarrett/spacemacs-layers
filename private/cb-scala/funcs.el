@@ -30,6 +30,7 @@ Pad in normal expressions. Do not insert padding in variance annotations."
 (define-scala-variance-op-command scala/plus "+")
 (define-scala-variance-op-command scala/minus "-")
 
+
 ;;; Interactive
 
 (defun scala/join-line ()

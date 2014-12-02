@@ -34,6 +34,7 @@
     (when evil-mode
       (evil-insert-state)))))
 
+
 ;;; C-c C-c eval command
 
 (defun elisp/thing-for-eval ()
@@ -67,4 +68,3 @@ Return the bounds of the evaluated form."
       (cl-destructuring-bind (&key beg end &allow-other-keys) thing
         (eval-region beg end))
     (user-error "Nothing to evaluate")))
-

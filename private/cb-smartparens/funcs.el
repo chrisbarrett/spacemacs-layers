@@ -21,7 +21,7 @@ Prefix ARG is passed to `sp-up-sexp'."
                                    (sp/insert-or-up ,key _arg)))
                       ,map))))
 
-
+
 ;;; Use smartparens in certain minibuffer contexts.
 
 (defvar sp/minibuffer-enabled-commands
@@ -32,7 +32,7 @@ Prefix ARG is passed to `sp-up-sexp'."
   (smartparens-mode
    (if (-contains? sp/minibuffer-enabled-commands this-command) +1 -1)))
 
-
+
 ;;; Utility commands
 
 (defun sp/kill-blank-lines ()
@@ -92,7 +92,7 @@ Insert leading padding unless at start of line or after an open round paren."
        (s-matches? (rx (not (any "\\")) "\"" eol)
                    (buffer-substring (line-beginning-position) (point)))))
 
-
+
 ;;; OCaml utils
 
 (defun sp/ml-just-one-space (id action ctx)
@@ -125,7 +125,7 @@ Insert leading padding unless at start of line or after an open round paren."
                           (char-to-string (char-after)))
         (just-one-space)))))
 
-
+
 ;;; Lisp utils
 
 (defun sp/lisp-just-one-space (id action ctx)
@@ -155,6 +155,7 @@ Insert leading padding unless at start of line or after an open round paren."
       (unless (-contains? '(")" "]" "}") (char-to-string (char-after)))
         (just-one-space)))))
 
+
 ;;; C utils
 
 (defun sp/c-format-after-brace (_id action context)
@@ -192,6 +193,7 @@ Insert leading padding unless at start of line or after an open round paren."
       (search-backward "(")
       (just-one-space))))
 
+
 ;;; Ruby utils
 
 (defun sp/ruby-should-insert-pipe-close (_id _action _ctx)

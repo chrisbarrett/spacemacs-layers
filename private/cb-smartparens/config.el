@@ -9,6 +9,7 @@
 (sp-local-pair 'text-mode                "'" "'" :actions '(:rem insert))
 (sp-local-pair 'minibuffer-inactive-mode "'" "'" :actions '(:rem insert))
 
+
 ;;; Org
 
 (add-hook 'org-agenda-mode-hook (lambda () (smartparens-mode -1)))

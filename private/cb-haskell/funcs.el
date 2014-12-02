@@ -1,6 +1,7 @@
 (require 's)
 (require 'dash)
 
+
 ;;; Define smart operators.
 
 (defun haskell/inside-parens? ()
@@ -152,6 +153,7 @@
 
     (insert ", ")))
 
+
 ;;; Formatting
 
 (defun haskell/format-dwim ()
@@ -165,7 +167,7 @@
            (haskell-mode-stylish-buffer)
            (message "Reformatted buffer.")))))
 
-
+
 ;;; hi2
 
 (defun haskell/show-hi2-guides ()
@@ -176,7 +178,7 @@
   (when (true? hi2-mode)
     (hi2-disable-show-indentations)))
 
-
+
 ;;; Define smart M-RET command
 
 (defun haskell/newline-and-insert-at-col (col str)
@@ -312,7 +314,7 @@
   (when (true? evil-mode)
     (evil-insert-state)))
 
-
+
 ;;; SHM smart op integration
 
 (defun haskell/shm-handle-deletions (n)
@@ -329,7 +331,6 @@
       (shm-adjust-dependents (point) n))
     (shm/init t)))
 
-
 (defun haskell/init-shm-smart-ops-compat ()
   "Bind shm commands to smart operator insertions and deletions."
   (add-hook 'super-smart-ops-text-inserted-functions
@@ -337,6 +338,7 @@
   (add-hook 'super-smart-ops-text-removed-functions
             'haskell/shm-handle-deletions nil t))
 
+
 ;;; Options insertion
 
 (defvar haskell/ghc-options
@@ -544,6 +546,7 @@
 
     (haskell/do-insert-at-imports (format "import %s" module))))
 
+
 ;;; Flyspell
 
 (defun haskell/flyspell-verify ()
@@ -555,7 +558,7 @@
 (defun haskell/configure-flyspell ()
   (setq-local flyspell-generic-check-word-predicate 'haskell/flyspell-verify))
 
-
+
 ;;; File template utils
 
 (defun haskell/file-name->module ()
@@ -593,6 +596,7 @@
                                   nil t)
       (match-string-no-properties 1))))
 
+
 ;;; Commands
 
 (defun haskell/join-line ()
