@@ -12,7 +12,6 @@
     autorevert
     hideshow
     helm
-    smex
     )
   "List of all packages to install and/or initialize. Built-in packages
 which require an initialization must be listed explicitly in the list.")
@@ -99,11 +98,3 @@ which require an initialization must be listed explicitly in the list.")
        '(helm-selection
          ((((background light)) :background "gray90" :foreground "black" :underline nil)
           (((background dark))  :background "black"  :foreground "white" :underline nil)))))))
-
-(defun cb-core/init-smex ()
-  (use-package smex
-    :config
-    (progn
-      (evil-leader/set-key ":" 'smex)
-      (bind-key* "M-x" 'smex)
-      (bind-key* "S-SPC" 'smex))))
