@@ -4,6 +4,7 @@
 (bind-key (kbd "C-SPC") 'helm-mini)
 (bind-key (kbd "C-<backspace>") 'core/kill-this-buffer)
 (bind-key (kbd "C-c k b") 'core/clean-buffers)
+(bind-key (kbd "S-SPC") 'smex)
 
 (when (fboundp 'cycle-spacing)
   (global-set-key (kbd "M-SPC") 'cycle-spacing))
