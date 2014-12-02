@@ -42,3 +42,4 @@ python-*-docs-html
 
 # Private directory
 !private/README.md
+/.cask/
