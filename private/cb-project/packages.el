@@ -28,23 +28,25 @@ which require an initialization must be listed explicitly in the list.")
     (setq projectile-ignored-projects '("/usr/local/"))
     (setq projectile-switch-project-action (lambda () (call-interactively 'magit-status)))
     (setq projectile-globally-ignored-directories
-         '(".cask"
-           ".cabal-sandbox"
-           "dist"
-           ".idea"
-           ".eunit"
-           ".git"
-           ".hg"
-           ".fslckout"
-           ".bzr"
-           "_darcs"
-           ".tox"
-           ".svn"
-           "snippets"
-           "build"))))
+          '(".cask"
+            ".cabal-sandbox"
+            "dist"
+            ".idea"
+            ".eunit"
+            ".git"
+            ".hg"
+            ".fslckout"
+            ".bzr"
+            "_darcs"
+            ".tox"
+            ".svn"
+            "snippets"
+            "build"))))
 
 (defun cb-project/init-skeletor ()
   (use-package skeletor
     :commands (skeletor-create-project skeletor-create-project-at)
     :config
-    (setq skeletor-show-project-command 'magit-status)))
+    (progn
+      (setq skeletor-show-project-command 'magit-status)
+      (setq skeletor-user-directory (concat spacemacs-private-directory "cb-project/project-skeletons")))))
