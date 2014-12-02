@@ -165,7 +165,7 @@
   (use-package org-archive
     :config
     (progn
-      (setq org-archive-default-command 'cb-org:archive-done-tasks)
+      (setq org-archive-default-command 'org/archive-done-tasks)
 
       (defadvice org-archive-subtree
           (before add-inherited-tags-before-org-archive-subtree activate)

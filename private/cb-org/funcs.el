@@ -276,7 +276,7 @@ are between the current date (DATE) and Easter Sunday."
 
 ;;; Archiving
 
-(defun org/:archive-done-tasks ()
+(defun org/archive-done-tasks ()
   (interactive)
   (atomic-change-group
     (org-map-entries (lambda ()
