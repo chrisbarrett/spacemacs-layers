@@ -419,3 +419,94 @@ REPLACEMENT is the string to substitute for the match in REGEX."
   "Set file-local vars for expanded file templates."
   (setq-local buffer-undo-list nil)
   (setq-local buffer-undo-tree nil))
+
+
+;;; Global insertion commands
+
+(defun core/insert-timestamp ()
+  "Read a timestamp from the user and insert it at point."
+  (interactive)
+  (let ((time (current-time)))
+    (helm :prompt "Timestamp: "
+          :buffer "*Helm Timestamp*"
+          :sources
+          `(((name . "Dates")
+             (candidates . ,(list
+                             (format-time-string "%d-%m-%y" time)
+                             (format-time-string "%d-%m-%Y" time)
+                             (format-time-string "%d-%m-%Y %H:%M" time)
+                             (format-time-string "%d-%m-%Y %I:%M %p" time)))
+             (action . insert)
+             (volatile))
+
+            ((name . "Times")
+             (candidates . ,(list
+                             (format-time-string "%X" time)
+                             (format-time-string "%I:%M %p" time)
+                             (format-time-string "%I:%M:%S %p" time)))
+             (action . insert)
+             (volatile))
+
+            ((name . "Special")
+             (candidates . ,(list
+                             (format-time-string "%d %B, %Y" time)
+                             (format-time-string "%Y-%m-%dT%H%M%S%z")))
+             (action . insert)
+             (volatile))))))
+
+(defun core//filename->interpreter (filename)
+  (cdr
+   (assoc (file-name-extension filename)
+          '(("el" . "emacs")
+            ("hs" . "runhaskell")
+            ("py" . "python")
+            ("rb" . "ruby")
+            ("sh" . "bash")))))
+
+(defun core/insert-shebang (cmd)
+  "Insert a shebang line at the top of the current buffer.
+Prompt for a command CMD if one cannot be guessed."
+  (interactive
+   (list (or (core//filename->interpreter buffer-file-name)
+             (read-string "Command name: " nil t))))
+  (save-excursion
+    (goto-char (point-min))
+    (open-line 2)
+    (insert (concat "#!/usr/bin/env " cmd))))
+
+(defun core/insert-variable-value (variable)
+  "Insert the value of VARIABLE at point."
+  (interactive
+   (list
+    (intern
+     (ido-completing-read
+      "Variable: "
+      (-map 'symbol-name
+            (filter-atoms (-orfn 'custom-variable-p 'special-variable-p)))))))
+  (insert (pp-to-string (eval variable))))
+
+(defun core/make-uuid ()
+  "Generate a UUID using the uuid utility."
+  (s-trim-right (shell-command-to-string "uuidgen")))
+
+(defun core/insert-uuid ()
+  "Insert a GUID at point."
+  (interactive "*")
+  (insert (core/make-uuid)))
+
+(defalias 'insert-guid 'core/insert-uuid)
+
+(defun core/insert-lorem-ipsum (n-paragraphs paragraph-length)
+  "Insert N-PARAGRAPHS of lorem ipsum text into the current buffer.
+PARAGRAPH-LENGTH is one of short, medium, long or verylong."
+  (interactive
+   (list (read-number "Number of paragraphs: " 3)
+         (ido-completing-read "Paragraph length: "
+                              '("short" "medium" "long" "verylong"))))
+  (let ((url (format "http://loripsum.net/api/%s/%s/plaintext"
+                     n-paragraphs paragraph-length)))
+    (insert (with-current-buffer (url-retrieve-synchronously url)
+              ;; Skip HTTP header.
+              (goto-char (point-min))
+              (search-forward "\n\n")
+              (s-trim (buffer-substring (point) (point-max)))))))

@@ -34,3 +34,14 @@
 (define-key company-active-map (kbd "C-p") 'company-select-previous)
 (define-key company-active-map (kbd "C-h") 'company-show-doc-buffer)
 (define-key company-active-map (kbd "C-w") nil)
+
+;;; Insertion
+
+(evil-leader/set-key "iF" 'insert-file)
+(evil-leader/set-key "iL" 'core/insert-lorem-ipsum)
+(evil-leader/set-key "iT" 'core/insert-timestamp)
+(evil-leader/set-key "iu" 'insert-char)
+(evil-leader/set-key "iU" 'core/insert-uuid)
+(evil-leader/set-key "iV" 'add-file-local-variable)
+(evil-leader/set-key "iP" 'add-file-local-variable-prop-line)
+(evil-leader/set-key "i#" 'core/insert-shebang)
