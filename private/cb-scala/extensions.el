@@ -29,4 +29,5 @@
       '(("=" . scala/equals)
         (":" . scala/colon)
         ("+" . scala/plus)
-        ("-" . scala/minus)))))
+        ("-" . scala/minus)
+        ("," . core/comma-then-space)))))
