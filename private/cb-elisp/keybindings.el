@@ -11,8 +11,8 @@
 (evil-define-key 'normal emacs-lisp-mode-map (kbd "M-.") 'elisp-slime-nav-find-elisp-thing-at-point)
 (evil-define-key 'normal emacs-lisp-mode-map (kbd "K") 'elisp-slime-nav-describe-elisp-thing-at-point)
 
-(evil-global-set-key 'normal (kbd "SPC e e") 'toggle-debug-on-error)
-(evil-global-set-key 'normal (kbd "SPC e l") 'find-library)
-(evil-global-set-key 'normal (kbd "SPC e f") 'find-function)
-(evil-global-set-key 'normal (kbd "SPC e v") 'find-variable)
-(evil-global-set-key 'normal (kbd "SPC e F") 'find-face-definition)
+(evil-leader/set-key "ee" 'toggle-debug-on-error)
+(evil-leader/set-key "el" 'find-library)
+(evil-leader/set-key "ef" 'find-function)
+(evil-leader/set-key "ev" 'find-variable)
+(evil-leader/set-key "eF" 'find-face-definition)
