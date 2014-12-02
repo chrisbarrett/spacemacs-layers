@@ -12,6 +12,7 @@
  ;; List of configuration layers to load.
  dotspacemacs-configuration-layers '(company-mode
                                      smex
+                                     auctex
                                      cb-core
                                      cb-org
                                      cb-elisp
