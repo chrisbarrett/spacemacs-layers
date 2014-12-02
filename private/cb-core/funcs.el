@@ -510,3 +510,15 @@ PARAGRAPH-LENGTH is one of short, medium, long or verylong."
               (goto-char (point-min))
               (search-forward "\n\n")
               (s-trim (buffer-substring (point) (point-max)))))))
+
+
+;;; Super smart ops
+
+(defun core/insert-smart-op-no-leading-space (op)
+  "Insert OP without any preceding padding."
+  (super-smart-ops-insert op)
+  (save-excursion
+    (search-backward op)
+    (unless (s-matches? (rx bol (* space) eol)
+                        (buffer-substring (line-beginning-position) (point)))
+      (delete-horizontal-space))))
