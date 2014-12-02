@@ -303,20 +303,6 @@ If this buffer is a member of `core/kill-buffer-ignored-list', bury it rather th
   (interactive)
   (user-error "Type <C-c k k> to exit Emacs"))
 
-(defun core/comma-then-space ()
-  (interactive)
-  (let ((in-string-or-comment? (nth 8 (syntax-ppss))))
-    (if in-string-or-comment?
-        (insert ",")
-      (save-restriction
-        (narrow-to-region (line-beginning-position) (point))
-        (atomic-change-group
-          (when (thing-at-point-looking-at (rx (not space) (* space)))
-            (delete-horizontal-space t))
-          (insert-char ?\,)
-          (just-one-space))))))
-
-
 
 ;;; Indentation
 
@@ -522,3 +508,8 @@ PARAGRAPH-LENGTH is one of short, medium, long or verylong."
     (unless (s-matches? (rx bol (* space) eol)
                         (buffer-substring (line-beginning-position) (point)))
       (delete-horizontal-space))))
+
+(defun core/comma-then-space ()
+  "Insert a comma smart op, removing any preceding padding."
+  (interactive)
+  (core/insert-smart-op-no-leading-space ","))
