@@ -15,6 +15,7 @@
                                      cb-org
                                      cb-elisp
                                      cb-cosmetic
+                                     cb-spelling
                                      cb-git
                                      cb-yasnippet
                                      cb-flycheck
