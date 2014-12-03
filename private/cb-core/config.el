@@ -59,7 +59,6 @@
 
 (setq-default tab-width 4)
 
-(add-to-list 'compilation-finish-functions 'core/compile-autoclose)
 (add-hook 'compilation-filter-hook 'core/ansi-colourise-compilation)
 
 ;;; Colours
