@@ -73,6 +73,11 @@
                                          nil t)
               (replace-match "" nil nil nil 1)))))
 
+      (defadvice coq-smie-backward-token (around ignore-errors activate)
+        "Ignore bug in Coq SMIE lexer."
+        (condition-case _
+            ad-do-it
+          (wrong-type-argument nil)))
 
       (define-key coq-mode-map (kbd "M-RET")   'coq/meta-ret)
       (define-key coq-mode-map (kbd "C-c C-m") 'coq-insert-match)
@@ -92,9 +97,9 @@
     :config
     (progn
       (super-smart-ops-configure-for-mode 'coq-mode
-                                          :add '("$" "?" "^" "~" "\\")
-                                          :custom
-                                          '(("|" . coq/smart-pipe)
-                                            (":" . coq/smart-colon)
-                                            ("!" . self-insert-command)
-                                            ("," . core/comma-then-space))))))
+        :add '("$" "?" "^" "~" "\\")
+        :custom
+        '(("|" . coq/smart-pipe)
+          (":" . coq/smart-colon)
+          ("!" . self-insert-command)
+          ("," . core/comma-then-space))))))
