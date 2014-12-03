@@ -1,0 +1,8 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: package
+# key: pkg
+# condition: (yas/bol?)
+# --
+package ${1:name} {
+  $0
+}

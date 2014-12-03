@@ -1,0 +1,9 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: override def
+# key: od
+# binding: direct-keybinding
+# condition: (yas/bol?)
+# --
+override def ${1:fname}(${2:params...})${3:: ${4:Type}} = {
+  $0
+}

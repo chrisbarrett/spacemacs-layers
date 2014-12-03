@@ -1,0 +1,6 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: case
+# key: c
+# condition: (yas/bol?)
+# --
+case ${1:binding} => $0
