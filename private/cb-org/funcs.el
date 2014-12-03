@@ -386,3 +386,22 @@ The PDF will be created at DEST."
 
 (defun org/exclude-tasks-on-hold (tag)
   (and (equal tag "hold") (concat "-" tag)))
+
+
+;;; Growl notifications
+
+(cl-defun org/growl (title message)
+  "Display a growl notification.
+Fall back to `message' if growlnotify is not installed.
+The notification will have the given TITLE and MESSAGE."
+  (let ((growl-program "growlnotify"))
+    (when (executable-find growl-program)
+      ;; Call growl
+      (let ((proc (start-process "growl" nil
+                                 growl-program
+                                 title
+                                 "-n" "Emacs"
+                                 "-a" "Emacs")))
+        (process-send-string proc message)
+        (process-send-string proc "\n")
+        (process-send-eof proc)))))

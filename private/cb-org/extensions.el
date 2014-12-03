@@ -191,11 +191,9 @@
                ;; Pop the template selector if present.
                (template (or (and (>= 2 (length (car parts))) (pop parts))
                              org-protocol-default-template-key))
-               (url (org-protocol-sanitize-uri (car parts)))
-               (type (if (string-match "^\\([a-z]+\\):" url)
-                         (match-string 1 url)))
-               (title (or (cadr parts) "")))
-          (mac/growl "Link Stored" (or title url) org-unicorn-png))))))
+               (title (or (cadr parts) ""))
+               (url (org-protocol-sanitize-uri (car parts))))
+          (org/growl "Link Stored" (or title url)))))))
 
 (defun cb-org/init-org-habit ()
   (use-package org-habit
