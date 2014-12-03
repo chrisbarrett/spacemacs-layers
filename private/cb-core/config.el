@@ -32,7 +32,7 @@
 (defalias 'hex  'hexl-mode)
 (defalias 'hff  'hexl-find-file)
 (defalias 'kb   'kill-buffer)
-(defalias 'plp  'package-list-packages)
+(defalias 'plp  'paradox-list-packages)
 (defalias 'qr   'query-replace)
 (defalias 'qrr  'query-replace-regexp)
 (defalias 'rbf  'rename-file-and-buffer)
