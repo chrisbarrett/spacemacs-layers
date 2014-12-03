@@ -12,3 +12,10 @@
       (ledger-sort-buffer)
       (message "Formatted buffer"))
     (goto-char pt)))
+
+(defun ledger/insert-timestamp (date)
+  "Insert a timestamp at point."
+  (interactive (list (org-read-date)))
+  (insert (s-replace "-" "/" date))
+  (just-one-space)
+  (evil-insert-state))
