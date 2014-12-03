@@ -26,9 +26,7 @@ which require an initialization must be listed explicitly in the list.")
     (add-to-list 'auto-mode-alist (cons "\\.ledger$" 'ledger-mode))
     :config
     (progn
-      (require 'f)
-      (require 'org)
-      (setq ledger-master-file (f-join org-directory "accounts.ledger"))
+      (setq ledger-master-file "~/org/accounts.ledger")
       (setq ledger-post-account-alignment-column 2)
       (setq ledger-post-use-completion-engine :ido)
       (setq ledger-fontify-xact-state-overrides nil)
