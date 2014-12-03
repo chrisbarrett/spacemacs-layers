@@ -27,6 +27,7 @@ which require an initialization must be listed explicitly in the list.")
     :config
     (progn
       (require 'f)
+      (require 'org)
       (setq ledger-master-file (f-join org-directory "accounts.ledger"))
       (setq ledger-post-account-alignment-column 2)
       (setq ledger-post-use-completion-engine :ido)
