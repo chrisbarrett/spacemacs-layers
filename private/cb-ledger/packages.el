@@ -58,4 +58,7 @@ which require an initialization must be listed explicitly in the list.")
        `(ledger-font-posting-account-face
          ((t (:foreground ,solarized-hl-blue)))))
 
-      (add-to-list 'face-remapping-alist '(ledger-font-comment-face . font-lock-comment-face)))))
+      (add-to-list 'face-remapping-alist '(ledger-font-comment-face . font-lock-comment-face))
+
+      ;; Fix font lock issue in ledger reports
+      (add-hook 'ledger-report-mode-hook 'font-lock-fontify-buffer))))
