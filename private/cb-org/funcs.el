@@ -23,6 +23,7 @@
   (interactive)
   (org-tags-view nil))
 
+
 ;; Project management
 
 (defun org/project? ()
@@ -57,6 +58,7 @@
             (setq has-subtask t))))
       (and is-a-task (not has-subtask)))))
 
+
 ;;; Work
 
 (defun org/refresh-agenda-when-toggling-work ()
@@ -79,6 +81,7 @@
         (save-excursion
           (org-remove-empty-drawer-at "PROPERTIES" (match-beginning 0)))))))
 
+
 ;;; Tree editing
 
 (defun org-narrow-to-subtree-content ()
@@ -111,6 +114,7 @@
     (org-clone-subtree-with-time-shift 1 '(16))
     (call-interactively 'org-refile)))
 
+
 ;;; Cascade TODO state changes.
 
 (defun org/set-next-todo-state ()
@@ -143,7 +147,7 @@ Do not change habits, scheduled items or repeating todos."
                             (nth 2 (org-heading-components)))
             (org-todo "TODO")))))))
 
-
+
 ;;; Custom keyboard commands
 
 (defun org/ctrl-c-ctrl-k (&optional n)
@@ -168,7 +172,7 @@ Do not change habits, scheduled items or repeating todos."
     (org-agenda current-prefix-arg "A"))
   (delete-other-windows))
 
-
+
 ;;; Diary utils
 
 (defvar date nil
@@ -273,7 +277,7 @@ are between the current date (DATE) and Easter Sunday."
       (org-agenda-to-appt t)
       (appt-check 'force))))
 
-
+
 ;;; Archiving
 
 (defun org/archive-done-tasks ()
@@ -286,7 +290,7 @@ are between the current date (DATE) and Easter Sunday."
                        (org-archive-subtree))
                      "/DONE|PAID|VOID|CANCELLED" 'tree)))
 
-
+
 ;;; Tables
 
 (defun org/recalculate-whole-table ()
@@ -300,7 +304,7 @@ are between the current date (DATE) and Easter Sunday."
             (message "Table up-to-date")
           (message "Table updated"))))))
 
-
+
 ;;; Clocks
 
 (defun org/remove-empty-clock-drawers ()
@@ -322,7 +326,7 @@ Switch projects and subprojects from NEXT back to TODO."
            (org/project?))
       "TODO"))))
 
-
+
 ;;; Crypt
 
 (defun org/looking-at-pgp-section? ()
@@ -342,7 +346,7 @@ Switch projects and subprojects from NEXT back to TODO."
     (org-decrypt-entry)
     t))
 
-
+
 ;;; Export
 
 (defun org-export/koma-letter-at-subtree (dest)
@@ -375,6 +379,7 @@ The PDF will be created at DEST."
     (call-interactively 'org-export-koma-letter-at-subtree)
     'export-koma-letter))
 
+
 ;;; Config support
 
 (defun org/add-local-hooks ()
@@ -387,7 +392,7 @@ The PDF will be created at DEST."
 (defun org/exclude-tasks-on-hold (tag)
   (and (equal tag "hold") (concat "-" tag)))
 
-
+
 ;;; Growl notifications
 
 (cl-defun org/growl (title message)
