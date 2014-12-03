@@ -1,6 +1,12 @@
 (defvar cb-org-pre-extensions
   '(
     ;; pre extension cb-orgs go here
+    )
+  "List of all extensions to load before the packages.")
+
+(defvar cb-org-post-extensions
+  '(
+    ;; post extension cb-orgs go here
     org-work
     org-agenda
     org-indent
@@ -14,12 +20,6 @@
     org-drill
     org-export
     ox-texinfo
-    )
-  "List of all extensions to load before the packages.")
-
-(defvar cb-org-post-extensions
-  '(
-    ;; post extension cb-orgs go here
     )
   "List of all extensions to load after the packages.")
 
@@ -35,9 +35,13 @@
 
 (defun cb-org/init-org-work ()
   (use-package org-work
-    :commands org-work-maybe-start-work
+    :load-path "private/cb-org/extensions/org-work"
+    :commands (org-work-maybe-start-work
+               maybe-enable-org-work-mode)
     :init
-    (add-hook 'after-init-hook 'org-work-maybe-start-work)
+    (progn
+      (add-hook 'org-mode-hook 'maybe-enable-org-work-mode)
+      (add-hook 'after-init-hook 'org-work-maybe-start-work))
     :config
     (add-hook 'org-work-state-changed-hook 'org/refresh-agenda-when-toggling-work)))
 
