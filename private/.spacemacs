@@ -35,7 +35,7 @@
  ;; A list of packages and/or extensions that will not be install and loaded.
  dotspacemacs-excluded-packages '(rainbow-delimiters
                                   )
-)
+ )
 
 ;; Settings
 ;; --------
@@ -59,7 +59,7 @@
  ;; specified with an installed package.
  ;; Not used for now.
  dotspacemacs-default-package-repository nil
-)
+ )
 
 ;; Initialization Hooks
 ;; --------------------
@@ -67,12 +67,11 @@
 (defun dotspacemacs/init ()
   "User initialization for Spacemacs. This function is called at the very
  startup."
- (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/"))
- (setq custom-file (concat user-emacs-directory "custom.el"))
- )
+  (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/"))
+  (setq custom-file (concat user-emacs-directory "custom.el")))
 
 (defun dotspacemacs/config ()
   "This is were you can ultimately override default Spacemacs configuration.
 This function is called at the very end of Spacemacs initialization."
-  (require 'personal-config nil t)
-)
+  (load custom-file)
+  (require 'personal-config nil t))
