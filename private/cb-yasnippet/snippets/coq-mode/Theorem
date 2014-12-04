@@ -7,5 +7,4 @@ Theorem ${1:name} :
   forall $0.
 Proof.
   intros.
-  reflexivity.
 Qed.
