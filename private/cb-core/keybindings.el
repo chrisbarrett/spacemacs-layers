@@ -28,12 +28,19 @@
 
 ;;; Company
 
-(require 'company)
+(after 'company
+  (define-key company-active-map (kbd "C-n") 'company-select-next)
+  (define-key company-active-map (kbd "C-p") 'company-select-previous)
+  (define-key company-active-map (kbd "C-h") 'company-show-doc-buffer)
+  (define-key company-active-map (kbd "C-w") nil))
 
-(define-key company-active-map (kbd "C-n") 'company-select-next)
-(define-key company-active-map (kbd "C-p") 'company-select-previous)
-(define-key company-active-map (kbd "C-h") 'company-show-doc-buffer)
-(define-key company-active-map (kbd "C-w") nil)
+;;; Flycheck
+
+(after 'flycheck
+  (evil-define-key 'normal flycheck-mode-map (kbd "M-N") 'flycheck-next-error)
+  (evil-define-key 'normal flycheck-mode-map (kbd "M-P") 'flycheck-previous-error)
+  (define-key flycheck-mode-map (kbd "M-N") 'flycheck-next-error)
+  (define-key flycheck-mode-map (kbd "M-P") 'flycheck-previous-error))
 
 ;;; Insertion
 
