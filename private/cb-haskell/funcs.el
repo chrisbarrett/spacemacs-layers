@@ -311,8 +311,7 @@
     (hi2-newline-and-indent)
     (message "New line")))
 
-  (when (true? evil-mode)
-    (evil-insert-state)))
+  (evil-insert-state))
 
 
 ;;; SHM smart op integration

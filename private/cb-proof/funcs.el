@@ -114,5 +114,4 @@
     (goto-char (line-end-position))
     (newline-and-indent)))
 
-  (when (true? evil-mode)
-    (evil-insert-state)))
+  (evil-insert-state))
