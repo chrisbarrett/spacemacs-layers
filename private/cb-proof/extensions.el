@@ -51,7 +51,6 @@
     :config
     (progn
       (setq coq-compile-before-require t)
-      (setq coq-load-path '("src"))
 
       (custom-set-faces
        '(coq-cheat-face
