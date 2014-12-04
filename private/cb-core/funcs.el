@@ -7,15 +7,6 @@
 (require 's)
 
 
-;;; Dash extensions
-
-(defun -true-fn (&rest _)
-  "Always return t."
-  t)
-
-(defun -nil-fn (&rest _)
-  "Always return nil."
-  nil)
 
 (defun -listify (x)
   "Wrap X in a list if it is not a list."
@@ -23,71 +14,9 @@
       x
     (list x)))
 
-(defun -uniq-by (selector-fn list)
-  "Remove duplicates in the given sequence using a function.
-
-- SELECTOR-FN takes the current element and returns the item to compare.
-
-- LIST is the sequence to transform."
-  ;; Cache the items compared using selector-fn for later comparisons. This
-  ;; alleviates the need for an additional traversal.
-  (let (transformed)
-    (--reduce-r-from
-     (let ((cur (funcall selector-fn it)))
-       (if (-contains? transformed cur)
-           acc
-         (push cur transformed)
-         (cons it acc)))
-     nil
-     list)))
-
-(defun -non-null (list)
-  "Return the non-nil elements in LIST."
-  (-keep 'identity list))
-
-
-;;; S extensions
-
-(defun s-alnum-only (s)
-  "Remove non-alphanumeric characters from S."
-  (with-temp-buffer
-    (insert s)
-    (goto-char (point-min))
-    (while (search-forward-regexp (rx (not alnum)) nil t)
-      (replace-match ""))
-    (buffer-string)))
-
 (defun s-unlines (&rest strs)
   "Join STRS with newlines."
   (s-join "\n" strs))
-
-(defmacro s-lex-cat (&rest format-strs)
-  "Concatenate FORMAT-STRS then pass them to `s-lex-format'."
-  `(s-lex-format ,(apply 'concat format-strs)))
-
-(defmacro s-with-temp-buffer (&rest body)
-  "Evaluate BODY in a temporary buffer and return the buffer string."
-  (declare (indent 0) (debug t))
-  `(with-temp-buffer
-     ,@body
-     (buffer-string)))
-
-(defalias 's-no-props 'substring-no-properties)
-
-(defun s-split-sexps (str)
-  "Split STR by sexp boundaries."
-  (with-temp-buffer
-    (insert str)
-    (goto-char (point-min))
-    ;; Collect sexps in buffer.
-    (let (acc (pt (point-min)))
-      (until (eobp)
-        (forward-sexp)
-        (setq acc (cons (s-trim (buffer-substring pt (point)))
-                        acc))
-        (setq pt (point)))
-
-      (-remove 's-blank? (nreverse acc)))))
 
 
 ;;; Core forms
@@ -100,21 +29,6 @@ until TEST returns non-nil."
   `(while (not ,test)
      ,@body))
 
-(defmacro lambda+ (arglist &rest body)
-  "A lambda function supporting argument destructuring.
-
-ARGLIST is a full Common Lisp arglist.  Its bindings are availabe
-in BODY.
-
-\(fn ARGS [DOCSTRING] [INTERACTIVE] BODY)"
-  (declare (doc-string 2) (indent defun)
-           (debug (&define lambda-list
-                           [&optional stringp]
-                           [&optional ("interactive" interactive)]
-                           def-body)))
-  `(lambda (&rest args)
-     (cl-destructuring-bind ,arglist args
-       ,@body)))
 
 (defmacro after (features &rest body)
   "Like `eval-after-load' - once all FEATURES are loaded, execute the BODY.
@@ -156,20 +70,6 @@ positive or backward if negative."
     (forward-line move-n-lines)
     (buffer-substring (line-beginning-position) (line-end-position))))
 
-(cl-defun collapse-vertical-whitespace (&optional (to-n-lines 1))
-  "Collapse blank lines around point.
-TO-N-LINES is the number of blank lines to insert afterwards."
-  (interactive "*nCollapse to N blanks: ")
-  (save-excursion
-    ;; Delete blank lines.
-    (search-backward-regexp (rx (not (any space "\n"))) nil t)
-    (forward-line 1)
-    (while (s-matches? (rx bol (* space) eol) (current-line))
-      (forward-line)
-      (join-line))
-    ;; Open a user-specified number of blanks.
-    (open-line to-n-lines)))
-
 (defun filter-atoms (predicate)
   "Return the elements of the default obarray that match PREDICATE."
   (let (acc)
@@ -178,27 +78,9 @@ TO-N-LINES is the number of blank lines to insert afterwards."
                   (push atom acc))))
     acc))
 
-
-;;; Buffer utils
-
 (cl-defmacro --filter-buffers (pred-form &optional (bufs '(buffer-list)))
   "Anaphoric form of `-filter-buffers'"
   `(--filter (with-current-buffer it ,pred-form) ,bufs))
-
-(cl-defmacro --map-buffers (form &optional (bufs '(buffer-list)))
-  "Anaphoric form of `-map-buffers'"
-  `(--map (with-current-buffer it ,form) ,bufs))
-
-(cl-defmacro --first-buffer (pred-form &optional (bufs '(buffer-list)))
-  "Anaphoric form of `-first-buffer'"
-  `(--first (with-current-buffer it ,pred-form) ,bufs))
-
-(defalias '-first-window 'get-window-with-predicate)
-
-(defmacro --first-window (pred-form)
-  "Anaphoric form of `-first-window'.
-Find the first window where PRED-FORM is not nil."
-  `(-first-window (lambda (it) ,pred-form)))
 
 
 ;;; Buffer management
