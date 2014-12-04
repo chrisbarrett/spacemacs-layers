@@ -32,12 +32,15 @@
           ("," . haskell/smart-comma)
           ("|" . haskell/smart-pipe)
           ("#" . haskell/smart-hash)
+          ("-" . haskell/smart-minus)
           (":" . haskell/smart-colon)))
 
       (super-smart-ops-configure-for-mode 'haskell-interactive-mode
         :add '("$" "=")
         :custom
         '(("." . haskell/smart-dot)
+          ("-" . haskell/smart-minus)
+          ("#" . haskell/smart-hash)
           ("|" . haskell/smart-pipe)
           (":" . haskell/ghci-smart-colon)
           ("," . haskell/ghci-smart-comma))))))

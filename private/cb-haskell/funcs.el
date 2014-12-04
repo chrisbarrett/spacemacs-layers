@@ -2,6 +2,27 @@
 (require 'dash)
 
 
+
+(defun haskell/after-subexpr-opening? ()
+  (s-matches? (rx (or "{" "[" "{-" "{-#" "(#") (* space) eol)
+              (buffer-substring (line-beginning-position) (point))))
+
+(defun haskell/before-subexp-closing? ()
+  (s-matches? (rx bol (* space) (or "}" "]" "-}" "#-}" "#)"))
+              (buffer-substring (point) (line-end-position))))
+
+(defun haskell/smart-space ()
+  "Use shm space, but perform extra padding inside lists."
+  (interactive)
+  (cond
+   ((and (haskell/after-subexpr-opening?) (haskell/before-subexp-closing?))
+    (delete-horizontal-space)
+    (call-interactively 'shm/space)
+    (save-excursion (call-interactively 'shm/space)))
+   (t
+    (call-interactively 'shm/space))))
+
+
 ;;; Define smart operators.
 
 (defun haskell/inside-parens? ()
@@ -18,6 +39,36 @@
                    (buffer-substring (line-beginning-position) (point)))
        (s-matches? (rx bol (* space) (or "}" "]"))
                    (buffer-substring (point) (line-end-position)))))
+
+(defun haskell/smart-minus ()
+  "Context-sensitive minus character."
+  (interactive)
+  (cond
+   ((and (s-matches? (rx "{" (* space) eol)
+                     (buffer-substring (line-beginning-position) (point)))
+         (s-matches? (rx bol (* space) "}")
+                     (buffer-substring (point) (line-end-position))))
+    (delete-horizontal-space)
+    (insert "- ")
+    (save-excursion
+      (insert " -")))
+   (t
+    (super-smart-ops-insert "-"))))
+
+(defun haskell/smart-hash ()
+  "Context-sensitive hash character."
+  (interactive)
+  (cond
+   ((and (s-matches? (rx (or "{-" "(") (* space) eol)
+                     (buffer-substring (line-beginning-position) (point)))
+         (s-matches? (rx bol (* space) (or "-}" ")"))
+                     (buffer-substring (point) (line-end-position))))
+    (delete-horizontal-space)
+    (insert "# ")
+    (save-excursion
+      (insert " #")))
+   (t
+    (insert "#"))))
 
 (defun haskell/smart-pipe ()
   "Insert a pipe operator. Add padding, unless we're inside a list."
@@ -59,21 +110,6 @@
    (t
     (super-smart-ops-insert "."))))
 
-(defun haskell/smart-hash ()
-  "Insert a hash character, with special formatting behaviour for pragmas."
-  (interactive "*")
-  (let* ((before (buffer-substring (line-beginning-position) (point)))
-         (after (buffer-substring (point) (line-end-position)))
-         (in-comment? (and (s-matches? (rx "{-" (* space) eol) before)
-                           (s-matches? (rx bol (* space) "-}") after))))
-    (cond
-     (in-comment?
-      (delete-horizontal-space)
-      (insert "# ")
-      (save-excursion (insert " #")))
-     (t
-      (super-smart-ops-insert "#")))))
-
 (defun haskell/smart-colon ()
   "Insert a colon, with context-sensitive formatting."
   (interactive)
@@ -94,14 +130,24 @@
    (t
     (super-smart-ops-insert ":"))))
 
-(defun haskell/del ()
+(defun haskell/backspace ()
   "Delete backwards with context-sensitive formatting."
   (interactive)
   (super-smart-ops--run-with-modification-hooks
    (cond
-    ((and (haskell/in-empty-braces?)
+    ((and (haskell/after-subexpr-opening?)
+          (haskell/before-subexp-closing?)
           (thing-at-point-looking-at (rx (+ space))))
      (delete-horizontal-space))
+
+    ((and (s-matches? (rx (or "{-#" "{-" "(#") eol)
+                      (buffer-substring (line-beginning-position) (point)))
+          (s-matches? (rx bol (or "#-}" "-}" "#)"))
+                      (buffer-substring (point) (line-end-position))))
+     (atomic-change-group
+       (delete-char 1)
+       (delete-char -1)))
+
     (t
      (or (super-smart-ops-delete-last-op)
          (call-interactively 'sp-backward-delete-char))))))
