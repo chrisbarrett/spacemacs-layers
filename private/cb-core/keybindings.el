@@ -13,6 +13,8 @@
 (evil-global-set-key 'normal (kbd "C-<down>") 'core/move-line-down)
 (evil-global-set-key 'normal (kbd "TAB") 'indent-line)
 
+(evil-leader/set-key "wo" 'delete-other-windows)
+
 ;;; Indentation
 
 (define-key prog-mode-map (kbd "M-q") 'core/indent-dwim)
