@@ -118,7 +118,7 @@
      (just-one-space))
 
     (t
-     (insert ",")))))
+     (core/comma-then-space)))))
 
 (defun haskell/ghci-line-beginning-position ()
   "Narrow to the current line, excluding the ghci prompt."
