@@ -29,7 +29,7 @@
 
 (after 'haskell-interactive-mode
   (define-key haskell-interactive-mode-map (kbd "C-c C-h") 'haskell-hoogle)
-  )
+  (evil-define-key 'normal haskell-error-mode-map (kbd "q") 'quit-window))
 
 (after 'shm
   (evil-define-key 'normal shm-map "J" 'haskell/join-line)
