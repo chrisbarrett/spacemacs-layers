@@ -13,6 +13,7 @@
  dotspacemacs-configuration-layers '(company-mode
                                      smex
                                      auctex
+                                     iedit
                                      haskell
                                      cb-core
                                      cb-org
