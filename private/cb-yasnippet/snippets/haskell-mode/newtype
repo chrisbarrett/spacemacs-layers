@@ -4,4 +4,3 @@
 # condition: (yas/bol?)
 # --
 newtype ${1:Name} = $1 { un$1 :: ${2:Type} }
-  ${3:deriving (${4:Show, Eq})}
