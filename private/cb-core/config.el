@@ -50,7 +50,6 @@
 (setq default-input-method "TeX")
 (setq delete-by-moving-to-trash nil)
 (setq delete-old-versions t)
-(setq fill-column 80)
 (setq initial-major-mode 'org-mode)
 (setq kept-new-versions 6)
 (setq require-final-newline t)
@@ -58,6 +57,7 @@
 (setq x-select-enable-clipboard t)
 (setq compilation-scroll-output 'first-error)
 
+(setq-default fill-column 80)
 (setq-default tab-width 4)
 
 (add-hook 'compilation-filter-hook 'core/ansi-colourise-compilation)
