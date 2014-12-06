@@ -124,10 +124,6 @@ If this buffer is a member of `core/kill-buffer-ignored-list', bury it rather th
           (set-visited-file-name new-name)
           (set-buffer-modified-p nil)))))))
 
-(defalias 'rfb 'core/rename-file-and-buffer)
-(defalias 'rbf 'core/rename-file-and-buffer)
-
-
 (defun core/delete-file-and-buffer ()
   "Delete a file and its associated buffer."
   (interactive)
@@ -140,6 +136,9 @@ If this buffer is a member of `core/kill-buffer-ignored-list', bury it rather th
         (kill-buffer buffer)
         (message "File '%s' successfully removed" filename)))))
 
+
+(defalias 'rfb 'core/rename-file-and-buffer)
+(defalias 'rbf 'core/rename-file-and-buffer)
 (defalias 'dfb 'core/delete-file-and-buffer)
 (defalias 'dbf 'core/delete-file-and-buffer)
 
