@@ -42,6 +42,7 @@
 
 ;;; Set variables
 
+(setq powerline-default-separator 'bar)
 (setq abbrev-file-name (concat spacemacs-cache-directory "abbrev_defs"))
 (setq backup-directory-alist '((".*" . spacemacs-autosaves-directory)))
 (setq bookmark-default-file (concat spacemacs-cache-directory "bookmarks"))
