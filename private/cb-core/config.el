@@ -26,18 +26,19 @@
 
 ;;; Convenience aliases
 
-(defalias 'bb   'bury-buffer)
-(defalias 'dbf  'delete-file-and-buffer)
-(defalias 'dfb  'delete-file-and-buffer)
-(defalias 'hex  'hexl-mode)
-(defalias 'hff  'hexl-find-file)
-(defalias 'kb   'kill-buffer)
-(defalias 'plp  'paradox-list-packages)
-(defalias 'qr   'query-replace)
-(defalias 'qrr  'query-replace-regexp)
-(defalias 'rbf  'rename-file-and-buffer)
-(defalias 'rfb  'rename-file-and-buffer)
+(defalias 'bb  'bury-buffer)
+(defalias 'hex 'hexl-mode)
+(defalias 'hff 'hexl-find-file)
+(defalias 'kb  'kill-buffer)
+(defalias 'plp 'paradox-list-packages)
+(defalias 'qr  'query-replace)
+(defalias 'qrr 'query-replace-regexp)
 (defalias 'cal 'calendar)
+(defalias 'rfb 'core/rename-file-and-buffer)
+(defalias 'rbf 'core/rename-file-and-buffer)
+(defalias 'dfb 'core/delete-file-and-buffer)
+(defalias 'dbf 'core/delete-file-and-buffer)
+
 
 ;;; Set variables
 

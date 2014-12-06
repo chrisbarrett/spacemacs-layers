@@ -136,12 +136,6 @@ If this buffer is a member of `core/kill-buffer-ignored-list', bury it rather th
         (kill-buffer buffer)
         (message "File '%s' successfully removed" filename)))))
 
-
-(defalias 'rfb 'core/rename-file-and-buffer)
-(defalias 'rbf 'core/rename-file-and-buffer)
-(defalias 'dfb 'core/delete-file-and-buffer)
-(defalias 'dbf 'core/delete-file-and-buffer)
-
 
 ;;; Line transposition
 
