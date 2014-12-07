@@ -4,6 +4,7 @@
     super-smart-ops
     file-template
     recentf
+    iedit
     )
   "List of all extensions to load before the packages.")
 
@@ -90,3 +91,9 @@
       (defadvice recentf-cleanup (around hide-messages activate)
         "Do not message when cleaning up recentf list."
         (noflet ((message (&rest args))) ad-do-it)))))
+
+(defun cb-core/init-iedit ()
+  (use-package iedit
+    :config
+    (custom-set-faces
+     `(iedit-occurrence ((t (:background ,solarized-hl-orange :foreground "white")))))))

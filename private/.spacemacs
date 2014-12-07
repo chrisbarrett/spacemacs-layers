@@ -25,7 +25,6 @@
                                      cb-flycheck
                                      cb-project
                                      cb-smartparens
-                                     cb-iedit
                                      cb-ledger
                                      cb-proof
                                      cb-haskell
