@@ -88,3 +88,8 @@ which require an initialization must be listed explicitly in the list.")
       (add-hook 'evil-normal-state-entry-hook 'haskell/hide-hi2-guides)
       (add-hook 'evil-insert-state-entry-hook 'haskell/show-hi2-guides)
       (add-hook 'evil-insert-state-exit-hook 'haskell/hide-hi2-guides))))
+
+(defun cb-haskell/init-flycheck-haskell ()
+  (use-package flycheck-haskell
+    :commands flycheck-haskell-configure
+    :init (add-hook 'haskell-mode-hook 'flycheck-haskell-configure)))
