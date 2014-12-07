@@ -42,7 +42,6 @@
 
 ;;; Set variables
 
-(setq powerline-default-separator 'bar)
 (setq abbrev-file-name (concat spacemacs-cache-directory "abbrev_defs"))
 (setq backup-directory-alist '((".*" . spacemacs-autosaves-directory)))
 (setq bookmark-default-file (concat spacemacs-cache-directory "bookmarks"))
@@ -57,6 +56,9 @@
 (setq sentence-end-double-space nil)
 (setq x-select-enable-clipboard t)
 (setq compilation-scroll-output 'first-error)
+
+(setq mac-option-modifier 'meta)
+(setq mac-command-modifier 'super)
 
 (setq-default fill-column 80)
 (setq-default tab-width 4)
