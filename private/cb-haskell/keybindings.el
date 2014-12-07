@@ -19,6 +19,7 @@
   (define-key haskell-mode-map (kbd "M-q")           'haskell/format-dwim)
   (define-key haskell-mode-map (kbd "M-RET")         'haskell/meta-ret)
   (define-key haskell-mode-map (kbd "<backspace>")   'haskell/backspace)
+  (define-key haskell-mode-map (kbd "C-c i") 'shm-reformat-decl)
 
   (define-key haskell-mode-map (kbd "#") 'haskell/smart-hash)
   )

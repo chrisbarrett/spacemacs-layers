@@ -8,6 +8,7 @@
   '(
     ;; post extension cb-haskells go here
     super-smart-ops
+    hindent
     )
   "List of all extensions to load after the packages.")
 
@@ -46,3 +47,10 @@
           (":" . haskell/ghci-smart-colon)
           ("," . haskell/ghci-smart-comma)
           (";" . haskell/smart-semicolon))))))
+
+(defun cb-haskell/init-hindent ()
+  (use-package hindent
+    :load-path "private/cb-haskell/extensions/hindent/elisp"
+    :commands hindent/reformat-decl
+    :config
+    (setq hindent-style "gibiansky")))

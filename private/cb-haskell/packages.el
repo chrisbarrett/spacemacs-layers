@@ -52,6 +52,7 @@ which require an initialization must be listed explicitly in the list.")
     :config
     (progn
       (require 'shm-case-split)
+      (require 'shm-reformat)
       (setq shm-auto-insert-skeletons nil)
 
       (add-hook 'haskell-mode-hook 'haskell/init-shm-smart-ops-compat)

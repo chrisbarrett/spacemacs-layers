@@ -34,3 +34,6 @@
 [submodule "private/cb-core/extensions/super-smart-ops"]
 	path = private/cb-core/extensions/super-smart-ops
 	url = https://github.com/chrisbarrett/super-smart-ops.git
+[submodule "private/cb-haskell/extensions/hindent"]
+	path = private/cb-haskell/extensions/hindent
+	url = https://github.com/chrisdone/hindent.git
