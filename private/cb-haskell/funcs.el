@@ -282,9 +282,11 @@
       (goto-char (match-beginning 0))
       (current-column))))
 
-(defun haskell/meta-ret ()
-  "Open a new line in a context-sensitive way."
-  (interactive)
+(defun haskell/meta-ret (&optional arg)
+  "Open a new line in a context-sensitive way.
+
+Arg modifies the thing to be inserted."
+  (interactive "P")
   (yas-exit-all-snippets)
   (cond
 
@@ -329,7 +331,7 @@
     (insert "-> ")
     (message "New arrow"))
 
-   ;; Insert new line with a binding in do-notation.
+   ;; Insert new line with a do-binding or return.
    ((s-matches? (rx bol (* space) (+ nonl) "<-") (current-line))
     (back-to-indentation)
     (let ((col (current-column)))
@@ -337,10 +339,13 @@
       (shm/forward-node)
       (newline)
       (indent-to col))
-
-    (yas-insert-first-snippet (lambda (sn)
-                                (equal "do-binding" (yas--template-name sn))))
-    (message "New do-binding"))
+    (cond (arg
+           (insert "return ")
+           (message "Return statement"))
+          (t
+           (yas-insert-first-snippet (lambda (sn)
+                                       (equal "do-binding" (yas--template-name sn))))
+           (message "New do-binding"))))
 
    ;; New function case.
    ((haskell/at-decl-for-function? (haskell/first-ident-on-line))
