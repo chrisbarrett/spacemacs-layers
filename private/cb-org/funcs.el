@@ -271,6 +271,9 @@ are between the current date (DATE) and Easter Sunday."
   (- (calendar-absolute-from-gregorian date)
      (calendar-easter-date (calendar-extract-year date))))
 
+
+(autoload 'appt-check "appt")
+
 (defun org/diary-update-appt-on-save ()
   (save-restriction
     (save-window-excursion
