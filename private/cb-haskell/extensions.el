@@ -33,7 +33,8 @@
           ("|" . haskell/smart-pipe)
           ("#" . haskell/smart-hash)
           ("-" . haskell/smart-minus)
-          (":" . haskell/smart-colon)))
+          (":" . haskell/smart-colon)
+          (";" . haskell/smart-semicolon)))
 
       (super-smart-ops-configure-for-mode 'haskell-interactive-mode
         :add '("$" "=")
@@ -43,4 +44,5 @@
           ("#" . haskell/smart-hash)
           ("|" . haskell/smart-pipe)
           (":" . haskell/ghci-smart-colon)
-          ("," . haskell/ghci-smart-comma))))))
+          ("," . haskell/ghci-smart-comma)
+          (";" . haskell/smart-semicolon))))))

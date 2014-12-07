@@ -130,6 +130,11 @@
    (t
     (super-smart-ops-insert ":"))))
 
+(defun haskell/smart-semicolon ()
+  "Insert a colon, with context-sensitive formatting."
+  (interactive)
+  (core/insert-smart-op-no-leading-space ";"))
+
 (defun haskell/backspace ()
   "Delete backwards with context-sensitive formatting."
   (interactive)
