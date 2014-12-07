@@ -59,6 +59,7 @@
 
 (setq mac-option-modifier 'meta)
 (setq mac-command-modifier 'super)
+(setq mac-pass-control-to-system nil)
 
 (setq-default fill-column 80)
 (setq-default tab-width 4)

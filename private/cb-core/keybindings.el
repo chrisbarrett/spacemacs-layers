@@ -1,3 +1,10 @@
+;;; OS X compat
+(global-set-key (kbd "s-q") 'save-buffers-kill-emacs)
+(global-set-key (kbd "s-v") 'yank)
+(global-set-key (kbd "s-c") 'copy-region-as-kill)
+
+
+
 (global-set-key (kbd "C-c e e") 'toggle-debug-on-error)
 (global-set-key (kbd "C-x a a") 'align-regexp)
 
