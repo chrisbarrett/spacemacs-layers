@@ -1,8 +1,3 @@
-(require 's)
-(require 'dash)
-
-
-
 (defun haskell/after-subexpr-opening? ()
   (s-matches? (rx (or "{" "[" "{-" "{-#" "(#") (* space) eol)
               (buffer-substring (line-beginning-position) (point))))
@@ -499,18 +494,27 @@ Arg modifies the thing to be inserted."
       (when (s-matches? (rx (+ nonl)) (buffer-substring (point) (line-end-position)))
         (newline)))))
 
-(defvar haskell/language-pragmas
-  (s-split "\n" (s-trim (shell-command-to-string "ghc --supported-languages")))
-  "List the language pragmas available in GHC.")
+(defvar haskell//language-pragmas nil)
+
+(defun haskell/language-pragmas ()
+  "List the language pragmas available in GHC."
+  (unless haskell//language-pragmas
+    ;; Retrive list of language pragmas from GHC.
+    (let ((str (s-split "\n" (s-trim (shell-command-to-string "ghc --supported-languages")))))
+      (setq haskell//language-pragmas str)))
+
+  haskell//language-pragmas)
+
+
 
 (defun haskell/language-pragmas-in-file ()
   "List the language pragmas set in the current file."
   (--filter (s-matches? it (buffer-string))
-            haskell/language-pragmas))
+            (haskell/language-pragmas)))
 
 (defun haskell/available-language-pragmas ()
   "List the language pragmas that have not been set in the current file."
-  (-difference haskell/language-pragmas (haskell/language-pragmas-in-file)))
+  (-difference (haskell/language-pragmas) (haskell/language-pragmas-in-file)))
 
 (defun haskell/insert-language-pragma (pragma)
   "Read a language pragma to be inserted at the start of this file."

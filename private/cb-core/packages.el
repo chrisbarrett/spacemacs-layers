@@ -6,6 +6,7 @@
     s
     f
     noflet
+    diminish
     evil
     evil-surround
     company
@@ -29,6 +30,33 @@ which require an initialization must be listed explicitly in the list.")
 ;; Often the body of an initialize function uses `use-package'
 ;; For more info on `use-package', see readme:
 ;; https://github.com/jwiegley/use-package
+
+(defun cb-core/init-s ()
+  (use-package s
+    :config (require 's)))
+
+(defun cb-core/init-noflet ()
+  (use-package noflet
+    :config (require 'noflet)))
+
+(defun cb-core/init-dash ()
+  (use-package dash
+    :config (require 'dash)))
+
+(defun cb-core/init-dash-functional ()
+  (use-package dash-functional
+    :config (require 'dash-functional)))
+
+(defun cb-core/init-f ()
+  (use-package f
+    :config (require 'f)))
+
+(defun cb-core/init-diminish ()
+  (use-package diminish
+    :config
+    (progn
+      (require 'diminish)
+      (diminish 'auto-fill-function " ≣"))))
 
 (defun cb-core/init-company ()
   (use-package company

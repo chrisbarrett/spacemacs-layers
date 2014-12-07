@@ -22,7 +22,6 @@
                                      cb-spelling
                                      cb-git
                                      cb-yasnippet
-                                     cb-flycheck
                                      cb-project
                                      cb-smartparens
                                      cb-ledger

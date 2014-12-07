@@ -18,8 +18,6 @@ which require an initialization must be listed explicitly in the list.")
 ;; For more info on `use-package', see readme:
 ;; https://github.com/jwiegley/use-package
 
-(require 'f)
-
 (defun cb-yasnippet/init-yasnippet ()
   (use-package yasnippet
     :init

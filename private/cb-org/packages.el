@@ -26,6 +26,7 @@ which require an initialization must be listed explicitly in the list.")
     (setq org-directory (file-name-as-directory org-directory))
     :config
     (progn
+      (require 's)
 
       (add-hook 'org-mode-hook 'auto-revert-mode)
       (add-hook 'org-mode-hook 'abbrev-mode)

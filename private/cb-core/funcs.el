@@ -3,8 +3,6 @@
 (autoload 'org-move-item-down "org-list")
 (autoload 'org-move-item-up "org-list")
 (require 'cl-lib)
-(require 'dash)
-(require 's)
 
 
 

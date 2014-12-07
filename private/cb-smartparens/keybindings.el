@@ -1,13 +1,12 @@
-(require 'smartparens)
+(after 'smartparens
+  (sp-pair "(" ")"   :bind "M-(")
+  (sp-pair "{" "}"   :bind "M-{")
+  (sp-pair "[" "]"   :bind "M-[")
+  (sp-pair "\"" "\"" :bind "M-\"")
+  (sp-pair "`" "`"   :bind "M-`")
 
-(sp-pair "(" ")"   :bind "M-(")
-(sp-pair "{" "}"   :bind "M-{")
-(sp-pair "[" "]"   :bind "M-[")
-(sp-pair "\"" "\"" :bind "M-\"")
-(sp-pair "`" "`"   :bind "M-`")
-
-(define-key sp-keymap (kbd "C-k") 'sp/kill-blank-lines)
-(define-key sp-keymap (kbd "DEL") 'sp-backward-delete-char)
+  (define-key sp-keymap (kbd "C-k") 'sp/kill-blank-lines)
+  (define-key sp-keymap (kbd "DEL") 'sp-backward-delete-char))
 
 (evil-global-set-key 'normal ",A" 'sp-add-to-previous-sexp)
 (evil-global-set-key 'normal ",a" 'sp-add-to-next-sexp)

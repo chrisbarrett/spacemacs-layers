@@ -1,8 +1,6 @@
 (defvar cb-core-pre-extensions
   '(
     ;; pre extension cores go here
-    super-smart-ops
-    file-template
     recentf
     iedit
     )
@@ -11,7 +9,9 @@
 (defvar cb-core-post-extensions
   '(
     ;; post extension cores go here
+    super-smart-ops
     ido
+    file-template
     )
   "List of all extensions to load after the packages.")
 

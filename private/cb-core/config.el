@@ -1,16 +1,9 @@
-(require 'f)
-(require 'dash)
-(require 'dash-functional)
-(require 'noflet)
-
 ;; Menu-bar looks acceptable in OS X. Otherwise it adds clutter.
 (when (fboundp 'menu-bar-mode)
   (if (and (eq system-type 'darwin)
            (not noninteractive))
       (menu-bar-mode +1)
     (menu-bar-mode -1)))
-
-(diminish 'auto-fill-function " ≣")
 
 ;;; Use larger font
 (defvar core/monospace-font "Source Code Pro")
