@@ -154,3 +154,14 @@
     inferior-scheme-mode
     inferior-haskell-mode
     sclang-post-buffer-mode))
+
+
+;;; Highlight TODO keywords in all modes.
+
+(defun core/set-todo-font-lock ()
+  "Highlight todos in programming language modes."
+  (font-lock-add-keywords
+   nil `((,(rx (syntax comment-start) (* nonl) bow (group (or "FIX" "TODO" "FIXME" "HACK" "REFACTOR")) ":")
+          1 font-lock-warning-face t))))
+
+(add-hook 'prog-mode-hook 'core/set-todo-font-lock)
