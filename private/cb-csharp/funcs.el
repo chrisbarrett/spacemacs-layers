@@ -1,16 +1,27 @@
+(defun csharp/line-pad-usings ()
+  "Add a trailing line of padding after usings."
+  (save-excursion
+    (goto-char (point-min))
+    (when (search-forward-regexp (rx bol "using") nil t)
+      (while (and (s-matches? (rx bol "using") (current-line))
+                  (not (eobp)))
+        (forward-line))
+
+      (unless (s-blank? (current-line))
+        (goto-char (line-beginning-position))
+        (newline)))))
+
+(defadvice omnisharp-fix-usings (after pad-usings activate)
+  (csharp/line-pad-usings))
+
+
+;;; Inserting namespaces
+
 (defun csharp/do-insert-at-imports (ns)
   (save-excursion
     (goto-char (point-min))
     (insert (format "using %s;\n" ns))
-
-    ;; Ensure there is a blank line after using statements.
-    (while (and (s-matches? (rx bol "using") (current-line))
-                (not (eobp)))
-      (forward-line))
-
-    (unless (s-blank? (current-line))
-      (goto-char (line-beginning-position))
-      (newline))))
+    (csharp/line-pad-usings)))
 
 (defun csharp/current-imported-namespaces ()
   "Return a list of namespaces imported in this buffer."
@@ -18,19 +29,6 @@
                                        "using" (+ space)
                                        (group (+ (any "." word))))
                                    (buffer-substring-no-properties (point-min) (point-max)))))
-
-(defun csharp/insert-using (ns)
-  (interactive
-   (list
-    (let ((cs (-difference csharp/bcl-namespaces
-                           (csharp/current-imported-namespaces))))
-      (ido-completing-read "Namespace: " cs))))
-
-  (if (s-matches? (rx-to-string `(and "using" (+ space) ,ns ";" (* space) eol))
-                  (buffer-string))
-      (when (called-interactively-p nil)
-        (message "Already using '%s'" ns))
-    (csharp/do-insert-at-imports ns)))
 
 (defvar csharp/bcl-namespaces
   '("System" "System.Activities" "System.AddIn" "System.CodeDom" "System.ComponentModel" "System.Deployment"
@@ -110,3 +108,16 @@
     "System.Xml" "System.Xml.Linq" "System.Xml.Resolvers" "System.Xml.Schema" "System.Xml.Serialization" "System.Xml.Serialization.Advanced"
     "System.Xml.Serialization.Configuration" "System.Xml.XmlConfiguration" "System.Xml.XPath" "System.Xml.Xsl" "System.Xml.Xsl.Runtime"
     ))
+
+(defun csharp/insert-using (ns)
+  (interactive
+   (list
+    (let ((cs (-difference csharp/bcl-namespaces
+                           (csharp/current-imported-namespaces))))
+      (ido-completing-read "Namespace: " cs))))
+
+  (if (s-matches? (rx-to-string `(and "using" (+ space) ,ns ";" (* space) eol))
+                  (buffer-string))
+      (when (called-interactively-p nil)
+        (message "Already using '%s'" ns))
+    (csharp/do-insert-at-imports ns)))
