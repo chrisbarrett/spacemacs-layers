@@ -27,4 +27,5 @@ which require an initialization must be listed explicitly in the list.")
     :config
     (progn
       (add-hook 'csharp-mode-hook 'omnisharp-mode)
-      (setq omnisharp-server-executable-path (getenv "OMNISHARP_PATH")))))
+      (setq omnisharp-server-executable-path
+            "~/src/OmniSharpServer/OmniSharp/bin/Debug/OmniSharp.exe"))))
