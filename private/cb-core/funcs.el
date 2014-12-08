@@ -371,3 +371,8 @@ PARAGRAPH-LENGTH is one of short, medium, long or verylong."
   "Insert a comma smart op, removing any preceding padding."
   (interactive)
   (core/insert-smart-op-no-leading-space ","))
+
+(defun core/semicolon-then-space ()
+  "Insert a colon, with context-sensitive formatting."
+  (interactive)
+  (core/insert-smart-op-no-leading-space ";"))

@@ -35,7 +35,7 @@
           ("#" . haskell/smart-hash)
           ("-" . haskell/smart-minus)
           (":" . haskell/smart-colon)
-          (";" . haskell/smart-semicolon)))
+          (";" . core/semicolon-then-space)))
 
       (super-smart-ops-configure-for-mode 'haskell-interactive-mode
         :add '("$" "=")
@@ -46,7 +46,7 @@
           ("|" . haskell/smart-pipe)
           (":" . haskell/ghci-smart-colon)
           ("," . haskell/ghci-smart-comma)
-          (";" . haskell/smart-semicolon))))))
+          (";" . core/semicolon-then-space))))))
 
 (defun cb-haskell/init-hindent ()
   (use-package hindent

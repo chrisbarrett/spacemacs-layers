@@ -25,4 +25,8 @@
 (defun cb-csharp/init-super-smart-ops ()
   (use-package super-smart-ops
     :config
-    (super-smart-ops-configure-for-mode 'csharp-mode)))
+    (super-smart-ops-configure-for-mode 'csharp-mode
+      :add '("?")
+      :custom
+      '(("," . core/comma-then-space)
+        (";" . core/semicolon-then-space)))))
