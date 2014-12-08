@@ -23,5 +23,8 @@ which require an initialization must be listed explicitly in the list.")
 (defun cb-csharp/init-omnisharp ()
   (use-package omnisharp
     :commands omnisharp-mode
+    :diminish "O#"
     :config
-    (add-hook 'csharp-mode-hook 'omnisharp-mode)))
+    (progn
+      (add-hook 'csharp-mode-hook 'omnisharp-mode)
+      (setq omnisharp-server-executable-path (getenv "OMNISHARP_PATH")))))

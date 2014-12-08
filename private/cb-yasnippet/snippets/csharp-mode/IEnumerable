@@ -1,0 +1,6 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: IEnumerable
+# key: ie
+# binding: direct-keybinding
+# --
+IEnumerable<${1:T}>

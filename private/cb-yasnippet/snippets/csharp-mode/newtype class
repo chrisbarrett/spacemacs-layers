@@ -1,0 +1,14 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: newtype class
+# key: nt
+# binding: direct-keybinding
+# condition: (yas/bol?)
+# --
+/// <summary>
+/// Simple wrapper around a $2 representing a ${1:$(s-titleized-words yas-text)}.
+/// </summary>
+sealed class ${1:Name} {
+  public $1 (${2:T} ${3:name}) { _$3 = $3; }
+  public $2 Value { get { return _$3; } }
+  private readonly $2 _$3;
+}

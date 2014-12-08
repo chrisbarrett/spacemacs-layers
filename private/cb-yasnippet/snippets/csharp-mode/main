@@ -1,9 +1,11 @@
 # -*- mode: snippet; require-final-newline: nil -*-
-# name: foreach
-# key: fe
+# name: main
+# key: main
 # binding: direct-keybinding
 # condition: (yas/bol?)
 # --
-foreach (var ${1:x} in ${2:xs}) {
+static int Main(string[] argv) {
   $0
+
+  return 0;
 }
