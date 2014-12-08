@@ -121,3 +121,13 @@
       (when (called-interactively-p nil)
         (message "Already using '%s'" ns))
     (csharp/do-insert-at-imports ns)))
+
+
+;;; File template
+
+(defun csharp/insert-template-header-for-file-template ()
+  (let ((name (s-upper-camel-case (f-no-ext (buffer-name)))))
+    (cond
+     ((s-starts-with? "I" name) (format "interface %s" name))
+     (t
+      (format "class %s" name)))))
