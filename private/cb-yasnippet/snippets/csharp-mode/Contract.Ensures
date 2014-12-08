@@ -1,0 +1,7 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: Contract.Ensures
+# key: ce
+# binding: direct-keybinding
+# condition: (yas/bol?)
+# --
+Contract.Ensures($0);

@@ -1,0 +1,11 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: class
+# key: cl
+# binding: direct-keybinding
+# condition: (yas/bol?)
+# --
+sealed class ${1:Name} {
+  ${2:public $1 (${3:args...}) {
+    $0
+  }}
+}

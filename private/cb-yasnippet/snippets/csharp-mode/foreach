@@ -1,0 +1,9 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: foreach
+# key: foreach
+# binding: direct-keybinding
+# condition: (yas/bol?)
+# --
+foreach (var ${1:x} in ${2:xs}) {
+  $0
+}

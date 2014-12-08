@@ -1,0 +1,9 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: static method (private)
+# key: sm
+# binding: direct-keybinding
+# condition: (yas/bol?)
+# --
+private static ${3:T} ${1:Mthd}(${2:args...}) {
+  $0
+}

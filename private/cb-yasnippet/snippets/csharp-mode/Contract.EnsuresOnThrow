@@ -1,0 +1,6 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: Contract.EnsuresOnThrow
+# key: cet
+# binding: direct-keybinding
+# --
+Contract.EnsuresOnThrow<${1:T}Exception>($0);

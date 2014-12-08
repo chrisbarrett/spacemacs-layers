@@ -1,0 +1,6 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: Contract.Requires not null
+# key: crn
+# binding: direct-keybinding
+# --
+Contract.Requires($0 != null);

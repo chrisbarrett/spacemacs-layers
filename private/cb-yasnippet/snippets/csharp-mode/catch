@@ -1,0 +1,9 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: catch
+# key: catch
+# binding: direct-keybinding
+# condition: (yas/bol?)
+# --
+catch (${1:T}Exception ex) {
+  $0
+}

@@ -1,0 +1,9 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: finally
+# key: finally
+# binding: direct-keybinding
+# condition: (yas/bol?)
+# --
+finally {
+  $0
+}

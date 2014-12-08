@@ -1,0 +1,49 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: Dispose
+# key: dispose
+# binding: direct-keybinding
+# condition: (yas/bol?)
+# --
+#region IDisposable
+
+private bool _disposed = false;
+
+/// <summary>
+/// Private implementation of IDisposable that is safe to call during finalisation.
+/// <param name="disposing">IDisposable.Dispose passes 'true'. Finalizer passes 'false'.</param>
+/// </summary>
+protected virtual void Dispose(bool disposing) {
+  if (_disposed) {
+    return;
+  }
+  if (disposing) {
+    // Free managed objects implementing IDisposable.
+    $0
+  }
+
+  // Release unmanaged objects.
+
+  _disposed = true;
+}
+
+/// <summary>
+/// Public implementation of IDisposable. It is safe to call this method multiple times.
+/// </summary>
+public void Dispose() {
+  try {
+    Dispose(true);
+  }
+  finally {
+    base.Dispose();
+  }
+  GC.SuppressFinalize(this);
+}
+
+#endregion
+
+/// <summary>
+/// Finalizer that disposes unmanaged members.
+/// </summary>
+~`(or (yas/csharp-class-name) "FIXME")`() {
+   Dispose(false);
+}

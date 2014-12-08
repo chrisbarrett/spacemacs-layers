@@ -1,0 +1,10 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: property (backing field)
+# key: p
+# binding: direct-keybinding
+# --
+private readonly $1 _${2:$(s-lower-camel-case yas-text)};
+
+public ${1:T} ${2:Name} {
+  get { return _${2:$(s-lower-camel-case yas-text)}; }
+}

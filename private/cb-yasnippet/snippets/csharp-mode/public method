@@ -1,0 +1,8 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: method (public)
+# key: m
+# binding: direct-keybinding
+# --
+public ${3:T} ${1:Mthd}(${2:args...}) {
+  $0
+}

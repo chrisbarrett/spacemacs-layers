@@ -277,3 +277,10 @@ is not the first, or from an unwritable file)."
                                 nil t)
         (s-trim (match-string 1))
       "Name")))
+
+
+
+(defun yas/csharp-class-name ()
+  "Find the last declared class or struct name in the current file."
+  (when (search-backward-regexp (rx "class" (+ space) (group (+ word))) nil t)
+    (match-string 1)))
