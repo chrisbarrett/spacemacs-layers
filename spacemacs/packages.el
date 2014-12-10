@@ -67,7 +67,6 @@
     hl-anything
     hy-mode
     ido-vertical-mode
-    js2-mode
     json-mode
     ledger-mode
     less-css-mode
@@ -112,13 +111,13 @@
     sbt-mode
     scala-mode2
     scss-mode
+    shell
     smartparens
     smeargle
     smooth-scrolling
     string-edit
     subword
     tagedit
-    tern-auto-complete
     undo-tree
     vi-tilde-fringe
     visual-regexp-steroids
@@ -606,6 +605,8 @@ determine the state to enable when escaping from the insert state.")
       ;; Make evil-mode up/down operate in screen lines instead of logical lines
       (define-key evil-normal-state-map "j" 'evil-next-visual-line)
       (define-key evil-normal-state-map "k" 'evil-previous-visual-line)
+      ;; Make the current definition and/or comment visible.
+      (define-key evil-normal-state-map "zf" 'reposition-window)
       ;; quick navigation
       (define-key evil-normal-state-map (kbd "L")
         (lambda () (interactive)
@@ -1339,12 +1340,6 @@ determine the state to enable when escaping from the insert state.")
       (add-to-list 'ido-setup-hook 'spacemacs//ido-vertical-define-keys))
       ))
 
-(defun spacemacs/init-js2-mode ()
-  (use-package js2-mode
-    :commands (js2-minor-mode)
-    :init
-    (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))))
-
 (defun spacemacs/init-json-mode ()
   (use-package json-mode
     :defer t))
@@ -1917,6 +1912,33 @@ determine the state to enable when escaping from the insert state.")
     :defer t
     :mode ("\\.scss\\'" . scss-mode)))
 
+(defun spacemacs/init-shell ()
+  (defun shell-comint-input-sender-hook ()
+    "Check certain shell commands.
+ Executes the appropriate behavior for certain commands."
+    (setq comint-input-sender
+          (lambda (proc command)
+            (cond
+             ;; Check for clear command and execute it.
+             ((string-match "^[ \t]*clear[ \t]*$" command)
+              (comint-send-string proc "\n")
+              (erase-buffer))
+             ;; Check for man command and execute it.
+             ((string-match "^[ \t]*man[ \t]*" command)
+              (comint-send-string proc "\n")
+              (setq command (replace-regexp-in-string "^[ \t]*man[ \t]*" "" command))
+              (setq command (replace-regexp-in-string "[ \t]+$" "" command))
+              (funcall 'man command))
+             ;; Send other commands to the default handler.
+             (t (comint-simple-send proc command))))))
+  (add-hook 'shell-mode-hook 'shell-comint-input-sender-hook)
+
+  (defun eshell/clear ()
+    "Clear contents in eshell."
+    (interactive)
+    (let ((inhibit-read-only t))
+      (erase-buffer))))
+
 (defun spacemacs/init-smartparens ()
   (use-package smartparens
     :defer t
@@ -1992,14 +2014,6 @@ determine the state to enable when escaping from the insert state.")
       (tagedit-add-experimental-features)
       (add-hook 'html-mode-hook (lambda () (tagedit-mode 1)))
       (spacemacs|diminish tagedit-mode " Ⓣ"))))
-
-(defun spacemacs/init-tern-auto-complete ()
-  (use-package tern-auto-complete
-    :defer t
-    :init
-    (add-hook 'js2-mode-hook (lambda () (tern-mode t)))
-    :config
-    (tern-ac-setup)))
 
 (defun spacemacs/init-undo-tree ()
   (use-package undo-tree

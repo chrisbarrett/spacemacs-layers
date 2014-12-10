@@ -63,6 +63,7 @@
         - [Vim motions with ace-jump mode](#vim-motions-with-ace-jump-mode)
         - [Window manipulation](#window-manipulation)
             - [Resizing windows](#resizing-windows)
+            - [Reposition window](#reposition-window)
             - [Golden ratio](#golden-ratio)
         - [Buffers and Files](#buffers-and-files)
         - [Ido](#ido)
@@ -192,13 +193,13 @@ and remember.
 # Screenshots
 
 _Startup_
-![spacemacs_startup](https://raw.githubusercontent.com/syl20bnr/spacemacs/master/doc/spacemacs-startup.png)
+![spacemacs_startup](https://raw.githubusercontent.com/syl20bnr/spacemacs/master/doc/img/spacemacs-startup.png)
 
 _Python_
-![spacemacs_python](https://raw.githubusercontent.com/syl20bnr/spacemacs/master/doc/spacemacs-python.png)
+![spacemacs_python](https://raw.githubusercontent.com/syl20bnr/spacemacs/master/doc/img/spacemacs-python.png)
 
 _Terminal (urxvt)_
-![spacemacs_urxvt](https://raw.githubusercontent.com/syl20bnr/spacemacs/master/doc/spacemacs-urxvt.png)
+![spacemacs_urxvt](https://raw.githubusercontent.com/syl20bnr/spacemacs/master/doc/img/spacemacs-urxvt.png)
 
 *Note: Even though screenshots are updated frequently, `Spacemacs` is evolving
 quickly and the screenshots may not reflect exactly the current state of the
@@ -581,10 +582,10 @@ When a `micro-state` is active, a documentation is displayed in the minibuffer.
 Additional information may as well be displayed in the minibuffer.
 
 [Auto-highlight-symbol micro-state](#auto-highlight-and-edition-of-symbols):
-![spacemacs_ahs_micro_state](https://raw.githubusercontent.com/syl20bnr/spacemacs/master/doc/spacemacs-ahs-micro-state.png)
+![spacemacs_ahs_micro_state](https://raw.githubusercontent.com/syl20bnr/spacemacs/master/doc/img/spacemacs-ahs-micro-state.png)
 
 [Text scale micro-state](#change-font-size):
-![spacemacs_scale_micro_state](https://raw.githubusercontent.com/syl20bnr/spacemacs/master/doc/spacemacs-scale-micro-state.png)
+![spacemacs_scale_micro_state](https://raw.githubusercontent.com/syl20bnr/spacemacs/master/doc/img/spacemacs-scale-micro-state.png)
 
 # Color theme
 
@@ -682,7 +683,7 @@ Some elements can be dynamically toggled:
 When [Flycheck][flycheck] minor mode is enabled, a new element appears showing
 the number of errors, warnings and info.
 
-![powerline-wave](https://raw.githubusercontent.com/syl20bnr/spacemacs/master/doc/powerline-wave.png)
+![powerline-wave](https://raw.githubusercontent.com/syl20bnr/spacemacs/master/doc/img/powerline-wave.png)
 
 ### Anzu integration
 
@@ -690,7 +691,7 @@ the number of errors, warnings and info.
 integrates nicely the Anzu status by displaying it temporarily when `n` or `N` are
 being pressed. See the `5/6` segment on the screenshot below.
 
-![powerline-anzu](https://raw.githubusercontent.com/syl20bnr/spacemacs/master/doc/powerline-anzu.png)
+![powerline-anzu](https://raw.githubusercontent.com/syl20bnr/spacemacs/master/doc/img/powerline-anzu.png)
 
 ### Battery status integration
 
@@ -726,22 +727,22 @@ powerline, here is an exhaustive set of screenshots:
 
     Separator     |                 Screenshot
 ------------------|------------------------------------------------------------
-`alternate`       | ![powerline-alternate](https://raw.githubusercontent.com/syl20bnr/spacemacs/master/doc/powerline-alternate.png)
-`arrow`           | ![powerline-arrow](https://raw.githubusercontent.com/syl20bnr/spacemacs/master/doc/powerline-arrow.png)
-`arrow-fade`      | ![powerline-arrow-fade](https://raw.githubusercontent.com/syl20bnr/spacemacs/master/doc/powerline-arrow-fade.png)
-`bar`             | ![powerline-bar](https://raw.githubusercontent.com/syl20bnr/spacemacs/master/doc/powerline-bar.png)
-`box`             | ![powerline-box](https://raw.githubusercontent.com/syl20bnr/spacemacs/master/doc/powerline-box.png)
-`brace`           | ![powerline-brace](https://raw.githubusercontent.com/syl20bnr/spacemacs/master/doc/powerline-brace.png)
-`butt`            | ![powerline-butt](https://raw.githubusercontent.com/syl20bnr/spacemacs/master/doc/powerline-butt.png)
-`chamfer`         | ![powerline-chamfer](https://raw.githubusercontent.com/syl20bnr/spacemacs/master/doc/powerline-chamfer.png)
-`contour`         | ![powerline-contour](https://raw.githubusercontent.com/syl20bnr/spacemacs/master/doc/powerline-contour.png)
-`curve`           | ![powerline-curve](https://raw.githubusercontent.com/syl20bnr/spacemacs/master/doc/powerline-curve.png)
-`rounded`         | ![powerline-rounded](https://raw.githubusercontent.com/syl20bnr/spacemacs/master/doc/powerline-rounded.png)
-`roundstub`       | ![powerline-roundstub](https://raw.githubusercontent.com/syl20bnr/spacemacs/master/doc/powerline-roundstub.png)
-`slant`           | ![powerline-slant](https://raw.githubusercontent.com/syl20bnr/spacemacs/master/doc/powerline-slant.png)
-`wave`            | ![powerline-wave](https://raw.githubusercontent.com/syl20bnr/spacemacs/master/doc/powerline-wave.png)
-`zigzag`          | ![powerline-zigzag](https://raw.githubusercontent.com/syl20bnr/spacemacs/master/doc/powerline-zigzag.png)
-`nil`             | ![powerline-nil](https://raw.githubusercontent.com/syl20bnr/spacemacs/master/doc/powerline-nil.png)
+`alternate`       | ![powerline-alternate](https://raw.githubusercontent.com/syl20bnr/spacemacs/master/doc/img/powerline-alternate.png)
+`arrow`           | ![powerline-arrow](https://raw.githubusercontent.com/syl20bnr/spacemacs/master/doc/img/powerline-arrow.png)
+`arrow-fade`      | ![powerline-arrow-fade](https://raw.githubusercontent.com/syl20bnr/spacemacs/master/doc/img/powerline-arrow-fade.png)
+`bar`             | ![powerline-bar](https://raw.githubusercontent.com/syl20bnr/spacemacs/master/doc/img/powerline-bar.png)
+`box`             | ![powerline-box](https://raw.githubusercontent.com/syl20bnr/spacemacs/master/doc/img/powerline-box.png)
+`brace`           | ![powerline-brace](https://raw.githubusercontent.com/syl20bnr/spacemacs/master/doc/img/powerline-brace.png)
+`butt`            | ![powerline-butt](https://raw.githubusercontent.com/syl20bnr/spacemacs/master/doc/img/powerline-butt.png)
+`chamfer`         | ![powerline-chamfer](https://raw.githubusercontent.com/syl20bnr/spacemacs/master/doc/img/powerline-chamfer.png)
+`contour`         | ![powerline-contour](https://raw.githubusercontent.com/syl20bnr/spacemacs/master/doc/img/powerline-contour.png)
+`curve`           | ![powerline-curve](https://raw.githubusercontent.com/syl20bnr/spacemacs/master/doc/img/powerline-curve.png)
+`rounded`         | ![powerline-rounded](https://raw.githubusercontent.com/syl20bnr/spacemacs/master/doc/img/powerline-rounded.png)
+`roundstub`       | ![powerline-roundstub](https://raw.githubusercontent.com/syl20bnr/spacemacs/master/doc/img/powerline-roundstub.png)
+`slant`           | ![powerline-slant](https://raw.githubusercontent.com/syl20bnr/spacemacs/master/doc/img/powerline-slant.png)
+`wave`            | ![powerline-wave](https://raw.githubusercontent.com/syl20bnr/spacemacs/master/doc/img/powerline-wave.png)
+`zigzag`          | ![powerline-zigzag](https://raw.githubusercontent.com/syl20bnr/spacemacs/master/doc/img/powerline-zigzag.png)
+`nil`             | ![powerline-nil](https://raw.githubusercontent.com/syl20bnr/spacemacs/master/doc/img/powerline-nil.png)
 
 ### Minor Modes
 
@@ -817,15 +818,22 @@ The choice of `fd` was made to be able to use the same sequence to escape from
 - abort isearch
 - quit magit buffers
 - quit help buffers
+- quit apropos buffers
+- quit ert buffers
+- quit undo-tree buffer
+- quit paradox
+- quit gist-list menu
 - hide neotree buffer
 
-This sequence can be customized in your `~/.spacemacs`, for instance to
-revert back to the popular configuration using `jj` (just for the example
-it is not recommended) add this to your `config` function:
+This sequence can be customized in your `~/.spacemacs`, but `evil-escape`
+is not guaranteed to work properly with sequences based on `h j k or l` so
+it is recommended to avoid defining sequences like `jj` or `jk`.
+
+Example to set it to `jn` (it is important to put it in `dotspacemacs/init`):
 
 ```elisp
-(defun dotspacemacs/config ()
-  (setq-default evil-escape-key-sequence (kbd "jj"))
+(defun dotspacemacs/init ()
+  (setq-default evil-escape-key-sequence (kbd "jn"))
 )
 ```
 
@@ -949,6 +957,14 @@ Any other key       | leave the micro-state
 The micro-state text in minibuffer display the following information:
 
     [WidthxHeight] Resize window: (H/L) shrink/enlarge horizontally, (J/K) shrink/enlarge vertically
+
+#### Reposition window
+
+Key Binding         | Description
+--------------------|------------------------------------------------------------
+<kbd>z f</kbd>      | Make current function or comments visible
+
+`z f` tries to accommodate current function or comments into window as much as possible.
 
 #### Golden ratio
 
@@ -1611,9 +1627,9 @@ you can answer `y` with no issue.
 
    Symbol                                                                                    | Description
 :-------------------------------------------------------------------------------------------:|-----------------
-![git-new](https://raw.githubusercontent.com/syl20bnr/spacemacs/master/doc/git-new-line.png) | new line
-![git-del](https://raw.githubusercontent.com/syl20bnr/spacemacs/master/doc/git-del-line.png) | at least one line has been deleted
-![git-mod](https://raw.githubusercontent.com/syl20bnr/spacemacs/master/doc/git-mod-line.png) | modified line
+![git-new](https://raw.githubusercontent.com/syl20bnr/spacemacs/master/doc/img/git-new-line.png) | new line
+![git-del](https://raw.githubusercontent.com/syl20bnr/spacemacs/master/doc/img/git-del-line.png) | at least one line has been deleted
+![git-mod](https://raw.githubusercontent.com/syl20bnr/spacemacs/master/doc/img/git-mod-line.png) | modified line
 
 ## Registers
 
@@ -1644,9 +1660,9 @@ Custom fringe bitmaps:
 
    Symbol                                                                                       | Description
 :----------------------------------------------------------------------------------------------:|------------
-![dot-error](https://raw.githubusercontent.com/syl20bnr/spacemacs/master/doc/dot-error.png)     | Error
-![dot-warning](https://raw.githubusercontent.com/syl20bnr/spacemacs/master/doc/dot-warning.png) | warning
-![dot-info](https://raw.githubusercontent.com/syl20bnr/spacemacs/master/doc/dot-info.png)       | Info
+![dot-error](https://raw.githubusercontent.com/syl20bnr/spacemacs/master/doc/img/dot-error.png)     | Error
+![dot-warning](https://raw.githubusercontent.com/syl20bnr/spacemacs/master/doc/img/dot-warning.png) | warning
+![dot-info](https://raw.githubusercontent.com/syl20bnr/spacemacs/master/doc/img/dot-info.png)       | Info
 
 ## Compiling
 
@@ -1761,20 +1777,8 @@ Writing python code with spacemacs is supported by python contribution. Please s
 
 ### JavaScript
 
-[js2-mode][] will activate for all `*.js` files, along with
-[tern-auto-complete][] which will provide the best JavaScript
-completion currently available. Just make sure you have the [tern][]
-NPM module installed.
-
-Tern includes the following key bindings:
-
-    Key Binding     |                 Description
---------------------|------------------------------------------------------------
-<kbd>M-.</kbd>      | jump to the definition of the thing under the cursor.
-<kbd>M-,</kbd>      | brings you back to last place you were when you pressed M-..
-<kbd>C-c C-r</kbd>  | rename the variable under the cursor.
-<kbd>C-c C-c</kbd>  | find the type of the thing under the cursor.
-<kbd>C-c C-d</kbd>  | find docs of the thing under the cursor. Press again to open the associated URL (if any).
+More featured JavaScript support is provided by the javascript contribution. Please see
+[javascript contribution][javascript-contrib] documentation for detail.
 
 ### rcirc
 
@@ -1872,7 +1876,8 @@ Achievements                                         | Account
 [First contribution][1st-contrib]                    | [trishume][]
 [First contribution layer][1st-clayer]               | [trishume][]
 [First blog article on Spacemacs][1st-article]       | [Wolfy87][]
-[100th issue (PR)][100th-issue]                      | [danielwuz][]
+[100th issue (was a PR)][100th-issue]                | [danielwuz][]
+[100th pull request][100th-PR]                       | [bru][]
 100th star                                           | [Jackneill][]
 200th star                                           | [jb55][]
 
@@ -1935,7 +1940,6 @@ developers to elisp hackers!
 [nose.el]: https://github.com/syl20bnr/nose.el
 [pylookup]: https://github.com/tsgates/pylookup
 [jedi]: https://github.com/tkf/emacs-jedi
-[edts]: https://github.com/tjarvstrand/edts
 [ess-R-object-popup]: https://github.com/myuhe/ess-R-object-popup.el
 [ess-R-data-view]: https://github.com/myuhe/ess-R-data-view.el
 [leuven-theme]: https://github.com/fniessen/emacs-leuven-theme
@@ -1950,15 +1954,13 @@ developers to elisp hackers!
 [issues]: https://github.com/syl20bnr/spacemacs/issues
 [vundle]: https://github.com/gmarik/Vundle.vim
 [anzu]: https://github.com/syohex/emacs-anzu
-[js2-mode]: https://github.com/mooz/js2-mode
-[tern-auto-complete]: https://github.com/marijnh/tern/blob/master/emacs/tern-auto-complete.el
-[tern]: http://ternjs.net/
+[javascript-contrib]: https://github.com/syl20bnr/spacemacs/tree/master/contrib/lang/javascript
 [themes-megapack]: https://github.com/syl20bnr/spacemacs/tree/master/contrib/themes-megapack
 [python-contrib]: https://github.com/syl20bnr/spacemacs/tree/master/contrib/lang/python
 [guide-key]: https://github.com/kai2nenobu/guide-key
 [guide-key-tip]: https://github.com/aki2o/guide-key-tip
 [gitter]: https://gitter.im/syl20bnr/spacemacs
-[CONTRIBUTE.md]: https://github.com/syl20bnr/spacemacs/blob/master/CONTRIBUTE.md
+[CONTRIBUTE.md]: https://github.com/syl20bnr/spacemacs/blob/master/doc/CONTRIBUTE.md
 [neotree]: https://github.com/jaypei/emacs-neotree
 [nerdtree]: https://github.com/scrooloose/nerdtree
 [anaconda-mode]: https://github.com/proofit404/anaconda-mode
@@ -1966,9 +1968,11 @@ developers to elisp hackers!
 [1st-clayer]: https://github.com/syl20bnr/spacemacs/commit/e802027d75d0c0aed55539b0da2dfa0df94dfd39
 [1st-article]: http://oli.me.uk/2014/11/06/spacemacs-emacs-vim/
 [100th-issue]: https://github.com/syl20bnr/spacemacs/pull/100
+[100th-PR]: https://github.com/syl20bnr/spacemacs/pull/228
 [trishume]:https://github.com/trishume
 [Wolfy87]:https://github.com/Wolfy87
 [danielwuz]:https://github.com/danielwuz
+[bru]:https://github.com/bru
 [Jackneill]:https://github.com/Jackneill
 [jb55]:https://github.com/jb55
 [use-package]: https://github.com/jwiegley/use-package
