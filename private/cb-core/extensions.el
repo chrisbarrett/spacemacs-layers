@@ -3,13 +3,13 @@
     ;; pre extension cores go here
     recentf
     iedit
+    super-smart-ops
     )
   "List of all extensions to load before the packages.")
 
 (defvar cb-core-post-extensions
   '(
     ;; post extension cores go here
-    super-smart-ops
     ido
     file-template
     )
