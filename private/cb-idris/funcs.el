@@ -18,7 +18,7 @@
     (insert ", ")
     (idris-indentation-indent-line))
    (t
-    (insert ","))))
+    (core/comma-then-space))))
 
 (defun idris/smart-pipe ()
   "Insert a pipe operator. Add padding, unless we're inside a list."
@@ -63,6 +63,27 @@
     (insert "?"))
    (t
     (super-smart-ops-insert "?"))))
+
+(defun idris/after-subexpr-opening? ()
+  (s-matches? (rx (or "{" "[" "{-" "[|") (* space) eol)
+              (buffer-substring (line-beginning-position) (point))))
+
+(defun idris/before-subexp-closing? ()
+  (s-matches? (rx bol (* space) (or "}" "]" "-}" "|]"))
+              (buffer-substring (point) (line-end-position))))
+
+
+(defun idris/smart-space ()
+  "Use shm space, but perform extra padding inside lists."
+  (interactive)
+  (cond
+   ((and (idris/after-subexpr-opening?) (idris/before-subexp-closing?))
+    (delete-horizontal-space)
+    (insert "  ")
+    (forward-char -1)
+    )
+   (t
+    (insert " "))))
 
 
 ;;; Commands
