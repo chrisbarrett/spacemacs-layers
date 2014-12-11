@@ -356,6 +356,32 @@ PARAGRAPH-LENGTH is one of short, medium, long or verylong."
               (s-trim (buffer-substring (point) (point-max)))))))
 
 
+;;; Create indirect buffer from region.
+
+(defvar-local indirect-mode-name nil
+  "Mode to set for indirect buffers.")
+
+(defun indirect-region (start end mode)
+  "Edit the current region in another buffer.
+Edit from START to END using MODE."
+  (interactive
+   (list (region-beginning)
+         (region-end)
+         (intern (completing-read
+                  "Mode: "
+                  (--map (list (symbol-name it))
+                         (apropos-internal "-mode$" 'commandp))
+                  nil t indirect-mode-name))))
+
+  (setq indirect-mode-name (symbol-name mode))
+  (let ((buffer-name (generate-new-buffer-name "*indirect*")))
+    (pop-to-buffer (make-indirect-buffer (current-buffer) buffer-name))
+    (funcall mode)
+    (narrow-to-region start end)
+    (goto-char (point-min))
+    (shrink-window-if-larger-than-buffer)))
+
+
 ;;; Super smart ops
 
 (defun core/insert-smart-op-no-leading-space (op)
