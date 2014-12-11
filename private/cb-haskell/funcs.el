@@ -208,6 +208,13 @@
            (haskell-mode-stylish-buffer)
            (message "Reformatted buffer.")))))
 
+(defun haskell/ret ()
+  "Insert a newline, possibly continuing a comment."
+  (interactive "*")
+  (if (s-matches? (rx bol (* space) "--") (current-line))
+      (insert "\n-- ")
+    (shm/simple-indent-newline-same-col)))
+
 
 ;;; hi2
 

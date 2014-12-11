@@ -38,10 +38,10 @@
   (define-key shm-map (kbd "C-k")        'shm/kill-node)
   (define-key shm-map (kbd "C-c C-s")    'shm/case-split)
   (define-key shm-map (kbd "C-<return>") 'shm/newline-indent)
+  (define-key shm-map (kbd "<return>")   'haskell/ret)
   (define-key shm-map (kbd "SPC") 'haskell/smart-space)
 
   ;; undefine commands that interfere with smart ops, etc.
-  (define-key shm-map (kbd "RET") nil)
   (define-key shm-map (kbd ",") nil)
   (define-key shm-map (kbd ":") nil)
   (define-key shm-map (kbd "#") nil)
