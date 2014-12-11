@@ -24,6 +24,7 @@
 
 ;;; Indentation
 
+(define-key prog-mode-map (kbd "RET") 'comment-indent-new-line)
 (define-key prog-mode-map (kbd "M-q") 'core/indent-dwim)
 (evil-define-key 'normal  prog-mode-map (kbd "M-q") 'core/indent-dwim)
 

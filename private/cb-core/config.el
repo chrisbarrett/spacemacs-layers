@@ -56,6 +56,7 @@
 
 (setq-default fill-column 80)
 (setq-default tab-width 4)
+(setq-default evil-shift-width 2)
 
 (add-hook 'compilation-filter-hook 'core/ansi-colourise-compilation)
 
