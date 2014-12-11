@@ -302,7 +302,7 @@ Arg modifies the thing to be inserted."
     (message "New data case"))
 
    ;; Insert pattern match at function definition.
-   ((s-matches? (rx bol (* space) (+ word) (+ space) "::") (current-line))
+   ((s-matches? (rx bol (* space) (+ (not space)) (+ space) "::") (current-line))
     (haskell/insert-function-template (haskell/first-ident-on-line))
     (message "New function case"))
 
