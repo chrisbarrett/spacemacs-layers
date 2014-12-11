@@ -1,6 +1,6 @@
-# key: tc
+# key: cl
 # name: typeclass
 # condition: (yas/bol?)
 # --
-class $1 where
-  $0
+class ${1:Name} where
+  ${2:sigs}
