@@ -8,6 +8,8 @@
 (global-set-key (kbd "C-c e e") 'toggle-debug-on-error)
 (global-set-key (kbd "C-x a a") 'align-regexp)
 
+(global-set-key (kbd "<f5>") 'compile)
+
 (bind-key (kbd "C-SPC") 'helm-mini)
 (bind-key (kbd "C-<backspace>") 'core/kill-this-buffer)
 (bind-key (kbd "C-c k b") 'core/clean-buffers)
