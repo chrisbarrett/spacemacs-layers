@@ -15,6 +15,7 @@
                                      auctex
                                      iedit
                                      haskell
+                                     osx
                                      cb-core
                                      cb-org
                                      cb-elisp

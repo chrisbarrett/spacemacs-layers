@@ -49,9 +49,6 @@
 (setq sentence-end-double-space nil)
 (setq x-select-enable-clipboard t)
 (setq compilation-scroll-output 'first-error)
-
-(setq mac-option-modifier 'meta)
-(setq mac-command-modifier 'super)
 (setq mac-pass-control-to-system nil)
 
 (setq-default fill-column 80)
