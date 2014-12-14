@@ -68,6 +68,8 @@
   "User initialization for Spacemacs. This function is called at the very
  startup."
   (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/"))
+  (paradox-require 'use-package)
+  (paradox-require 'noflet)
   (setq custom-file (concat user-emacs-directory "custom.el")))
 
 (defun dotspacemacs/config ()
