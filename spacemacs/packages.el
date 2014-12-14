@@ -1804,7 +1804,6 @@ determine the state to enable when escaping from the insert state.")
       (sp-pair "[" nil :post-handlers
                '(:add (spacemacs/smartparens-pair-newline-and-indent "RET"))))))
 
-
 (defun spacemacs/init-smooth-scrolling ()
   ;; this is not a conventional package
   ;; no require are needed for this package everything is auto-loaded
