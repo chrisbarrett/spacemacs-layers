@@ -44,3 +44,4 @@ python-*-docs-html
 !private/README.md
 /.cask/
 /network-security.data
+/games/
