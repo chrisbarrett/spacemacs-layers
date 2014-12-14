@@ -16,6 +16,8 @@
                                      iedit
                                      haskell
                                      osx
+                                     git
+                                     ;scala
                                      cb-core
                                      cb-org
                                      cb-elisp
