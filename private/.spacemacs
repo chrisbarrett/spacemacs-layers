@@ -17,7 +17,7 @@
                                      haskell
                                      osx
                                      git
-                                     ;scala
+                                     scala
                                      cb-core
                                      cb-org
                                      cb-elisp
