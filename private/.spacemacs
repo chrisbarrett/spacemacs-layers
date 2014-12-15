@@ -72,11 +72,11 @@
  startup."
   (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/"))
   (paradox-require 'use-package)
-  (paradox-require 'noflet)
-  (setq custom-file (concat user-emacs-directory "custom.el")))
+  (paradox-require 'noflet))
 
 (defun dotspacemacs/config ()
   "This is were you can ultimately override default Spacemacs configuration.
 This function is called at the very end of Spacemacs initialization."
+  (setq custom-file (concat user-emacs-directory "custom.el"))
   (load custom-file)
   (require 'personal-config nil t))
