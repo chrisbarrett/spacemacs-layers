@@ -72,7 +72,9 @@
  startup."
   (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/"))
   (paradox-require 'use-package)
-  (paradox-require 'noflet))
+  (paradox-require 'noflet)
+
+  (setq-default git-enable-github-support t))
 
 (defun dotspacemacs/config ()
   "This is were you can ultimately override default Spacemacs configuration.
