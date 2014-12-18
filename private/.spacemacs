@@ -13,7 +13,6 @@
  dotspacemacs-configuration-layers '(company-mode
                                      smex
                                      auctex
-                                     iedit
                                      haskell
                                      osx
                                      git
