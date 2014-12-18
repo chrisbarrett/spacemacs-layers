@@ -3,7 +3,7 @@
 ;; Pre extensions are loaded *before* the packages
 (defvar spacemacs-pre-extensions
   '(
-    use-package
+    key-chord
     ))
 
 ;; Post extensions are loaded *after* the packages
@@ -18,9 +18,6 @@
     ))
 
 ;; Initialize the extensions
-
-(defun spacemacs/init-use-package ()
-  (require 'use-package))
 
 (defun spacemacs/init-centered-cursor ()
   (use-package centered-cursor-mode
