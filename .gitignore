@@ -45,3 +45,4 @@ python-*-docs-html
 /.cask/
 /network-security.data
 /games/
+/async-bytecomp.log
