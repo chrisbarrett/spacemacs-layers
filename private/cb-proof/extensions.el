@@ -80,8 +80,6 @@
 
       (define-key coq-mode-map (kbd "M-RET")   'coq/meta-ret)
       (define-key coq-mode-map (kbd "C-c C-m") 'coq-insert-match)
-      (define-key coq-mode-map (kbd "M-N")     'proof-assert-next-command-interactive)
-      (define-key coq-mode-map (kbd "M-P")     'proof-undo-last-successful-command)
       (define-key coq-mode-map (kbd "RET")     'newline-and-indent))))
 
 (defun cb-proof/init-proof-script ()
