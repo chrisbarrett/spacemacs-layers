@@ -24,10 +24,19 @@
 (defun cb-scala/init-super-smart-ops ()
   (use-package super-smart-ops
     :config
-    (super-smart-ops-configure-for-mode 'scala-mode
-      :custom
-      '(("=" . scala/equals)
-        (":" . scala/colon)
-        ("+" . scala/plus)
-        ("-" . scala/minus)
-        ("," . core/comma-then-space)))))
+    (progn
+      (super-smart-ops-configure-for-mode 'scala-mode
+        :custom
+        '(("=" . scala/equals)
+          (":" . scala/colon)
+          ("+" . scala/plus)
+          ("-" . scala/minus)
+          ("," . core/comma-then-space)))
+
+      (super-smart-ops-configure-for-mode 'sbt-mode
+        :custom
+        '(("=" . scala/equals)
+          (":" . scala/colon)
+          ("+" . scala/plus)
+          ("-" . scala/minus)
+          ("," . core/comma-then-space))))))
