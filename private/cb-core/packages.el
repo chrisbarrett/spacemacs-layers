@@ -15,6 +15,7 @@
     helm
     flycheck
     use-package
+    aggressive-indent
     )
   "List of all packages to install and/or initialize. Built-in packages
 which require an initialization must be listed explicitly in the list.")
@@ -136,3 +137,8 @@ which require an initialization must be listed explicitly in the list.")
   (use-package flycheck
     :config
     (global-flycheck-mode +1)))
+
+(defun cb-core/init-aggressive-indent ()
+  (use-package aggressive-indent
+    :config
+    (global-aggressive-indent-mode +1)))
