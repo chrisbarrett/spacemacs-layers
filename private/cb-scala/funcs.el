@@ -31,6 +31,38 @@ Pad in normal expressions. Do not insert padding in variance annotations."
 (define-scala-variance-op-command scala/minus "-")
 
 
+;;; M-RET
+
+(defun scala/meta-ret ()
+  "Create a newline and perform a context-sensitive continuation.
+- In match statements
+- At comments, fill paragraph and insert a newline."
+  (interactive)
+  (cond
+
+   ;; Insert new type decl case below the current one.
+   ((s-matches? (rx bol (* space) "case" eow) (current-line))
+    (let ((col (save-excursion (back-to-indentation) (current-column))))
+      (goto-char (line-end-position))
+      (newline)
+      (indent-to col))
+
+    (yas-insert-first-snippet (lambda (sn) (equal "case" (yas--template-name sn))))
+    (message "New data case"))
+
+   ;; Create a new line in a comment.
+   ((s-matches? comment-start (current-line))
+    (fill-paragraph)
+    (comment-indent-new-line)
+    (message "New comment line"))
+
+   (t
+    (goto-char (line-end-position))
+    (comment-indent-new-line)))
+
+  (evil-insert-state))
+
+
 ;;; Interactive
 
 (defun scala/join-line ()
