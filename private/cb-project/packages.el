@@ -41,7 +41,8 @@ which require an initialization must be listed explicitly in the list.")
             ".tox"
             ".svn"
             "snippets"
-            "build"))))
+            "build"
+            ".ensime_cache"))))
 
 (defun cb-project/init-skeletor ()
   (use-package skeletor
