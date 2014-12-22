@@ -72,8 +72,9 @@
   (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/"))
   (paradox-require 'use-package)
   (paradox-require 'noflet)
-
-  (setq-default git-enable-github-support t))
+  (setq-default git-enable-github-support t)
+  (load (concat user-emacs-directory "private/cb-core/funcs.el"))
+  (load (concat user-emacs-directory "private/cb-core/config.el")))
 
 (defun dotspacemacs/config ()
   "This is were you can ultimately override default Spacemacs configuration.
