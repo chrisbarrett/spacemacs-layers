@@ -84,6 +84,9 @@
   "Face for flashing with a red background."
   :group 'cb-faces)
 
+(add-to-list 'face-remapping-alist '(flymake-errline . flycheck-error))
+(add-to-list 'face-remapping-alist '(flymake-warnling . flycheck-warning))
+
 ;;; Saving behaviour
 
 (add-hook 'after-save-hook   'executable-make-buffer-file-executable-if-script-p)
