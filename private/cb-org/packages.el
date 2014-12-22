@@ -99,7 +99,7 @@ which require an initialization must be listed explicitly in the list.")
 
               ("l" "Link" entry
                (file+olp org-default-notes-file "Links")
-               "* %c\n%i"
+               (function cb-org/read-url-for-capture)
                :immediate-finish t
                :clock-keep t)
 

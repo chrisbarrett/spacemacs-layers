@@ -80,6 +80,11 @@ positive or backward if negative."
   "Anaphoric form of `-filter-buffers'"
   `(--filter (with-current-buffer it ,pred-form) ,bufs))
 
+(defun core/read-string-with-default (prompt default &optional initial-input history)
+  "Read a string from the user with a default value added to the prompt."
+  (read-string (concat (if default (format "%s (default %s)" prompt default) prompt) ": ")
+               initial-input history default))
+
 
 ;;; Buffer management
 

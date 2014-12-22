@@ -396,6 +396,34 @@ The PDF will be created at DEST."
   (and (equal tag "hold") (concat "-" tag)))
 
 
+;;; Capture template utils
+
+(defun org/parse-html-title (html)
+  "Extract the title from an HTML document."
+  (-let (((_ title) (s-match (rx "<title>" (group (* nonl)) "</title>") html))
+         ((_ charset) (-map 'intern (s-match (rx "charset=" (group (+ (any "-" alnum)))) html))))
+    (if (-contains? coding-system-list charset)
+        (decode-coding-string title charset)
+      title)))
+
+(defun org/url-retrieve-html (url)
+  "Download the resource at URL and attempt to extract an HTML title."
+  (unless (s-matches? (rx "." (or "pdf" "mov" "mp4" "m4v" "aiff" "wav" "mp3") eol) url)
+    (with-current-buffer (url-retrieve-synchronously url t)
+      (buffer-string))))
+
+(defun org/last-url-kill ()
+  "Return the most recent URL in the kill ring or X pasteboard."
+  (--first (s-matches? (rx bos (or "http" "https" "www")) it)
+           (cons (current-kill 0 t) kill-ring)))
+
+(defun cb-org/read-url-for-capture ()
+  "Return a capture template string for a URL org-capture."
+  (let* ((url (core/read-string-with-default "URL" (org/last-url-kill)))
+         (title (org/parse-html-title (org/url-retrieve-html url))))
+    (format "* [[%s][%s]]" url (or title url))))
+
+
 ;;; Growl notifications
 
 (cl-defun org/growl (title message)
