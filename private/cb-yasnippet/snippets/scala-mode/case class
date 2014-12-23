@@ -1,6 +1,4 @@
-# -*- mode: snippet -*-
+# key: cc
 # name: case class
-# key: ccls
 # --
 case class ${1:Name} ${2:(${3:arg} : ${4:type}) }extends ${5:`(yas/scala-find-case-class-parent)`}
-$0

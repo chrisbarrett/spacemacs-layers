@@ -1,0 +1,7 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: var
+# key: var
+# binding: direct-keybinding
+# condition: (yas/bol?)
+# --
+var ${1:ident} = $0
