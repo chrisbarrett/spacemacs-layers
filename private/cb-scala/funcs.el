@@ -52,8 +52,14 @@ Pad in normal expressions. Do not insert padding in variance annotations."
     (yas-insert-first-snippet (lambda (sn) (equal "val" (yas--template-name sn))))
     (message "New val binding"))
 
+   ;; Insert new case class.
+   ((s-matches? (rx bol (* space) "case" (+ space) "class" eow) (current-line))
+    (core/open-line-below-current-indentation)
+    (yas-insert-first-snippet (lambda (sn) (equal "case class" (yas--template-name sn))))
+    (message "New case class"))
+
    ;; Insert new type decl case below the current one.
-   ((s-matches? (rx bol (* space) "case" eow) (current-line))
+   ((s-matches? (rx bol (* space) "case" (not (and (+ space) "class")) eow) (current-line))
     (core/open-line-below-current-indentation)
     (yas-insert-first-snippet (lambda (sn) (equal "case" (yas--template-name sn))))
     (message "New data case"))
