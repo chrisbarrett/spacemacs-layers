@@ -33,6 +33,10 @@ which require an initialization must be listed explicitly in the list.")
       (setq scala-indent:align-parameters t)
       (setq scala-indent:default-run-on-strategy scala-indent:eager-strategy)
 
+      ;; Var face
+      (set-face-foreground scala-font-lock:var-face solarized-hl-orange)
+      (set-face-underline scala-font-lock:var-face nil)
+
       (defadvice scala-indent:indent-code-line (around retain-trailing-ws activate)
         "Keep trailing-whitespace when indenting."
         (noflet ((scala-lib:delete-trailing-whitespace ()))
