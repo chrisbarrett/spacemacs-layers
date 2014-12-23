@@ -6,6 +6,8 @@
   (define-key scala-mode-map (kbd "C-c C-z") 'ensime-inf-switch)
   (define-key scala-mode-map (kbd "C-c C-l") 'ensime-inf-load-file)
   (define-key scala-mode-map (kbd "M-q") 'ensime-format-source)
+  )
 
+(after 'ensime
   (define-key ensime-inf-mode-map (kbd "C-c C-z") 'scala/switch-to-src)
   )
