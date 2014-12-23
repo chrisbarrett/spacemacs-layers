@@ -85,3 +85,9 @@ point to the position of the join."
 
     (when join-pos
       (goto-char join-pos))))
+
+(defun scala/switch-to-src ()
+  "Switch back to the last scala source file."
+  (interactive)
+  (-when-let (buf (car (--filter-buffers (derived-mode-p 'scala-mode))))
+    (pop-to-buffer buf)))

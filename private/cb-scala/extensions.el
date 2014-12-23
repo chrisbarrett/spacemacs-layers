@@ -39,4 +39,12 @@
           (":" . scala/colon)
           ("+" . scala/plus)
           ("-" . scala/minus)
+          ("," . core/comma-then-space)))
+
+      (super-smart-ops-configure-for-mode 'ensime-inf-mode
+        :custom
+        '(("=" . scala/equals)
+          (":" . scala/colon)
+          ("+" . scala/plus)
+          ("-" . scala/minus)
           ("," . core/comma-then-space))))))
