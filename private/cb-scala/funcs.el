@@ -41,12 +41,20 @@ Pad in normal expressions. Do not insert padding in variance annotations."
   (cond
 
    ;; Insert new type decl case below the current one.
-   ((s-matches? (rx bol (* space) "case" eow) (current-line))
-    (let ((col (save-excursion (back-to-indentation) (current-column))))
-      (goto-char (line-end-position))
-      (newline)
-      (indent-to col))
+   ((s-matches? (rx bol (* space) "var" eow) (current-line))
+    (core/open-line-below-current-indentation)
+    (yas-insert-first-snippet (lambda (sn) (equal "var" (yas--template-name sn))))
+    (message "New var binding"))
 
+   ;; Insert new type decl case below the current one.
+   ((s-matches? (rx bol (* space) "val" eow) (current-line))
+    (core/open-line-below-current-indentation)
+    (yas-insert-first-snippet (lambda (sn) (equal "val" (yas--template-name sn))))
+    (message "New val binding"))
+
+   ;; Insert new type decl case below the current one.
+   ((s-matches? (rx bol (* space) "case" eow) (current-line))
+    (core/open-line-below-current-indentation)
     (yas-insert-first-snippet (lambda (sn) (equal "case" (yas--template-name sn))))
     (message "New data case"))
 

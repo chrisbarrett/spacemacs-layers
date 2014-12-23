@@ -85,6 +85,13 @@ positive or backward if negative."
   (read-string (concat (if default (format "%s (default %s)" prompt default) prompt) ": ")
                initial-input history default))
 
+(defun core/open-line-below-current-indentation ()
+  "Open a new line below at the current indent level."
+  (let ((col (save-excursion (back-to-indentation) (current-column))))
+    (goto-char (line-end-position))
+    (newline)
+    (indent-to col)))
+
 
 ;;; Buffer management
 
