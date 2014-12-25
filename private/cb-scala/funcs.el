@@ -31,52 +31,6 @@ Pad in normal expressions. Do not insert padding in variance annotations."
 (define-scala-variance-op-command scala/minus "-")
 
 
-;;; M-RET
-
-(defun scala/meta-ret ()
-  "Create a newline and perform a context-sensitive continuation.
-- In match statements
-- At comments, fill paragraph and insert a newline."
-  (interactive)
-  (cond
-
-   ;; Insert new type decl case below the current one.
-   ((s-matches? (rx bol (* space) "var" eow) (current-line))
-    (core/open-line-below-current-indentation)
-    (yas-insert-first-snippet (lambda (sn) (equal "var" (yas--template-name sn))))
-    (message "New var binding"))
-
-   ;; Insert new type decl case below the current one.
-   ((s-matches? (rx bol (* space) "val" eow) (current-line))
-    (core/open-line-below-current-indentation)
-    (yas-insert-first-snippet (lambda (sn) (equal "val" (yas--template-name sn))))
-    (message "New val binding"))
-
-   ;; Insert new case class.
-   ((s-matches? (rx bol (* space) "case" (+ space) "class" eow) (current-line))
-    (core/open-line-below-current-indentation)
-    (yas-insert-first-snippet (lambda (sn) (equal "case class" (yas--template-name sn))))
-    (message "New case class"))
-
-   ;; Insert new type decl case below the current one.
-   ((s-matches? (rx bol (* space) "case" (not (and (+ space) "class")) eow) (current-line))
-    (core/open-line-below-current-indentation)
-    (yas-insert-first-snippet (lambda (sn) (equal "case" (yas--template-name sn))))
-    (message "New data case"))
-
-   ;; Create a new line in a comment.
-   ((s-matches? comment-start (current-line))
-    (fill-paragraph)
-    (comment-indent-new-line)
-    (message "New comment line"))
-
-   (t
-    (goto-char (line-end-position))
-    (comment-indent-new-line)))
-
-  (evil-insert-state))
-
-
 ;;; Interactive
 
 (defun scala/join-line ()
@@ -105,3 +59,100 @@ point to the position of the join."
   (interactive)
   (-when-let (buf (car (--filter-buffers (derived-mode-p 'scala-mode))))
     (pop-to-buffer buf)))
+
+
+;;; Smart editing commands
+
+(defun scala/between-curly-braces? ()
+  (and (s-matches? (rx "{" (* space) eos)
+                   (buffer-substring (line-beginning-position) (point)))
+       (s-matches? (rx bos (* space) "}")
+                   (buffer-substring (point) (line-end-position)))))
+
+(defun scala/ret ()
+  "Insert a newline with context-sensitive formatting."
+  (interactive)
+  (cond
+   ((and (scala/between-curly-braces?) (not (core/in-string-or-comment?)))
+    (delete-horizontal-space)
+    (newline)
+    (save-excursion (newline-and-indent))
+    (indent-for-tab-command))
+   (t
+    (call-interactively 'comment-indent-new-line))))
+
+(defun scala/meta-ret ()
+  "Create a newline and perform a context-sensitive continuation.
+- In match statements
+- At comments, fill paragraph and insert a newline."
+  (interactive)
+  (cond
+
+   ;; Insert new type decl case below the current one.
+   ((s-matches? (rx bol (* space) "var" eow) (current-line))
+    (core/open-line-below-current-indentation)
+    (yas-insert-first-snippet (lambda (sn) (equal "var" (yas--template-name sn))))
+    (message "New var binding"))
+
+   ;; Insert new type decl case below the current one.
+   ((s-matches? (rx bol (* space) "val" eow) (current-line))
+    (core/open-line-below-current-indentation)
+    (yas-insert-first-snippet (lambda (sn) (equal "val" (yas--template-name sn))))
+    (message "New val binding"))
+
+   ;; Insert new case class.
+   ((s-matches? (rx bol (* space) "case" (+ space) "class" eow) (current-line))
+    (core/open-line-below-current-indentation)
+    (yas-insert-first-snippet (lambda (sn) (equal "case class" (yas--template-name sn))))
+    (message "New case class"))
+
+   ;; Insert new type decl case below the current one.
+   ((s-matches? (rx bol (* space) "case") (current-line))
+    (core/open-line-below-current-indentation)
+    (yas-insert-first-snippet (lambda (sn) (equal "case" (yas--template-name sn))))
+    (message "New data case"))
+
+   ;; Create a new line in a comment.
+   ((s-matches? comment-start (current-line))
+    (fill-paragraph)
+    (comment-indent-new-line)
+    (message "New comment line"))
+
+   (t
+    (goto-char (line-end-position))
+    (comment-indent-new-line)))
+
+  (evil-insert-state))
+
+(defun scala/after-subexpr-opening? ()
+  (s-matches? (rx (or "{" "[" "(") (* space) eol)
+              (buffer-substring (line-beginning-position) (point))))
+
+(defun scala/before-subexp-closing? ()
+  (s-matches? (rx bol (* space) (or "}" "]" ")"))
+              (buffer-substring (point) (line-end-position))))
+
+(defun scala/smart-space ()
+  "Insert a space, performing extra padding inside lists."
+  (interactive)
+  (cond
+   ((and (scala/after-subexpr-opening?) (scala/before-subexp-closing?))
+    (delete-horizontal-space)
+    (insert " ")
+    (save-excursion (insert " ")))
+   (t
+    (insert " "))))
+
+(defun scala/backspace ()
+  "Delete backwards with context-sensitive formatting."
+  (interactive)
+  (super-smart-ops--run-with-modification-hooks
+   (cond
+    ((and (scala/after-subexpr-opening?)
+          (scala/before-subexp-closing?)
+          (thing-at-point-looking-at (rx (+ space))))
+     (delete-horizontal-space))
+
+    (t
+     (or (super-smart-ops-delete-last-op)
+         (call-interactively 'sp-backward-delete-char))))))

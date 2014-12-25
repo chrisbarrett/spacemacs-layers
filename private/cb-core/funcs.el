@@ -92,6 +92,10 @@ positive or backward if negative."
     (newline)
     (indent-to col)))
 
+(defun core/in-string-or-comment? ()
+  "Non-nil if point is at a string or comment."
+  (nth 8 (syntax-ppss)))
+
 
 ;;; Buffer management
 
