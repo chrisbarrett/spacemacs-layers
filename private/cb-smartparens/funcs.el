@@ -214,3 +214,19 @@ Insert leading padding unless at start of line or after an open round paren."
     (save-excursion
       (search-forward "|")
       (just-one-space))))
+
+
+;;; Scala utils
+
+(defun sp/scala-format-after-paren (_id action context)
+  "Insert a space after flow control keywords."
+  (when (and (equal action 'insert)
+             (equal context 'code)
+             (save-excursion
+               (search-backward "(")
+               (thing-at-point-looking-at
+                (rx symbol-start (or "=" "return" "if" "while" "for" "case")
+                    (* space)))))
+    (save-excursion
+      (search-backward "(")
+      (just-one-space))))

@@ -21,6 +21,13 @@
     (sp-local-pair "'" "'" :actions '(:rem insert))
     )
 
+  ;;; Scala
+
+  (sp-with-modes 'scala-mode
+    (sp-local-pair "{" "}" :post-handlers '(:add sp/internal-and-external-padding))
+    (sp-local-pair "(" ")" :post-handlers '(:add sp/scala-format-after-paren))
+    )
+
   ;;; Haskell
 
   (sp-with-modes '(haskell-mode inf-haskell-mode haskell-c-mode)
@@ -152,4 +159,4 @@
                                                  sp/external-and-external-padding))
     (sp-local-pair "(" ")" :post-handlers '(:add sp/c-format-after-paren)))
 
-)
+  )
