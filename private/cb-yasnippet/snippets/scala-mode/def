@@ -2,6 +2,6 @@
 # name: def
 # condition: (yas/bol?)
 # --
-def ${1:fname}(${2:params...})${3:: ${4:Type} =} ${5:{
+def ${1:fname}(${2:params...})${3:: ${4:Type}} = ${5:{
   $0
 }}

@@ -2,6 +2,6 @@
 # name: override def
 # condition: (yas/bol?)
 # --
-override def ${1:fname}(${2:params...})${3:: ${4:Type} =} ${5:{
+override def ${1:fname}(${2:params...})${3:: ${4:Type}} = ${5:{
   $0
 }}
