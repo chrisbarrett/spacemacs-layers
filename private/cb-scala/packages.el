@@ -31,7 +31,7 @@ which require an initialization must be listed explicitly in the list.")
     (progn
       (setq scala-indent:align-forms t)
       (setq scala-indent:align-parameters t)
-      (setq scala-indent:default-run-on-strategy scala-indent:eager-strategy)
+      (setq scala-indent:default-run-on-strategy scala-indent:operator-strategy)
 
       ;; Var face
       (set-face-foreground scala-font-lock:var-face solarized-hl-orange)
@@ -40,7 +40,9 @@ which require an initialization must be listed explicitly in the list.")
       (defadvice scala-indent:indent-code-line (around retain-trailing-ws activate)
         "Keep trailing-whitespace when indenting."
         (noflet ((scala-lib:delete-trailing-whitespace ()))
-          ad-do-it)))))
+          ad-do-it))
+
+      (add-hook 'scala-mode-hook (lambda () (add-to-list 'flycheck-disabled-checkers 'scala))))))
 
 (defun cb-scala/init-ensime ()
   (use-package ensime
