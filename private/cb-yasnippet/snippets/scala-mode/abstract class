@@ -1,6 +1,5 @@
-# -*- mode: snippet; require-final-newline: nil -*-
+# key: ac
 # name: abstract class
-# key: acl
 # condition: (yas/bol?)
 # --
 abstract class ${1:Name} {
