@@ -63,21 +63,57 @@ point to the position of the join."
 
 ;;; Smart editing commands
 
-(defun scala/between-curly-braces? ()
-  (and (s-matches? (rx "{" (* space) eos)
-                   (buffer-substring (line-beginning-position) (point)))
-       (s-matches? (rx bos (* space) "}")
-                   (buffer-substring (point) (line-end-position)))))
+(defun scala/after-open-curly? ()
+  (s-matches? (rx "{" (* space) eos)
+              (buffer-substring (line-beginning-position) (point))))
+
+(defun scala/before-close-curly? ()
+  (s-matches? (rx bos (* space) "}")
+              (buffer-substring (point) (line-end-position))))
+
+(defun scala/between-empty-curly-braces? ()
+  (and (scala/after-open-curly?) (scala/before-close-curly?)))
+
+(defun scala/between-curly-braces-with-content? ()
+  (or (and (scala/after-open-curly?)
+           (s-matches? (rx (+ (not space)) (* space) "}")
+                       (buffer-substring (point) (line-end-position))))
+      (and (scala/before-close-curly?)
+           (s-matches? (rx "{" (* space) (+ (not space)))
+                       (buffer-substring (line-beginning-position) (point))))))
+
+(defun scala/split-braced-expression-over-new-lines ()
+  "Split the braced expression on the current line over several lines."
+  (-let [(&plist :beg beg :end end) (sp-get-enclosing-sexp)]
+    (save-excursion
+      (goto-char (1- end))
+      (newline-and-indent)
+      (goto-char (1+ beg))
+      (newline-and-indent)
+      (while (search-forward ";" (line-end-position) t)
+        (replace-match "\n")))))
 
 (defun scala/ret ()
   "Insert a newline with context-sensitive formatting."
   (interactive)
   (cond
-   ((and (scala/between-curly-braces?) (not (core/in-string-or-comment?)))
-    (delete-horizontal-space)
-    (newline)
-    (save-excursion (newline-and-indent))
+   ((core/in-string-or-comment?)
+    (comment-indent-new-line))
+
+   ((scala/between-empty-curly-braces?)
+    (scala/split-braced-expression-over-new-lines)
+    (forward-line)
     (indent-for-tab-command))
+
+   ((scala/between-curly-braces-with-content?)
+    (delete-horizontal-space)
+    (scala/split-braced-expression-over-new-lines)
+    ;; If point was after the opening brace before splitting, it will not have
+    ;; moved to the next line. Correct this by moving forward to indentation on
+    ;; the next line.
+    (when (scala/after-open-curly?)
+      (forward-line)
+      (back-to-indentation)))
    (t
     (call-interactively 'comment-indent-new-line))))
 
@@ -112,15 +148,9 @@ point to the position of the join."
     (yas-insert-first-snippet (lambda (sn) (equal "case" (yas--template-name sn))))
     (message "New data case"))
 
-   ;; Create a new line in a comment.
-   ((s-matches? comment-start (current-line))
-    (fill-paragraph)
-    (comment-indent-new-line)
-    (message "New comment line"))
-
    (t
     (goto-char (line-end-position))
-    (comment-indent-new-line)))
+    (scala/ret)))
 
   (evil-insert-state))
 
@@ -156,3 +186,16 @@ point to the position of the join."
     (t
      (or (super-smart-ops-delete-last-op)
          (call-interactively 'sp-backward-delete-char))))))
+
+
+;;; Ensime refactor
+
+(defun scala/ensime-refactor-accept ()
+  (interactive)
+  (funcall continue-refactor)
+  (ensime-popup-buffer-quit-function))
+
+(defun scala/ensime-refactor-cancel ()
+  (interactive)
+  (funcall cancel-refactor)
+  (ensime-popup-buffer-quit-function))

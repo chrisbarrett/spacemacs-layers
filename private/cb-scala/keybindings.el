@@ -19,4 +19,10 @@
 
   (evil-define-key 'insert ensime-inf-mode-map (kbd "SPC") 'scala/smart-space)
   (evil-define-key 'insert ensime-inf-mode-map (kbd "<backspace>") 'scala/backspace)
-  )
+
+  (evil-define-key 'normal ensime-refactor-info-map
+    (kbd "c") 'scala/ensime-refactor-accept
+    (kbd "RET") 'scala/ensime-refactor-accept)
+
+  (evil-define-key 'normal ensime-refactor-info-map (kbd "q")
+    'scala/ensime-refactor-cancel))
