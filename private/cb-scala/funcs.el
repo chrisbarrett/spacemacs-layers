@@ -93,17 +93,31 @@ point to the position of the join."
       (while (search-forward ";" (line-end-position) t)
         (replace-match "\n")))))
 
-(defun scala/ret ()
+(defun scala/after-lambda-arrow? ()
+  (s-matches? (rx (* space) "=>" (* space) eos)
+              (buffer-substring (line-beginning-position) (point))))
+
+(defun scala/expand-brace-group-for-hanging-lambda ()
+  (scala/split-braced-expression-over-new-lines)
+  (goto-char (plist-get (sp-get-enclosing-sexp) :beg))
+  (scala/join-line)
+  (goto-char (line-end-position))
+  (newline-and-indent))
+
+(defun scala/ret (arg)
   "Insert a newline with context-sensitive formatting."
-  (interactive)
+  (interactive "P")
   (cond
-   ((core/in-string-or-comment?)
+   ((or arg (core/in-string-or-comment?))
     (comment-indent-new-line))
 
    ((scala/between-empty-curly-braces?)
     (scala/split-braced-expression-over-new-lines)
     (forward-line)
     (indent-for-tab-command))
+
+   ((and (scala/after-lambda-arrow?) (scala/between-curly-braces-with-content?))
+    (scala/expand-brace-group-for-hanging-lambda))
 
    ((scala/between-curly-braces-with-content?)
     (delete-horizontal-space)
