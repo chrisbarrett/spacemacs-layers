@@ -8,27 +8,36 @@
   (interactive)
   (core/insert-smart-op-no-leading-space ":"))
 
-(defmacro define-scala-variance-op-command (sym op)
-  "Define command named SYM to insert a variance operator OP."
-  `(defun ,sym ()
-     "Insert a variance operator.
-Pad in normal expressions. Do not insert padding in variance annotations."
-     (interactive "*")
-     (cond
-      ;; No padding at the start of type parameter.
-      ((thing-at-point-looking-at (rx "[" (* space)))
-       (delete-horizontal-space)
-       (insert ,op))
-      ;; Leading padding after a comma, e.g. for a type parameter or function call.
-      ((thing-at-point-looking-at (rx "," (* space)))
-       (just-one-space)
-       (insert ,op))
-      ;; Otherwise leading and trailing padding.
-      (t
-       (super-smart-ops-insert ,op)))))
+(defun scala/repl-colon ()
+  (interactive)
+  (if (s-matches? (rx bol (* space) "scala>" (* space))
+                  (buffer-substring (line-beginning-position) (point)))
+      (insert ":")
+    (core/insert-smart-op-no-leading-space ":")))
 
-(define-scala-variance-op-command scala/plus "+")
-(define-scala-variance-op-command scala/minus "-")
+(defun scala/insert-variance-op (op)
+  "Insert a variance operator.
+Pad in normal expressions. Do not insert padding in variance annotations."
+  (cond
+   ;; No padding at the start of type parameter.
+   ((thing-at-point-looking-at (rx "[" (* space)))
+    (delete-horizontal-space)
+    (insert op))
+   ;; Leading padding after a comma, e.g. for a type parameter or function call.
+   ((thing-at-point-looking-at (rx "," (* space)))
+    (just-one-space)
+    (insert op))
+   ;; Otherwise leading and trailing padding.
+   (t
+    (super-smart-ops-insert op))))
+
+(defun scala/minus ()
+  (interactive "*")
+  (scala/insert-variance-op "-"))
+
+(defun scala/plus ()
+  (interactive "*")
+  (scala/insert-variance-op "+"))
 
 
 ;;; Interactive

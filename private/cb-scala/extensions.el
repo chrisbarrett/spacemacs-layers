@@ -36,7 +36,7 @@
       (super-smart-ops-configure-for-mode 'sbt-mode
         :custom
         '(("=" . scala/equals)
-          (":" . scala/colon)
+          (":" . scala/repl-colon)
           ("+" . scala/plus)
           ("-" . scala/minus)
           ("," . core/comma-then-space)))
@@ -44,7 +44,7 @@
       (super-smart-ops-configure-for-mode 'ensime-inf-mode
         :custom
         '(("=" . scala/equals)
-          (":" . scala/colon)
+          (":" . scala/repl-colon)
           ("+" . scala/plus)
           ("-" . scala/minus)
           ("," . core/comma-then-space))))))
