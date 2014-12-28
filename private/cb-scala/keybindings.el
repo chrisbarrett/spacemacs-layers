@@ -7,6 +7,11 @@
   (define-key scala-mode-map (kbd "C-c C-l") 'ensime-inf-load-file)
   (define-key scala-mode-map (kbd "M-q") 'ensime-format-source)
 
+  (define-key scala-mode-map (kbd "C-c C-r C-r") 'ensime-refactor-rename)
+
+  (define-key scala-mode-map (kbd "C-c C-h") 'ensime-show-doc-for-symbol-at-point)
+  (evil-leader/set-key-for-mode 'scala-mode "ii" 'ensime-insert-import)
+
   (evil-define-key 'insert scala-mode-map (kbd "SPC") 'scala/smart-space)
   (evil-define-key 'insert scala-mode-map (kbd "<backspace>") 'scala/backspace)
   (evil-define-key 'insert scala-mode-map (kbd "<return>") 'scala/ret)
