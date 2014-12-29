@@ -13,7 +13,7 @@
  dotspacemacs-configuration-layers '(company-mode
                                      smex
                                      auctex
-                                     ;; haskell
+                                     ;;haskell
                                      osx
                                      git
                                      scala
@@ -28,7 +28,7 @@
                                      cb-smartparens
                                      cb-ledger
                                      cb-proof
-                                     ;; cb-haskell
+                                     cb-haskell
                                      cb-scala
                                      cb-csharp
                                      cb-rust
