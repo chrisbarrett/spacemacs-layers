@@ -13,7 +13,7 @@
  dotspacemacs-configuration-layers '(company-mode
                                      smex
                                      auctex
-                                     ;;haskell
+                                     haskell
                                      osx
                                      git
                                      scala
@@ -72,9 +72,10 @@
   "User initialization for Spacemacs. This function is called at the very
  startup."
   (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/"))
-  (paradox-require 'use-package)
   (paradox-require 'noflet)
   (setq-default git-enable-github-support t)
+  (add-to-list 'exec-path "~/.cabal/bin/")
+  (add-to-list 'exec-path "~/bin/")
   (load (concat user-emacs-directory "private/cb-core/funcs.el"))
   (load (concat user-emacs-directory "private/cb-core/config.el")))
 
