@@ -1,6 +1,6 @@
 # Autohotkey contribution layer for Spacemacs
 
-![logo](ahk.png)
+![logo](img/ahk.png)
 
 <!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc/generate-toc again -->
 **Table of Contents**
@@ -46,8 +46,8 @@ To use this contribution add it to your `~/.spacemacs`
 
     Key Binding     |                 Description
 --------------------|------------------------------------------------------------
-<kbd>SPC m D</kbd>  | open documentation in `browser`
-<kbd>SPC m E</kbd>  | execute file with `autohtokey.exe`
+<kbd>SPC m d</kbd>  | open documentation in `browser`
+<kbd>SPC m e</kbd>  | execute file with `autohotkey.exe`
 
 [AutoHotkey]: http://www.autohotkey.com
 [AutoHotkey_L]: http://ahkscript.org

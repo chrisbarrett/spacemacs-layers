@@ -1,6 +1,6 @@
 # OSX contribution layer for Spacemacs
 
-![applogo](apple.png)![osxlogo](osx.png)
+![applogo](img/apple.png)![osxlogo](img/osx.png)
 
 <!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc/generate-toc again -->
 **Table of Contents**
@@ -31,7 +31,7 @@ and we encourage you to do so :)
 
 To use this configuration layer, add it to your `~/.spacemacs`
 
-```
+```elisp
 (setq-default dotspacemacs-configuration-layers '(osx)
   "List of contribution to load."
 )

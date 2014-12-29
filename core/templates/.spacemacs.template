@@ -19,6 +19,11 @@
 ;; --------
 
 (setq-default
+ ;; Specify the startup banner. If the value is an integer then the
+ ;; banner with the corresponding index is used, if the value is `random'
+ ;; then the banner is chosen randomly among the available banners, if
+ ;; the value is nil then no banner is displayed.
+ dotspacemacs-startup-banner 'random
  ;; Default theme applied at startup
  dotspacemacs-default-theme 'solarized-light
  ;; The leader key
@@ -39,6 +44,8 @@
  ;; If non nil the frame is maximized when Emacs starts up (Emacs 24.4+ only).
  ;; Takes effect only if `dotspacemacs-fullscreen-at-startup' is nil.
  dotspacemacs-maximized-at-startup nil
+ ;; If non nil unicode symbols are displayed in the mode line (e.g. for lighters)
+ dotspacemacs-mode-line-unicode-symbols t
  ;; If non nil smooth scrolling (native-scrolling) is enabled. Smooth scrolling
  ;; overrides the default behavior of Emacs which recenters the point when
  ;; it reaches the top or bottom of the screen
@@ -54,7 +61,7 @@
  ;; specified with an installed package.
  ;; Not used for now.
  dotspacemacs-default-package-repository nil
-)
+ )
 
 ;; Initialization Hooks
 ;; --------------------
@@ -62,7 +69,7 @@
 (defun dotspacemacs/init ()
   "User initialization for Spacemacs. This function is called at the very
  startup."
-)
+  )
 
 (defun dotspacemacs/config ()
   "This is were you can ultimately override default Spacemacs configuration.

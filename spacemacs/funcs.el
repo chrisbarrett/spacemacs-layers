@@ -417,7 +417,7 @@ argument takes the kindows rotate backwards."
 (defun find-contrib-file ()
   (interactive)
   "Edit the `file' in the spacemacs base directory, in the current window."
-  (ido-find-file-in-dir config-system-contrib-directory))
+  (ido-find-file-in-dir configuration-layer-contrib-directory))
 
 ;; From http://xugx2007.blogspot.ca/2007/06/benjamin-rutts-emacs-c-development-tips.html
 (setq compilation-finish-function
@@ -763,11 +763,15 @@ otherwise it is scaled down."
 
 ;;; end resize window micro-state
 
-(defmacro spacemacs|diminish (mode lighter)
-  "Diminish MODE name in mode line to LIGHTER."
-  `(when (display-graphic-p)
-     (eval-after-load 'diminish
-       '(diminish ',mode ,lighter))))
+(defmacro spacemacs|diminish (mode unicode &optional ascii)
+  "Diminish MODE name in mode line to UNICODE or ASCII depending on the value
+`dotspacemacs-mode-line-unicode-symbols'.
+
+If ASCII si not provided then UNICODE is used instead."
+  (let ((dim (if dotspacemacs-mode-line-unicode-symbols
+                 unicode
+               (if ascii ascii unicode))))
+    `(eval-after-load 'diminish '(diminish ',mode ,dim))))
 
 (defmacro spacemacs|hide-lighter (mode)
   "Diminish MODE name in mode line to LIGHTER."
