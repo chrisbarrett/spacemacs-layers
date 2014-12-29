@@ -2,8 +2,6 @@
   '(
     ;; package cb-haskells go here
     haskell-mode
-    flycheck-haskell
-    company-ghc
     shm
     hi2
     )
@@ -31,11 +29,8 @@ which require an initialization must be listed explicitly in the list.")
       (add-to-list 'completion-ignored-extensions ".hi"))
     :config
     (progn
-      (require 'company-ghc)
-
       (setq haskell-process-suggest-hoogle-imports t)
       (setq haskell-program-name "ghci")
-      (setq haskell-process-type 'cabal-repl)
       (setq haskell-interactive-prompt "\nλ> ")
 
       (put 'haskell-mode 'evil-shift-width 2)
@@ -86,8 +81,3 @@ which require an initialization must be listed explicitly in the list.")
       (add-hook 'evil-normal-state-entry-hook 'haskell/hide-hi2-guides)
       (add-hook 'evil-insert-state-entry-hook 'haskell/show-hi2-guides)
       (add-hook 'evil-insert-state-exit-hook 'haskell/hide-hi2-guides))))
-
-(defun cb-haskell/init-flycheck-haskell ()
-  (use-package flycheck-haskell
-    :commands flycheck-haskell-configure
-    :init (add-hook 'haskell-mode-hook 'flycheck-haskell-configure)))
