@@ -53,18 +53,15 @@
 
    ((ignore-errors (preceding-sexp))
     (call-interactively 'eval-last-sexp)
-    (cl-destructuring-bind (&optional beg . end)
-        (when (and beg end)
-          (save-excursion
-            (backward-char)
-            (bounds-of-thing-at-point 'sexp))
-          (list :beg beg :end end))))))
+    (-when-let ((beg . end) (save-excursion
+                              (backward-char)
+                              (bounds-of-thing-at-point 'sexp)))
+      (list :beg beg :end end)))))
 
 (defun elisp/eval-dwim ()
   "Perform a context-sensitive eval command.
 Return the bounds of the evaluated form."
   (interactive)
-  (-if-let (thing (elisp/thing-for-eval))
-      (cl-destructuring-bind (&key beg end &allow-other-keys) thing
-        (eval-region beg end))
+  (-if-let ((&plist :beg beg :end end) (elisp/thing-for-eval))
+      (eval-region beg end)
     (user-error "Nothing to evaluate")))

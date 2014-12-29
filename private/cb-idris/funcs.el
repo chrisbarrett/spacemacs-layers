@@ -20,39 +20,40 @@
    (t
     (core/comma-then-space))))
 
+(defun idris/in-empty-square-braces? ()
+  (save-excursion
+    (-when-let ((&plist :op op :beg beg :end end) (sp-backward-up-sexp))
+      (and (equal "[" op)
+           (s-blank? (buffer-substring (1+ beg) (1- end)))))))
+
 (defun idris/smart-pipe ()
   "Insert a pipe operator. Add padding, unless we're inside a list."
   (interactive)
-  (let ((in-empty-square-braces?
-         (save-excursion
-           (-when-let (pair (sp-backward-up-sexp))
-             (cl-destructuring-bind (&key op beg end &allow-other-keys) pair
-               (and (equal "[" op)
-                    (s-blank? (buffer-substring (1+ beg) (1- end)))))))))
-    (cond
-     (in-empty-square-braces?
-      (delete-horizontal-space)
-      (insert "| ")
-      (save-excursion
-        (insert " |"))
-      (message "Inserting idiom brackets"))
+  (cond
+   ((idris/in-empty-square-braces?)
+    (delete-horizontal-space)
+    (insert "| ")
+    (save-excursion
+      (insert " |"))
+    (message "Inserting idiom brackets"))
 
-     (t
-      (super-smart-ops-insert "|")))))
+   (t
+    (super-smart-ops-insert "|"))))
+
+(defun idris/looking-at-module-or-constructor? ()
+  (-when-let ([fst] (thing-at-point 'symbol))
+    (s-uppercase? fst)))
 
 (defun idris/smart-dot ()
   "Insert a period with context-sensitive padding."
   (interactive)
-  (let ((looking-at-module-or-constructor?
-         (-when-let (sym (thing-at-point 'symbol))
-           (s-uppercase? (substring sym 0 1)))))
-    (cond
-     (looking-at-module-or-constructor?
-      (insert "."))
-     ((thing-at-point-looking-at (rx (or "(" "{" "[") (* space)))
-      (insert "."))
-     (t
-      (super-smart-ops-insert ".")))))
+  (cond
+   ((looking-at-module-or-constructor?)
+    (insert "."))
+   ((thing-at-point-looking-at (rx (or "(" "{" "[") (* space)))
+    (insert "."))
+   (t
+    (super-smart-ops-insert "."))))
 
 (defun idris/smart-question-mark ()
   "Insert a ? char as an operator, unless point is after an = sign."
@@ -91,6 +92,6 @@
 (defun idris/switch-to-src ()
   "Pop to the last idris source buffer."
   (interactive)
-  (-if-let (buf (car (--filter-buffers (derived-mode-p 'idris-mode))))
+  (-if-let ((buf) (--filter-buffers (derived-mode-p 'idris-mode)))
       (pop-to-buffer buf)
     (error "No idris buffers")))

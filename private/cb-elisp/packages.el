@@ -68,7 +68,7 @@ which require an initialization must be listed explicitly in the list.")
     :config
     (define-eval-sexp-fu-flash-command elisp/eval-dwim
       (eval-sexp-fu-flash
-       (cl-destructuring-bind (&key beg end &allow-other-keys) (elisp/thing-for-eval)
+       (-let [(&plist :beg beg :end end) (elisp/thing-for-eval)]
          (cons beg end))))))
 
 (defun cb-elisp/init-dash ()
