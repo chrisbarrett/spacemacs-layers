@@ -1,0 +1,9 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: trait
+# key: tr
+# binding: direct-keybinding
+# condition: (yas/bol?)
+# --
+trait ${1:Name} {
+  $0
+}

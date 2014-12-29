@@ -1,0 +1,12 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: try...finally
+# key: tf
+# binding: direct-keybinding
+# condition: (yas/bol?)
+# --
+try {
+  $1$0
+}
+finally {
+  $2
+}
