@@ -7,9 +7,6 @@
 (evil-leader/set-key "gb" 'magit-key-mode-popup-branching)
 (evil-leader/set-key "gn" 'git-gutter:next-hunk)
 (evil-leader/set-key "gp" 'git-gutter:previous-hunk)
-(evil-leader/set-key "gh" 'git-gutter:popup-hunk)
-(evil-leader/set-key "gx" 'git-gutter:revert-hunk)
-(evil-leader/set-key "ga" 'git-gutter:stage-hunk)
 
 (evil-set-initial-state 'git-commit-mode 'insert)
 
