@@ -69,6 +69,13 @@ point to the position of the join."
   (-when-let (buf (car (--filter-buffers (derived-mode-p 'scala-mode))))
     (pop-to-buffer buf)))
 
+(defun scala/load-buffer (file)
+  "Load FILE, starting an inferior scala if needed."
+  (interactive (list (buffer-file-name)))
+  (unless (get-buffer ensime-inf-buffer-name)
+    (ensime-inf-run-scala))
+  (ensime-inf-load-file file))
+
 
 ;;; Smart editing commands
 

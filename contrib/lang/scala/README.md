@@ -5,11 +5,10 @@
 <!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc/generate-toc again -->
 **Table of Contents**
 
-- [Scala contribution layer for Spacemacs](#scala-contribution-layer-for-spacemacs)
-    - [Description](#description)
-    - [Install](#install)
-        - [Ensime](#ensime)
-    - [Key bindings](#key-bindings)
+- [Description](#description)
+- [Install](#install)
+    - [Ensime](#ensime)
+- [Key bindings](#key-bindings)
 
 <!-- markdown-toc end -->
 

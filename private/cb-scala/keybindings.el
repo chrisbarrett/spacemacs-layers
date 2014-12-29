@@ -13,7 +13,7 @@
 (after 'ensime
   (define-key ensime-inf-mode-map (kbd "C-c C-z") 'scala/switch-to-src)
   (define-key ensime-mode-map (kbd "C-c C-z") 'ensime-inf-switch)
-  (define-key ensime-mode-map (kbd "C-c C-l") 'ensime-inf-load-file)
+  (define-key ensime-mode-map (kbd "C-c C-l") 'scala/load-buffer)
   (define-key ensime-mode-map (kbd "M-q") 'ensime-format-source)
   (define-key ensime-mode-map (kbd "C-c C-r C-r") 'ensime-refactor-rename)
   (define-key ensime-mode-map (kbd "C-c C-h") 'ensime-show-doc-for-symbol-at-point)
