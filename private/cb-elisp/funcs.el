@@ -1,7 +1,7 @@
 ;;; Define intelligent M-RET command.
 
 (defconst elisp/let-expression-re
-  (regexp-opt '("(let" "(-if-let*" "(-when-let*"))
+  (regexp-opt '("(let" "(-if-let*" "(-when-let*" "(-let"))
   "Regex matching the start of a let expression.")
 
 (defun elisp/let-expr-start ()
