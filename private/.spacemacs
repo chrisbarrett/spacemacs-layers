@@ -62,7 +62,7 @@
  ;; Not used for now.
  dotspacemacs-default-package-repository nil
  ;; Startup banner
- dotspacemacs-startup-banner 3
+ dotspacemacs-startup-banner 'doge
  )
 
 ;; Initialization Hooks
