@@ -216,17 +216,6 @@
     (shm/simple-indent-newline-same-col)))
 
 
-;;; hi2
-
-(defun haskell/show-hi2-guides ()
-  (when (true? hi2-mode)
-    (hi2-enable-show-indentations)))
-
-(defun haskell/hide-hi2-guides ()
-  (when (true? hi2-mode)
-    (hi2-disable-show-indentations)))
-
-
 ;;; Define smart M-RET command
 
 (defun haskell/newline-and-insert-at-col (col str)

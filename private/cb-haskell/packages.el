@@ -3,7 +3,6 @@
     ;; package cb-haskells go here
     haskell-mode
     shm
-    hi2
     )
   "List of all packages to install and/or initialize. Built-in packages
 which require an initialization must be listed explicitly in the list.")
@@ -62,22 +61,5 @@ which require an initialization must be listed explicitly in the list.")
     :defer t
     :config
     (progn
-      (require 'company)
-      (add-to-list 'company-backends 'company-ghc)
       (setq company-ghc-show-info nil)
       (setq company-ghc-show-module t))))
-
-(defun cb-haskell/init-hi2 ()
-  (use-package hi2
-    :diminish hi2-mode
-    :commands turn-on-hi2
-    :init
-    (progn
-      (add-hook 'haskell-mode-hook 'turn-on-hi2)
-      (add-hook 'haskell-mode-hook 'turn-off-haskell-simple-indent))
-    :config
-    (progn
-      ;; Show indentation guides for hi2 only in insert state.
-      (add-hook 'evil-normal-state-entry-hook 'haskell/hide-hi2-guides)
-      (add-hook 'evil-insert-state-entry-hook 'haskell/show-hi2-guides)
-      (add-hook 'evil-insert-state-exit-hook 'haskell/hide-hi2-guides))))
