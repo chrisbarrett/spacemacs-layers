@@ -99,7 +99,7 @@ Pad in normal expressions. Do not insert padding in variance annotations."
   (goto-char (line-end-position))
   (newline-and-indent))
 
-(defun scala/ret (arg)
+(defun scala/ret (&optional arg)
   "Insert a newline with context-sensitive formatting."
   (interactive "P")
   (cond
@@ -126,6 +126,12 @@ Pad in normal expressions. Do not insert padding in variance annotations."
    (t
     (call-interactively 'comment-indent-new-line))))
 
+(defun scala/at-case-class? ()
+  (s-matches? (rx bol (* space) "case" (+ space) "class" eow) (current-line)))
+
+(defun scala/at-abstract-sealed-class? ()
+  (s-matches? (rx bol (* space) "abstract" (+ space) "sealed" (+ space) "class" eow) (current-line)))
+
 (defun scala/meta-ret ()
   "Create a newline and perform a context-sensitive continuation.
 - In match statements
@@ -146,7 +152,7 @@ Pad in normal expressions. Do not insert padding in variance annotations."
     (message "New val binding"))
 
    ;; Insert new case class.
-   ((s-matches? (rx bol (* space) "case" (+ space) "class" eow) (current-line))
+   ((or (scala/at-case-class?) (scala/at-abstract-sealed-class?))
     (core/open-line-below-current-indentation)
     (yas-insert-first-snippet (lambda (sn) (equal "case class" (yas--template-name sn))))
     (message "New case class"))

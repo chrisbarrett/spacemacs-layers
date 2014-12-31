@@ -241,7 +241,7 @@ is not the first, or from an unwritable file)."
     (if (search-backward-regexp
          (rx (or
               (and bol (* space)
-                   (or (and (? "abstract" (+ space)) "class")
+                   (or (and (? "abstract" (+ space) (? "sealed" (+ space))) "class")
                        "trait")
                    (+ space) (group-n 1 (+ alnum)))
               (and bol (* space)
