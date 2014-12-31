@@ -38,11 +38,9 @@ which require an initialization must be listed explicitly in the list.")
       (eval-after-load 'flycheck
         '(progn
            (defun spacemacs/flycheck-use-scalastyle ()
-             (when ensime-mode
-               (flycheck-select-checker 'scala-scalastyle)))
+             (flycheck-select-checker 'scala-scalastyle))
 
-           (add-hook 'flycheck-before-syntax-check-hook
-                     'spacemacs/flycheck-use-scalastyle))))))
+           (add-hook 'ensime-mode-hook 'spacemacs/flycheck-use-scalastyle))))))
 
 (defun scala/init-scala-mode2 ()
   (use-package scala-mode2
