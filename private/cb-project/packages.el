@@ -50,4 +50,5 @@ which require an initialization must be listed explicitly in the list.")
     :config
     (progn
       (setq skeletor-show-project-command 'magit-status)
+      (setq skeletor-scala-use-ensime t)
       (setq skeletor-user-directory (concat spacemacs-private-directory "cb-project/project-skeletons")))))
