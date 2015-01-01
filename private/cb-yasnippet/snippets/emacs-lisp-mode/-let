@@ -1,0 +1,7 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: -let
+# key: -l
+# binding: direct-keybinding
+# --
+(-let [$1]
+  $0)

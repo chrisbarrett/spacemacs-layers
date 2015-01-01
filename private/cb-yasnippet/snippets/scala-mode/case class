@@ -1,4 +1,5 @@
 # key: cc
 # name: case class
 # --
-case class ${1:Name} ${2:(${3:arg} : ${4:type}) }extends ${5:`(yas/scala-find-case-class-parent)`}
+abstract sealed class ${1:Name}
+case class ${2:Case}(${3:params...}) extends $1
