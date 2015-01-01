@@ -34,7 +34,6 @@ which require an initialization must be listed explicitly in the list.")
 
       ;; Don't use scala checker if ensime mode is active, since it provides
       ;; better error checking.
-
       (eval-after-load 'flycheck
         '(progn
            (defun spacemacs/flycheck-use-scalastyle ()
