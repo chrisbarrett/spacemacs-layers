@@ -33,6 +33,7 @@
                         "hook-fn"
                         "hook-fns"
                         "lambda+"
+                        "let-alist"
                         "after"
                         "noflet"
                         "ert-deftest"
