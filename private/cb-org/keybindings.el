@@ -6,6 +6,12 @@
 (define-key org-mode-map (kbd "C-c RET") 'org/ctrl-c-ret)
 (define-key org-mode-map (kbd "C-c ;")   nil)
 
+(evil-define-key 'normal org-mode-map (kbd "RET") 'org-return)
+
+;; Override clashing keybinding
+(after 'flyspell
+  (define-key flyspell-mode-map (kbd "C-c $") nil))
+
 (bind-key* "<f12>" 'org-work-toggle-at-work)
 
 (spacemacs/declare-prefix "o" "org")
