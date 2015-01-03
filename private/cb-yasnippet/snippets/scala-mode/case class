@@ -1,5 +1,4 @@
 # key: cc
 # name: case class
 # --
-abstract sealed class ${1:Name}
-case class ${2:Case}(${3:params...}) extends $1
+case class ${2:Case}(${3:params...})
