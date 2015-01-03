@@ -1,9 +1,8 @@
-# -*- mode: snippet; require-final-newline: nil -*-
-# name: Enumeration
 # key: e
-# binding: direct-keybinding
+# name: Enumeration
 # condition: (yas/bol?)
 # --
-class ${1:Name}s extends Enumeration { type $1 = Value
+object ${1:Name}s extends Enumeration {
+  type $1 = Value
   val ${2:ident} = Value
 }
