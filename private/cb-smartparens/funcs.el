@@ -230,3 +230,9 @@ Insert leading padding unless at start of line or after an open round paren."
     (save-excursion
       (search-backward "(")
       (just-one-space))))
+
+(defun sp/scala-internal-and-external-padding (id action context)
+  "Insert internal and external padding."
+  (unless (s-matches? (rx bol (* space) "import" eow) (current-line))
+    (and (sp/external-padding id action context)
+         (sp/internal-padding id action context))))
