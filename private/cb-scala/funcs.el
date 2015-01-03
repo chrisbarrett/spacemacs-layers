@@ -1,5 +1,8 @@
 ;;; Smart ops
 
+(require 's)
+(require 'dash)
+
 (defun scala/equals ()
   (interactive)
   (super-smart-ops-insert "="))
@@ -201,3 +204,21 @@ Pad in normal expressions. Do not insert padding in variance annotations."
     (t
      (or (super-smart-ops-delete-last-op)
          (call-interactively 'sp-backward-delete-char))))))
+
+
+;;; File template
+
+(defun scala/package-for-current-file ()
+  (-if-let* ((root (and (buffer-file-name) (projectile-project-p)))
+             (pkg-id (scala/filepath-to-package-name root (buffer-file-name))))
+      (if (s-blank? pkg-id) "" (format "package %s" pkg-id))
+    ""))
+
+(defun scala/filepath-to-package-name (root file-name)
+  (->> (f-dirname file-name)
+       (s-chop-prefix root)
+       f-split
+       nreverse
+       (--take-while (not (or (equal "src" it) (equal "scala" it))))
+       nreverse
+       (s-join ".")))
