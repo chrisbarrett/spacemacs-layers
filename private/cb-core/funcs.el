@@ -39,9 +39,9 @@ FEATURES may be a symbol or list of symbols."
   ;; Wrap body in a descending list of `eval-after-load' forms.
   ;; The last form is eval'd to remove its quote.
   (eval (->> (-listify (eval features))
-          (--map `(eval-after-load ',it))
-          (--reduce-from `'(,@it ,acc)
-                         `'(progn ,@body)))))
+             (--map `(eval-after-load ',it))
+             (--reduce-from `'(,@it ,acc)
+                            `'(progn ,@body)))))
 
 (defmacro command (&rest body)
   "Declare an `interactive' command with BODY forms."
@@ -303,9 +303,9 @@ REPLACEMENT is the string to substitute for the match in REGEX."
 (defun core/template-org-skeleton-title (filename)
   "Format the title to use for the given FILENAME."
   (->> (f-filename (f-no-ext filename))
-    s-split-words
-    (-map 's-capitalize)
-    (s-join " ")))
+       s-split-words
+       (-map 's-capitalize)
+       (s-join " ")))
 
 (defun core/reset-buffer-undo-history ()
   "Set file-local vars for expanded file templates."
