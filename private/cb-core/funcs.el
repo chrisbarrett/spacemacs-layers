@@ -112,7 +112,7 @@ positive or backward if negative."
 (defvar core/kill-buffer-ignored-list
   '("*scratch*" "*Messages*" "*Group*"
     "*shell*" "*eshell*" "*ansi-term*"
-    "diary.org" "notes.org"))
+    "diary.org" "notes.org" "*spacemacs*"))
 
 (defun core/kill-this-buffer ()
   "Kill the current buffer.
