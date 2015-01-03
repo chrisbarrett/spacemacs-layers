@@ -1,8 +1,12 @@
 ;; -*- lexical-binding: t; -*-
 
+;;; Code:
+
 (autoload 'org-move-item-down "org-list")
 (autoload 'org-move-item-up "org-list")
 (require 'cl-lib)
+(require 's)
+(require 'dash)
 
 
 
@@ -99,6 +103,11 @@ positive or backward if negative."
 
 ;;; Buffer management
 
+(defvar core/kill-buffer-ignored-list
+  '("*scratch*" "*Messages*" "*Group*"
+    "*shell*" "*eshell*" "*ansi-term*"
+    "diary.org" "notes.org" "*spacemacs*"))
+
 (defun core/clean-buffers ()
   "Close all buffers not in the ignore list."
   (interactive)
@@ -108,12 +117,6 @@ positive or backward if negative."
                    (get-buffer-process it))))
     'kill-buffer))
 
-
-(defvar core/kill-buffer-ignored-list
-  '("*scratch*" "*Messages*" "*Group*"
-    "*shell*" "*eshell*" "*ansi-term*"
-    "diary.org" "notes.org" "*spacemacs*"))
-
 (defun core/kill-this-buffer ()
   "Kill the current buffer.
 If this buffer is a member of `core/kill-buffer-ignored-list', bury it rather than killing it."
@@ -122,33 +125,62 @@ If this buffer is a member of `core/kill-buffer-ignored-list', bury it rather th
       (bury-buffer)
     (kill-buffer (current-buffer))))
 
+(defun core/move-file (buffer to-dir)
+  "Move BUFFER's corresponding file to DEST."
+  (interactive (list (current-buffer) (read-directory-name "Move to: ")))
+  (let ((dest (f-join to-dir (f-filename (core/buffer-file-name-assert-exists buffer)))))
+    (core/rename-file-and-buffer buffer dest)))
 
-(defun core/rename-file-and-buffer ()
+(defun core/rename-file-and-buffer (buffer dest-path)
   "Rename the current buffer and file it is visiting."
-  (interactive)
-  (let ((filename (buffer-file-name)))
-    (if (not (and filename (file-exists-p filename)))
-        (message "Buffer is not visiting a file!")
-      (let ((new-name (read-file-name "New name: " filename)))
-        (cond
-         ((vc-backend filename) (vc-rename-file filename new-name))
-         (t
-          (rename-file filename new-name t)
-          (rename-buffer new-name)
-          (set-visited-file-name new-name)
-          (set-buffer-modified-p nil)))))))
+  (interactive (let ((cur (core/buffer-file-name-assert-exists)))
+                 (list (current-buffer) (read-file-name "New name: " cur))))
+  (let ((src (core/buffer-file-name-assert-exists buffer)))
+    (or (core/try-move-file-with-vc src dest-path)
+        (core/try-rename-file src dest-path))
+    (message "File '%s' moved to '%s'" (f-filename src) dest-path)))
 
-(defun core/delete-file-and-buffer ()
+(defun core/buffer-file-name-assert-exists (&optional buf)
+  (let ((cur (buffer-file-name buf)))
+    (if (not (and cur (f-exists? cur)))
+        (error "Buffer is not visiting a file!")
+      cur)))
+
+(defun core/try-move-file-with-vc (src dest)
+  (condition-case err
+      (when (vc-backend src)
+        (vc-rename-file src dest)
+        t)
+    (error
+     (let ((msg (error-message-string err)))
+       (cond
+        ((s-matches? "New file already exists" msg) nil)
+        ((s-matches? "Please update files" msg)
+         (unless (y-or-n-p "VC cannot track this change automatically. Continue?")
+           (error msg)))
+        (t
+         (error msg)))))))
+
+(defun core/try-rename-file (src dest)
+  (when (and (f-exists? dest) (not (y-or-n-p "File exists. Overwrite?")))
+    (user-error "Aborted"))
+  (rename-file src dest t)
+  (-when-let (buf (get-file-buffer src))
+    (with-current-buffer buf
+      (rename-buffer dest)
+      (set-visited-file-name dest)
+      (set-buffer-modified-p nil))))
+
+(defun core/delete-file-and-buffer (filename buffer)
   "Delete a file and its associated buffer."
-  (interactive)
-  (let ((filename (buffer-file-name))
-        (buffer (current-buffer)))
-    (if (not (and filename (file-exists-p filename)))
-        (ido-kill-buffer)
-      (when (yes-or-no-p "Are you sure you want to remove this file? ")
-        (delete-file filename)
-        (kill-buffer buffer)
-        (message "File '%s' successfully removed" filename)))))
+  (interactive (list (buffer-file-name) (current-buffer)))
+  (when (and (f-exists? filename) (yes-or-no-p "Are you sure you want to remove this file? "))
+    (if (vc-backend filename)
+        (vc-delete-file filename)
+      (delete-file filename))
+    (message "File '%s' successfully removed" filename))
+
+  (ignore-errors (kill-buffer buffer)))
 
 
 ;;; Line transposition
