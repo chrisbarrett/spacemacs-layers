@@ -44,7 +44,7 @@
 
 (setq-default
  ;; Default theme applied at startup
- dotspacemacs-default-theme (if (window-system) 'solarized-light 'default)
+ dotspacemacs-default-theme 'solarized-light
  ;; Guide-key delay in seconds. The Guide-key is the popup buffer listing
  ;; the commands bound to the current keystrokes.
  dotspacemacs-guide-key-delay 0.4
