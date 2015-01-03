@@ -5,6 +5,9 @@
   (when (called-interactively-p nil)
     (message "Buffer evaluated.")))
 
+(custom-set-variables
+ '(flycheck-emacs-lisp-load-path 'inherit))
+
 ;;; Font-lock
 
 (font-lock-add-keywords
