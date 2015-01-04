@@ -17,7 +17,7 @@
   (define-key ensime-mode-map (kbd "M-N") 'ensime-forward-note)
   (define-key ensime-mode-map (kbd "M-P") 'ensime-backward-note)
 
-  (evil-leader/set-key-for-mode 'scala-mode "ii" 'ensime-insert-import)
+  (evil-leader/set-key-for-mode 'scala-mode "ii" 'ensime-import-type-at-point)
 
   (evil-define-key 'insert ensime-inf-mode-map
     (kbd "SPC") 'scala/smart-space
