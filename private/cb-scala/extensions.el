@@ -26,6 +26,7 @@
     :config
     (progn
       (super-smart-ops-configure-for-mode 'scala-mode
+        :add '("?")
         :custom
         '(("=" . scala/equals)
           (":" . scala/colon)
@@ -34,6 +35,7 @@
           ("," . core/comma-then-space)))
 
       (super-smart-ops-configure-for-mode 'sbt-mode
+        :add '("?")
         :custom
         '(("=" . scala/equals)
           (":" . scala/repl-colon)
@@ -42,6 +44,7 @@
           ("," . core/comma-then-space)))
 
       (super-smart-ops-configure-for-mode 'ensime-inf-mode
+        :add '("?")
         :custom
         '(("=" . scala/equals)
           (":" . scala/repl-colon)
