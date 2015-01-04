@@ -4,7 +4,15 @@
   "Ensure the file exists before starting `ensime-mode'."
   (if (file-exists-p (buffer-file-name))
       (ensime-mode +1)
-    (add-hook 'after-save-hook (lambda () (ensime-mode +1)) nil t)))
+    (add-hook 'after-save-hook (lambda () (ensime-mode +1)) nil t))
+
+  (add-hook 'before-save-hook 'scala/format-buffer-for-save nil t))
+
+(defun scala/format-buffer-for-save ()
+  "Format buffer on save when ensime is connected."
+  (ignore-errors
+    (when (ensime-connected-p)
+      (ensime-format-source))))
 
 (defun spacemacs/ensime-refactor-accept ()
   (interactive)
