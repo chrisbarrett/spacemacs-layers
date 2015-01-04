@@ -24,7 +24,7 @@
   ;;; Scala
 
   (sp-with-modes 'scala-mode
-    (sp-local-pair "{" "}" :post-handlers '(:add sp/scala-internal-and-external-padding))
+    (sp-local-pair "{" "}" :post-handlers '(:add sp/scala-curly-brace-padding))
     (sp-local-pair "(" ")" :post-handlers '(:add sp/scala-format-after-paren))
     )
 
