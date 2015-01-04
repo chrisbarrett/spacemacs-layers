@@ -32,6 +32,7 @@
           (":" . scala/colon)
           ("+" . scala/plus)
           ("-" . scala/minus)
+          ("/" . scala/slash)
           ("," . core/comma-then-space)))
 
       (super-smart-ops-configure-for-mode 'sbt-mode

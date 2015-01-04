@@ -42,6 +42,23 @@ Pad in normal expressions. Do not insert padding in variance annotations."
   (interactive "*")
   (scala/insert-variance-op "+"))
 
+(defun scala/slash ()
+  "Insert a slash as a smart op.
+Typing three in a row will insert a ScalaDoc."
+  (interactive "*")
+  (if (s-matches? (rx bol (* space) "//" (* space) eol) (current-line))
+      (atomic-change-group
+        (delete-region (line-beginning-position) (line-end-position))
+        (scala/insert-scaladoc))
+    (super-smart-ops-insert "/")))
+
+(defun scala/insert-scaladoc ()
+  "Insert the skeleton of a ScalaDoc at point."
+  (interactive "*")
+  (indent-for-tab-command) (insert "/** ")
+  (save-excursion
+    (newline) (indent-for-tab-command) (insert "*/")))
+
 
 ;;; Interactive
 
@@ -106,8 +123,15 @@ Pad in normal expressions. Do not insert padding in variance annotations."
   "Insert a newline with context-sensitive formatting."
   (interactive "P")
   (cond
+   ((scala/at-scaladoc?)
+    (goto-char (line-end-position))
+    (newline)
+    (indent-for-tab-command)
+    (insert "* "))
+
    ((or arg (core/in-string-or-comment?))
-    (comment-indent-new-line))
+    (comment-indent-new-line)
+    (just-one-space))
 
    ((scala/between-empty-curly-braces?)
     (scala/split-braced-expression-over-new-lines)
@@ -128,6 +152,9 @@ Pad in normal expressions. Do not insert padding in variance annotations."
       (back-to-indentation)))
    (t
     (call-interactively 'comment-indent-new-line))))
+
+(defun scala/at-scaladoc? ()
+  (s-matches? (rx bol (* space) (? "/") (+ "*")) (current-line)))
 
 (defun scala/at-case-class? ()
   (s-matches? (rx bol (* space) "case" (+ space) "class" eow) (current-line)))
