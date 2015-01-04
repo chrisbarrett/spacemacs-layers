@@ -138,7 +138,7 @@ If this buffer is a member of `core/kill-buffer-ignored-list', bury it rather th
   (let ((src (core/buffer-file-name-assert-exists buffer)))
     (or (core/try-move-file-with-vc src dest-path)
         (core/try-rename-file src dest-path))
-    (message "File '%s' moved to '%s'" (f-filename src) dest-path)))
+    (message "File '%s' moved to '%s'" (f-short (f-filename src)) (f-short dest-path))))
 
 (defun core/buffer-file-name-assert-exists (&optional buf)
   (let ((cur (buffer-file-name buf)))
@@ -177,10 +177,9 @@ If this buffer is a member of `core/kill-buffer-ignored-list', bury it rather th
   (when (and (f-exists? filename) (yes-or-no-p "Are you sure you want to remove this file? "))
     (if (vc-backend filename)
         (vc-delete-file filename)
-      (delete-file filename))
-    (message "File '%s' successfully removed" filename))
-
-  (ignore-errors (kill-buffer buffer)))
+      (delete-file filename)))
+  (ignore-errors (kill-buffer buffer))
+  (message "File '%s' successfully removed" (f-short filename)))
 
 
 ;;; Line transposition
@@ -239,6 +238,10 @@ If this buffer is a member of `core/kill-buffer-ignored-list', bury it rather th
         (indent-for-tab-command)
         (forward-line)))))
 
+(defvar core/indent-commands-alist
+  nil
+  "Alist of commands to run to indent the buffer, indexed by major-mode")
+
 (defun core/indent-dwim (&optional arg)
   "Perform a context-sensitive indentation action.
 With prefix argument ARG, justify text."
@@ -255,6 +258,10 @@ With prefix argument ARG, justify text."
         (or (fill-comment-paragraph)
             (fill-paragraph arg)))
       (message "Filled paragraph."))
+
+     ((assoc major-mode core/indent-commands-alist)
+      (funcall (cdr (assoc major-mode core/indent-commands-alist)))
+      (message "Formatted buffer."))
 
      (t
       (core/indent-buffer)
