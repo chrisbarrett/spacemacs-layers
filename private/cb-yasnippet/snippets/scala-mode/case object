@@ -1,0 +1,7 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: case object
+# key: co
+# binding: direct-keybinding
+# condition: (yas/bol?)
+# --
+case object ${1:Name}
