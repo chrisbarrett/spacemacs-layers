@@ -30,4 +30,7 @@
   (evil-define-key 'normal ensime-mode-map
     (kbd "M-.") 'ensime-edit-definition
     (kbd "M-,") 'ensime-pop-find-definition-stack)
+
+  (evil-define-key 'normal ensime-inspector-mode-map
+    (kbd "q") 'ensime-popup-buffer-quit-function)
   )
