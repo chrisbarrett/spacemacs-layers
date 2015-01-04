@@ -166,6 +166,12 @@ Pad in normal expressions. Do not insert padding in variance annotations."
     (yas-insert-first-snippet (lambda (sn) (equal "case" (yas--template-name sn))))
     (message "New data case"))
 
+   ;; Insert new import statement
+   ((s-matches? (rx bol (* space) "import" eow) (current-line))
+    (core/open-line-below-current-indentation)
+    (insert "import ")
+    (message "New import statement"))
+
    (t
     (goto-char (line-end-position))
     (scala/ret)))
