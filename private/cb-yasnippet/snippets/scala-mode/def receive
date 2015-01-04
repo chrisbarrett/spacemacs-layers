@@ -1,0 +1,8 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: def receive
+# key: dr
+# binding: direct-keybinding
+# --
+override def receive = {
+  $0
+}
