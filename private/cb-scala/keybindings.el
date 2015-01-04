@@ -22,4 +22,12 @@
   (evil-define-key 'insert ensime-inf-mode-map
     (kbd "SPC") 'scala/smart-space
     (kbd "<backspace>") 'scala/backspace)
+
+  (evil-define-key 'insert ensime-mode-map
+    (kbd "M-.") 'ensime-edit-definition
+    (kbd "M-,") 'ensime-pop-find-definition-stack)
+
+  (evil-define-key 'normal ensime-mode-map
+    (kbd "M-.") 'ensime-edit-definition
+    (kbd "M-,") 'ensime-pop-find-definition-stack)
   )
