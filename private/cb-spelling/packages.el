@@ -30,5 +30,5 @@ which require an initialization must be listed explicitly in the list.")
     :config
     (progn
       (setq ispell-program-name "aspell")
-      (setq ispell-dictionary "en_GB")
+      (setq ispell-dictionary "british")
       (setq ispell-silently-savep t))))
