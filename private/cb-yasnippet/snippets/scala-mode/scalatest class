@@ -1,0 +1,14 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: scalatest class
+# key: stcl
+# binding: direct-keybinding
+# condition: (yas/bol?)
+# --
+class ${1:Name}Test {
+
+  describe("$1") {
+    $0
+  }
+
+  trait Fixture {}
+}
