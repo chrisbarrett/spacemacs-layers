@@ -73,6 +73,8 @@
  startup."
   (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/"))
   (paradox-require 'noflet)
+  (paradox-require 's)
+  (paradox-require 'dash)
   (setq-default git-enable-github-support t)
   (add-to-list 'exec-path "~/.cabal/bin/")
   (add-to-list 'exec-path "~/bin/")
@@ -83,5 +85,6 @@
   "This is were you can ultimately override default Spacemacs configuration.
 This function is called at the very end of Spacemacs initialization."
   (setq custom-file (concat user-emacs-directory "custom.el"))
-  (load custom-file)
+  (when (file-exists-p custom-file)
+    (load custom-file))
   (require 'personal-config nil t))
