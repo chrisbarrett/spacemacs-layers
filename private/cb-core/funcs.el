@@ -81,7 +81,6 @@ positive or backward if negative."
     acc))
 
 (cl-defmacro --filter-buffers (pred-form &optional (bufs '(buffer-list)))
-  "Anaphoric form of `-filter-buffers'"
   `(--filter (with-current-buffer it ,pred-form) ,bufs))
 
 (defun core/read-string-with-default (prompt default &optional initial-input history)
@@ -105,17 +104,20 @@ positive or backward if negative."
 
 (defvar core/kill-buffer-ignored-list
   '("*scratch*" "*Messages*" "*Group*"
+    "work_movio.org"
     "*shell*" "*eshell*" "*ansi-term*"
     "diary.org" "notes.org" "*spacemacs*"))
+
+(defun core/buffer-ignored-or-live? (buf)
+  (or (-contains? core/kill-buffer-ignored-list (buffer-name buf))
+      (get-buffer-process buf)))
 
 (defun core/clean-buffers ()
   "Close all buffers not in the ignore list."
   (interactive)
   (delete-other-windows)
-  (let* ((other-buffers (-difference (buffer-list) (list (current-buffer))))
-         (buffer-ignored-or-live (lambda (b) (not (or (-contains? core/kill-buffer-ignored-list (buffer-name b))
-                                                      (get-buffer-process b))))))
-    (-each (--filter-buffers 'buffer-ignored-or-live other-buffers)
+  (let ((other-buffers (-difference (buffer-list) (list (current-buffer)))))
+    (-each (--filter-buffers (not (core/buffer-ignored-or-live? it)) other-buffers)
       'kill-buffer)))
 
 (defun core/kill-this-buffer ()
