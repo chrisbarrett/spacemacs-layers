@@ -55,9 +55,10 @@ Typing three in a row will insert a ScalaDoc."
 (defun scala/insert-scaladoc ()
   "Insert the skeleton of a ScalaDoc at point."
   (interactive "*")
-  (indent-for-tab-command) (insert "/** ")
+  (indent-for-tab-command) (insert "/**")
+  (core/open-line-below-current-indentation) (insert " * ")
   (save-excursion
-    (newline) (indent-for-tab-command) (insert "*/")))
+    (core/open-line-below-current-indentation) (insert "*/")))
 
 
 ;;; Interactive
@@ -125,8 +126,7 @@ Typing three in a row will insert a ScalaDoc."
   (cond
    ((scala/at-scaladoc?)
     (goto-char (line-end-position))
-    (newline)
-    (indent-for-tab-command)
+    (core/open-line-below-current-indentation)
     (insert "* "))
 
    ((or arg (core/in-string-or-comment?))
