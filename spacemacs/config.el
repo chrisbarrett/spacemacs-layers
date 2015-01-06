@@ -56,6 +56,8 @@
 ;; no beep pleeeeeease ! (and no visual blinking too please)
 (custom-set-variables '(ring-bell-function 'ignore))
 (setq visible-bell nil)
+;; require for evil folding
+(add-hook 'prog-mode-hook 'hs-minor-mode)
 
 ;; Hack to fix a bug with tabulated-list.el
 ;; see: http://redd.it/2dgy52
@@ -194,8 +196,6 @@ Can be installed with `brew install trash'."
 (setq url-configuration-directory (concat spacemacs-cache-directory "url"))
 ;; eshell files
 (setq eshell-directory-name (concat spacemacs-cache-directory "eshell" ))
-;; pcache files
-(setq pcache-directory (concat spacemacs-cache-directory "pcache" ))
 ;; Tramp history
 (setq tramp-persistency-file-name (concat spacemacs-cache-directory "tramp"))
 
