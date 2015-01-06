@@ -122,10 +122,6 @@ which require an initialization must be listed explicitly in the list.")
 
 (defun cb-core/init-hideshow ()
   (use-package hideshow
-    :config
-    (dolist (mode core/lisp-modes)
-      (let ((hook (intern (format "%s-hook" mode))))
-        (add-hook hook 'hs-minor-mode)))
     :diminish hs-minor-mode))
 
 (defun cb-core/init-helm ()

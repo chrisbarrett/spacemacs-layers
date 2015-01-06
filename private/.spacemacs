@@ -72,6 +72,8 @@
   "User initialization for Spacemacs. This function is called at the very
  startup."
   (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/"))
+  (package-initialize)
+  (require 'paradox)
   (paradox-require 'noflet)
   (paradox-require 's)
   (paradox-require 'dash)
