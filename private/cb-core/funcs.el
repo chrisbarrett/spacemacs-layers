@@ -112,10 +112,11 @@ positive or backward if negative."
   "Close all buffers not in the ignore list."
   (interactive)
   (delete-other-windows)
-  (-each (--filter-buffers
-          (not (or (-contains? core/kill-buffer-ignored-list (buffer-name it))
-                   (get-buffer-process it))))
-    'kill-buffer))
+  (let* ((other-buffers (-difference (buffer-list) (list (current-buffer))))
+         (buffer-ignored-or-live (lambda (b) (not (or (-contains? core/kill-buffer-ignored-list (buffer-name b))
+                                                      (get-buffer-process b))))))
+    (-each (--filter-buffers 'buffer-ignored-or-live other-buffers)
+      'kill-buffer)))
 
 (defun core/kill-this-buffer ()
   "Kill the current buffer.
