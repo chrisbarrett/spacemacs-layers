@@ -150,10 +150,12 @@
 
 (defun haskell/init-company-ghc ()
   (use-package ghc
-    :init 
-    (add-to-list 'company-backends 'company-ghc)
-    (ghc-comp-init)
-    ))
+    :defer t
+    :init
+    (add-hook 'haskell-mode-hook
+              (lambda ()
+                (add-to-list 'company-backends 'company-ghc)
+                (ghc-comp-init)))))
 
 (defun haskell/init-hi2 ()
   (use-package hi2
