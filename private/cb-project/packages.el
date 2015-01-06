@@ -1,7 +1,6 @@
 (defvar cb-project-packages
   '(
     ;; package cb-projects go here
-    ack-and-a-half
     projectile
     skeletor
     )
