@@ -33,6 +33,9 @@
 ;; For more info on `use-package', see readme:
 ;; https://github.com/jwiegley/use-package
 
+(require 's)
+(require 'dash)
+
 (defun cb-org/init-org-work ()
   (use-package org-work
     :load-path "private/cb-org/extensions/org-work"
@@ -77,86 +80,88 @@
       (setq org-agenda-start-on-weekday nil)
       (setq org-agenda-text-search-extra-files '(agenda-archives))
 
+      (defun cb-org/agenda-custom-commands-delete-other-windows (command-list)
+        (-map-when (lambda (spec) (listp (cdr spec)))
+                   (lambda (spec) (append spec '(((org-agenda-customise-window-hook 'delete-other-windows)))))
+                   command-list))
+
       (setq org-agenda-custom-commands
-            (->> '(
-                   ("A" "Agenda and next actions"
-                    ((tags-todo "-someday-media/NEXT"
-                                ((org-agenda-overriding-header "Next Actions")))
-                     (agenda "")
-                     (todo "WAITING"
-                           ((org-agenda-overriding-header "Waiting")))
-                     (stuck "")
-                     (tags-todo "media/NEXT"
-                                ((org-agenda-overriding-header "Media"))))
-                    ((org-agenda-tag-filter-preset
-                      '("-@work"))))
+            (cb-org/agenda-custom-commands-delete-other-windows
+             '(
+               ("A" "Agenda and next actions"
+                ((tags-todo "-someday-media/NEXT"
+                            ((org-agenda-overriding-header "Next Actions")))
+                 (agenda "")
+                 (todo "WAITING"
+                       ((org-agenda-overriding-header "Waiting")))
+                 (stuck "")
+                 (tags-todo "media/NEXT"
+                            ((org-agenda-overriding-header "Media"))))
+                ((org-agenda-tag-filter-preset
+                  '("-@work"))))
 
-                   ("w" "Agenda and work actions"
-                    ((tags-todo "-someday/NEXT"
-                                ((org-agenda-overriding-header "Next Actions")))
-                     (agenda ""
-                             ((org-agenda-span 'fortnight)))
-                     (todo "WAITING|ORGANISE_IN|COLLECT"
-                           ((org-agenda-overriding-header "Incoming/Waiting")))
-                     (todo "TODO_OUT|READY|ORGANISE_OUT"
-                           ((org-agenda-overriding-header "Outgoing")))
-                     (stuck "")
-                     )
-                    ((org-agenda-tag-filter-preset
-                      '("+@work" "-ignore"))
-                     (org-agenda-files (list org-work-file))
-                     (org-deadline-warning-days 0)
-                     (org-agenda-todo-ignore-deadlines 14)
-                     (org-agenda-todo-ignore-scheduled 'all)
-                     (org-agenda-hide-tags-regexp
-                      (regexp-opt
-                       (list org-agenda-hide-tags-regexp "@work")))))
+               ("w" "Agenda and work actions"
+                ((tags-todo "-someday/NEXT"
+                            ((org-agenda-overriding-header "Next Actions")))
+                 (agenda ""
+                         ((org-agenda-span 'fortnight)))
+                 (todo "WAITING|ORGANISE_IN|COLLECT"
+                       ((org-agenda-overriding-header "Incoming/Waiting")))
+                 (todo "TODO_OUT|READY|ORGANISE_OUT"
+                       ((org-agenda-overriding-header "Outgoing")))
+                 (stuck "")
+                 )
+                ((org-agenda-tag-filter-preset
+                  '("+@work" "-ignore"))
+                 (org-agenda-files (list org-work-file))
+                 (org-deadline-warning-days 0)
+                 (org-agenda-todo-ignore-deadlines 14)
+                 (org-agenda-todo-ignore-scheduled 'all)
+                 (org-agenda-hide-tags-regexp
+                  (regexp-opt
+                   (list org-agenda-hide-tags-regexp "@work")))))
 
-                   ("n" "Next actions"
-                    ((tags-todo "-someday/NEXT"))
-                    ((org-agenda-overriding-header "Next Actions")))
+               ("n" "Next actions"
+                ((tags-todo "-someday/NEXT"))
+                ((org-agenda-overriding-header "Next Actions")))
 
-                   ("g" . "GTD contexts")
-                   ("gg" "Anywhere"
-                    ((tags-todo "@computer")
-                     (tags-todo "@errand")
-                     (tags-todo "@home")
-                     (tags-todo "@leisure")
-                     (tags-todo "@phone")
-                     (tags-todo "@work")))
-                   ("gc" "Computer" tags-todo "@computer")
-                   ("ge" "Errands" tags-todo "@errand")
-                   ("gp" "Phone" tags-todo "@phone")
-                   ("gw" "Work" tags-todo "@work")
-                   ("gh" "Home" tags-todo "@home")
-                   ("gl" "Leisure" tags-todo "@leisure")
+               ("g" . "GTD contexts")
+               ("gg" "Anywhere"
+                ((tags-todo "@computer")
+                 (tags-todo "@errand")
+                 (tags-todo "@home")
+                 (tags-todo "@leisure")
+                 (tags-todo "@phone")
+                 (tags-todo "@work")))
+               ("gc" "Computer" tags-todo "@computer")
+               ("ge" "Errands" tags-todo "@errand")
+               ("gp" "Phone" tags-todo "@phone")
+               ("gw" "Work" tags-todo "@work")
+               ("gh" "Home" tags-todo "@home")
+               ("gl" "Leisure" tags-todo "@leisure")
 
-                   ("r" "Weekly Review"
-                    ((agenda ""
-                             ((org-agenda-ndays 21)
-                              (org-agenda-start-day "-7d")))
-                     (stuck "")
-                     (todo "WAITING"
-                           ((org-agenda-overriding-header "Waiting")))
-                     (tags-todo "someday-skill/MAYBE|NEXT"
-                                ((org-agenda-overriding-header "Someday")))
-                     (tags-todo "someday&skill"
-                                ((org-agenda-overriding-header "Skills")))
-                     (tags-todo "media"
-                                ((org-agenda-overriding-header "Media"))))
-                    ((org-agenda-tag-filter-preset
-                      '("-drill" "-gtd"))
-                     (org-habit-show-habits nil)
-                     (org-agenda-include-inactive-timestamps t)))
-                   )
-              (--map-when
-               (listp
-                (cdr it))
-               (append it
-                       '(((org-agenda-customise-window-hook 'delete-other-windows)))))))
+               ("r" "Weekly Review"
+                ((agenda ""
+                         ((org-agenda-ndays 21)
+                          (org-agenda-start-day "-7d")))
+                 (stuck "")
+                 (todo "WAITING"
+                       ((org-agenda-overriding-header "Waiting")))
+                 (tags-todo "someday-skill/MAYBE|NEXT"
+                            ((org-agenda-overriding-header "Someday")))
+                 (tags-todo "someday&skill"
+                            ((org-agenda-overriding-header "Skills")))
+                 (tags-todo "media"
+                            ((org-agenda-overriding-header "Media"))))
+                ((org-agenda-tag-filter-preset
+                  '("-drill" "-gtd"))
+                 (org-habit-show-habits nil)
+                 (org-agenda-include-inactive-timestamps t)))
+               )))
 
       (add-hook 'org-agenda-mode-hook 'org-agenda-to-appt)
       (add-to-list 'org-agenda-files org-directory)
+
 
       (unless noninteractive
         (add-hook 'after-init-hook 'org/agenda-dwim)))))
