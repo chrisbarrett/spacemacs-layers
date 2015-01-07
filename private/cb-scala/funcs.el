@@ -60,6 +60,18 @@ Typing three in a row will insert a ScalaDoc."
   (save-excursion
     (core/open-line-below-current-indentation) (insert "*/")))
 
+(defun scala/insert-space-before-colon ()
+  (when (s-matches? (rx (any word digit alnum "_") ":")
+                    (buffer-substring (line-beginning-position) (point)))
+    (save-excursion
+      (search-backward ":")
+      (just-one-space))))
+
+(defadvice super-smart-ops-insert (before padding-for-colon-op activate)
+  "Insert padding before colon if inserting another operator after."
+  (when (derived-mode-p 'scala-mode)
+    (scala/insert-space-before-colon)))
+
 
 ;;; Interactive
 
