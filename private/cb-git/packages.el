@@ -1,7 +1,6 @@
 (defvar cb-git-packages
   '(
     ;; package cb-gits go here
-    magit
     git-gutter
     git-auto-commit-mode
     git-commit-mode
