@@ -131,7 +131,26 @@ which require an initialization must be listed explicitly in the list.")
               ("r" "Reading" entry
                (file+olp org-default-notes-file "Media" "Reading")
                "* MAYBE Read %i%?"
-               :clock-keep t)))
+               :clock-keep t)
+
+              ;;; Work items
+
+              ("T" "Work Todo" entry
+               (file+olp org-work-file "Tasks")
+               "* TODO %?"
+               :clock-keep t)
+
+              ("L" "Work Link" entry
+               (file+olp org-work-file "Links")
+               (function cb-org/read-url-for-capture)
+               :immediate-finish t
+               :clock-keep t)
+
+              ("Z" "Work Note" entry
+               (file+olp org-work-file "Notes")
+               "* %i%?"
+               :clock-keep t))
+            )
 
       (setq org-global-properties
             `(("Effort_ALL" . ,(concat "1:00 2:00 3:00 4:00 "
