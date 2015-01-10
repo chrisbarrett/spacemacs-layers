@@ -1,6 +1,7 @@
 (after 'scala-mode2
   ;; (define-key scala-mode-map (kbd ".") nil)
   (define-key scala-mode-map (kbd "M-RET") 'scala/meta-ret)
+  (define-key scala-mode-map (kbd "C-c C-e") 'scala/insert-extends)
 
   (evil-define-key 'insert scala-mode-map
     (kbd "SPC") 'scala/smart-space

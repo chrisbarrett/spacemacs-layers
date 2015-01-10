@@ -251,6 +251,103 @@ Typing three in a row will insert a ScalaDoc."
          (call-interactively 'sp-backward-delete-char))))))
 
 
+;;; Insert extends forms
+
+(defun scala/insert-extends ()
+  "Insert an extends form for the trait or class at point."
+  (interactive)
+  (save-match-data
+    (scala/skip-toplevel-keyword-at-point)
+    (-if-let (pos (scala/backward-class-decl))
+        (progn
+          (let* ((col (scala/column-at-pos (or (scala/start-of-extensions) (scala/end-of-extensions))))
+                 (exts (scala/format-extensions-list col (scala/extensions-for-class))))
+            (scala/delete-class-extensions)
+            (goto-char (scala/end-of-extensions))
+            (just-one-space)
+            (insert exts)
+            (evil-insert-state)
+            (save-excursion
+              (insert " "))))
+      (user-error "No class or trait at point"))))
+
+(defun scala/column-at-pos (pos)
+  (save-excursion
+    (goto-char pos)
+    (current-column)))
+
+(defun scala/backward-class-decl ()
+  "Move to the last class or trait before point."
+  (search-backward-regexp (rx (or "class" "trait")) nil t))
+
+(defun scala/extensions-for-class ()
+  (save-excursion
+    (goto-char (line-beginning-position))
+    (-when-let* ((exts-start (scala/start-of-extensions))
+                 (exts-end (or (scala/end-of-extensions) (point-max)))
+                 (span (buffer-substring exts-start exts-end)))
+      (->> (s-split (rx (or "extends" "with")) span)
+           (-map 's-trim)
+           (-remove 's-blank?)))))
+
+(defun scala/format-extensions-list (start-col extensions)
+  "Combine extensions, splitting them over lines if the list becomes long."
+  (if extensions
+      (let* ((str (s-join " with " extensions))
+             (width (+ start-col (length str)))
+             (long-line? (<= fill-column width))
+             (ext-str (if long-line? (s-replace "with" "\n  with" str) str)))
+        (concat "extends " ext-str (when long-line? "\n ") " with "))
+    "extends "))
+
+(defvar scala/top-level-keywords-re
+  (regexp-opt '("trait" "class" "object" "type" "private" "public" "package" "val" "var")))
+
+(defun scala/start-of-extensions ()
+  (save-excursion
+    (when (search-forward "extends" (line-end-position) t)
+      (match-beginning 0))))
+
+(defun scala/delete-class-extensions ()
+  (save-excursion
+    (goto-char (line-beginning-position))
+    (-when-let* ((exts-start (scala/start-of-extensions))
+                 (exts-end (or (scala/end-of-extensions) (point-max))))
+      (delete-region exts-start exts-end))))
+
+(defun scala/end-of-extensions ()
+  (save-excursion
+    (scala/skip-toplevel-keyword-at-point)
+    (min (or (when (save-excursion (search-forward "{" nil t)) (match-beginning 0))
+             (point-max))
+         (or (when (save-excursion (search-forward "\n\n" nil t)) (match-beginning 0))
+             (point-max))
+         (or (scala/end-of-toplevel-decl) (point-max)))))
+
+(defun scala/skip-toplevel-keyword-at-point ()
+  (while (and (thing-at-point-looking-at scala/top-level-keywords-re)
+              (not (eobp)))
+    (forward-char 1)))
+
+(defun scala/end-of-toplevel-decl ()
+  (save-excursion
+    (cond ((search-forward-regexp scala/top-level-keywords-re nil t)
+           (goto-char (match-beginning 0))
+
+           (forward-line -1)
+           (goto-char (line-end-position))
+
+           (while (and (not (bobp))
+                       (s-blank? (current-line)))
+             (forward-line -1)
+             (goto-char (line-end-position))))
+
+          (t
+           (goto-char (line-end-position))))
+
+    (point)))
+
+
 ;;; File template
 
 (defun scala/package-for-current-file ()
