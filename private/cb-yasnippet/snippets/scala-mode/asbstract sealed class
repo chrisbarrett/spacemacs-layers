@@ -1,7 +1,5 @@
-# -*- mode: snippet; require-final-newline: nil -*-
-# name: asbstract sealed class
 # key: asc
-# binding: direct-keybinding
+# name: abstract sealed class
 # condition: (yas/bol?)
 # --
 abstract sealed class ${1:Name}

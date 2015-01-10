@@ -1,9 +1,7 @@
-# -*- mode: snippet; require-final-newline: nil -*-
-# name: main
 # key: main
-# binding: direct-keybinding
+# name: main
 # condition: (yas/bol?)
 # --
-def main(args: Array[String]) {
+def main(args: Array[String]) = {
   $0
 }
