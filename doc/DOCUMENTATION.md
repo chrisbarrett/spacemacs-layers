@@ -43,6 +43,7 @@
     - [Micro-states](#micro-states)
 - [Differences between Vim, Evil and Spacemacs](#differences-between-vim-evil-and-spacemacs)
     - [The vim-surround case](#the-vim-surround-case)
+- [Evil plugins](#evil-plugins)
 - [Color theme](#color-theme)
 - [UI elements](#ui-elements)
     - [Toggles](#toggles)
@@ -52,8 +53,6 @@
         - [Battery status integration](#battery-status-integration)
         - [Powerline separators](#powerline-separators)
         - [Minor Modes](#minor-modes)
-- [Base packages](#base-packages)
-    - [Evil plugins](#evil-plugins)
 - [Font](#font)
 - [Commands](#commands)
     - [Reserved prefix command for user](#reserved-prefix-command-for-user)
@@ -646,6 +645,24 @@ your `~/.spacemacs`):
 (evil-define-key 'visual evil-surround-mode-map "S" 'evil-surround-region)
 ```
 
+# Evil plugins
+
+`Spacemacs` ships with the following evil plugins:
+
+                 Mode                   |             Description
+----------------------------------------|--------------------------------------
+[evil-leader][]                         | vim leader that bring a new layer of keys in normal mode
+[evil-indent-textobject][]              | add text object based on indentation level
+[evil-visualstar][]                     | search for current selection with `*`
+[evil-exchange][]                       | port of [vim-exchange][]
+[evil-surround][]                       | port of [vim-surround][]
+[evil-nerd-commenter][]                 | port of [nerdcommenter][]
+[evil-search-highlight-persist][]       | emulation of hlsearch behavior
+[evil-numbers][]                        | like C-a/C-x in vim
+[evil-args][]                           | motions and text objects for arguments
+[evil-jumper][]                         | jump list emulation
+[NeoTree][neotree]                      | mimic [NERD Tree][nerdtree]
+
 # Color theme
 
 By default, `Spacemacs` uses the theme [solarized-light][solarized-theme].
@@ -835,29 +852,6 @@ display ASCII characters instead (may be useful in terminal).
 `(Ⓢ)`        | (S)        | [smartparens][sp] mode
 `Ⓦ`          | W          | whitespace mode
 `Ⓨ`          | Y          | [yasnippet][yasnippet] mode
-
-# Base packages
-
-`Spacemacs` main mechanics rely largely on `Evil` and `Helm` base packages.
-They are both extended with various packages to build on their foundations.
-
-## Evil plugins
-
-`Spacemacs` ships with the following evil plugins:
-
-                 Mode                   |             Description
-----------------------------------------|--------------------------------------
-[evil-leader][]                         | vim leader that bring a new layer of keys in normal mode
-[evil-indent-textobject][]              | add text object based on indentation level
-[evil-visualstar][]                     | search for current selection with `*`
-[evil-exchange][]                       | port of [vim-exchange][]
-[evil-surround][]                       | port of [vim-surround][]
-[evil-nerd-commenter][]                 | port of [nerdcommenter][]
-[evil-search-highlight-persist][]       | emulation of hlsearch behavior
-[evil-numbers][]                        | like C-a/C-x in vim
-[evil-args][]                           | motions and text objects for arguments
-[evil-jumper][]                         | jump list emulation
-[NeoTree][neotree]                      | mimic [NERD Tree][nerdtree]
 
 # Font
 
@@ -1121,22 +1115,23 @@ Key Binding                               |                 Description
 
 Basic `ido` operations can be done with `Ctrl` key:
 
-Key Binding            |                 Description
------------------------|----------------------------------------------------------------
-<kbd>C-<return></kbd>  | open a `dired buffer`
-<kbd>C-b</kbd>         | open selected file in a horizontally split window
-<kbd>C-d</kbd>         | delete selected file (ask for confirmation)
-<kbd>C-h</kbd>         | go to parent directory
-<kbd>C-j</kbd>         | select next file or directory
-<kbd>C-S-j</kbd>       | go to next directory
-<kbd>C-k</kbd>         | select previous file or directory
-<kbd>C-S-k</kbd>       | go to previous directory
-<kbd>C-l</kbd>         | open the selected file
-<kbd>C-n</kbd>         | next history element
-<kbd>C-p</kbd>         | previous history element
-<kbd>C-t</kbd>         | open selected file in a new frame
-<kbd>C-v</kbd>         | open selected file in a vertically split window
-<kbd>C-x</kbd>         | open selected file in other window
+Key Binding             |                 Description
+------------------------|----------------------------------------------------------------
+<kbd>C-\<return\></kbd> | open a `dired buffer`
+<kbd>M-\<return\></kbd> | open a `dired buffer` in terminal
+<kbd>C-b</kbd>          | open selected file in a horizontally split window
+<kbd>C-d</kbd>          | delete selected file (ask for confirmation)
+<kbd>C-h</kbd>          | go to parent directory
+<kbd>C-j</kbd>          | select next file or directory
+<kbd>C-S-j</kbd>        | go to next directory
+<kbd>C-k</kbd>          | select previous file or directory
+<kbd>C-S-k</kbd>        | go to previous directory
+<kbd>C-l</kbd>          | open the selected file
+<kbd>C-n</kbd>          | next history element
+<kbd>C-p</kbd>          | previous history element
+<kbd>C-t</kbd>          | open selected file in a new frame
+<kbd>C-v</kbd>          | open selected file in a vertically split window
+<kbd>C-o</kbd>          | open selected file in other window
 
 #### Experimental Ido feature
 
@@ -2067,6 +2062,7 @@ Achievements                                         | Account
 [100th issue (PR)][100th-issue]                      | [danielwuz][]
 [200th issue (question)][200th-issue]                | [justrajdeep][]
 [300th issue (PR)][300th-issue]                      | [danielwuz][]
+[400th issue (PR)][400th-issue]                      | [CestDiego][]
 [100th pull request][100th-PR]                       | [bru][]
 PR gunner (8 PRs in a row)                           | [ralesi][]
 100th star                                           | [Jackneill][]
@@ -2163,10 +2159,12 @@ developers to elisp hackers!
 [100th-issue]: https://github.com/syl20bnr/spacemacs/pull/100
 [200th-issue]: https://github.com/syl20bnr/spacemacs/pull/200
 [300th-issue]: https://github.com/syl20bnr/spacemacs/pull/300
+[400th-issue]: https://github.com/syl20bnr/spacemacs/pull/400
 [100th-PR]: https://github.com/syl20bnr/spacemacs/pull/228
 [trishume]:https://github.com/trishume
 [Wolfy87]:https://github.com/Wolfy87
 [danielwuz]:https://github.com/danielwuz
+[CestDiego]:https://github.com/CestDiego
 [chrisbarrett]:https://github.com/chrisbarrett
 [justrajdeep]:https://github.com/justrajdeep
 [dbohdan]:https://github.com/dbohdan
