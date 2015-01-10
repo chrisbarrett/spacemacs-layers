@@ -61,10 +61,10 @@ Typing three in a row will insert a ScalaDoc."
     (core/open-line-below-current-indentation) (insert "*/")))
 
 (defun scala/insert-space-before-colon ()
-  (when (s-matches? (rx (any word digit alnum "_") ":")
-                    (buffer-substring (line-beginning-position) (point)))
-    (save-excursion
-      (search-backward ":")
+  (save-excursion
+    (when (search-backward-regexp (rx (not word) (group (+ ":")) (* space))
+                                  (line-beginning-position) t)
+      (goto-char (match-beginning 1))
       (just-one-space))))
 
 (defadvice super-smart-ops-insert (before padding-for-colon-op activate)
