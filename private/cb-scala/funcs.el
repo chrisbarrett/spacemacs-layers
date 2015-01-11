@@ -278,7 +278,8 @@ Typing three in a row will insert a ScalaDoc."
 
 (defun scala/backward-class-decl ()
   "Move to the last class or trait before point."
-  (search-backward-regexp (rx (or "class" "trait")) nil t))
+  (goto-char (line-end-position))
+  (search-backward-regexp (rx (? "case" (+ space)) (or "class" "trait" "object")) nil t))
 
 (defun scala/extensions-for-class ()
   (save-excursion
@@ -301,12 +302,9 @@ Typing three in a row will insert a ScalaDoc."
     "extends "))
 
 (defvar scala/top-level-keywords-re
-  (regexp-opt '("trait" "class" "object" "type" "private" "public" "package" "val" "var")))
-
-(defun scala/start-of-extensions ()
-  (save-excursion
-    (when (search-forward "extends" (line-end-position) t)
-      (match-beginning 0))))
+  (rx-to-string `(or "trait" "type" "private" "public" "package" "val" "var"
+                     (and (? "case" (+ space))
+                          (or "class" "object")))))
 
 (defun scala/delete-class-extensions ()
   (save-excursion
@@ -315,22 +313,33 @@ Typing three in a row will insert a ScalaDoc."
                  (exts-end (or (scala/end-of-extensions) (point-max))))
       (delete-region exts-start exts-end))))
 
+(defun scala/start-of-extensions ()
+  (save-excursion
+    (when (search-forward "extends" (line-end-position) t)
+      (match-beginning 0))))
+
 (defun scala/end-of-extensions ()
   (save-excursion
     (scala/skip-toplevel-keyword-at-point)
-    (min (or (when (save-excursion (search-forward "{" nil t)) (match-beginning 0))
-             (point-max))
-         (or (when (save-excursion (search-forward "\n\n" nil t)) (match-beginning 0))
-             (point-max))
-         (or (scala/end-of-toplevel-decl) (point-max)))))
+
+    (let* ((next-case       (scala/find-next "case"))
+           (next-brace      (scala/find-next "{"))
+           (next-empty-line (scala/find-next "\n\n"))
+           (next-decl       (scala/end-of-toplevel-decl)))
+      (-min (-non-nil (list next-case next-brace next-empty-line next-decl (point-max)))))))
+
+(defun scala/find-next (str)
+  (save-excursion
+    (when (search-forward str nil t) (match-beginning 0))))
 
 (defun scala/skip-toplevel-keyword-at-point ()
   (while (and (thing-at-point-looking-at scala/top-level-keywords-re)
               (not (eobp)))
-    (forward-char 1)))
+    (search-forward-regexp (rx (* space) (+ word) (* space)) nil t)))
 
 (defun scala/end-of-toplevel-decl ()
   (save-excursion
+    (goto-char (line-end-position))
     (cond ((search-forward-regexp scala/top-level-keywords-re nil t)
            (goto-char (match-beginning 0))
 
