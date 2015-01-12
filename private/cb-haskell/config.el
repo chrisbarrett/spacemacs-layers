@@ -12,3 +12,6 @@
 (defadvice haskell-mode-stylish-buffer (around suppress-window-changes activate)
   "Suppress window-changes."
   (save-window-excursion ad-do-it))
+
+
+(add-to-list 'core/indent-commands-alist '(haskell-mode . haskell/format-dwim))

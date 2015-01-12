@@ -198,15 +198,10 @@
 ;;; Formatting
 
 (defun haskell/format-dwim ()
-  "Either refill the current comment or string, or prettify the buffer."
   (interactive "*")
-  (let ((in-string-or-comment? (nth 8 (syntax-ppss))))
-    (cond (in-string-or-comment?
-           (fill-paragraph)
-           (message "Filled paragraph."))
-          (t
-           (haskell-mode-stylish-buffer)
-           (message "Reformatted buffer.")))))
+  (hindent/reformat-decl)
+  (haskell-mode-stylish-buffer)
+  (message "Reformatted buffer."))
 
 (defun haskell/ret ()
   "Insert a newline, possibly continuing a comment."
