@@ -69,7 +69,7 @@
       ;; ;; use "mh" as prefix for documentation commands
       ;; (setq spacemacs/key-binding-prefixes '(("mh" . "Haskell Documentation")))
 
-      
+
       (evil-leader/set-key-for-mode 'haskell-mode
         "mt"   'haskell-process-do-type
         "mi"   'haskell-process-do-info
@@ -154,6 +154,7 @@
     :init
     (add-hook 'haskell-mode-hook
               (lambda ()
+                (require 'ghc)
                 (add-to-list 'company-backends 'company-ghc)
                 (ghc-comp-init)))))
 
