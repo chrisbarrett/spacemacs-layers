@@ -21,4 +21,5 @@
 
 (after 'magit
   (define-key magit-mode-map (kbd "C-k") 'magit-copy-item-as-kill)
+  (define-key magit-mode-map (kbd "C-y") 'magit-copy-item-as-kill)
   )
