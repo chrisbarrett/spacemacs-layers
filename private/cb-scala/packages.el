@@ -3,6 +3,7 @@
     ;; package cb-scalas go here
     scala-mode2
     sbt-mode
+    ensime
     )
   "List of all packages to install and/or initialize. Built-in packages
 which require an initialization must be listed explicitly in the list.")
@@ -28,3 +29,9 @@ which require an initialization must be listed explicitly in the list.")
       ;; Var face
       (set-face-foreground scala-font-lock:var-face solarized-hl-orange)
       (set-face-underline scala-font-lock:var-face nil))))
+
+(defun cb-scala/init-ensime ()
+  (use-package ensime
+    :defer t
+    :init
+    (add-hook 'ensime-mode-hook (lambda () (aggressive-indent-mode -1)))))
