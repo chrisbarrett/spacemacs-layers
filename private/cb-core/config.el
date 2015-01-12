@@ -175,3 +175,19 @@
           1 font-lock-warning-face t))))
 
 (add-hook 'prog-mode-hook 'core/set-todo-font-lock)
+
+;;; Hide DOS EOL
+
+(defun core/hide-dos-eol ()
+  "Do not show ^M in files containing mixed UNIX and DOS line endings."
+  (interactive)
+  (setq buffer-display-table (make-display-table))
+  (aset buffer-display-table ?\^M []))
+
+(add-hook 'find-file-hook 'core/hide-dos-eol)
+
+
+
+;;; Misc config
+
+(setq neo-theme 'arrow)
