@@ -1,0 +1,20 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: scalatest class (WordSpec)
+# key: stcl
+# binding: direct-keybinding
+# condition: (yas/bol?)
+# --
+class ${1:Name}Spec extends WordSpec with ShouldMatchers {
+  "${1:$(if (and yas/text (s-matches? "^[aeiouAEIOU]" yas/text)) "An" "A")} $1" when {
+    "${2:behaviour}" should {
+       "${3:effect}" in {
+          new Fixture {
+            $0
+            true should be (false)
+          }
+       }
+    }
+  }
+
+  trait Fixture {}
+}
