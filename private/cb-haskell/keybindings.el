@@ -33,6 +33,8 @@
 
 (after 'shm
   (evil-define-key 'normal shm-map "J" 'haskell/join-line)
+  (evil-define-key 'normal shm-map (kbd "<") 'shm/simple-indent-backtab)
+  (evil-define-key 'normal shm-map (kbd ">") 'shm/simple-indent)
 
   (define-key shm-map (kbd "C-k")        'shm/kill-node)
   (define-key shm-map (kbd "C-c C-s")    'shm/case-split)
