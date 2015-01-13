@@ -1,3 +1,6 @@
+(require 'dash)
+(require 's)
+
 (defun haskell/after-subexpr-opening? ()
   (s-matches? (rx (or "{" "[" "{-" "{-#" "(#") (* space) eol)
               (buffer-substring (line-beginning-position) (point))))
@@ -456,29 +459,36 @@ Arg modifies the thing to be inserted."
                                      (group (*? nonl))
                                      (+ space) "#-}"))
 
-(defun haskell/get-ghc-options-in-file ()
+(defun haskell/ghc-options-in-file ()
   (->> (buffer-string)
-    substring-no-properties
-    (s-match-strings-all haskell/ghc-opts-regex)
-    (-map 'cdr)
-    (-flatten)
-    (--mapcat (s-split (rx (* space) "," (* space)) it))))
+       substring-no-properties
+       (s-match-strings-all haskell/ghc-opts-regex)
+       (-map 'cdr)
+       (-flatten)
+       (--mapcat (s-split (rx (* space) "," (* space)) it))))
 
 (defun haskell/insert-ghc-option (opt)
   "Insert OPT into the GHC options list for the current file."
   (interactive (list (ido-completing-read "GHC Option: " haskell/ghc-options nil t)))
+  (let ((cur-opts (haskell/ghc-options-in-file)))
+    (if (--any? (s-matches? opt it) cur-opts)
+        (user-error "Option %s already set" opt)
+      (haskell/set-buffer-ghc-opts (cons opt cur-opts)))))
+
+(defun haskell/set-buffer-ghc-opts (opts)
+  (let ((opts (s-join " " (-sort 'string-lessp (-uniq opts)))))
+    (save-excursion
+      (haskell/delete-ghc-opts)
+      (haskell/goto-buffer-start)
+      (insert (format "{-# OPTIONS_GHC %s #-}\n" opts)))))
+
+(defun haskell/delete-ghc-opts ()
   (save-excursion
-    (let* ((cur (haskell/get-ghc-options-in-file))
-           (opts (s-join " " (-sort 'string-lessp (-union (list opt) cur)))))
-
-      (goto-char (point-min))
-      (while (search-forward-regexp haskell/ghc-opts-regex nil t)
-        (replace-match ""))
-
-      (goto-char (point-min))
-      (insert (format "{-# OPTIONS_GHC %s #-}" opts))
-      (when (s-matches? (rx (+ nonl)) (buffer-substring (point) (line-end-position)))
-        (newline)))))
+    (haskell/goto-buffer-start)
+    (while (search-forward-regexp haskell/ghc-opts-regex nil t)
+      (replace-match "")
+      (when (s-blank? (current-line))
+        (join-line)))))
 
 (defvar haskell//language-pragmas nil)
 
@@ -509,8 +519,22 @@ Arg modifies the thing to be inserted."
                                           nil t)))
   (let ((s (format "{-# LANGUAGE %s #-}\n" pragma)))
     (save-excursion
-      (goto-char (point-min))
+      (haskell/goto-buffer-start)
+
       (insert s))))
+
+(defun haskell/goto-buffer-start ()
+  (goto-char (point-min))
+
+  ;; Skip #! line
+  (when (and (s-matches? (rx bol "#!") (current-line))
+             (search-forward "#!" nil t))
+    (goto-char (line-end-position))
+    (forward-char 1))
+
+  (while (and (not (eobp))
+              (s-blank? (current-line)))
+    (forward-line 1)))
 
 (defun haskell/parse-module (str)
   (with-temp-buffer
@@ -529,14 +553,14 @@ Arg modifies the thing to be inserted."
   (-if-let (session (haskell-session-maybe))
       (haskell-session-all-modules session t)
     (->> (shell-command-to-string "ghc-pkg dump")
-      (s-split "---")
-      (-mapcat 'haskell/parse-module)
-      (-map 's-trim))))
+         (s-split "---")
+         (-mapcat 'haskell/parse-module)
+         (-map 's-trim))))
 
 (defun haskell/do-insert-at-imports (str)
   "Prepend STR to this buffer's list of imported modules."
   (save-excursion
-    (goto-char (point-min))
+    (haskell/goto-buffer-start)
 
     (cond
      ;; Move directly to import statements.
@@ -610,13 +634,13 @@ Arg modifies the thing to be inserted."
   (-if-let (root (and (buffer-file-name) (projectile-project-p)))
 
       (->> (f-no-ext (buffer-file-name))
-        (s-chop-prefix root)
-        f-split
-        (-drop 1)
-        (--map (let ((x (substring it 0 1))
-                     (xs (substring it 1)))
-                 (concat (s-upcase x) xs)))
-        (s-join "."))
+           (s-chop-prefix root)
+           f-split
+           (-drop 1)
+           (--map (let ((x (substring it 0 1))
+                        (xs (substring it 1)))
+                    (concat (s-upcase x) xs)))
+           (s-join "."))
 
     (s-upper-camel-case (f-no-ext (buffer-name)))))
 
