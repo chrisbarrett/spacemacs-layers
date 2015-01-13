@@ -89,16 +89,14 @@
             (cb-org/agenda-custom-commands-delete-other-windows
              '(
                ("A" "Agenda and next actions"
-                ((tags-todo "-someday-media/NEXT"
+                ((tags-todo "-@work-someday-media/NEXT"
                             ((org-agenda-overriding-header "Next Actions")))
-                 (agenda "")
-                 (todo "WAITING"
+                 (agenda "-@work")
+                 (todo "-@work/WAITING"
                        ((org-agenda-overriding-header "Waiting")))
-                 (stuck "")
-                 (tags-todo "media/NEXT"
-                            ((org-agenda-overriding-header "Media"))))
-                ((org-agenda-tag-filter-preset
-                  '("-@work"))))
+                 (stuck "-@work")
+                 (tags-todo "media|study/NEXT"
+                            ((org-agenda-overriding-header "Media & Study")))))
 
                ("w" "Agenda and work actions"
                 ((tags-todo "-study/NEXT"
@@ -225,6 +223,8 @@
          (ruby . t)
          (clojure . t)
          (haskell . t)))
+
+      (setq org-src-fontify-natively t)
 
       (defvar org-edit-src-before-exit-hook nil
         "Hook run before exiting a code block.")
