@@ -101,16 +101,15 @@
                   '("-@work"))))
 
                ("w" "Agenda and work actions"
-                ((tags-todo "-someday/NEXT"
+                ((tags-todo "-study/NEXT"
                             ((org-agenda-overriding-header "Next Actions")))
                  (agenda ""
                          ((org-agenda-span 'fortnight)))
-                 (todo "WAITING|ORGANISE_IN|COLLECT"
-                       ((org-agenda-overriding-header "Incoming/Waiting")))
-                 (todo "TODO_OUT|READY|ORGANISE_OUT"
-                       ((org-agenda-overriding-header "Outgoing")))
+                 (todo "WAITING"
+                       ((org-agenda-overriding-header "Waiting")))
                  (stuck "")
-                 )
+                 (tags-todo "study/NEXT"
+                            ((org-agenda-overriding-header "Study"))))
                 ((org-agenda-tag-filter-preset
                   '("+@work" "-ignore"))
                  (org-agenda-files (list org-work-file))
@@ -156,8 +155,7 @@
                 ((org-agenda-tag-filter-preset
                   '("-drill" "-gtd"))
                  (org-habit-show-habits nil)
-                 (org-agenda-include-inactive-timestamps t)))
-               )))
+                 (org-agenda-include-inactive-timestamps t))))))
 
       (add-hook 'org-agenda-mode-hook 'org-agenda-to-appt)
       (add-to-list 'org-agenda-files org-directory)

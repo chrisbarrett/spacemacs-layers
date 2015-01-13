@@ -64,7 +64,7 @@ which require an initialization must be listed explicitly in the list.")
       (setq org-stuck-projects '("-ignore+TODO={TODO_OUT\\|PROJECT}/-MAYBE-DONE-CANCELLED" ("NEXT") nil "\\<IGNORE\\>"))
       (setq org-support-shift-select t)
       (setq org-todo-keywords '((type "MAYBE(m)" "TODO(t)" "NEXT(n)" "WAITING(w@/!)" "|" "DONE(d!)" "CANCELLED(c@)")
-                                (type "PROJECT(p)")))
+                                (type "PROJECT(p)" "|")))
       (setq org-hierarchical-todo-statistics nil)
       (setq org-checkbox-hierarchical-statistics t)
       (setq org-tag-persistent-alist
