@@ -670,6 +670,14 @@ kill internal buffers too."
 
 )
 
+(defun spacemacs/toggle-frame-fullscreen ()
+  "Respect the `dotspacemacs-fullscreen-use-non-native' variable when
+toggling fullscreen."
+  (interactive)
+  (if dotspacemacs-fullscreen-use-non-native
+      (toggle-frame-fullscreen-non-native)
+    (toggle-frame-fullscreen)))
+
 (defun toggle-fullscreen ()
   "Toggle full screen on X11 and Carbon"
   (interactive)
@@ -683,6 +691,21 @@ kill internal buffers too."
      nil 'fullscreen
      (when (not (frame-parameter nil 'fullscreen)) 'fullscreen)))
    ))
+
+(defun toggle-frame-fullscreen-non-native ()
+  "Toggle full screen non-natively. Uses the `fullboth' frame paramerter
+   rather than `fullscreen'. Useful to fullscreen on OSX w/o animations."
+  (interactive)
+  (modify-frame-parameters
+   nil
+   `((maximized
+      . ,(unless (memq (frame-parameter nil 'fullscreen) '(fullscreen fullboth))
+	   (frame-parameter nil 'fullscreen)))
+     (fullscreen
+      . ,(if (memq (frame-parameter nil 'fullscreen) '(fullscreen fullboth))
+	     (if (eq (frame-parameter nil 'maximized) 'maximized)
+		 'maximized)
+	   'fullboth)))))
 
 ;;; begin scale font micro-state
 
@@ -833,3 +856,21 @@ If ASCII si not provided then UNICODE is used instead."
 (defun current-line ()
   "Return the line at point as a string."
   (buffer-substring (line-beginning-position) (line-end-position)))
+
+(defun spacemacs/eval-sexp-end-of-line ()
+  "Evaluate the last sexp at the end of the current line."
+  (interactive)
+  (save-excursion
+    (evil-end-of-line)
+    (eval-last-sexp nil)))
+
+(defun spacemacs/open-in-external-app ()
+  "Open current file in external application."
+  (interactive)
+  (let ((file-path (buffer-file-name)))
+    (cond
+     ((system-is-mswindows) (w32-shell-execute "open" (replace-regexp-in-string "/" "\\" file-path)))
+     ((system-is-mac) (shell-command (format "open \"%s\"" file-path)))
+     ((system-is-linux) (let ((process-connection-type nil))
+                          (start-process "" nil "xdg-open" file-path)))
+     )))
