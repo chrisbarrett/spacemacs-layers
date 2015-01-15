@@ -96,7 +96,9 @@
                        ((org-agenda-overriding-header "Waiting")))
                  (stuck "-@work")
                  (tags-todo "media|study/NEXT"
-                            ((org-agenda-overriding-header "Media & Study")))))
+                            ((org-agenda-overriding-header "Media & Study"))))
+                ((org-agenda-tag-filter-preset
+                  '("-work_habit" "-ignore"))))
 
                ("w" "Agenda and work actions"
                 ((tags-todo "-study/NEXT"
