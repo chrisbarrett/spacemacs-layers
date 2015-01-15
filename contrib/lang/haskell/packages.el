@@ -1,3 +1,15 @@
+;;; packages.el --- Haskell Layer packages File for Spacemacs
+;;
+;; Copyright (c) 2012-2014 Sylvain Benner
+;; Copyright (c) 2014-2015 Sylvain Benner & Contributors
+;;
+;; Author: Sylvain Benner <sylvain.benner@gmail.com>
+;; URL: https://github.com/syl20bnr/spacemacs
+;;
+;; This file is not part of GNU Emacs.
+;;
+;;; License: GPLv3
+
 (defvar haskell-packages
   '(
     flycheck
@@ -166,6 +178,15 @@
     (add-hook 'haskell-mode-hook 'turn-on-hi2)
     :config
     (progn
+
+      (defun spacemacs/haskell-show-hi2-guides ()
+        (when (and (boundp 'hi2-mode) hi2-mode)
+          (hi2-enable-show-indentations)))
+
+      (defun spacemacs/haskell-hide-hi2-guides ()
+        (when (and (boundp 'hi2-mode) hi2-mode)
+          (hi2-disable-show-indentations)))
+
       ;; Show indentation guides for hi2 only in insert state.
       (add-hook 'evil-normal-state-entry-hook 'spacemacs/haskell-hide-hi2-guides)
       (add-hook 'evil-insert-state-entry-hook 'spacemacs/haskell-show-hi2-guides)

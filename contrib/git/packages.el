@@ -1,3 +1,15 @@
+;;; packages.el --- Git Layer packages File for Spacemacs
+;;
+;; Copyright (c) 2012-2014 Sylvain Benner
+;; Copyright (c) 2014-2015 Sylvain Benner & Contributors
+;;
+;; Author: Sylvain Benner <sylvain.benner@gmail.com>
+;; URL: https://github.com/syl20bnr/spacemacs
+;;
+;; This file is not part of GNU Emacs.
+;;
+;;; License: GPLv3
+
 (defvar git-packages
   '(
     fringe-helper
@@ -9,15 +21,6 @@
     )
   "List of all packages to install and/or initialize. Built-in packages
 which require an initialization must be listed explicitly in the list.")
-
-(defvar git-enable-github-support nil
-  "If non nil enable Github packages.")
-
-(defvar git-magit-status-fullscreen nil
-  "If non nil magit-status buffer is displayed in fullscreen.")
-
-(defvar git-gutter-use-fringe t
-  "If non nil the fringe is used to display git-gutter icons.")
 
 (when git-enable-github-support
   (mapc (lambda (x) (push x git-packages))
@@ -158,6 +161,7 @@ which require an initialization must be listed explicitly in the list.")
   (use-package magit
     :defer t
     :init
+    (setq magit-completing-read-function 'magit-ido-completing-read)
     (evil-leader/set-key
       "gb" 'magit-blame-mode
       "gl" 'magit-log
