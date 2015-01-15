@@ -14,7 +14,7 @@
     org-table
     org-protocol
     org-habit
-    org-babel
+    org-src
     org-clock
     org-crypt
     org-drill
@@ -204,8 +204,8 @@
       (setq org-habit-following-days 4)
       (setq org-habit-graph-column 70))))
 
-(defun cb-org/init-org-babel ()
-  (use-package org-babel
+(defun cb-org/init-org-src ()
+  (use-package org-src
     :defer t
     :config
     (progn
