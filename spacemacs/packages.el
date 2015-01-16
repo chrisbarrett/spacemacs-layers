@@ -39,6 +39,7 @@
     evil-jumper
     evil-leader
     evil-nerd-commenter
+    evil-matchit
     evil-numbers
     evil-org
     evil-search-highlight-persist
@@ -468,7 +469,8 @@ which require an initialization must be listed explicitly in the list.")
   (eval-after-load "abbrev"
     '(diminish 'abbrev-mode))
   (eval-after-load "subword"
-    '(diminish 'subword-mode)))
+    '(when (eval-when-compile (version< "24.3.1" emacs-version))
+       (diminish 'subword-mode))))
 
 (defun spacemacs/init-dired+ ()
   (use-package dired+
@@ -700,6 +702,12 @@ which require an initialization must be listed explicitly in the list.")
 
 (defun spacemacs/init-evil-nerd-commenter ()
   (use-package evil-nerd-commenter
+    :commands (evilnc-comment-operator
+               evilnc-comment-or-uncomment-lines
+               evilnc-toggle-invert-comment-line-by-line
+               evilnc-comment-or-uncomment-paragraphs
+               evilnc-quick-comment-or-uncomment-to-the-line
+               evilnc-copy-and-comment-lines)
     :init
     (progn
       (evil-leader/set-key
@@ -709,6 +717,10 @@ which require an initialization must be listed explicitly in the list.")
         "cp" 'evilnc-comment-or-uncomment-paragraphs
         "ct" 'evilnc-quick-comment-or-uncomment-to-the-line
         "cy" 'evilnc-copy-and-comment-lines))))
+
+(defun spacemacs/init-evil-matchit ()
+  (use-package evil-matchit
+    :defer t))
 
 (defun spacemacs/init-evil-numbers ()
   (use-package evil-numbers
@@ -1320,7 +1332,8 @@ which require an initialization must be listed explicitly in the list.")
         (define-key ido-completion-map (kbd "C-d") 'ido-delete-file-at-head)
         (define-key ido-completion-map (kbd "C-k") 'ido-prev-match)
         (define-key ido-completion-map (kbd "C-<return>") 'ido-select-text)
-        (define-key ido-completion-map (kbd "M-<RET>") 'ido-select-text)
+        ;; use M-RET in terminal
+        (define-key ido-completion-map "\M-\r" 'ido-select-text)
         (define-key ido-completion-map (kbd "C-h") 'ido-delete-backward-updir)
         (define-key ido-completion-map (kbd "C-j") 'ido-next-match)
         (define-key ido-completion-map (kbd "C-l") 'ido-exit-minibuffer)
@@ -1331,9 +1344,9 @@ which require an initialization must be listed explicitly in the list.")
         (define-key ido-completion-map (kbd "C-p") 'previous-history-element)
         ;; ido-other window maps
         (define-key ido-completion-map (kbd "C-o") 'ido-invoke-in-other-window)
-        (define-key ido-completion-map (kbd "C-v") 'ido-invoke-in-vertical-split)
-        (define-key ido-completion-map (kbd "C-b") 'ido-invoke-in-horizontal-split)
+        (define-key ido-completion-map (kbd "C-s") 'ido-invoke-in-vertical-split)
         (define-key ido-completion-map (kbd "C-t") 'ido-invoke-in-new-frame)
+        (define-key ido-completion-map (kbd "C-v") 'ido-invoke-in-horizontal-split)
         ;; more natural navigation keys: up, down to change current item
         ;; left to go up dir
         ;; right to open the selected item
@@ -1343,9 +1356,9 @@ which require an initialization must be listed explicitly in the list.")
         (define-key ido-completion-map (kbd "<right>") 'ido-exit-minibuffer)
         (when dotspacemacs-feature-toggle-leader-on-jk
           (evil-leader/set-key-for-mode 'ido-mode
-            "b" 'ido-invoke-in-horizontal-split
+            "s" 'ido-invoke-in-vertical-split
             "t" 'ido-invoke-in-new-frame
-            "v" 'ido-invoke-in-vertical-split
+            "v" 'ido-invoke-in-horizontal-split
             "x" 'ido-invoke-in-other-window)
           (key-chord-define ido-completion-map (kbd "jk")
                             (cdr (assoc 'ido-mode evil-leader--mode-maps)))))
