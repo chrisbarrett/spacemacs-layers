@@ -1,4 +1,4 @@
-;;; Smart ops
+;;; Smart ops  -*- lexical-binding: t; -*-
 
 (require 's)
 (require 'dash)
@@ -373,3 +373,109 @@ Typing three in a row will insert a ScalaDoc."
        (--take-while (not (or (equal "src" it) (equal "scala" it))))
        nreverse
        (s-join ".")))
+
+
+;;; SBT
+
+(defun scala/tests-watch ()
+  (interactive)
+  (sbt-command "~test"))
+
+(defun scala/test-only-watch ()
+  (interactive)
+  (let* ((impl-class
+          (or (ensime-top-level-class-closest-to-point)
+              (return (message "Could not find top-level class"))))
+         (cleaned-class (replace-regexp-in-string "<empty>\\." "" impl-class))
+         (command (concat "~test-only  " cleaned-class)))
+    (sbt-command command)))
+
+
+;;; Ensime utils
+
+(defun sbt-gen-ensime (dir)
+  (interactive (list (read-directory-name "Directory: " nil nil t (projectile-project-p))))
+  (let* ((default-directory dir)
+         (bufname (format "*sbt gen-ensime [%s]*" (f-filename dir)))
+         (proc (start-process "gen-ensime" bufname "sbt" "gen-ensime"))
+
+         (kill-process-buffer
+          (lambda ()
+            (when (get-buffer bufname)
+              (-when-let (windows (--filter (equal (get-buffer bufname)
+                                                   (window-buffer it))
+                                            (window-list)))
+                (-each windows 'delete-window))
+              (kill-buffer bufname))))
+
+         (process-ensime-file
+          (lambda (_ status)
+            (when (s-matches? "finished" status)
+              (funcall kill-process-buffer)
+              (scala/process-ensime-file (f-join dir ".ensime"))
+              (message "Ensime successfully initialised"))))
+         )
+    (set-process-sentinel proc process-ensime-file)
+    (display-buffer bufname)))
+
+(defun scala/process-ensime-file (file)
+  "Apply custom setup to the given .ensime file."
+  (interactive (list (ensime-config-find)))
+  (let* ((plist (read (f-read file)))
+         (updated (scala/pp-plist (scala/add-scalariform-settings plist))))
+    (f-write updated 'utf-8 file)))
+
+(defvar scala/scalariform-settings
+  '(
+    :alignParameters
+    t
+    :formatXml t
+    :preserveDanglingCloseParenthesis t
+    :spaceInsideBrackets nil
+    :indentWithTabs nil
+    :spaceInsideParentheses nil
+    :multilineScaladocCommentsStartOnFirstLine nil
+    :alignSingleLineCaseStatements t
+    :compactStringConcatenation nil
+    :placeScaladocAsterisksBeneathSecondAsterisk nil
+    :indentPackageBlocks t
+    :compactControlReadability nil
+    :spacesWithinPatternBinders t
+    :alignSingleLineCaseStatements/maxArrowIndent 40
+    :doubleIndentClassDeclaration t
+    :preserveSpaceBeforeArguments nil
+    :spaceBeforeColon nil
+    :rewriteArrowSymbols t
+    :indentLocalDefs nil
+    :indentSpaces 2
+    ))
+
+(defun scala/add-scalariform-settings (plist)
+  (plist-put plist :formatting-prefs scala/scalariform-settings))
+
+(defun scala/pp-plist (plist)
+  (with-temp-buffer
+    (insert (pp-to-string plist))
+    (goto-char (point-min))
+    (while (search-forward-regexp (rx (+ space) (group ":") (+ (syntax word))) nil t)
+      (replace-match "\n:" nil nil nil 1))
+    (buffer-string)))
+
+(defun scala/maybe-start-ensime ()
+  (-when-let* ((start-path (buffer-file-name))
+               (dir (locate-dominating-file start-path ".ensime"))
+               (file (f-join dir ".ensime")))
+    (unless (scala/ensime-buffer-for-file start-path)
+      (when (s-matches? (rx (or "/src/" "/test/")) start-path)
+        (noflet ((ensime-config-find (&rest _) file))
+          (ensime)
+          t)))))
+
+(defun scala/ensime-buffer-for-file (file)
+  "Find the Ensime server buffer corresponding to FILE."
+  (let ((default-directory (f-dirname file)))
+    (-when-let (project-name (projectile-project-p))
+      (--first (-when-let (bufname (buffer-name it))
+                 (and (s-contains? "inferior-ensime-server" bufname)
+                      (s-contains? project-name bufname)))
+               (buffer-list)))))

@@ -34,4 +34,6 @@ which require an initialization must be listed explicitly in the list.")
   (use-package ensime
     :defer t
     :init
-    (add-hook 'ensime-mode-hook (lambda () (aggressive-indent-mode -1)))))
+    (progn
+      (add-hook 'scala-mode-hook 'scala/maybe-start-ensime)
+      (add-hook 'ensime-mode-hook (lambda () (aggressive-indent-mode -1))))))
