@@ -209,7 +209,10 @@ which require an initialization must be listed explicitly in the list.")
         "Show anzu status when pressing `n` or `N`"
         (anzu--cons-mode-line-search)
         (funcall func arg)
-        (anzu--update)
+        (let ((query (if evil-regexp-search
+                         (car-safe regexp-search-ring)
+                       (car-safe search-ring))))
+          (anzu--update query))
         (if spacemacs-anzu-timer (cancel-timer spacemacs-anzu-timer))
         (setq spacemacs-anzu-timer
               (run-at-time "2 sec" nil 'spacemacs/anzu-ephemeral-display)))
@@ -223,8 +226,8 @@ which require an initialization must be listed explicitly in the list.")
         :repeat ignore
         (interactive "P")
         (spacemacs/anzu-evil-search arg 'evil-search-previous))
-      (define-key evil-normal-state-map "n" 'spacemacs/anzu-evil-search-next)
-      (define-key evil-normal-state-map "N" 'spacemacs/anzu-evil-search-previous)
+      ;; (define-key evil-normal-state-map "n" 'spacemacs/anzu-evil-search-next)
+      ;; (define-key evil-normal-state-map "N" 'spacemacs/anzu-evil-search-previous)
       (define-key evil-motion-state-map "n" 'spacemacs/anzu-evil-search-next)
       (define-key evil-motion-state-map "N" 'spacemacs/anzu-evil-search-previous)
 
@@ -769,7 +772,7 @@ which require an initialization must be listed explicitly in the list.")
     (progn
       (global-evil-search-highlight-persist)
       (evil-leader/set-key "sc" 'evil-search-highlight-persist-remove-all)
-      (evil-ex-define-cmd "noh" 'evil-search-highlight-persist-remove-all))))
+      (evil-ex-define-cmd "nohl" 'evil-search-highlight-persist-remove-all))))
 
 (defun spacemacs/init-evil-surround ()
   (use-package evil-surround
@@ -1712,6 +1715,7 @@ which require an initialization must be listed explicitly in the list.")
                (state-face (if active (spacemacs/current-state-face) face2))
                (window-numberingp (and (boundp 'window-numbering-mode)
                                        (symbol-value window-numbering-mode)))
+               (anzup (and (boundp 'anzu--state) anzu--state))
                (flycheckp (and (boundp 'flycheck-mode)
                                (symbol-value flycheck-mode)
                                (or flycheck-current-errors
@@ -1729,7 +1733,7 @@ which require an initialization must be listed explicitly in the list.")
            (if (and window-numberingp (spacemacs/window-number))
                (list (powerline-raw (spacemacs/window-number) state-face))
              (list (powerline-raw (evil-state-property evil-state :tag t) state-face)))
-           (if (and active anzu--state)
+           (if (and active anzup)
                (list
                 (funcall separator-right state-face face1)
                 (powerline-raw (anzu--update-mode-line) face1)
