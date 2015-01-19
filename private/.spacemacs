@@ -69,15 +69,31 @@
 ;; Initialization Hooks
 ;; --------------------
 
+(defun core/install-package (pkg)
+  (require 'paradox nil t)
+  (cond
+    ((featurep 'paradox)
+     (paradox-require pkg))
+    ((package-installed-p pkg)
+     (require pkg))
+    (t
+     (package-install pkg)
+     (require pkg)))
+
+  (eval-after-load 'paradox
+   `(paradox-require ',pkg)))
+
 (defun dotspacemacs/init ()
   "User initialization for Spacemacs. This function is called at the very
  startup."
   (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/"))
   (package-initialize)
-  (require 'paradox)
-  (paradox-require 'noflet)
-  (paradox-require 's)
-  (paradox-require 'dash)
+
+  (core/install-package 'noflet)
+  (core/install-package 's)
+  (core/install-package 'dash)
+  (core/install-package 'dash-functional)
+
   (setq-default git-enable-github-support t)
   (add-to-list 'exec-path "~/.cabal/bin/")
   (add-to-list 'exec-path "~/bin/")
