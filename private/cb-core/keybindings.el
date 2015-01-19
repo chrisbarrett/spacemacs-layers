@@ -64,3 +64,5 @@
 (evil-leader/set-key "iV" 'add-file-local-variable)
 (evil-leader/set-key "iP" 'add-file-local-variable-prop-line)
 (evil-leader/set-key "i#" 'core/insert-shebang)
+
+(evil-leader/set-key "Fo" 'other-frame)
