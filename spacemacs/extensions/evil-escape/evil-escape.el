@@ -98,12 +98,7 @@ with a key sequence."
   :lighter (:eval (concat " " evil-escape-key-sequence))
   :group 'evil
   :global t
-  (if evil-escape-mode
-      (progn
-        (evil-escape--define-keys)
-        (message "evil-escape enabled, press \"%s\" to escape from anything."
-                 evil-escape-key-sequence))
-    (evil-escape--undefine-keys)))
+  )
 
 (eval-and-compile
   (defun evil-escape--first-key ()
