@@ -869,12 +869,20 @@ If ASCII si not provided then UNICODE is used instead."
   "Return the line at point as a string."
   (buffer-substring (line-beginning-position) (line-end-position)))
 
-(defun spacemacs/eval-sexp-end-of-line ()
-  "Evaluate the last sexp at the end of the current line."
+(defun spacemacs/toggle-tool-bar ()
+  "Toggle the tool bar.
+It has no effect in a terminal."
   (interactive)
-  (save-excursion
-    (evil-end-of-line)
-    (eval-last-sexp nil)))
+  (when window-system
+    (tool-bar-mode (if tool-bar-mode -1 1))))
+
+(defun spacemacs/toggle-menu-bar ()
+  "Toggle the menu bar.
+It has no effect in a terminal if the Emacs version is < `24.4'."
+  (interactive)
+  (when (or window-system
+            (version<= "24.3.1" emacs-version))
+    (menu-bar-mode (if menu-bar-mode -1 1))))
 
 (defun spacemacs/toggle-tool-bar ()
   "Toggle the tool bar.
