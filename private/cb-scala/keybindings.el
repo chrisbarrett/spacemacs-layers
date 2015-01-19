@@ -41,12 +41,15 @@
     (kbd ",i") 'ensime-inspect-type-at-point
     (kbd ",I") 'ensime-import-type-at-point
     (kbd ",p") 'ensime-inspect-project-package
+    (kbd ",c") 'ensime-typecheck-current-file
+    (kbd ",C") 'ensime-typecheck-all
 
     (kbd ",u") 'ensime-show-uses-of-symbol-at-point
     (kbd ",r") 'ensime-refactor-rename
     (kbd ",l") 'ensime-refactor-extract-local
     (kbd ",L") 'ensime-refactor-inline-local
 
+    (kbd ",s") 'ensime-sbt-switch
     )
 
   (evil-define-key 'visual ensime-mode-map

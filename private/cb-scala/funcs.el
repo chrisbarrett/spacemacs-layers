@@ -2,6 +2,7 @@
 
 (require 's)
 (require 'dash)
+(require 'noflet)
 
 (defun scala/equals ()
   (interactive)
@@ -417,6 +418,8 @@ Typing three in a row will insert a ScalaDoc."
          )
     (set-process-sentinel proc process-ensime-file)
     (display-buffer bufname)))
+
+(autoload 'ensime-config-find "ensime-config")
 
 (defun scala/process-ensime-file (file)
   "Apply custom setup to the given .ensime file."
