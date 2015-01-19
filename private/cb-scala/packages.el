@@ -35,5 +35,6 @@ which require an initialization must be listed explicitly in the list.")
     :defer t
     :init
     (progn
+      (setq sbt:program-name "sbt -Dsbt.log.noformat=true")
       (add-hook 'scala-mode-hook 'scala/maybe-start-ensime)
       (add-hook 'ensime-mode-hook (lambda () (aggressive-indent-mode -1))))))
