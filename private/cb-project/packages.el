@@ -24,25 +24,27 @@ which require an initialization must be listed explicitly in the list.")
 (defun cb-project/init-projectile ()
   (use-package projectile
     :config
-    (setq projectile-cache-file (concat spacemacs-cache-directory "projectile.cache"))
-    (setq projectile-ignored-projects '("/usr/local/"))
-    (setq projectile-switch-project-action (lambda () (call-interactively 'magit-status)))
-    (setq projectile-globally-ignored-directories
-          '(".cask"
-            ".cabal-sandbox"
-            "dist"
-            ".idea"
-            ".eunit"
-            ".git"
-            ".hg"
-            ".fslckout"
-            ".bzr"
-            "_darcs"
-            ".tox"
-            ".svn"
-            "snippets"
-            "build"
-            ".ensime_cache"))))
+    (progn
+      (setq projectile-cache-file (concat spacemacs-cache-directory "projectile.cache"))
+      (setq projectile-ignored-projects '("/usr/local/"))
+      (setq projectile-switch-project-action (lambda () (call-interactively 'magit-status)))
+      (setq projectile-globally-ignored-directories
+            '(".cask"
+              ".cabal-sandbox"
+              "dist"
+              ".idea"
+              ".eunit"
+              ".git"
+              ".hg"
+              ".fslckout"
+              ".bzr"
+              "_darcs"
+              ".tox"
+              ".svn"
+              "elpa"
+              "snippets"
+              "build"
+              ".ensime_cache")))))
 
 (defun cb-project/init-skeletor ()
   (use-package skeletor
