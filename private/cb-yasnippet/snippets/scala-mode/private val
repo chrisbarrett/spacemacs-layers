@@ -1,0 +1,6 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: private val
+# key: pv
+# binding: direct-keybinding
+# --
+private val ${1:ident} = $0

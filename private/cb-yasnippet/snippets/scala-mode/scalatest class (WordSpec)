@@ -1,7 +1,5 @@
-# -*- mode: snippet; require-final-newline: nil -*-
+# key: cl
 # name: scalatest class (WordSpec)
-# key: stcl
-# binding: direct-keybinding
 # condition: (yas/bol?)
 # --
 class ${1:Name}Spec extends WordSpec with ShouldMatchers {

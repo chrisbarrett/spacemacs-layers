@@ -1,0 +1,17 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: slick table class
+# key: cl
+# binding: direct-keybinding
+# condition: (yas/bol?)
+# --
+case class ${1:Name}(${2:attrs})
+
+object $1 {
+  class $1Table extends Table[$1](tag, "${3:tblname}") {
+    ${2:$(yas/scala-slick-column-defs yas/text)}
+    $0
+    def * = (${2:$(yas/scala-slick-star-fields yas/text)}) <> (($1.apply _).tupled, $1.unapply)
+  }
+
+  val table = TableQuery[$1Table]
+}

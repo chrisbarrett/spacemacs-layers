@@ -1,4 +1,4 @@
-# key: stcl
+# key: cl
 # name: scalatest class (FunSpec)
 # condition: (yas/bol?)
 # --

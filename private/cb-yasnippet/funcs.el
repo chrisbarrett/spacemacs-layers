@@ -251,6 +251,29 @@ is not the first, or from an unwritable file)."
         (match-string 1)
       "")))
 
+
+(defun yas/scala-parse-attrs (attrs)
+  (let ((matches (s-match-strings-all
+                  (rx bow
+                      (group (+ word))
+                      (* space) ":" (* space)
+                      (group (+ (any word)))) attrs)))
+    (-map (-lambda ((_ name type))
+            (list :name name :type type)) matches)))
+
+(defun yas/scala-slick-star-fields (attrs)
+  (let ((names (--map (plist-get it :name) (yas/scala-parse-attrs attrs))))
+    (s-join ", " names)))
+
+(defun yas/scala-slick-column-defs (attrs)
+  (let ((defs (-map 'yas/scala-slick-attr-to-def (yas/scala-parse-attrs attrs)))
+        (indent (current-indentation)))
+    (s-join (concat "\n" (s-repeat indent " ")) defs)))
+
+(defun yas/scala-slick-attr-to-def (attr)
+  (-let [(&plist :name name :type type) attr]
+    (format "def %s = column[%s](\"%s\")" name type name)))
+
 
 ;;; Rust
 
