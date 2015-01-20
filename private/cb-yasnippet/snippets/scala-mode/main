@@ -2,6 +2,6 @@
 # name: main
 # condition: (yas/bol?)
 # --
-def main(args: Array[String]) = {
+def main(args: Array[String]): Unit = {
   $0
 }

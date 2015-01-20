@@ -1,8 +1,6 @@
-# -*- mode: snippet; require-final-newline: nil -*-
-# name: def receive
 # key: dr
-# binding: direct-keybinding
+# name: def receive
 # --
 override def receive = {
-  $0
+  case ${1:binding} => $0
 }
