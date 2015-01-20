@@ -9,6 +9,11 @@
 (defvar core/monospace-font "Source Code Pro")
 (spacemacs/set-font core/monospace-font 12)
 
+(defun set-font-size (size)
+  "Set the font size to use for all frames"
+  (interactive (list (read (ido-completing-read "Size: " (list "10" "12" "14" "18")))))
+  (spacemacs/set-font core/monospace-font size))
+
 (defvar spacemacs-private-directory (concat user-emacs-directory "private/"))
 (defvar spacemacs-autosaves-directory (concat user-emacs-directory "autosaves/"))
 
