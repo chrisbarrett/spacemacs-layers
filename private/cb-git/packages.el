@@ -37,10 +37,10 @@ which require an initialization must be listed explicitly in the list.")
       (add-hook 'git-commit-mode-hook 'end-of-line)
 
       (defadvice git-commit-commit (after kill-commit-buffer activate)
-          "Ensure the commit buffer is killed."
-          (-when-let (buf (get-buffer "COMMIT_EDITMSG"))
-            (when (buffer-live-p buf)
-              (kill-buffer buf)))))))
+        "Ensure the commit buffer is killed."
+        (-when-let (buf (get-buffer "COMMIT_EDITMSG"))
+          (when (buffer-live-p buf)
+            (kill-buffer buf)))))))
 
 (defun cb-git/init-git-gutter ()
   (use-package git-gutter
