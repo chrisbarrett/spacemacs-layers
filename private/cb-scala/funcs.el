@@ -298,7 +298,7 @@ Typing three in a row will insert a ScalaDoc."
       (let* ((str (s-join " with " extensions))
              (width (+ start-col (length str)))
              (long-line? (<= fill-column width))
-             (ext-str (if long-line? (s-replace "with" "\n  with" str) str)))
+             (ext-str (if long-line? (s-replace "with" "\n    with" str) str)))
         (concat "extends " ext-str (when long-line? "\n ") " with "))
     "extends "))
 
