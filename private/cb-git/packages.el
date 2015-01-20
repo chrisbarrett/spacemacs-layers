@@ -34,6 +34,8 @@ which require an initialization must be listed explicitly in the list.")
       (add-hook 'git-commit-mode-hook 'turn-on-auto-fill)
       (put 'git-commit-mode 'fill-column 72)
 
+      (add-hook 'git-commit-mode-hook 'end-of-line)
+
       (defadvice git-commit-commit (after kill-commit-buffer activate)
           "Ensure the commit buffer is killed."
           (-when-let (buf (get-buffer "COMMIT_EDITMSG"))
