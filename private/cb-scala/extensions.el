@@ -35,15 +35,6 @@
           ("/" . scala/slash)
           ("," . core/comma-then-space)))
 
-      (super-smart-ops-configure-for-mode 'sbt-mode
-        :add '("?")
-        :custom
-        '(("=" . scala/equals)
-          (":" . scala/repl-colon)
-          ("+" . scala/plus)
-          ("-" . scala/minus)
-          ("," . core/comma-then-space)))
-
       (super-smart-ops-configure-for-mode 'ensime-inf-mode
         :add '("?")
         :custom
