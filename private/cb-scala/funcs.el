@@ -482,3 +482,52 @@ Typing three in a row will insert a ScalaDoc."
                  (and (s-contains? "inferior-ensime-server" bufname)
                       (s-contains? project-name bufname)))
                (buffer-list)))))
+
+
+;;; Test switching
+
+(defun scala/impl-file-for-test-file (path)
+  (--> (f-no-ext path)
+       (s-replace-all `(("/test/" . "/main/")
+                        ("Tests" . "")
+                        ("Test" . "")
+                        ("Specs" . "")
+                        ("Spec" . "")
+                        ("Props" . "")
+                        ("Prop" . ""))
+                      it)
+       (concat it ".scala")))
+
+(defadvice ensime-goto-impl (around create-test-if-not-exists activate)
+  (noflet ((ensime-goto-source-location (arg)
+                                        (if arg
+                                            (funcall this-fn arg)
+                                          (find-file (scala/impl-file-for-test-file (buffer-file-name))))))
+    ad-do-it))
+
+
+
+(after 'sbt-mode-project
+  (defun sbt:find-root ()
+    "Starting from the current default-directory, find the top-most
+parent directory that is an sbt root. An sbt root directory is
+identified by the following rules:
+
+  - a directory containing a 'project/build.properties' in it.
+
+  - a directory that contains a file matching one of the patterns
+    '*.sbt' or 'project/*.scala' file in it.
+
+The first rule is applied first and the second is used only if it
+fails to find the sbt root."
+    (or sbt:buffer-project-root
+        (let ((root (or
+                     (locate-dominating-file default-directory "build.sbt")
+                     (sbt:find-root-impl "project/build.properties")
+                     (sbt:find-root-impl
+                      (lambda (dir)
+                        (or (directory-files dir nil ".+\\.sbt$")
+                            (and (file-exists-p (concat dir "project"))
+                                 (directory-files (concat dir "project") nil ".+\\.scala$"))))))))
+          (when root
+            (setq-local sbt:buffer-project-root root))))))
