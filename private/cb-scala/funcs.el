@@ -395,29 +395,31 @@ Typing three in a row will insert a ScalaDoc."
 ;;; Ensime utils
 
 (defun sbt-gen-ensime (dir)
-  (interactive (list (read-directory-name "Directory: " nil nil t (projectile-project-p))))
-  (let* ((default-directory dir)
-         (bufname (format "*sbt gen-ensime [%s]*" (f-filename dir)))
-         (proc (start-process "gen-ensime" bufname "sbt" "gen-ensime"))
+  (interactive (list (read-directory-name "Directory: " nil nil t (or (locate-dominating-file default-directory ".ensime")
+                                                                      (projectile-project-p)))))
+  (let ((default-directory (f-slash dir)))
+    (message "Initialising Ensime at %s..." default-directory)
+    (let* ((bufname (format "*sbt gen-ensime [%s]*" (f-filename dir)))
+           (proc (start-process "gen-ensime" bufname "sbt" "gen-ensime"))
 
-         (kill-process-buffer
-          (lambda ()
-            (when (get-buffer bufname)
-              (-when-let (windows (--filter (equal (get-buffer bufname)
-                                                   (window-buffer it))
-                                            (window-list)))
-                (-each windows 'delete-window))
-              (kill-buffer bufname))))
+           (kill-process-buffer
+            (lambda ()
+              (when (get-buffer bufname)
+                (-when-let (windows (--filter (equal (get-buffer bufname)
+                                                     (window-buffer it))
+                                              (window-list)))
+                  (-each windows 'delete-window))
+                (kill-buffer bufname))))
 
-         (process-ensime-file
-          (lambda (_ status)
-            (when (s-matches? "finished" status)
-              (funcall kill-process-buffer)
-              (scala/process-ensime-file (f-join dir ".ensime"))
-              (message "Ensime successfully initialised"))))
-         )
-    (set-process-sentinel proc process-ensime-file)
-    (display-buffer bufname)))
+           (process-ensime-file
+            (lambda (_ status)
+              (when (s-matches? "finished" status)
+                (funcall kill-process-buffer)
+                (scala/process-ensime-file (f-join dir ".ensime"))
+                (message "Ensime successfully initialised"))))
+           )
+      (set-process-sentinel proc process-ensime-file)
+      (display-buffer bufname))))
 
 (autoload 'ensime-config-find "ensime-config")
 
