@@ -1,9 +1,7 @@
-# -*- mode: snippet; require-final-newline: nil -*-
-# name: scalatest describe
 # key: ds
-# binding: direct-keybinding
+# name: scalatest describe
 # condition: (yas/bol?)
 # --
 describe("${1:feature}") {
-
+  $0
 }

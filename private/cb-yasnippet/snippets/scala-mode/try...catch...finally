@@ -1,15 +1,11 @@
-# -*- mode: snippet; require-final-newline: nil -*-
-# name: try...catch...finally
 # key: tcf
-# binding: direct-keybinding
+# name: try...catch...finally
 # condition: (yas/bol?)
 # --
 try {
   $1$0
-}
-catch {
+} catch {
   case ${2:_}: $3Exception => $4
-}
-finally {
+} finally {
   $5
 }

@@ -1,12 +1,8 @@
-# -*- mode: snippet; require-final-newline: nil -*-
-# name: scalatest fixture
 # key: it
-# binding: direct-keybinding
+# name: scalatest fixture
 # condition: (yas/bol?)
 # --
 it("${1:desc}") {
-  new Fixture {
-    $0
-    true shouldBe false
-  }
+  $0
+  true shouldBe false
 }
