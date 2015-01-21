@@ -159,15 +159,15 @@
      (call-interactively ',command)))
 
 ;; escape
-(define-key evil-lisp-state-map [escape] 'evil-normal-state)
+;; (define-key evil-lisp-state-map [escape] 'evil-normal-state)
 
 ;; toggle lisp state
-(define-key evil-lisp-state-map ",," 'lisp-state-toggle-lisp-state)
-(dolist (mm evil-lisp-state-major-modes)
-  (evil-leader/set-key-for-mode mm "m," 'lisp-state-toggle-lisp-state))
+;; (define-key evil-lisp-state-map ",," 'lisp-state-toggle-lisp-state)
+;; (dolist (mm evil-lisp-state-major-modes)
+;;   (evil-leader/set-key-for-mode mm "m," 'lisp-state-toggle-lisp-state))
 
 ;; leader
-(define-key evil-lisp-state-map (kbd evil-leader/leader) evil-leader--default-map)
+;; (define-key evil-lisp-state-map (kbd evil-leader/leader) evil-leader--default-map)
 
 ;; auto-switch to lisp state commands
 (defconst evil-lisp-state-commands
@@ -231,16 +231,16 @@
     ("Xx"  . sp-backward-kill-sexp)
     ("y"   . sp-copy-sexp))
   "alist of keys and commands in lisp state.")
-(dolist (x evil-lisp-state-commands)
-  (let ((key (car x))
-        (cmd (cdr x)))
-    (eval
-     `(progn
-        (define-key evil-lisp-state-map ,(kbd key) ',cmd)
-        (dolist (mm evil-lisp-state-major-modes)
-          (evil-leader/set-key-for-mode mm
-            ,(kbd (concat evil-lisp-state-leader-prefix key))
-            (evil-lisp-state-enter-command ,cmd)))))))
+;; (dolist (x evil-lisp-state-commands)
+;;   (let ((key (car x))
+;;         (cmd (cdr x)))
+;;     (eval
+;;      `(progn
+;;         (define-key evil-lisp-state-map ,(kbd key) ',cmd)
+;;         (dolist (mm evil-lisp-state-major-modes)
+;;           (evil-leader/set-key-for-mode mm
+;;             ,(kbd (concat evil-lisp-state-leader-prefix key))
+;;             (evil-lisp-state-enter-command ,cmd)))))))
 
 (defun lisp-state-toggle-lisp-state ()
   "Toggle the lisp state."
