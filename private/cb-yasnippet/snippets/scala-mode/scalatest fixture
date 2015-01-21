@@ -1,5 +1,5 @@
 # key: it
-# name: scalatest fixture
+# name: scalatest fixture (FunSpec)
 # condition: (yas/bol?)
 # --
 it("${1:desc}") {

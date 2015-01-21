@@ -2,7 +2,7 @@
 # name: scalatest class (FunSpec)
 # condition: (yas/bol?)
 # --
-class ${1:Name}Spec extends FunSpec with ShouldMatchers {
+class ${1:Name}Test extends FunSpec with ShouldMatchers {
 
   describe("$1") {
     $0
