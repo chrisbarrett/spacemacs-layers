@@ -17,7 +17,7 @@
   "Find a file in the current scope.  With ARG, set the scope."
   (interactive "P")
   (when arg
-    (project/find-file-in-scope))
+    (call-interactively 'project/set-scope))
   (-if-let ((_ . dir) (assoc (projectile-project-root) project/current-scope-alist))
       (projectile-find-file-in-directory dir)
     (call-interactively 'project/set-scope)
