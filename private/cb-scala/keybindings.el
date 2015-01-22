@@ -50,9 +50,18 @@
     (kbd ",L") 'ensime-refactor-inline-local
 
     (kbd ",s") 'ensime-sbt-switch
+
+    (kbd ",gi") 'ensime-goto-impl
+    (kbd ",gt") 'ensime-goto-test
     )
 
   (evil-define-key 'visual ensime-mode-map
     (kbd ",m") 'ensime-refactor-extract-method
     (kbd ",l") 'ensime-refactor-extract-local)
+  )
+
+
+(after 'sbt-mode
+  (defun scala/sbt-ret () (interactive) (sbt:command "\n"))
+  (evil-define-key 'normal sbt-mode-map (kbd "RET") 'scala/sbt-ret)
   )
