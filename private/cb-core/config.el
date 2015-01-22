@@ -42,7 +42,8 @@
 ;;; Set variables
 
 (setq abbrev-file-name (concat spacemacs-cache-directory "abbrev_defs"))
-(setq backup-directory-alist '((".*" . spacemacs-autosaves-directory)))
+(setq backup-directory-alist `((".*" . ,spacemacs-autosaves-directory)))
+(setq version-control t)
 (setq bookmark-default-file (concat spacemacs-cache-directory "bookmarks"))
 (setq comint-prompt-read-only t)
 (setq confirm-nonexistent-file-or-buffer  nil)
