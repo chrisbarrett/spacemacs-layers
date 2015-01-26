@@ -500,14 +500,25 @@ Typing three in a row will insert a ScalaDoc."
                       it)
        (concat it ".scala")))
 
-(defadvice ensime-goto-impl (around create-test-if-not-exists activate)
-  (noflet ((ensime-goto-source-location (arg)
-                                        (if arg
-                                            (funcall this-fn arg)
-                                          (find-file (scala/impl-file-for-test-file (buffer-file-name))))))
-    ad-do-it))
 
 
+(defadvice ensime-goto-impl (around display-buffer-nicely activate)
+  (let ((impl-file-name (scala/impl-file-for-test-file (buffer-file-name))))
+    (noflet ((ensime-goto-source-location
+              (arg)
+              (if arg (funcall this-fn arg) (find-file impl-file-name))))
+
+      (save-window-excursion ad-do-it)
+      (pop-to-buffer (find-file-noselect impl-file-name)))))
+
+(defadvice ensime-goto-test (around pop-to-window activate)
+  (let (buf)
+    (save-window-excursion
+      ad-do-it
+      (setq buf (current-buffer)))
+    (pop-to-buffer buf)))
+
+;; Tweak behaviour of sbt:find-root to search for build.sbt
 
 (after 'sbt-mode-project
   (defun sbt:find-root ()
