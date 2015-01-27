@@ -4,4 +4,4 @@
 # binding: direct-keybinding
 # condition: (yas/bol?)
 # --
-<${1:tag}${2: ${3:attr}="${4:value}"}>$0</$1>
+<$0 />
