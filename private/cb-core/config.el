@@ -171,6 +171,10 @@
     inferior-haskell-mode
     sclang-post-buffer-mode))
 
+;;; Language modes
+
+(add-to-list 'auto-mode-alist (cons (rx ".zsh" eos) 'shell-script-mode))
+
 
 ;;; Highlight TODO keywords in all modes.
 
