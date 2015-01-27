@@ -54,6 +54,7 @@
       (setq ido-use-filename-at-point 'guess)
       (add-to-list 'ido-ignore-buffers "\\*helm.*")
       (add-to-list 'ido-ignore-buffers "\\*Minibuf.*")
+      (add-to-list 'ido-ignore-files (rx bos "Icon" control))
       (add-to-list 'ido-ignore-files "flycheck_")
       (add-to-list 'ido-ignore-files "\\.swp")
       (add-to-list 'ido-ignore-files "\\.DS_Store"))))
