@@ -153,7 +153,7 @@
                  (tags-todo "media"
                             ((org-agenda-overriding-header "Media"))))
                 ((org-agenda-tag-filter-preset
-                  '("-drill" "-gtd"))
+                  '("-drill" "-gtd" "-work_habit"))
                  (org-habit-show-habits nil)
                  (org-agenda-include-inactive-timestamps t))))))
 
