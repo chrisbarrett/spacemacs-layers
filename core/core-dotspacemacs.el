@@ -1,4 +1,4 @@
-;;; dotspacemacs.el --- Spacemacs Core File
+;;; core-dotspacemacs.el --- Spacemacs Core File
 ;;
 ;; Copyright (c) 2012-2014 Sylvain Benner
 ;; Copyright (c) 2014-2015 Sylvain Benner & Contributors
@@ -9,7 +9,6 @@
 ;; This file is not part of GNU Emacs.
 ;;
 ;;; License: GPLv3
-
 (defconst dotspacemacs-template-directory
   (expand-file-name (concat spacemacs-core-directory "templates/"))
   "Templates directory.")
@@ -29,7 +28,11 @@ the value is nil then no banner is displayed.")
   "list of contribution to load."
 )
 
-(defvar dotspacemacs-themes '(solarized-light solarized-dark)
+(defvar dotspacemacs-themes '(solarized-light
+                              solarized-dark
+                              leuven
+                              monokai
+                              zenburn)
   "List of themes, the first of the list is loaded when spacemacs starts.
 Press <SPC> T n to cycle to the next theme in the list (works great
 with 2 themes variants, one dark and one light")
@@ -40,6 +43,14 @@ with 2 themes variants, one dark and one light")
 (defvar dotspacemacs-major-mode-leader-key ","
   "Major mode leader key is a shortcut key which is the equivalent of
 pressing `<leader> m`")
+
+(defvar dotspacemacs-default-font '("Source Code Pro"
+                                    :size 13
+                                    :weight normal
+                                    :width normal
+                                    :powerline-scale 1.1)
+  "Default font. The powerline-offset allows to quickly tweak the mode-line
+size to make separators look not too crappy.")
 
 (defvar dotspacemacs-command-key ":"
   "The key used for Evil commands (ex-commands) and Emacs commands (M-x).
@@ -121,4 +132,4 @@ before installing the file if the destination already exists."
   "Call the function from the dotfile only if it is bound."
   `(if (fboundp ',func) (,func)))
 
-(provide 'dotspacemacs)
+(provide 'core-dotspacemacs)

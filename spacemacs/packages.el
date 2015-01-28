@@ -97,6 +97,7 @@
     popwin
     powerline
     projectile
+    rainbow-delimiters
     rcirc
     rcirc-color
     recentf
@@ -773,7 +774,11 @@ which require an initialization must be listed explicitly in the list.")
 
 (defun spacemacs/init-evil-terminal-cursor-changer ()
   (unless (display-graphic-p)
-    (require 'evil-terminal-cursor-changer)))
+    (require 'evil-terminal-cursor-changer)
+    (setq etcc--evil-insert-state-cursor 'bar) ; ⎸
+    (setq etcc--evil-visual-state-cursor 'box) ; _
+    (setq etcc--evil-emacs-state-cursor 'hbar) ; █
+    ))
 
 (defun spacemacs/init-evil-tutor ()
   (use-package evil-tutor
@@ -1662,12 +1667,6 @@ which require an initialization must be listed explicitly in the list.")
           (setq spacemacs-mode-line-new-version-lighterp t)))
       (evil-leader/set-key "tmv" 'spacemacs/mode-line-new-version-lighter-toggle)
 
-      ;; disable this hack for now to see if we can fix it differently
-      ;; for now we hardcode the height value of powerline depending on the
-      ;; window system, a better solution would be to compute it correctly
-      ;; in powerline package.
-      ;; (let ((height (if (eq 'w32 window-system) 18 17)))
-      ;;   (setq-default powerline-height height))
       (setq-default powerline-default-separator 'wave)
 
       (defun spacemacs/mode-line-prepare-left ()
@@ -1807,7 +1806,19 @@ which require an initialization must be listed explicitly in the list.")
                   (powerline-render rhs))))
 
       (setq-default mode-line-format
-                    '("%e" (:eval (spacemacs/mode-line-prepare)))))))
+                    '("%e" (:eval (spacemacs/mode-line-prepare))))
+
+      (defun spacemacs//set-powerline-for-startup-buffers ()
+        "Set the powerline for buffers created when Emacs starts."
+        (dolist (buffer '("*Messages*" "*spacemacs*" "*Compile-Log*"))
+          (when (get-buffer buffer)
+            (with-current-buffer buffer
+              (setq-local mode-line-format
+                          '("%e" (:eval (spacemacs/mode-line-prepare))))
+              (powerline-set-selected-window)
+              (powerline-reset)))))
+      (add-hook 'after-init-hook
+                'spacemacs//set-powerline-for-startup-buffers))))
 
 (defun spacemacs/init-projectile ()
   (use-package projectile
@@ -1859,6 +1870,14 @@ which require an initialization must be listed explicitly in the list.")
       (progn
         (projectile-global-mode)
         (spacemacs|hide-lighter projectile-mode))))
+
+(defun spacemacs/init-rainbow-delimiters ()
+  (use-package rainbow-delimiters
+    :defer t
+    :init
+    (progn
+      (evil-leader/set-key "tCd" 'rainbow-delimiters-mode)
+      (add-to-hooks 'rainbow-delimiters-mode '(prog-mode-hook)))))
 
 (defun spacemacs/init-rcirc ()
   (use-package rcirc
@@ -2090,7 +2109,7 @@ which require an initialization must be listed explicitly in the list.")
          ((equal str "7")  " ➐ ")
          ((equal str "8")  " ➑ ")
          ((equal str "9")  " ➒ ")
-         ((equal str "0")  " ⓿ "))))
+         ((equal str "0")  " ➓ "))))
 
     (defun spacemacs//window-numbering-assign (windows)
       "Custom number assignment for special buffers."

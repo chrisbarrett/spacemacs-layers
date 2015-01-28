@@ -838,15 +838,65 @@ display ASCII characters instead (may be useful in terminal).
 The default font used by `Spacemacs` is [source code pro][] by Adobe. It is
 recommended to install it on your system.
 
-Basic font support is provided in `Spacemacs`, you can change the font and
-its size using the function `spacemacs/set-font` in the `dotspacemacs/config`
-function of your `~/.spacemacs`.
+To change the default font set the variable `dotspacemacs-default-font` in
+your `.spacemacs` file.
+
+By default its value is:
 
 ```elisp
-(defun dotspacemacs/config ()
-  (spacemacs/set-font "DejaVu Sans Mono" 10)
-)
+(setq-default dotspacemacs-default-font '("Source Code Pro"
+                                          :size 13
+                                          :weight normal
+                                          :width normal
+                                          :powerline-scale 1.1))
 ```
+
+The properties should be pretty straightforward, it is possible to set any
+valid property of a [font-spec][]:
+- `:family` Font family or fontset (a string).
+- `:width` Relative character width. This should be one of the symbols:
+  - ultra-condensed
+  - extra-condensed
+  - condensed
+  - semi-condensed
+  - normal
+  - semi-expanded
+  - expanded
+  - extra-expanded
+  - ultra-expanded
+- `:height` The height of the font. In the simplest case, this is an integer in
+units of 1/10 point.
+- `:weight` Font weight—one of the symbols (from densest to faintest):
+  - ultra-bold
+  - extra-bold
+  - bold
+  - semi-bold
+  - normal
+  - semi-light
+  - light
+  - extra-light
+  - ultra-light
+- `:slant` Font slant—one of the symbols:
+  - italic
+  - oblique
+  - normal
+  - reverse-italic
+  - reverse-oblique
+- `:size` The font size—either a non-negative integer that specifies the pixel
+size, or a floating-point number that specifies the point size. 
+- `:adstyle` Additional typographic style information for the font, such as
+‘sans’. The value should be a string or a symbol.
+- `:registry` The charset registry and encoding of the font, such as
+‘iso8859-1’. The value should be a string or a symbol. 
+- `:script` The script that the font must support (a symbol). 
+
+The special property `:powerline-scale` is `Spacemacs` specific and it is for
+quick tweaking of the mode-line height in order to avoid crappy rendering of
+the separators like on the following screenshot (default value is 1.1).
+
+_Ugly separators_
+
+![ugly-separators](img/crappy-powerline-separators.png)
 
 # Commands
 
@@ -2034,6 +2084,7 @@ developers to elisp hackers!
 [golden-ratio]: https://github.com/roman/golden-ratio.el
 [solarized-theme]: https://github.com/bbatsov/solarized-emacs
 [powerline]: https://github.com/milkypostman/powerline
+[font-spec]: http://www.gnu.org/software/emacs/manual/html_node/elisp/Low_002dLevel-Font.html
 [diminish]: http://www.emacswiki.org/emacs/DiminishedModes
 [auto-complete]: https://github.com/auto-complete
 [auto-highlight]: https://github.com/emacsmirror/auto-highlight-symbol
