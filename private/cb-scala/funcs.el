@@ -482,7 +482,7 @@ Typing three in a row will insert a ScalaDoc."
     (-when-let (project-name (projectile-project-p))
       (--first (-when-let (bufname (buffer-name it))
                  (and (s-contains? "inferior-ensime-server" bufname)
-                      (s-contains? project-name bufname)))
+                      (s-contains? (f-filename project-name) bufname)))
                (buffer-list)))))
 
 
