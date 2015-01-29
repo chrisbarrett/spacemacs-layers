@@ -33,6 +33,7 @@ which require an initialization must be listed explicitly in the list.")
               ".cabal-sandbox"
               "dist"
               ".idea"
+              "target"
               ".eunit"
               ".git"
               ".hg"
