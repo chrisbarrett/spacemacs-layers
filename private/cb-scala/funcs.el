@@ -418,8 +418,7 @@ Typing three in a row will insert a ScalaDoc."
                 (scala/process-ensime-file (f-join dir ".ensime"))
                 (message "Ensime successfully initialised"))))
            )
-      (set-process-sentinel proc process-ensime-file)
-      (display-buffer bufname))))
+      (set-process-sentinel proc process-ensime-file))))
 
 (autoload 'ensime-config-find "ensime-config")
 
