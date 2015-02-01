@@ -3,7 +3,6 @@
     ;; package cb-projects go here
     projectile
     skeletor
-    grizzl
     )
   "List of all packages to install and/or initialize. Built-in packages
 which require an initialization must be listed explicitly in the list.")
@@ -21,10 +20,18 @@ which require an initialization must be listed explicitly in the list.")
 ;; For more info on `use-package', see readme:
 ;; https://github.com/jwiegley/use-package
 
+
 (defun cb-project/init-projectile ()
   (use-package projectile
+    :init
+    (setq projectile-completion-system 'ido)
     :config
     (progn
+      ;; TODO: Figure out where projectile-completion-system is being overridden.
+      (add-hook 'after-init-hook
+                (lambda ()
+                  (setq projectile-completion-system 'ido)))
+
       (setq projectile-cache-file (concat spacemacs-cache-directory "projectile.cache"))
       (setq projectile-ignored-projects '("/usr/local/"))
       (setq projectile-switch-project-action (lambda () (call-interactively 'magit-status)))
