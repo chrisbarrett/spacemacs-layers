@@ -142,11 +142,4 @@ which require an initialization must be listed explicitly in the list.")
 (defun cb-core/init-aggressive-indent ()
   (use-package aggressive-indent
     :config
-    (progn
-      (defun cb-core/maybe-init-aggressive-indent ()
-        (unless (memq major-mode aggressive-indent-excluded-modes)
-          (aggressive-indent-mode +1)))
-
-      (add-hook 'nxml-mode-hook 'cb-core/maybe-init-aggressive-indent)
-      (add-hook 'sgml-mode-hook 'cb-core/maybe-init-aggressive-indent)
-      (add-hook 'prog-mode-hook 'cb-core/maybe-init-aggressive-indent))))
+    (global-aggressive-indent-mode)))
