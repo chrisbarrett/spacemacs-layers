@@ -25,12 +25,21 @@ which require an initialization must be listed explicitly in the list.")
     :defer t
     :init
     (progn
+      (add-hook 'haskell-mode-hook 'interactive-haskell-mode)
       (add-to-list 'completion-ignored-extensions ".hi"))
     :config
     (progn
-      (setq haskell-process-suggest-hoogle-imports t)
-      (setq haskell-program-name "ghci")
+      (setq haskell-process-suggest-haskell-docs-imports t)
+      (setq haskell-process-suggest-remove-import-lines t)
+      (setq haskell-process-use-presentation-mode t)
+      (setq haskell-interactive-mode-scroll-to-bottom t)
+      (setq haskell-interactive-mode-eval-pretty t)
       (setq haskell-interactive-prompt "\nλ> ")
+      ;;(setq haskell-process-path-cabal "cabal --no-require-sandbox")
+
+      (setq haskell-process-args-cabal-repl
+            '("--ghc-option=-ferror-spans"
+              "--with-ghc=ghci-ng"))
 
       (put 'haskell-mode 'evil-shift-width 2)
       (add-hook 'haskell-mode-hook 'haskell/configure-flyspell))))

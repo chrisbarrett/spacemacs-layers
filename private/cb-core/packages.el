@@ -129,6 +129,11 @@ which require an initialization must be listed explicitly in the list.")
   (use-package helm
     :config
     (progn
+      (helm-autoresize-mode +1)
+      (setq helm-buffers-fuzzy-matching t)
+      (setq helm-recentf-fuzzy-match t)
+      (setq helm-imenu-fuzzy-match t)
+
       (custom-set-faces
        '(helm-selection
          ((((background light)) :background "gray90" :foreground "black" :underline nil)
@@ -142,4 +147,6 @@ which require an initialization must be listed explicitly in the list.")
 (defun cb-core/init-aggressive-indent ()
   (use-package aggressive-indent
     :config
-    (global-aggressive-indent-mode)))
+    (progn
+      (add-to-list 'aggressive-indent-excluded-modes 'haskell-interactive-mode)
+      (global-aggressive-indent-mode))))

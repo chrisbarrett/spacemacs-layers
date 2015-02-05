@@ -4,8 +4,6 @@
   (evil-define-key 'normal haskell-mode-map (kbd "SPC i l") 'haskell/insert-language-pragma)
   (evil-define-key 'normal haskell-mode-map (kbd "SPC i o") 'haskell/insert-ghc-option)
 
-  (evil-define-key 'normal haskell-mode-map (kbd "M-.") 'haskell-mode-tag-find)
-
   (define-key haskell-mode-map (kbd "M-,")           'pop-tag-mark)
   (define-key haskell-mode-map (kbd "M-P")           'flymake-goto-prev-error)
   (define-key haskell-mode-map (kbd "M-N")           'flymake-goto-next-error)
@@ -29,7 +27,11 @@
 
 (after 'haskell-interactive-mode
   (define-key haskell-interactive-mode-map (kbd "C-c C-h") 'haskell-hoogle)
-  (evil-define-key 'normal haskell-error-mode-map (kbd "q") 'quit-window))
+  (evil-define-key 'normal haskell-error-mode-map (kbd "q") 'quit-window)
+
+  (evil-define-key 'normal interactive-haskell-mode-map (kbd "M-.") 'haskell-mode-goto-loc)
+  (evil-define-key 'normal interactive-haskell-mode-map (kbd ",t") 'haskell-mode-show-type-at)
+  )
 
 (after 'shm
   (evil-define-key 'normal shm-map "J" 'haskell/join-line)
