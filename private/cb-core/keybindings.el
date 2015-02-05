@@ -10,10 +10,8 @@
 
 (global-set-key (kbd "<f5>") 'compile)
 
-(bind-key (kbd "C-SPC") 'helm-mini)
 (bind-key (kbd "C-<backspace>") 'core/kill-this-buffer)
 (bind-key (kbd "C-c k b") 'core/clean-buffers)
-(bind-key* "S-SPC" 'smex)
 
 (when (fboundp 'cycle-spacing)
   (global-set-key (kbd "M-SPC") 'cycle-spacing))
@@ -23,6 +21,8 @@
 (evil-global-set-key 'normal (kbd "TAB") 'indent-line)
 
 (evil-leader/set-key "wo" 'delete-other-windows)
+
+(evil-global-set-key 'normal ";" 'evil-ex)
 
 ;;; Indentation
 
@@ -68,3 +68,16 @@
 (evil-leader/set-key "Fo" 'other-frame)
 
 (evil-set-initial-state 'comint-mode 'normal)
+
+;;; Helm
+
+(bind-key (kbd "C-SPC") 'helm-for-files)
+
+(bind-key* "S-SPC" 'helm-M-x)
+(bind-key* "M-x" 'helm-M-x)
+
+(after 'helm
+  (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action)
+  (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action)
+  (define-key helm-map (kbd "C-z")  'helm-select-action)
+  )

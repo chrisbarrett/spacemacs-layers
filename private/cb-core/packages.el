@@ -135,6 +135,8 @@ which require an initialization must be listed explicitly in the list.")
       (setq helm-imenu-fuzzy-match t)
 
       (custom-set-faces
+       `(helm-locate-finish
+         ((t (:foreground ,solarized-hl-cyan))))
        '(helm-selection
          ((((background light)) :background "gray90" :foreground "black" :underline nil)
           (((background dark))  :background "black"  :foreground "white" :underline nil)))))))

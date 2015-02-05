@@ -23,14 +23,8 @@ which require an initialization must be listed explicitly in the list.")
 
 (defun cb-project/init-projectile ()
   (use-package projectile
-    :init
-    (setq projectile-completion-system 'ido)
     :config
     (progn
-      ;; TODO: Figure out where projectile-completion-system is being overridden.
-      (add-hook 'after-init-hook
-                (lambda ()
-                  (setq projectile-completion-system 'ido)))
 
       (setq projectile-cache-file (concat spacemacs-cache-directory "projectile.cache"))
       (setq projectile-ignored-projects '("/usr/local/"))
