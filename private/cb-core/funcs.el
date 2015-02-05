@@ -381,7 +381,7 @@ Prompt for a command CMD if one cannot be guessed."
   (interactive
    (list
     (intern
-     (ido-completing-read
+     (completing-read
       "Variable: "
       (-map 'symbol-name
             (filter-atoms (-orfn 'custom-variable-p 'special-variable-p)))))))
@@ -403,8 +403,8 @@ Prompt for a command CMD if one cannot be guessed."
 PARAGRAPH-LENGTH is one of short, medium, long or verylong."
   (interactive
    (list (read-number "Number of paragraphs: " 3)
-         (ido-completing-read "Paragraph length: "
-                              '("short" "medium" "long" "verylong"))))
+         (completing-read "Paragraph length: "
+                          '("short" "medium" "long" "verylong"))))
   (let ((url (format "http://loripsum.net/api/%s/%s/plaintext"
                      n-paragraphs paragraph-length)))
     (insert (with-current-buffer (url-retrieve-synchronously url)

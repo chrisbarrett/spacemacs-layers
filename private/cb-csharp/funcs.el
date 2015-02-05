@@ -114,7 +114,7 @@
    (list
     (let ((cs (-difference csharp/bcl-namespaces
                            (csharp/current-imported-namespaces))))
-      (ido-completing-read "Namespace: " cs))))
+      (completing-read "Namespace: " cs))))
 
   (if (s-matches? (rx-to-string `(and "using" (+ space) ,ns ";" (* space) eol))
                   (buffer-string))

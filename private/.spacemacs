@@ -11,7 +11,7 @@
  dotspacemacs-configuration-layer-path '()
  ;; List of configuration layers to load.
  dotspacemacs-configuration-layers '(company-mode
-                                     smex
+                                     ;; smex
                                      auctex
                                      haskell
                                      osx

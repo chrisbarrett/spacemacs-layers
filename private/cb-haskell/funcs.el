@@ -469,7 +469,7 @@ Arg modifies the thing to be inserted."
 
 (defun haskell/insert-ghc-option (opt)
   "Insert OPT into the GHC options list for the current file."
-  (interactive (list (ido-completing-read "GHC Option: " haskell/ghc-options nil t)))
+  (interactive (list (completing-read "GHC Option: " haskell/ghc-options nil t)))
   (let ((cur-opts (haskell/ghc-options-in-file)))
     (if (--any? (s-matches? opt it) cur-opts)
         (user-error "Option %s already set" opt)
@@ -514,9 +514,9 @@ Arg modifies the thing to be inserted."
 
 (defun haskell/insert-language-pragma (pragma)
   "Read a language pragma to be inserted at the start of this file."
-  (interactive (list (ido-completing-read "Pragma: "
-                                          (haskell/available-language-pragmas)
-                                          nil t)))
+  (interactive (list (completing-read "Pragma: "
+                                      (haskell/available-language-pragmas)
+                                      nil t)))
   (let ((s (format "{-# LANGUAGE %s #-}\n" pragma)))
     (save-excursion
       (haskell/goto-buffer-start)
@@ -592,7 +592,7 @@ Arg modifies the thing to be inserted."
 (defun haskell/insert-qualified-import (module name)
   "Interactively insert a qualified Haskell import statement for MODULE."
   (interactive
-   (let ((m (s-trim (ido-completing-read "Module: " (haskell/haskell-modules)))))
+   (let ((m (s-trim (completing-read "Module: " (haskell/haskell-modules)))))
      (list m (s-trim (read-string "As: " (haskell/module->qualified-name m)
                                   t)))))
 
@@ -606,7 +606,7 @@ Arg modifies the thing to be inserted."
 
 (defun haskell/insert-import (module)
   "Interactively insert a Haskell import statement for MODULE."
-  (interactive (list (ido-completing-read "Module: " (haskell/haskell-modules))))
+  (interactive (list (completing-read "Module: " (haskell/haskell-modules))))
 
   (if (s-matches? (rx-to-string `(and "import" (+ space) ,module (or space eol)))
                   (buffer-string))

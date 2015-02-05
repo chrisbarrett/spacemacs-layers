@@ -114,9 +114,9 @@ The last project read from the user will come first."
                    (-contains? ps org-work--last-project))
               (cons org-work--last-project (-difference ps (list org-work--last-project)))
             ps))
-         (result (ido-completing-read (or prompt
-                                          "Project (create if not matching): ")
-                                      ordered)))
+         (result (completing-read (or prompt
+                                      "Project (create if not matching): ")
+                                  ordered)))
     (setq org-work--last-project result)
     result))
 
