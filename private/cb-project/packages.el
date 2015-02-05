@@ -26,6 +26,9 @@ which require an initialization must be listed explicitly in the list.")
     :config
     (progn
 
+      (defadvice projectile-cache-current-file (around ignore-errors activate)
+        (ignore-errors ad-do-it))
+
       (setq projectile-cache-file (concat spacemacs-cache-directory "projectile.cache"))
       (setq projectile-ignored-projects '("/usr/local/"))
       (setq projectile-switch-project-action (lambda () (call-interactively 'magit-status)))

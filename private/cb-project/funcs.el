@@ -22,3 +22,17 @@
       (projectile-find-file-in-directory dir)
     (call-interactively 'project/set-scope)
     (project/find-file-in-scope)))
+
+(after 'projectile
+  (defun projectile-relevant-known-projects ()
+    "Return a list of known projects except the current one (if present)."
+    (if (projectile-project-p)
+
+        (->> projectile-known-projects
+             (--reduce-from
+              (if (-contains? (-map 's-downcase acc) (s-downcase it)) acc (cons it acc))
+              (list (abbreviate-file-name (projectile-project-root))))
+             (-sort 'string-lessp))
+
+      projectile-known-projects))
+  )
