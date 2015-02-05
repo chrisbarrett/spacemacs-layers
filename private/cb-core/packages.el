@@ -17,6 +17,7 @@
     use-package
     aggressive-indent
     relative-line-numbers
+    company-quickhelp
     )
   "List of all packages to install and/or initialize. Built-in packages
 which require an initialization must be listed explicitly in the list.")
@@ -152,3 +153,11 @@ which require an initialization must be listed explicitly in the list.")
     (progn
       (add-to-list 'aggressive-indent-excluded-modes 'haskell-interactive-mode)
       (global-aggressive-indent-mode))))
+
+
+(defun cb-core/init-company-quickhelp ()
+  (use-package company-quickhelp
+    :init
+    (add-hook 'company-mode-hook (lambda () (company-quickhelp-mode +1)))
+    :config
+    (setq company-quickhelp-delay 0.2)))
