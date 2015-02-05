@@ -93,6 +93,8 @@
   (core/install-package 's)
   (core/install-package 'dash)
   (core/install-package 'dash-functional)
+  (core/install-package 'helm)
+  (require 'helm-mode)
 
   (setq-default git-enable-github-support t)
   (add-to-list 'exec-path "~/.cabal/bin/")
