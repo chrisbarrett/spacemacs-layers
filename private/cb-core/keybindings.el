@@ -66,3 +66,5 @@
 (evil-leader/set-key "i#" 'core/insert-shebang)
 
 (evil-leader/set-key "Fo" 'other-frame)
+
+(evil-set-initial-state 'comint-mode 'normal)
