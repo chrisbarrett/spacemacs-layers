@@ -33,6 +33,7 @@
                                      cb-csharp
                                      cb-rust
                                      cb-idris
+                                     cb-agda
                                      cb-coffeescript
                                      )
  ;; A list of packages and/or extensions that will not be install and loaded.

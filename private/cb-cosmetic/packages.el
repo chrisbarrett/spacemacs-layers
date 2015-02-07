@@ -35,6 +35,7 @@ which require an initialization must be listed explicitly in the list.")
       (add-to-list 'paren-face-modes 'haskell-mode)
       (add-to-list 'paren-face-modes 'inferior-haskell-mode)
       (add-to-list 'paren-face-modes 'idris-mode)
+      (add-to-list 'paren-face-modes 'agda2-mode)
       (add-to-list 'paren-face-modes 'coq-mode))))
 
 

@@ -1,0 +1,6 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: Implicit A Set
+# key: A
+# binding: direct-keybinding
+# --
+{A : Set} $0

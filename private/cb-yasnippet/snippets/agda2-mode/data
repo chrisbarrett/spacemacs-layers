@@ -1,0 +1,9 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: data
+# key: d
+# binding: direct-keybinding
+# condition: (yas/bol?)
+# expand-env: ((yas-indent-line 'fixed) (yas-wrap-around-region 't))
+# --
+data $1 where
+   $0

@@ -1,0 +1,6 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: n Nat
+# key: n
+# binding: direct-keybinding
+# --
+{n : Nat} $0

@@ -87,6 +87,20 @@
     (sp-local-pair "'" "'"   :actions '(:rem insert))
     )
 
+  ;;; Agda
+
+  (sp-with-modes '(agda2-mode)
+    (sp-local-pair "\"" "\"" :post-handlers '(:add sp/external-padding))
+    (sp-local-pair "{" "}"   :post-handlers '(:add sp/external-padding))
+    (sp-local-pair "[" "]"   :post-handlers '(:add sp/external-padding))
+    (sp-local-pair "(" ")"   :post-handlers '(:add sp/external-padding))
+    (sp-local-pair "`" "`"   :post-handlers '(:add sp/external-padding))
+    (sp-local-pair "[|" "|]" :post-handlers '(:add sp/external-padding))
+    (sp-local-pair "'" nil   :actions nil)
+    (sp-local-pair "'" "'"   :actions '(:rem insert))
+    )
+
+
   ;;; Lisp modes
 
   (sp-with-modes core/lisp-modes
