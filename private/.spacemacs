@@ -35,6 +35,7 @@
                                      cb-idris
                                      cb-agda
                                      cb-coffeescript
+                                     cb-sql
                                      )
  ;; A list of packages and/or extensions that will not be install and loaded.
  dotspacemacs-excluded-packages '(rainbow-delimiters
@@ -92,6 +93,7 @@
 
   (core/install-package 'noflet)
   (core/install-package 's)
+  (core/install-package 'let-alist)
   (core/install-package 'dash)
   (core/install-package 'dash-functional)
   (core/install-package 'helm)
