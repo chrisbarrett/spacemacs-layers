@@ -25,6 +25,9 @@ which require an initialization must be listed explicitly in the list.")
   (use-package projectile
     :config
     (progn
+      (add-hook 'after-init-hook
+                (lambda ()
+                  (setq projectile-completion-system 'helm)))
 
       (defadvice projectile-cache-current-file (around ignore-errors activate)
         (ignore-errors ad-do-it))
