@@ -2,7 +2,4 @@
 # name: scalatest fixture (FunSpec)
 # condition: (yas/bol?)
 # --
-it("${1:desc}") {
-  $0
-  true shouldBe false
-}
+it("$0") (pending)
