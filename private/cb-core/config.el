@@ -70,6 +70,7 @@
 (defvar solarized-hl-cyan      "#2aa198")
 (defvar solarized-hl-green     "#859900")
 
+(set-face-italic font-lock-variable-name-face t)
 
 ;;; Custom faces
 

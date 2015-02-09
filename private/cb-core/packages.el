@@ -135,6 +135,14 @@ which require an initialization must be listed explicitly in the list.")
       (setq helm-recentf-fuzzy-match t)
       (setq helm-imenu-fuzzy-match t)
 
+      (setq helm-locate-command
+            (pcase system-type
+              (`gnu/linux "locate -i -r %s")
+              (`berkeley-unix "locate -i %s")
+              (`windows-nt "es %s")
+              (`darwin "mdfind -name %s %s")
+              (t "locate %s")))
+
       (custom-set-faces
        `(helm-locate-finish
          ((t (:foreground ,solarized-hl-cyan))))

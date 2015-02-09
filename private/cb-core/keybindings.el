@@ -22,8 +22,6 @@
 
 (evil-leader/set-key "wo" 'delete-other-windows)
 
-(evil-global-set-key 'normal ";" 'evil-ex)
-
 ;;; Indentation
 
 (define-key prog-mode-map (kbd "RET") 'comment-indent-new-line)
