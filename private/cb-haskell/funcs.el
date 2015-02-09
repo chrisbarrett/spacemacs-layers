@@ -203,8 +203,7 @@
 (defun haskell/format-dwim ()
   (interactive "*")
   (hindent/reformat-decl)
-  (haskell-mode-stylish-buffer)
-  (message "Reformatted buffer."))
+  (haskell-mode-stylish-buffer))
 
 (defun haskell/ret ()
   "Insert a newline, possibly continuing a comment."
@@ -294,6 +293,18 @@ Arg modifies the thing to be inserted."
     (haskell/newline-indent-to-same-col)
     (insert "| ")
     (message "New data case"))
+
+   ;; Insert new alternative case
+   ((s-matches? (rx bol (* space) "<|>") (current-line))
+    (haskell/newline-indent-to-same-col)
+    (insert "<|> ")
+    (message "New alternative"))
+
+   ;; Insert new import
+   ((s-matches? (rx bol (* space) "import") (current-line))
+    (haskell/newline-indent-to-same-col)
+    (insert "import ")
+    (message "New import"))
 
    ;; Insert pattern match at function definition.
    ((s-matches? (rx bol (* space) (+ (not space)) (+ space) "::") (current-line))

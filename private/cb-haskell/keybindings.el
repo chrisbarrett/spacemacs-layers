@@ -33,6 +33,9 @@
   (evil-define-key 'normal interactive-haskell-mode-map (kbd ",t") 'haskell-mode-show-type-at)
   )
 
+(after 'haskell-presentation-mode
+  (evil-define-key 'normal haskell-presentation-mode-map (kbd "q") 'quit-window))
+
 (after 'shm
   (evil-define-key 'normal shm-map "J" 'haskell/join-line)
   (evil-define-key 'normal shm-map (kbd "<") 'shm/simple-indent-backtab)
@@ -45,6 +48,7 @@
   (define-key shm-map (kbd "SPC") 'haskell/smart-space)
 
   ;; undefine commands that interfere with smart ops, etc.
+  (define-key shm-map (kbd ")") nil)
   (define-key shm-map (kbd ",") nil)
   (define-key shm-map (kbd ":") nil)
   (define-key shm-map (kbd "#") nil)

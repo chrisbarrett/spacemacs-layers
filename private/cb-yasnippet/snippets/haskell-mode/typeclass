@@ -1,6 +1,7 @@
 # key: cl
 # name: typeclass
 # condition: (yas/bol?)
+# expand-env: ((yas-indent-line 'fixed) (yas-wrap-around-region 't))
 # --
 class ${1:Name} where
-  ${2:sigs}
+  $0

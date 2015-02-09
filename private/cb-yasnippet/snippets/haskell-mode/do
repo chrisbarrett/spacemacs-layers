@@ -1,7 +1,5 @@
-# -*- mode: snippet; require-final-newline: nil -*-
+# key: d
 # name: do
-# key: do
-# binding: direct-keybinding
 # --
 do
-  ${1:x} <- $0
+  $0

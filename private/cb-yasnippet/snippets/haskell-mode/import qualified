@@ -1,0 +1,7 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: import qualified
+# key: iq
+# binding: direct-keybinding
+# condition: (yas/bol?)
+# --
+import qualified $1 as $0

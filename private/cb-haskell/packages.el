@@ -35,11 +35,14 @@ which require an initialization must be listed explicitly in the list.")
       (setq haskell-interactive-mode-scroll-to-bottom t)
       (setq haskell-interactive-mode-eval-pretty t)
       (setq haskell-interactive-prompt "\nλ> ")
-      ;;(setq haskell-process-path-cabal "cabal --no-require-sandbox")
+      (setq haskell-process-path-ghci "ghci-ng")
 
-      (setq haskell-process-args-cabal-repl
-            '("--ghc-option=-ferror-spans"
-              "--with-ghc=ghci-ng"))
+
+      (after 'haskell
+        (diminish 'interactive-haskell-mode "H.λ"))
+
+      (when (executable-find "ghci-ng")
+        (add-to-list 'haskell-process-args-cabal-repl "--with-ghc=ghci-ng"))
 
       (put 'haskell-mode 'evil-shift-width 2)
       (add-hook 'haskell-mode-hook 'haskell/configure-flyspell))))
