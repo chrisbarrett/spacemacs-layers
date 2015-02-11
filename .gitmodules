@@ -31,3 +31,6 @@
 [submodule "private/cb-haskell/extensions/hindent"]
 	path = private/cb-haskell/extensions/hindent
 	url = https://github.com/chrisdone/hindent.git
+[submodule "private/cb-agda/extensions/agda-mode"]
+	path = private/cb-agda/extensions/agda-mode
+	url = https://github.com/jwiegley/agda-mode.git
