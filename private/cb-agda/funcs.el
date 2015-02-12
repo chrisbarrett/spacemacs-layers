@@ -1,6 +1,50 @@
 (require 'dash)
 (require 's)
 
+(defun agda/after-subexpr-opening? ()
+  (s-matches? (rx (or "{" "[" "{-" "{-#") (* space) eol)
+              (buffer-substring (line-beginning-position) (point))))
+
+(defun agda/before-subexp-closing? ()
+  (s-matches? (rx bol (* space) (or "}" "]" "-}" "#-}"))
+              (buffer-substring (point) (line-end-position))))
+
+(defun agda/smart-space ()
+  "Perform extra padding inside lists."
+  (interactive)
+  (cond
+   ((and (agda/after-subexpr-opening?) (agda/before-subexp-closing?))
+    (just-one-space)
+    (save-excursion
+      (insert " ")))
+   (t
+    (insert " "))))
+
+(defun agda/backspace ()
+  "Delete backwards with context-sensitive formatting."
+  (interactive)
+  (super-smart-ops--run-with-modification-hooks
+   (cond
+    ((and (agda/after-subexpr-opening?)
+          (agda/before-subexp-closing?)
+          (thing-at-point-looking-at (rx (+ space))))
+     (delete-horizontal-space))
+
+    ((and (s-matches? (rx (or "{-#" "{-") eol)
+                      (buffer-substring (line-beginning-position) (point)))
+          (s-matches? (rx bol (or "#-}" "-}"))
+                      (buffer-substring (point) (line-end-position))))
+     (atomic-change-group
+       (delete-char 1)
+       (delete-char -1)))
+
+    (t
+     (or (super-smart-ops-delete-last-op)
+         (call-interactively 'sp-backward-delete-char))))))
+
+
+;; Smart M-RET
+
 (defvar agda/keywords '("data" "record" "module" "where"))
 
 (defun agda/function-name-at-pt ()
@@ -19,6 +63,12 @@
 - At comments, fill paragraph and insert a newline."
   (interactive)
   (cond
+
+   ((s-matches? (rx bol (* space) "..." (+ space) "|") (current-line))
+    (goto-char (line-end-position))
+    (newline)
+    (insert "... | "))
+
    ;; Create new function case.
    ((agda/function-name-at-pt)
     (goto-char (line-end-position))
@@ -46,14 +96,18 @@
 
   (evil-insert-state))
 
+
+;; Unicode support
 
 (defun agda/rewrite-symbols-in-buffer ()
   (--each '(("->" "→")
-            ("Nat" "ℕ"))
+            ("\\<Nat\\>" "ℕ")
+            ("\\<forall\\>" "∀"))
     (apply 'agda/rewrite-symbol it)))
 
 (defun agda/rewrite-symbol (sym repl)
   (save-excursion
     (goto-char (point-min))
-    (while (search-forward sym nil t)
-      (replace-match repl))))
+    (let ((case-fold-search nil))
+      (while (search-forward-regexp sym nil t)
+        (replace-match repl)))))

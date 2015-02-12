@@ -1,6 +1,8 @@
 # -*- mode: snippet; require-final-newline: nil -*-
-# name: Implicit A Set
-# key: A
+# name: module
+# key: m
 # binding: direct-keybinding
+# condition: (yas/bol?)
 # --
-{${1:A} : Set} $0
+module ${1:Name} where
+  $0

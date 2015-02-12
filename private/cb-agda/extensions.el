@@ -37,11 +37,24 @@
     (progn
       (defun cb-agda/configure-agda-mode-hooks ()
         (add-hook 'after-save-hook 'agda2-load nil t)
-        (add-hook 'before-save-hook 'agda/rewrite-symbols-in-buffer nil t))
+        (add-hook 'before-save-hook 'agda/rewrite-symbols-in-buffer nil t)
+        (flycheck-mode -1))
 
       (add-hook 'agda2-mode-hook 'cb-agda/configure-agda-mode-hooks))
     :config
     (progn
+      ;; Editing advice
+
+      (defadvice agda2-next-goal (after show-context activate)
+        (agda2-goal-and-context)
+        (evil-insert-state))
+
+      (defadvice agda2-previous-goal (after show-context activate)
+        (agda2-goal-and-context)
+        (evil-insert-state))
+
+      ;; Remap faces
+
       (add-to-list 'face-remapping-alist '(agda2-highlight-error-face . flycheck-error))
       (add-to-list 'face-remapping-alist '(agda2-highlight-keyword-face . font-lock-keyword-face))
       (add-to-list 'face-remapping-alist '(agda2-highlight-bound-variable-face . font-lock-variable-name-face))
@@ -56,6 +69,10 @@
        `(agda2-highlight-number-face
          ((t
            (:foreground ,solarized-hl-magenta))))
+
+       `(agda2-highlight-field-face
+         ((t
+           (:foreground ,solarized-hl-cyan))))
 
        `(agda2-highlight-inductive-constructor-face
          ((t

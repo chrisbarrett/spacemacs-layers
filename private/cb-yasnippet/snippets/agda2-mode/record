@@ -1,0 +1,8 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: record
+# key: r
+# binding: direct-keybinding
+# condition: (yas/bol?)
+# --
+record ${1:Name} : Set where${2:
+  field }$0

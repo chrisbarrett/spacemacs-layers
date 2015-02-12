@@ -2,4 +2,4 @@
 # name: scalatest fixture (FunSpec)
 # condition: (yas/bol?)
 # --
-it("$0") (pending)
+it("${1:desc}")(pending)
