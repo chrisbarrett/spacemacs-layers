@@ -47,3 +47,4 @@ python-*-docs-html
 /network-security.data
 /games/
 /async-bytecomp.log
+/ensime/
