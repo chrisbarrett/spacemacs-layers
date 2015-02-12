@@ -73,7 +73,9 @@
 
 (defun sql/display-search-results (query results)
   (let ((buf (get-buffer-create "*SQL buffer analysis*"))
-        (grouped (--group-by (let-alist it .table.name) results)))
+        (grouped (->> results
+                      (--group-by (let-alist it .table.name))
+                      (--sort (string-lessp (s-downcase (car it)) (s-downcase (car other)))))))
 
     (pop-to-buffer buf)
     (erase-buffer)
