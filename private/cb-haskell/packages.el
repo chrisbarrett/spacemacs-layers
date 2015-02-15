@@ -37,6 +37,10 @@ which require an initialization must be listed explicitly in the list.")
       (setq haskell-interactive-prompt "\nλ> ")
       (setq haskell-process-path-ghci "ghci-ng")
 
+      (defun cb-haskell/set-local-hooks ()
+        (add-hook 'before-save-hook 'haskell/unicode-before-save nil t))
+
+      (add-hook 'haskell-mode-hook 'cb-haskell/set-local-hooks)
 
       (after 'haskell
         (diminish 'interactive-haskell-mode "H.λ"))

@@ -212,6 +212,32 @@
       (insert "\n-- ")
     (shm/simple-indent-newline-same-col)))
 
+(defun haskell/unicode-before-save ()
+  (when (-contains? (haskell/language-pragmas-in-file) "UnicodeSyntax")
+    (haskell/rewrite-symbols-in-buffer)))
+
+(defun haskell/rewrite-symbols-in-buffer ()
+  (--each '(("->" "→")
+            ("=>" "⇒")
+            ("=>" "⇒")
+            ("<-" "←")
+            ("::" "∷")
+            ("*" "★")
+            ("forall" "∀"))
+    (apply 'haskell/rewrite-symbol it)))
+
+(defun haskell/rewrite-symbol (sym repl)
+  (save-excursion
+    (goto-char (point-min))
+    (let ((case-fold-search nil))
+      (while (search-forward-regexp (rx-to-string `(and (or "(" space)
+                                                        (group ,sym)
+                                                        (or space eol))
+                                                  t)
+                                    nil t)
+        (replace-match repl t t nil 1)))))
+
+
 
 ;;; Define smart M-RET command
 
@@ -307,12 +333,12 @@ Arg modifies the thing to be inserted."
     (message "New import"))
 
    ;; Insert pattern match at function definition.
-   ((s-matches? (rx bol (* space) (+ (not space)) (+ space) "::") (current-line))
+   ((s-matches? (rx bol (* space) (+ (not space)) (+ space) (or "::" "∷")) (current-line))
     (haskell/insert-function-template (haskell/first-ident-on-line))
     (message "New function case"))
 
    ;; Insert new pattern match case below the current one.
-   ((or (s-matches? (rx bol (* space) (+ (not (any "="))) "->") (current-line))
+   ((or (s-matches? (rx bol (* space) (+ (not (any "="))) (or "->" "→")) (current-line))
         (s-matches? (rx bol (* space) "case" (+ space)) (current-line)))
     (haskell/newline-indent-to-same-col)
     (yas-insert-first-snippet (lambda (sn)
@@ -326,13 +352,13 @@ Arg modifies the thing to be inserted."
     (message "New entry"))
 
    ;; Insert new line starting with an arrow.
-   ((s-matches? (rx bol (* space) "->") (current-line))
+   ((s-matches? (rx bol (* space) (or "->" "→")) (current-line))
     (haskell/newline-indent-to-same-col)
     (insert "-> ")
     (message "New arrow"))
 
    ;; Insert new line with a do-binding or return.
-   ((s-matches? (rx bol (* space) (+ nonl) "<-") (current-line))
+   ((s-matches? (rx bol (* space) (+ nonl) (or "<-" "←")) (current-line))
     (back-to-indentation)
     (let ((col (current-column)))
       (search-forward "<-")
