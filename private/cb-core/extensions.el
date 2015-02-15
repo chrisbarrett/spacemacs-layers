@@ -91,7 +91,9 @@
 
       (defadvice recentf-cleanup (around hide-messages activate)
         "Do not message when cleaning up recentf list."
-        (noflet ((message (&rest args))) ad-do-it)))))
+        (noflet ((message (&rest args))) ad-do-it))
+
+      (recentf-cleanup))))
 
 (defun cb-core/init-iedit ()
   (use-package iedit
