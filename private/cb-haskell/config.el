@@ -1,13 +1,15 @@
 ;;; Show lambda symbol for lambdas.
 
-(defvar haskell/font-lock-lambda-forms
+(defconst haskell/font-lock-lambda-forms
   (list
    (core/font-lock-replace-match "\\s ?(?\\(\\\\\\)\\s *\\(\\w\\|_\\|(.*)\\).*?\\s *->" 1 "λ")
+   (core/font-lock-replace-match "\\s ?(?\\(\\\\\\)\\s *\\(\\w\\|_\\|(.*)\\).*?\\s *→" 1 "λ")
    (core/font-lock-replace-match (rx (group "\\") "case") 1 "λ")))
 
 (font-lock-add-keywords 'haskell-mode haskell/font-lock-lambda-forms)
 (font-lock-add-keywords 'haskell-c-mode haskell/font-lock-lambda-forms)
 (font-lock-add-keywords 'haskell-interactive-mode haskell/font-lock-lambda-forms)
+(font-lock-add-keywords 'haskell-mode '(("∀" . font-lock-keyword-face)))
 
 (defadvice haskell-mode-stylish-buffer (around suppress-window-changes activate)
   "Suppress window-changes."
