@@ -47,7 +47,7 @@ which require an initialization must be listed explicitly in the list.")
       (add-hook 'haskell-mode-hook 'cb-haskell/set-local-hooks)
 
       (after 'haskell
-        (diminish 'interactive-haskell-mode "H.λ"))
+        (diminish 'interactive-haskell-mode "λ"))
 
       (when (executable-find "ghci-ng")
         (add-to-list 'haskell-process-args-cabal-repl "--with-ghc=ghci-ng"))
