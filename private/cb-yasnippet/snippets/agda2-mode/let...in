@@ -1,6 +1,6 @@
 # -*- mode: snippet; require-final-newline: nil -*-
-# name: Implicit A Set
-# key: A
+# name: let...in
+# key: l
 # binding: direct-keybinding
 # --
-{A$1 : Set} $0
+let ${1:name} = ${2:value} in $0

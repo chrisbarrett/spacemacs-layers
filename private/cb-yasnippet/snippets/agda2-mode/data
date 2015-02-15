@@ -5,5 +5,5 @@
 # condition: (yas/bol?)
 # expand-env: ((yas-indent-line 'fixed) (yas-wrap-around-region 't))
 # --
-data $1 : Set where
+data ${1:Name} : ${2:Set} where
    $0

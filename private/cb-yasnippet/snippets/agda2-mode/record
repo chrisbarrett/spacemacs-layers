@@ -4,5 +4,5 @@
 # binding: direct-keybinding
 # condition: (yas/bol?)
 # --
-record ${1:Name} : Set where${2:
+record ${1:Name} : ${2:Set} where${3:
   field }$0
