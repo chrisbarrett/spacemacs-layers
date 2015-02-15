@@ -2,17 +2,14 @@
 # name: scalatest class (WordSpec)
 # condition: (yas/bol?)
 # --
-class ${1:Name}Test extends WordSpec with ShouldMatchers {
+import org.scalatest.{ FunSpec, Matchers }
+
+class ${1:Name}Test extends WordSpec with Matchers {
   "${1:$(if (and yas/text (s-matches? "^[aeiouAEIOU]" yas/text)) "An" "A")} $1" when {
     "${2:behaviour}" should {
        "${3:effect}" in {
-          new Fixture {
-            $0
-            true should be (false)
-          }
+          true should be (false)
        }
     }
   }
-
-  trait Fixture {}
 }

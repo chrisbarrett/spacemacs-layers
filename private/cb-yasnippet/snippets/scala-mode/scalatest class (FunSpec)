@@ -2,10 +2,9 @@
 # name: scalatest class (FunSpec)
 # condition: (yas/bol?)
 # --
-import org.scalatest.FunSpec
-import org.scalatest.matchers.ShouldMatchers
+import org.scalatest.{ FunSpec, Matchers }
 
-class ${1:Name}Test extends FunSpec with ShouldMatchers {
+class ${1:Name}Test extends FunSpec with Matchers {
 
   $0
 }
