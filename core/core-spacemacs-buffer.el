@@ -92,15 +92,14 @@ buffer, right justified."
 SPACEMACS-TITLE-LENGTH. New loading title is displayed by chunk
 of size LOADING-DOTS-CHUNK-THRESHOLD."
   (setq spacemacs-loading-counter (1+ spacemacs-loading-counter))
-  (if (>= spacemacs-loading-counter spacemacs-loading-dots-chunk-threshold)
-      (progn
-        (setq spacemacs-loading-counter 0)
-        (let ((i 0))
-          (while (< i spacemacs-loading-dots-chunk-size)
-            (setq spacemacs-loading-text (concat spacemacs-loading-text "."))
-            (setq i (1+ i))))
-        (spacemacs/replace-last-line-of-buffer spacemacs-loading-text)
-        (redisplay))))
+  (when (>= spacemacs-loading-counter spacemacs-loading-dots-chunk-threshold)
+    (setq spacemacs-loading-counter 0)
+    (let ((i 0))
+      (while (< i spacemacs-loading-dots-chunk-size)
+        (setq spacemacs-loading-text (concat spacemacs-loading-text "."))
+        (setq i (1+ i))))
+    (spacemacs/replace-last-line-of-buffer spacemacs-loading-text)
+    (redisplay)))
 
 (defun spacemacs/insert-buttons ()
   (goto-char (point-max))
@@ -128,9 +127,9 @@ of size LOADING-DOTS-CHUNK-THRESHOLD."
 (defun spacemacs/goto-link-line ()
   "Move the point to the beginning of the link line."
   (interactive)
-  (switch-to-buffer spacemacs-buffer-name)
-  (goto-char (point-min))
-  (re-search-forward "Homepage")
-  (beginning-of-line))
+  (with-current-buffer spacemacs-buffer-name
+    (goto-char (point-min))
+    (re-search-forward "Homepage")
+    (beginning-of-line)))
 
 (provide 'core-spacemacs-buffer)

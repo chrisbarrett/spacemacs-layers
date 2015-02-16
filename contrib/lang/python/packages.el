@@ -52,7 +52,7 @@ which require an initialization must be listed explicitly in the list.")
     :config
     (progn
       (evil-leader/set-key-for-mode 'python-mode
-        "mhd" 'anaconda-mode-view-doc
+        "mhh" 'anaconda-mode-view-doc
         "mgg"  'anaconda-mode-goto)
       (spacemacs|hide-lighter anaconda-mode))))
 
@@ -60,7 +60,11 @@ which require an initialization must be listed explicitly in the list.")
   (use-package company-anaconda
     :if (boundp 'company-backends)
     :defer t
-    :init (add-to-list 'company-backends 'company-anaconda)))
+    :init
+    (if (configuration-layer/layer-declaredp 'yasnippet)
+        (add-to-list 'company-backends (company-mode/backend-with-yas
+                                        'company-anaconda))
+      (add-to-list 'company-backends 'company-anaconda))))
 
 (defun python/init-cython-mode ()
   (use-package cython-mode
@@ -68,7 +72,7 @@ which require an initialization must be listed explicitly in the list.")
     :init
     (progn
       (evil-leader/set-key-for-mode 'cython-mode
-        "mhd" 'anaconda-mode-view-doc
+        "mhh" 'anaconda-mode-view-doc
         "mgg"  'anaconda-mode-goto)
       )))
 

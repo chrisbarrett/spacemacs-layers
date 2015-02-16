@@ -55,7 +55,6 @@
     fish-mode
     flx-ido
     flycheck
-    flycheck-ledger
     flyspell
     ;; required for update
     gh
@@ -77,12 +76,9 @@
     hl-anything
     ido-vertical-mode
     iedit
-    ledger-mode
     let-alist
     leuven-theme
     linum-relative
-    markdown-mode
-    markdown-toc
     monokai-theme
     move-text
     multi-term
@@ -116,6 +112,7 @@
     wdired
     whitespace
     window-numbering
+    winner
     yasnippet
     zenburn-theme
     )
@@ -218,8 +215,8 @@ which require an initialization must be listed explicitly in the list.")
       (define-key ac-completing-map (kbd "C-k") 'ac-previous)
       (define-key ac-completing-map (kbd "<S-tab>") 'ac-previous)
       ;; customization
-      (setq ac-auto-start 2
-            ac-delay 0.
+      (setq ac-auto-start 0
+            ac-delay 0.2
             ac-quick-help-delay 1.
             ac-use-fuzzy t
             ac-fuzzy-enable t
@@ -285,42 +282,60 @@ which require an initialization must be listed explicitly in the list.")
         (interactive)
         (if spacemacs-last-ahs-highlight-p
             (progn (goto-char (nth 1 spacemacs-last-ahs-highlight-p))
-                   (eval '(progn (ahs-highlight-now) (ahs-back-to-start)) nil))
+                   (eval '(progn (spacemacs/ahs-highlight-now-wrapper) (ahs-back-to-start)) nil))
           (message "No symbol has been searched for now.")))
 
       (defun spacemacs/integrate-evil-search (forward)
+        ;; isearch-string is last searched item.  Next time
+        ;; "n" is hit we will use this.
+        (setq isearch-string (concat "\\<" (evil-find-thing forward 'symbol) "\\>"))
+        (setq isearch-regexp (concat "\\<" (evil-find-thing forward 'symbol) "\\>"))
+        ;; Next time "n" is hit, go the correct direction.
+        (setq isearch-forward forward)
+        ;; ahs does a case sensitive search.  We could set
+        ;; this, but it would break the user's current
+        ;; sensitivity settings.  We could save the setting,
+        ;; then next time the user starts a search we could
+        ;; restore the setting.
+        ;;(setq case-fold-search nil)
+        ;; Place the search term into the search rings.
+        (isearch-update-ring isearch-string t)
+        (evil-push-search-history isearch-string forward)
+        ;; Use this search term for empty pattern "%s//replacement/"
+        ;; Append case sensitivity
+        (setq evil-ex-last-was-search nil
+              evil-ex-substitute-pattern `(,(concat isearch-string "\\C") nil (0 0)))
+        )
+
+      (defun spacemacs/ensure-ahs-enabled-locally ()
+        "Ensures ahs is enabled for the local buffer."
+        (unless
+            (bound-and-true-p ahs-mode-line)
+          (auto-highlight-symbol-mode)
+          ))
+
+      (defun spacemacs/ahs-highlight-now-wrapper ()
+        "Safe wrapper for ahs-highlight-now"
         (eval '(progn
-                 ;; isearch-string is last searched item.  Next time
-                 ;; "n" is hit we will use this.
-                 (setq isearch-string (concat "\\<" (evil-find-thing forward 'symbol) "\\>"))
-                 ;; Next time "n" is hit, go the correct direction.
-                 (setq isearch-forward forward)
-                 ;; ahs does a case sensitive search.  We could set
-                 ;; this, but it would break the user's current
-                 ;; sensitivity settings.  We could save the setting,
-                 ;; then next time the user starts a search we could
-                 ;; restore the setting.
-                 ;;(setq case-fold-search nil)
-                 ;; Place the search term into the search rings.
-                 (isearch-update-ring isearch-string t)
-                 (evil-push-search-history isearch-string forward)
-                 ;; Use this search term for empty pattern "%s//replacement/"
-                 ;; Append case sensitivity
-                 (setq evil-ex-last-was-search nil
-                       evil-ex-substitute-pattern `(,(concat isearch-string "\\C") nil (0 0)))
+                 (spacemacs/ensure-ahs-enabled-locally)
+                 (ahs-highlight-now)
                  ) nil))
 
       (defun spacemacs/quick-ahs-forward ()
         "Go to the next occurrence of symbol under point with
 `auto-highlight-symbol'"
         (interactive)
-        (eval '(progn (spacemacs/integrate-evil-search t) (ahs-highlight-now) (ahs-forward)) nil))
+        (eval '(progn (spacemacs/integrate-evil-search t)
+                      (spacemacs/ahs-highlight-now-wrapper)
+                      (ahs-forward)) nil))
 
       (defun spacemacs/quick-ahs-backward ()
         "Go to the previous occurrence of symbol under point with
 `auto-highlight-symbol'"
         (interactive)
-        (eval '(progn (spacemacs/integrate-evil-search nil) (ahs-highlight-now) (ahs-backward)) nil))
+        (eval '(progn (spacemacs/integrate-evil-search nil)
+                      (spacemacs/ahs-highlight-now-wrapper)
+                      (ahs-backward)) nil))
 
       (eval-after-load 'evil
         '(progn
@@ -331,9 +346,11 @@ which require an initialization must be listed explicitly in the list.")
         "Highlight the symbol under point with `auto-highlight-symbol'."
         (interactive)
         (eval '(progn
-                 (ahs-highlight-now)
+                 (spacemacs/ahs-highlight-now-wrapper)
                  (setq spacemacs-last-ahs-highlight-p (ahs-highlight-p))
-                 (spacemacs/auto-highlight-symbol-overlay-map)) nil))
+                 (spacemacs/auto-highlight-symbol-overlay-map)
+                 (spacemacs/integrate-evil-search nil)
+                 ) nil))
 
       (defun spacemacs/symbol-highlight-reset-range ()
         "Reset the range for `auto-highlight-symbol'."
@@ -355,7 +372,7 @@ which require an initialization must be listed explicitly in the list.")
                      ahs-change-range))
         (let* ((advice (intern (format "spacemacs/%s" (symbol-name sym)))))
           (eval `(defadvice ,sym (after ,advice activate)
-                   (ahs-highlight-now)
+                   (spacemacs/ahs-highlight-now-wrapper)
                    (setq spacemacs-last-ahs-highlight-p (ahs-highlight-p))
                    (spacemacs/auto-highlight-symbol-overlay-map)))))
       (defun spacemacs/auto-highlight-symbol-overlay-map ()
@@ -384,10 +401,10 @@ which require an initialization must be listed explicitly in the list.")
                (plugin (format " <%s> " (cond ((string= plighter "HS") "D")
                                               ((string= plighter "HSA") "B")
                                               ((string= plighter "HSD") "F"))))
-               (propplugin (propertize plugin 'face `(
-                                                      :foreground "#ffffff"
-                                                      :background ,(face-attribute
-                                                                    'ahs-plugin-defalt-face :foreground)))))
+               (propplugin (propertize plugin 'face
+                                       `(:foreground "#ffffff"
+                                         :background ,(face-attribute
+                                                       'ahs-plugin-defalt-face :foreground)))))
           (while (not (string= overlay current-overlay))
             (setq i (1+ i))
             (setq overlay (format "%s" (nth i ahs-overlay-list))))
@@ -453,7 +470,7 @@ which require an initialization must be listed explicitly in the list.")
         "Initiate a new query."
         (interactive)
         (doc-view-search 'newquery))
-      
+
       (defun spacemacs/doc-view-search-new-query-backward ()
         "Initiate a new query."
         (interactive)
@@ -571,6 +588,15 @@ which require an initialization must be listed explicitly in the list.")
       (set-default-evil-visual-state-cursor)
       (set-default-evil-motion-state-cursor)
       (set-default-evil-lisp-state-cursor)
+
+      (defun spacemacs/set-evil-cursor-color (state color)
+        "Change the evil cursor COLOR for STATE."
+        (let ((face (intern (format "spacemacs-%s-face" (symbol-name state))))
+              (func (intern (format "set-default-evil-%s-state-cursor"
+                                    (symbol-name state)))))
+          (set-face-attribute face nil :background "#FFFFEF")
+          (funcall func)))
+
       (evil-mode 1))
     :config
     (progn
@@ -642,7 +668,7 @@ which require an initialization must be listed explicitly in the list.")
 
   (defun spacemacs/evil-state-lazy-loading ()
     (require 'evil-iedit-state)
-    (setq evil-iedit-state-cursor `(,(spacemacs/state-color 'iedit) box))   
+    (setq evil-iedit-state-cursor `(,(spacemacs/state-color 'iedit) box))
     (setq evil-iedit-insert-state-cursor `((spacemacs/state-color 'iedit-insert) (bar . 2)))
     ;; activate leader in iedit and iedit-insert states
     (define-key evil-iedit-state-map
@@ -759,7 +785,8 @@ which require an initialization must be listed explicitly in the list.")
     (progn
       (global-evil-search-highlight-persist)
       (evil-leader/set-key "sc" 'evil-search-highlight-persist-remove-all)
-      (evil-ex-define-cmd "nohlsearch" 'evil-search-highlight-persist-remove-all))))
+      (evil-ex-define-cmd "nohlsearch"
+                          'evil-search-highlight-persist-remove-all))))
 
 (defun spacemacs/init-evil-surround ()
   (use-package evil-surround
@@ -1000,33 +1027,12 @@ which require an initialization must be listed explicitly in the list.")
         :fringe-bitmap 'my-flycheck-fringe-indicator
         :fringe-face 'flycheck-fringe-info)
 
-      (defun spacemacs/next-error (&optional n reset)
-        "Dispatch to flycheck or standard emacs error."
-        (interactive "P")
-        (if (and (boundp 'flycheck-mode)
-                 (symbol-value flycheck-mode))
-            (call-interactively 'flycheck-next-error)
-          (call-interactively 'next-error)))
-
-      (defun spacemacs/previous-error (&optional n reset)
-        "Dispatch to flycheck or standard emacs error."
-        (interactive "P")
-        (if (and (boundp 'flycheck-mode)
-                 (symbol-value flycheck-mode))
-            (call-interactively 'flycheck-previous-error)
-          (call-interactively 'previous-error)))
 
       ;; key bindings
       (evil-leader/set-key
         "ec" 'flycheck-clear
         "ef" 'flycheck-mode
-        "el" 'flycheck-list-errors
-        "en" 'spacemacs/next-error
-        "eN" 'spacemacs/previous-error))))
-
-(defun spacemacs/init-flycheck-ledger ()
-  (eval-after-load 'flycheck
-    '(require 'flycheck-ledger)))
+        "el" 'flycheck-list-errors))))
 
 (defun spacemacs/init-flyspell ()
   (use-package flyspell
@@ -1059,6 +1065,10 @@ which require an initialization must be listed explicitly in the list.")
                       windmove-right
                       windmove-up
                       windmove-down
+                      evil-window-left
+                      evil-window-right
+                      evil-window-up
+                      evil-window-down
                       select-window-0
                       select-window-1
                       select-window-2
@@ -1148,7 +1158,8 @@ which require an initialization must be listed explicitly in the list.")
     :defer t
     :init
     (progn
-      (setq helm-split-window-in-side-p nil
+      (setq helm-prevent-escaping-from-minibuffer t
+            helm-split-window-in-side-p nil
             helm-bookmark-show-location t
             helm-buffers-fuzzy-matching t
             helm-always-two-windows     t)
@@ -1387,17 +1398,6 @@ which require an initialization must be listed explicitly in the list.")
   (use-package iedit
     :defer t))
 
-(defun spacemacs/init-ledger-mode ()
-  (use-package ledger-mode
-    :mode ("\\.\\(ledger\\|ldg\\)\\'" . ledger-mode)
-    :defer t
-    :init
-    (progn
-      (setq ledger-post-amount-alignment-column 62)
-      (evil-leader/set-key-for-mode 'ledger-mode
-        "mhd" 'ledger-delete-current-transaction
-        "ma"  'ledger-add-transaction))))
-
 (defun spacemacs/init-leuven-theme ()
   (use-package leuven-theme
     :defer t
@@ -1413,23 +1413,6 @@ which require an initialization must be listed explicitly in the list.")
       (setq linum-format 'linum-relative)
       (setq linum-relative-current-symbol "")
       (linum-relative-toggle))))
-
-(defun spacemacs/init-markdown-mode ()
-  (use-package markdown-mode
-    :mode ("\\.md" . markdown-mode)
-    :defer t
-    :init
-    (eval-after-load 'smartparens
-      '(add-hook 'markdown-mode-hook 'smartparens-mode))
-    :config
-    ;; Don't do terrible things with Github code blocks (```)
-    (when (fboundp 'sp-local-pair)
-      (sp-local-pair 'markdown-mode "`" nil :actions '(:rem autoskip))
-      (sp-local-pair 'markdown-mode "'" nil :actions nil))))
-
-(defun spacemacs/init-markdown-toc ()
-  (use-package markdown-toc
-    :defer t))
 
 (defun spacemacs/init-move-text ()
   (use-package move-text
@@ -1976,12 +1959,6 @@ which require an initialization must be listed explicitly in the list.")
   (use-package rfringe
     :defer t))
 
-(defun spacemacs/init-ruby-mode ()
-  (use-package ruby-mode
-    :defer t
-    :mode (("\\(rake\\|thor\\|guard\\|gem\\|cap\\|vagrant\\)file\\'" . ruby-mode)
-           ("\\.\\(rb\\|ru\\|builder\\|rake\\|thor\\|gemspec\\)\\'" . ruby-mode))))
-
 (defun spacemacs/init-shell ()
   (defun shell-comint-input-sender-hook ()
     "Check certain shell commands.
@@ -2021,7 +1998,9 @@ which require an initialization must be listed explicitly in the list.")
     :config
     (progn
       (require 'smartparens-config)
+      (setq sp-cancel-autoskip-on-backward-movement nil)
       (spacemacs|diminish smartparens-mode " (Ⓢ)" " (S)")
+
       (defun spacemacs/smartparens-pair-newline (id action context)
         (save-excursion
           (newline)
@@ -2167,6 +2146,29 @@ which require an initialization must be listed explicitly in the list.")
                 (window-numbering-assign w 0)))
             windows))
     (add-hook 'window-numbering-before-hook 'spacemacs//window-numbering-assign)))
+
+(defun spacemacs/init-winner ()
+  (use-package winner
+    :init
+    (progn
+      (setq spacemacs/winner-boring-buffers '("*helm mini*"
+                                              "*helm projectile*"
+                                              "*helm M-x*"
+                                              "*helm resume*"
+                                              "*Completions*"
+                                              "*Compile-Log*"
+                                              "*inferior-lisp*"
+                                              "*Fuzzy Completions*"
+                                              "*Apropos*"
+                                              "*Help*"
+                                              "*cvs*"
+                                              "*Buffer List*"
+                                              "*Ibuffer*"
+                                              "*esh command on file*"
+                                              ))
+      (setq winner-boring-buffers
+            (append winner-boring-buffers spacemacs/winner-boring-buffers))
+      (winner-mode t))))
 
 (defun spacemacs/init-yasnippet ()
   (use-package yasnippet
