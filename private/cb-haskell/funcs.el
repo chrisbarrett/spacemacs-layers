@@ -679,7 +679,7 @@ Arg modifies the thing to be inserted."
                     (concat (s-upcase x) xs)))
            (s-join "."))
 
-    (s-upper-camel-case (f-no-ext (buffer-name)))))
+    (s-upper-camel-case (f-filename (f-no-ext (buffer-name))))))
 
 (defun haskell/last-declared-type-name ()
   "Find the last type declared with `data' or `newtype'"
