@@ -110,15 +110,11 @@
                  (stuck "")
                  (tags-todo "study/NEXT"
                             ((org-agenda-overriding-header "Study"))))
-                ((org-agenda-tag-filter-preset
-                  '("+@work" "-ignore"))
-                 (org-agenda-files (list org-work-file))
+                ((org-agenda-tag-filter-preset '("-ignore"))
+                 (org-agenda-files (list org-work-file org-agenda-diary-file))
                  (org-deadline-warning-days 0)
                  (org-agenda-todo-ignore-deadlines 14)
-                 (org-agenda-todo-ignore-scheduled 'all)
-                 (org-agenda-hide-tags-regexp
-                  (regexp-opt
-                   (list org-agenda-hide-tags-regexp "@work")))))
+                 (org-agenda-todo-ignore-scheduled 'all)))
 
                ("n" "Next actions"
                 ((tags-todo "-someday/NEXT"))
