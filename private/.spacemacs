@@ -17,6 +17,7 @@
                                      osx
                                      git
                                      scala
+                                     markdown
                                      cb-core
                                      cb-org
                                      cb-elisp
