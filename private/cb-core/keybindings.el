@@ -79,3 +79,14 @@
   (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action)
   (define-key helm-map (kbd "C-z")  'helm-select-action)
   )
+
+
+(evil-ex-define-cmd "nospell"
+                    (lambda ()
+                      (interactive)
+                      (turn-off-flyspell)))
+
+(evil-ex-define-cmd "spell"
+                    (lambda ()
+                      (interactive)
+                      (turn-on-flyspell)))

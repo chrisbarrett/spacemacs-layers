@@ -228,15 +228,6 @@ If this buffer is a member of `core/kill-buffer-ignored-list', bury it rather th
   (interactive)
   (user-error "Type <C-c k k> to exit Emacs"))
 
-(evil-ex-define-cmd "nospell"
-                    (lambda ()
-                      (interactive)
-                      (turn-off-flyspell)))
-(evil-ex-define-cmd "spell"
-                    (lambda ()
-                      (interactive)
-                      (turn-on-flyspell)))
-
 
 ;;; Indentation
 
