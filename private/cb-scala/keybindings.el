@@ -35,29 +35,6 @@
   (evil-define-key 'normal ensime-inspector-mode-map
     (kbd "q") 'ensime-popup-buffer-quit-function)
 
-  (evil-define-key 'normal ensime-mode-map
-    (kbd ",t") 'scala/tests-watch
-    (kbd ",o") 'scala/test-only-watch
-    (kbd ",i") 'ensime-inspect-type-at-point
-    (kbd ",I") 'ensime-import-type-at-point
-    (kbd ",p") 'ensime-inspect-project-package
-    (kbd ",c") 'ensime-typecheck-current-file
-    (kbd ",C") 'ensime-typecheck-all
-
-    (kbd ",u") 'ensime-show-uses-of-symbol-at-point
-    (kbd ",r") 'ensime-refactor-rename
-    (kbd ",l") 'ensime-refactor-extract-local
-    (kbd ",L") 'ensime-refactor-inline-local
-
-    (kbd ",s") 'ensime-sbt-switch
-
-    (kbd ",gi") 'ensime-goto-impl
-    (kbd ",gt") 'ensime-goto-test
-    )
-
-  (evil-define-key 'visual ensime-mode-map
-    (kbd ",m") 'ensime-refactor-extract-method
-    (kbd ",l") 'ensime-refactor-extract-local)
   )
 
 
