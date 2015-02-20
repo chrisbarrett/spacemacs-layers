@@ -69,6 +69,10 @@
                       (s-contains? (file-name-nondirectory project-name) bufname)))
                (buffer-list)))))
 
+(defun scala/enable-eldoc ()
+  (setq-local eldoc-documentation-function 'ensime-print-type-at-point)
+  (eldoc-mode +1))
+
 (defun spacemacs/ensime-refactor-accept ()
   (interactive)
   (funcall continue-refactor)
