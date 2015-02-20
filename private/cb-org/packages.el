@@ -184,7 +184,7 @@ which require an initialization must be listed explicitly in the list.")
                 org-level-6
                 org-level-7
                 org-level-8)
-        (custom-set-faces `(,it ((t :font ,core/monospace-font)))))
+        (custom-set-faces `(,it ((t :font ,(car dotspacemacs-default-font))))))
 
       (setq org-todo-keyword-faces
             `(("NEXT" . ,solarized-hl-orange)

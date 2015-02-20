@@ -5,10 +5,6 @@
       (menu-bar-mode +1)
     (menu-bar-mode -1)))
 
-;;; Use larger font
-(defvar core/monospace-font "Source Code Pro")
-(spacemacs/set-default-font (list core/monospace-font :size 12))
-
 (defvar spacemacs-private-directory (concat user-emacs-directory "private/"))
 (defvar spacemacs-autosaves-directory (concat user-emacs-directory "autosaves/"))
 
