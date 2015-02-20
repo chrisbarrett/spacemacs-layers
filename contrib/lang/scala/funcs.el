@@ -49,6 +49,26 @@
                       (s-contains? (file-name-nondirectory project-name) bufname)))
                (buffer-list)))))
 
+(defun scala/maybe-start-ensime ()
+  (when (buffer-file-name)
+    (let ((ensime-buffer (scala/ensime-buffer-for-file (buffer-file-name)))
+          (file (ensime-config-find-file (buffer-file-name)))
+          (is-source-file (s-matches? (rx (or "/src/" "/test/")) (buffer-file-name))))
+
+      (when (and is-source-file (null ensime-buffer))
+        (noflet ((ensime-config-find (&rest _) file))
+          (save-window-excursion
+            (ensime)))))))
+
+(defun scala/ensime-buffer-for-file (file)
+  "Find the Ensime server buffer corresponding to FILE."
+  (let ((default-directory (file-name-directory file)))
+    (-when-let (project-name (projectile-project-p))
+      (--first (-when-let (bufname (buffer-name it))
+                 (and (s-contains? "inferior-ensime-server" bufname)
+                      (s-contains? (file-name-nondirectory project-name) bufname)))
+               (buffer-list)))))
+
 (defun spacemacs/ensime-refactor-accept ()
   (interactive)
   (funcall continue-refactor)
