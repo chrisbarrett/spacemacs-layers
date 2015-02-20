@@ -3,6 +3,7 @@
     ;; package cb-orgs go here
     org
     org-drill-table
+    org-jira
     )
   "List of all packages to install and/or initialize. Built-in packages
 which require an initialization must be listed explicitly in the list.")
@@ -231,3 +232,7 @@ which require an initialization must be listed explicitly in the list.")
   (use-package org-drill-table
     :config
     (add-hook 'org-ctrl-c-ctrl-c-hook 'org-drill-table-update)))
+
+(defun cb-org/init-org-jira ()
+  (use-package org-jira
+    :defer t))
