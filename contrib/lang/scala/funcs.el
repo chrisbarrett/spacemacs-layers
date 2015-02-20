@@ -70,7 +70,10 @@
                (buffer-list)))))
 
 (defun scala/enable-eldoc ()
-  (setq-local eldoc-documentation-function 'ensime-print-type-at-point)
+  (setq-local eldoc-documentation-function
+              (lambda ()
+                (when (ensime-connected-p)
+                  (ensime-print-type-at-point))))
   (eldoc-mode +1))
 
 (defun spacemacs/ensime-refactor-accept ()
