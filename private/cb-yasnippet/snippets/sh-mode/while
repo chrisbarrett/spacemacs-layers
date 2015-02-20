@@ -1,0 +1,8 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: while
+# key: wh
+# binding: direct-keybinding
+# --
+while [[ ${1:test} ]]; do
+  $0
+done

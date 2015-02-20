@@ -1,0 +1,15 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: case
+# key: case
+# binding: direct-keybinding
+# condition: (yas/bol?)
+# --
+case ${1:expr} in
+
+   ${2:matcher})
+     $0
+     ;;
+
+   *)
+     ;;
+esac
