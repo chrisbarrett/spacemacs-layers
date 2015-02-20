@@ -465,25 +465,6 @@ Typing three in a row will insert a ScalaDoc."
       (replace-match "\n:" nil nil nil 1))
     (buffer-string)))
 
-(defun scala/maybe-start-ensime ()
-  (-when-let* ((start-path (buffer-file-name))
-               (dir (locate-dominating-file start-path ".ensime"))
-               (file (f-join dir ".ensime")))
-    (unless (scala/ensime-buffer-for-file start-path)
-      (when (s-matches? (rx (or "/src/" "/test/")) start-path)
-        (noflet ((ensime-config-find (&rest _) file))
-          (ensime)
-          t)))))
-
-(defun scala/ensime-buffer-for-file (file)
-  "Find the Ensime server buffer corresponding to FILE."
-  (let ((default-directory (f-dirname file)))
-    (-when-let (project-name (projectile-project-p))
-      (--first (-when-let (bufname (buffer-name it))
-                 (and (s-contains? "inferior-ensime-server" bufname)
-                      (s-contains? (f-filename project-name) bufname)))
-               (buffer-list)))))
-
 
 ;;; Test switching
 
