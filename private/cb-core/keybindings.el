@@ -44,13 +44,12 @@
   (define-key company-active-map (kbd "C-h") 'company-show-doc-buffer)
   (define-key company-active-map (kbd "C-w") nil))
 
-;;; Flycheck
+;;; Errors
 
-(after 'flycheck
-  (evil-define-key 'normal flycheck-mode-map (kbd "M-N") 'flycheck-next-error)
-  (evil-define-key 'normal flycheck-mode-map (kbd "M-P") 'flycheck-previous-error)
-  (define-key flycheck-mode-map (kbd "M-N") 'flycheck-next-error)
-  (define-key flycheck-mode-map (kbd "M-P") 'flycheck-previous-error))
+(evil-global-set-key 'normal (kbd "M-N") 'spacemacs/next-error)
+(evil-global-set-key 'normal (kbd "M-P") 'spacemacs/previous-error)
+(evil-global-set-key 'insert (kbd "M-N") 'spacemacs/next-error)
+(evil-global-set-key 'insert (kbd "M-P") 'spacemacs/previous-error)
 
 ;;; Insertion
 
