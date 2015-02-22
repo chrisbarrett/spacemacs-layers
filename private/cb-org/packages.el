@@ -24,7 +24,9 @@ which require an initialization must be listed explicitly in the list.")
 (defun cb-org/init-org ()
   (use-package org
     :init
-    (defconst org-directory "~/org/")
+    (defconst org-directory
+      (let ((in-dropbox (f-join user-dropbox-directory "org/")))
+        (if (f-exists? in-dropbox) in-dropbox "~/org/")))
     :config
     (progn
       (require 's)
@@ -242,7 +244,7 @@ which require an initialization must be listed explicitly in the list.")
       (setq org-jira-use-status-as-todo t)
 
       (defconst org-jira-working-dir (f-join org-directory "jira"))
-      (defconst org-agenda-jira-file
+      (defconst org-agenda-jira-files
         (--map (f-join org-jira-working-dir it)
                '("MM.org" "MKG.org" "projects-list.org")))
 
@@ -251,4 +253,26 @@ which require an initialization must be listed explicitly in the list.")
                 (f-descendant-of? (buffer-file-name) org-jira-working-dir))
           (org-jira-mode +1)))
 
-      (add-hook 'org-mode-hook 'cb-org/maybe-enable-org-jira))))
+      (add-hook 'org-mode-hook 'cb-org/maybe-enable-org-jira)
+
+
+
+      ;; Apply JIRA issue number as the org category
+
+      (defadvice org-jira-get-issues (after apply-category activate)
+        (org-map-entries '(cb-org/apply-to-headlines-at-level 1 'cb-org/apply-id-as-category)
+                         nil
+                         org-agenda-jira-files))
+
+      (defun cb-org/apply-to-headlines-at-level (n fn)
+        "Apply FN over headings at level N."
+        (let ((level (car (org-heading-components))))
+          (when (= n level)
+            (funcall fn))))
+
+      (defun cb-org/apply-id-as-category ()
+        (-when-let (tag (org-entry-get (point) "ID"))
+          (org-set-property "CATEGORY" tag)))
+
+
+      )))

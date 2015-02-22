@@ -111,10 +111,13 @@
                  (tags-todo "study/NEXT"
                             ((org-agenda-overriding-header "Study"))))
                 ((org-agenda-tag-filter-preset '("-ignore"))
-                 (org-agenda-files (list org-work-file org-agenda-diary-file))
+                 (org-agenda-files (-flatten (list org-work-file org-agenda-diary-file org-agenda-jira-files)))
                  (org-deadline-warning-days 0)
                  (org-agenda-todo-ignore-deadlines 14)
-                 (org-agenda-todo-ignore-scheduled 'all)))
+                 (org-agenda-todo-ignore-scheduled 'all)
+                 (org-agenda-remove-tags t)
+                 (org-stuck-projects '("-ignore+TODO={READY-TO-START\\|IN-PROGRESS}/-RESOLVED-DONE" ("NEXT") nil "SCHEDULED:\\|\\<IGNORE\\>"))
+                 ))
 
                ("n" "Next actions"
                 ((tags-todo "-someday/NEXT"))
@@ -154,7 +157,6 @@
                  (org-agenda-include-inactive-timestamps t))))))
 
       (add-hook 'org-agenda-mode-hook 'org-agenda-to-appt)
-      (add-to-list 'org-agenda-files org-directory)
 
 
       (unless noninteractive
