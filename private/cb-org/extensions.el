@@ -61,7 +61,7 @@
     :config
     (progn
       (setq org-agenda-auto-exclude-function 'org/exclude-tasks-on-hold)
-      (setq org-agenda-diary-file (concat org-directory "diary.org"))
+      (setq org-agenda-diary-file (f-join org-directory "diary.org"))
       (setq org-agenda-hide-tags-regexp (rx (or "noexport" "someday")))
       (setq org-agenda-insert-diary-extract-time t)
       (setq org-agenda-ndays 7)
