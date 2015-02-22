@@ -235,4 +235,20 @@ which require an initialization must be listed explicitly in the list.")
 
 (defun cb-org/init-org-jira ()
   (use-package org-jira
-    :defer t))
+    :commands (org-jira-mode)
+    :init
+    (progn
+
+      (setq org-jira-use-status-as-todo t)
+
+      (defconst org-jira-working-dir org-directory)
+      (defconst org-agenda-jira-file
+        (--map (f-join org-jira-working-dir it)
+               '("MM.org" "MKG.org" "projects-list.org")))
+
+      (defun cb-org/maybe-enable-org-jira ()
+        (when (ignore-errors
+                (f-descendant-of? (buffer-file-name) org-jira-working-dir))
+          (org-jira-mode +1)))
+
+      (add-hook 'org-mode-hook 'cb-org/maybe-enable-org-jira))))
