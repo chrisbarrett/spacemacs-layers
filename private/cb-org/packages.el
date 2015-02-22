@@ -24,7 +24,7 @@ which require an initialization must be listed explicitly in the list.")
 (defun cb-org/init-org ()
   (use-package org
     :init
-    (setq org-directory (file-name-as-directory org-directory))
+    (defconst org-directory "~/org/")
     :config
     (progn
       (require 's)
@@ -241,7 +241,7 @@ which require an initialization must be listed explicitly in the list.")
 
       (setq org-jira-use-status-as-todo t)
 
-      (defconst org-jira-working-dir org-directory)
+      (defconst org-jira-working-dir (f-join org-directory "jira"))
       (defconst org-agenda-jira-file
         (--map (f-join org-jira-working-dir it)
                '("MM.org" "MKG.org" "projects-list.org")))
