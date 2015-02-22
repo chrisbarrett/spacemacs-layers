@@ -395,8 +395,10 @@ Typing three in a row will insert a ScalaDoc."
 ;;; Ensime utils
 
 (defun sbt-gen-ensime (dir)
-  (interactive (list (read-directory-name "Directory: " nil nil t (or (locate-dominating-file default-directory ".ensime")
-                                                                      (projectile-project-p)))))
+  (interactive (list
+                (let ((dflt (or (locate-dominating-file default-directory ".ensime") (projectile-project-p))))
+                  (read-directory-name "Directory: " nil nil t dflt))))
+
   (let ((default-directory (f-slash dir)))
     (message "Initialising Ensime at %s..." default-directory)
     (let* ((bufname (format "*sbt gen-ensime [%s]*" (f-filename dir)))
@@ -411,59 +413,14 @@ Typing three in a row will insert a ScalaDoc."
                   (-each windows 'delete-window))
                 (kill-buffer bufname))))
 
-           (process-ensime-file
+           (kill-proc-buffer
             (lambda (_ status)
               (when (s-matches? "finished" status)
-                (funcall kill-process-buffer)
-                (scala/process-ensime-file (f-join dir ".ensime"))
+                (ignore-errors
+                  (funcall kill-process-buffer))
                 (message "Ensime successfully initialised"))))
            )
-      (set-process-sentinel proc process-ensime-file))))
-
-(autoload 'ensime-config-find "ensime-config")
-
-(defun scala/process-ensime-file (file)
-  "Apply custom setup to the given .ensime file."
-  (interactive (list (ensime-config-find)))
-  (let* ((plist (read (f-read file)))
-         (updated (scala/pp-plist (scala/add-scalariform-settings plist))))
-    (f-write updated 'utf-8 file)))
-
-(defvar scala/scalariform-settings
-  '(
-    :alignParameters
-    t
-    :formatXml t
-    :preserveDanglingCloseParenthesis t
-    :spaceInsideBrackets nil
-    :indentWithTabs nil
-    :spaceInsideParentheses nil
-    :multilineScaladocCommentsStartOnFirstLine nil
-    :alignSingleLineCaseStatements t
-    :compactStringConcatenation nil
-    :placeScaladocAsterisksBeneathSecondAsterisk nil
-    :indentPackageBlocks t
-    :compactControlReadability nil
-    :spacesWithinPatternBinders t
-    :alignSingleLineCaseStatements/maxArrowIndent 40
-    :doubleIndentClassDeclaration t
-    :preserveSpaceBeforeArguments nil
-    :spaceBeforeColon nil
-    :rewriteArrowSymbols t
-    :indentLocalDefs nil
-    :indentSpaces 2
-    ))
-
-(defun scala/add-scalariform-settings (plist)
-  (plist-put plist :formatting-prefs scala/scalariform-settings))
-
-(defun scala/pp-plist (plist)
-  (with-temp-buffer
-    (insert (pp-to-string plist))
-    (goto-char (point-min))
-    (while (search-forward-regexp (rx (+ space) (group ":") (+ (syntax word))) nil t)
-      (replace-match "\n:" nil nil nil 1))
-    (buffer-string)))
+      (set-process-sentinel proc kill-proc-buffer))))
 
 
 ;;; Test switching
