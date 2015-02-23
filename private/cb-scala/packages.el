@@ -35,6 +35,32 @@ which require an initialization must be listed explicitly in the list.")
     :defer t
     :init
     (progn
-      (setq sbt:program-name "sbt -Dsbt.log.noformat=true")
       (add-hook 'scala-mode-hook 'scala/maybe-start-ensime)
-      (add-hook 'ensime-mode-hook (lambda () (aggressive-indent-mode -1))))))
+      (add-hook 'ensime-mode-hook (lambda () (aggressive-indent-mode -1))))
+    :config
+    (progn
+      (defconst scala/test-file-template
+        "package %TESTPACKAGE%
+
+import org.scalatest.{ FunSpec, Matchers }
+
+class %TESTCLASS% extends FunSpec with Matchers {
+
+}
+"
+        "The default value to insert into new scala test buffers.
+See `ensime-goto-test-config-defaults' for possible template values.")
+
+      (setq ensime-goto-test-config-defaults
+            (list :test-class-names-fn 'ensime-goto-test--test-class-names
+                  :test-class-suffixes '("Test" "Tests"
+                                         "IntTest" "IntTests" "IntegrationTest" "IntegrationTests"
+                                         "Spec" "Specs" "Specification" "Specifications"
+                                         "Prop" "Props" "Property" "Properties"
+                                         "Check" "Checks")
+                  :impl-class-name-fn 'ensime-goto-test--impl-class-name
+                  :impl-to-test-dir-fn 'ensime-goto-test--impl-to-test-dir
+                  :is-test-dir-fn 'ensime-goto-test--is-test-dir
+                  :test-template-fn (lambda () scala/test-file-template)))
+
+      (setq sbt:program-name "sbt -Dsbt.log.noformat=true"))))

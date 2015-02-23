@@ -1,3 +1,1 @@
-%((scala/package-for-current-file)%)
-
-%@
+%((scala/package-for-current-file)%)%@

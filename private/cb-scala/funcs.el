@@ -363,7 +363,14 @@ Typing three in a row will insert a ScalaDoc."
 (defun scala/package-for-current-file ()
   (-if-let* ((root (and (buffer-file-name) (projectile-project-p)))
              (pkg-id (scala/filepath-to-package-name root (buffer-file-name))))
-      (if (s-blank? pkg-id) "" (format "package %s" pkg-id))
+      (cond
+       ((s-blank? pkg-id) "")
+       ((s-matches? (rx (or "Test" "IntTest" "Spec" "Prop") (? "s") eos)
+                    (f-no-ext (f-filename (buffer-file-name))))
+        "")
+       (t
+        (format "package %s\n\n" pkg-id)
+        ))
     ""))
 
 (defun scala/filepath-to-package-name (root file-name)
