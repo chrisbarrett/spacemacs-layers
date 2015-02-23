@@ -2,6 +2,7 @@
   '(
     ;; pre extension cb-scalas go here
     super-smart-ops
+    scala-errors
     )
   "List of all extensions to load before the packages.")
 
@@ -43,3 +44,6 @@
           ("+" . scala/plus)
           ("-" . scala/minus)
           ("," . core/comma-then-space))))))
+
+(defun cb-scala/init-scala-errors ()
+  (use-package scala-errors))
