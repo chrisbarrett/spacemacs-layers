@@ -18,6 +18,7 @@
     aggressive-indent
     relative-line-numbers
     company-quickhelp
+    wgrep-ag
     )
   "List of all packages to install and/or initialize. Built-in packages
 which require an initialization must be listed explicitly in the list.")
@@ -169,3 +170,7 @@ which require an initialization must be listed explicitly in the list.")
     (add-hook 'company-mode-hook (lambda () (company-quickhelp-mode +1)))
     :config
     (setq company-quickhelp-delay 0.2)))
+
+(defun cb-core/init-wgrep-ag ()
+  (use-package wgrep-ag
+    :defer t))
