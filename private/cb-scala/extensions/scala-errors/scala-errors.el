@@ -35,95 +35,177 @@
 (require 's)
 (require 'dash)
 (require 'rx)
+(require 'compile)
 
 (defvar-local scala-errors--quickfix-last-update nil
   "Stores the last time the quickfix file was updated.
 This is set after comparisons with the current mod date of the file on disk.")
+
+(defvar scala-errors--file-polling-interval 0.2
+  "The interval in seconds at which to poll for quickfix file creation.
+Used when refreshing the error list.")
+
+(defvar scala-errors--file-polling-max-time 5
+  "The maximum time in seconds for polling for the quickfix file.
+Used when refreshing the error list.")
 
 
 ;;;###autoload
 (defun scala-errors-show-errors ()
   "Display SBT errors in a compilation buffer."
   (interactive)
-  (scala-errors--prepare-error-buffer)
-  (display-buffer (scala-errors--error-buffer)))
+  (let ((buf (find-file-noselect (scala-errors--quickfix-file-path) t)))
+    (with-current-buffer buf
+      (rename-buffer (scala-errors--buffer-name))
+      (cond
+       ((not (f-exists? (buffer-file-name)))
+        (scala-errors-refresh))
+       (t
+        (scala-errors-mode)
+        (goto-char (point-min))
+        (pop-to-buffer buf)
+        (resize-temp-buffer-window (get-buffer-window buf))
+        (message "Press 'g' to refresh errors if they get out-of-sync with SBT"))))
+    buf))
+
+;;;###autoload
+(defun scala-errors-goto-first-error ()
+  "Navigate to the next SBT error."
+  (interactive)
+  (let ((buf (scala-errors-show-errors)))
+    (if (and buf (buffer-live-p buf))
+        (with-current-buffer buf
+          (goto-char (point-min))
+          (compile-goto-error))
+      (user-error "No errors"))))
 
 ;;;###autoload
 (defun scala-errors-goto-next-error ()
   "Navigate to the next SBT error."
   (interactive)
-  (save-window-excursion
-    (scala-errors-show-errors)
-    (call-interactively 'next-error)))
+  (save-window-excursion (scala-errors-show-errors))
+  (call-interactively 'next-error))
 
 ;;;###autoload
 (defun scala-errors-goto-prev-error ()
   "Navigate to the previous SBT error."
   (interactive)
-  (save-window-excursion
-    (scala-errors-show-errors)
-    (call-interactively 'previous-error)))
+  (save-window-excursion (scala-errors-show-errors))
+  (call-interactively 'previous-error))
+
+;;;###autoload
+(defun scala-errors-refresh ()
+  "Delete the quickfix file and redisplay the errors list."
+  (interactive)
+  (scala-errors--delete-quickfix)
+  (scala-errors--force-generate-quickfix)
+  (run-with-timer scala-errors--file-polling-interval nil
+                  'scala-errors--poll-until-exists 0)
+  (message "Refreshing SBT errors..."))
+
+(defun scala-errors--poll-until-exists (repetitions)
+  (let ((time-spent (* scala-errors--file-polling-interval repetitions)))
+    (cond
+     ((< scala-errors--file-polling-max-time time-spent)
+      (message (format "No error output within %s seconds" scala-errors--file-polling-max-time))
+      (message "No errors from SBT"))
+     ((f-exists? (scala-errors--quickfix-file-path))
+      (scala-errors-show-errors))
+     (t
+      (run-with-timer scala-errors--file-polling-interval
+                      nil 'scala-errors--poll-until-exists (1+ repetitions))))))
+
+(defun scala-errors--delete-quickfix ()
+  (-when-let* ((buf (get-buffer (scala-errors--buffer-name)))
+               (file (buffer-file-name buf)))
+    (when (f-exists? file) (f-delete file))
+
+    (-when-let (wins (get-buffer-window-list buf))
+      (-each wins 'delete-window))
+
+    (kill-buffer buf)))
+
+(defun scala-errors--force-generate-quickfix ()
+  (-when-let (last-scala-buf
+              (--first (with-current-buffer it (derived-mode-p 'scala-mode))
+                       (buffer-list)))
+    (with-current-buffer last-scala-buf
+      (scala-errors--touch))))
+
+(defun scala-errors--touch ()
+  (interactive)
+  (insert " ")
+  (backward-delete-char 1)
+  (save-buffer))
+
+(defun scala-errors--buffer-name ()
+  (format "*SBT errors<%s>*" (scala-errors--project-name)))
 
 
-(defun scala-errors--prepare-error-buffer ()
-  "Load the quickfix file into a compilation buffer."
-  (let ((qf-file (scala-errors--quickfix-file-path))
-        (updated? (or (null scala-errors--quickfix-last-update) (scala-errors--quickfix-file-updated?))))
-    (setq scala-errors--quickfix-last-update (scala-errors--quickfix-file-modified-time))
-
-    (with-current-buffer (scala-errors--error-buffer)
-      (when (or updated? (s-blank? (buffer-string)))
-        (message "Updating errors list")
-        (let ((inhibit-read-only t))
-          (erase-buffer)
-          (insert (propertize "SBT errors\n\n" 'font-lock-face 'font-lock-comment-face))
-          (insert (scala-errors--process-quickfix-file-contents (f-read-text qf-file)))
-          (goto-char (point-min)))
-
-        (compilation-mode "SBT Compilation")))))
-
-(defun scala-errors--quickfix-file-updated? ()
-  "Non-nil if the quickfix file has been updated since the error buffer was last displayed."
-  (time-less-p scala-errors--quickfix-last-update (scala-errors--quickfix-file-modified-time)))
-
-(defun scala-errors--quickfix-file-modified-time ()
-  "The modification time of the quickfix file."
-  (elt (file-attributes (scala-errors--quickfix-file-path)) 5))
-
-(defun scala-errors--error-buffer ()
-  "Return the buffer to use for displaying SBT errors."
-  (let* ((proj (scala-errors--find-project-root))
-         (bufname (format "*sbt errors<%s>*" proj)))
-    (get-buffer-create bufname)))
-
-(defun scala-errors--find-project-root ()
-  "Search upwards for the project root."
+(defun scala-errors--project-root ()
   (or (locate-dominating-file default-directory "target")
       (locate-dominating-file default-directory "build.sbt")
-      (locate-dominating-file default-directory "src")))
+      (locate-dominating-file default-directory "src")
+      (locate-dominating-file default-directory ".git")))
 
-(defun scala-errors--process-quickfix-file-contents (str)
-  "Prettify the STR for display in the error buffer."
-  (->> str
-       (replace-regexp-in-string (rx bol "[" (or "error" "warn") "]" (* space)) "")
-       (s-lines)
-       (--remove (s-contains? "Cannot run program \"gvim\": error=2, No such file or directory" it))
-       (s-join "\n")))
+(defun scala-errors--project-name ()
+  (-last-item (f-split (scala-errors--project-root))))
+
+(defun scala-errors--goto-first-compilation-link ()
+  (goto-char (point-min))
+  (while (not (or (eobp)
+                  (get-text-property (point) 'compilation-message)))
+    (forward-char 1)))
 
 (defun scala-errors--quickfix-file-path ()
   "Search upwards for the path to the quickfix file."
-  (or (-when-let* ((proj-root (locate-dominating-file default-directory "target"))
-                   (file (f-join proj-root "target/quickfix/sbt.quickfix")))
-        (when (f-exists? file)
-          file))
-      (error "No error file found")))
+  (-when-let (proj-root (scala-errors--project-root))
+    (f-join proj-root "target/quickfix/sbt.quickfix")))
+
+
+(define-compilation-mode scala-errors-mode "Scala Errors"
+  "Compilation mode for SBT compiler errors using the QuickFix SBT plugin."
+  (auto-revert-mode +1)
+  (read-only-mode +1)
+
+  ;; Disable recompile
+  (local-set-key (kbd "g") nil)
+  (local-set-key (kbd "g") 'scala-errors-refresh)
+
+  (font-lock-add-keywords
+   nil
+   `(
+     ;; Hide [error] level notes.
+     (,(rx bol "[error]" (? space)) (0 '(face nil invisible t)))
+     ;; Hide gvim call
+     (,(rx bol (* nonl) "Cannot run program \"gvim\"" (* nonl) eol) (0 '(face nil invisible t)))
+     ;; Highlight error column arrows
+     (,(rx bol  (* space) (or "[error]" "[warn]") (+ space) (group "^") (* space) eol)
+      (1 font-lock-constant-face))
+     ;; Highlight error column arrows
+     (,(rx bol  (* space) (or "[error]" "warn")
+           (+ space) (group (+ alpha) space "error" (? "s") space "found") (* space) eol)
+      (1 font-lock-comment-face))
+
+     (,
+      (rx (group "/" (+ (not (any ":"))) "/") (+ (not (any "/" ":"))) ":" (+ num) ":" (group (* nonl)))
+      ;; Shorten paths
+      (1 '(face nil invisible t))
+      ;; Colour messages
+      (2 font-lock-string-face)))))
+
+
+(eval-after-load 'aggressive-indent
+  '(add-to-list 'aggressive-indent-excluded-modes 'scala-errors-mode))
 
 
 ;;; Evil key bindings
 
 (eval-after-load 'evil-leader
   '(progn
-     (evil-leader/set-key-for-mode 'scala-mode "mff" 'scala-errors-show-errors)
+     (evil-leader/set-key-for-mode 'scala-mode "mfl" 'scala-errors-show-errors)
+     (evil-leader/set-key-for-mode 'scala-mode "mfg" 'scala-errors-refresh)
+     (evil-leader/set-key-for-mode 'scala-mode "mff" 'scala-errors-goto-first-error)
      (evil-leader/set-key-for-mode 'scala-mode "mfn" 'scala-errors-goto-next-error)
      (evil-leader/set-key-for-mode 'scala-mode "mfp" 'scala-errors-goto-prev-error)))
 
