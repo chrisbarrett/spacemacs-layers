@@ -157,7 +157,7 @@
                  (org-agenda-include-inactive-timestamps t))))))
 
       (add-hook 'org-agenda-mode-hook 'org-agenda-to-appt)
-
+      (add-hook 'org-mode-hook 'visual-line-mode)
 
       (unless noninteractive
         (add-hook 'after-init-hook 'org/agenda-dwim)))))
