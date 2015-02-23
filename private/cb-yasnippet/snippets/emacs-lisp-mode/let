@@ -1,5 +1,5 @@
 # key: l
 # name: let
-# condition: (yas/bol?)
 # --
-(let (($0)))
+(let (($1))
+  $0)
