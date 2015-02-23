@@ -111,7 +111,7 @@
                  (tags-todo "study/NEXT"
                             ((org-agenda-overriding-header "Study"))))
                 ((org-agenda-tag-filter-preset '("-ignore"))
-                 (org-agenda-files (-flatten (list org-work-file org-agenda-diary-file org-agenda-jira-files)))
+                 (org-agenda-files (list org-work-file org-agenda-diary-file org-jira-working-dir))
                  (org-deadline-warning-days 0)
                  (org-agenda-todo-ignore-deadlines 14)
                  (org-agenda-todo-ignore-scheduled 'all)
@@ -158,6 +158,7 @@
 
       (add-hook 'org-agenda-mode-hook 'org-agenda-to-appt)
       (add-hook 'org-mode-hook 'visual-line-mode)
+      (add-hook 'org-mode-hook 'turn-off-auto-fill)
 
       (unless noninteractive
         (add-hook 'after-init-hook 'org/agenda-dwim)))))

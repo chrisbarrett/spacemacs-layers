@@ -262,7 +262,7 @@ which require an initialization must be listed explicitly in the list.")
       (defadvice org-jira-get-issues (after apply-category activate)
         (org-map-entries '(cb-org/apply-to-headlines-at-level 1 'cb-org/apply-id-as-category)
                          nil
-                         org-agenda-jira-files))
+                         (f-entries org-jira-working-dir)))
 
       (defun cb-org/apply-to-headlines-at-level (n fn)
         "Apply FN over headings at level N."
