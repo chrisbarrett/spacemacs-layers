@@ -21,7 +21,17 @@ which require an initialization must be listed explicitly in the list.")
                                       ac-cider-setup))
       (add-to-hook 'cider-repl-mode-hook '(ac-cider-setup
                                            auto-complete-mode)))
-    :config (add-to-list 'ac-modes 'cider-mode)))
+    :config
+    (push 'cider-mode ac-modes)))
+
+(defun clojure/init-align-cljlet ()
+  (use-package align-cljlet
+    :defer t
+    :init
+    (add-hook 'clojure-mode-hook (lambda () (require 'align-cljlet)))
+    :config
+    (evil-leader/set-key-for-mode 'clojure-mode
+      "mfl" 'align-cljlet)))
 
 (defun clojure/init-cider ()
   (use-package cider
@@ -32,10 +42,15 @@ which require an initialization must be listed explicitly in the list.")
             cider-repl-pop-to-buffer-on-connect nil
             cider-prompt-save-file-on-load nil
             cider-repl-use-clojure-font-lock t)
-      (add-to-hook 'cider-mode-hook '(cider-turn-on-eldoc-mode)))
+      (add-hook 'clojure-mode-hook 'cider-mode)
+      (add-hook 'cider-mode-hook 'cider-turn-on-eldoc-mode))
     :config
     (progn
-      (add-to-list 'evil-emacs-state-modes 'cider-stacktrace-mode)
+      ;; add support for golden-ratio
+      (push 'cider-popup-buffer-quit-function golden-ratio-extra-commands)
+      ;; add support for evil
+      (push 'cider-stacktrace-mode evil-motion-state-modes)
+      (push 'cider-popup-buffer-mode evil-motion-state-modes)
 
       (defun spacemacs//cider-eval-in-repl-no-focus (form)
         "Insert FORM in the REPL buffer and eval it."
@@ -58,6 +73,21 @@ the focus."
 `insert state'."
         (interactive)
         (cider-insert-last-sexp-in-repl t)
+        (evil-insert-state))
+
+      (defun spacemacs/send-region-to-repl ()
+        "Send region to REPL and evaluate it without changing
+the focus."
+        (interactive)
+        (spacemacs//cider-eval-in-repl-no-focus
+         (buffer-substring-no-properties (region-beginning) (region-end))))
+
+      (defun spacemacs/send-region-to-repl-focus ()
+        "Send region to REPL and evaluate it and switch to the REPL in
+`insert state'."
+        (interactive)
+        (cider-insert-in-repl
+         (buffer-substring-no-properties (region-beginning) (region-end)) t)
         (evil-insert-state))
 
       (defun spacemacs/send-function-to-repl ()
@@ -101,8 +131,8 @@ the focus."
         "mdj" 'cider-javadoc
 
         "meb" 'cider-eval-buffer
+        "mee" 'cider-eval-last-sexp
         "mer" 'cider-eval-region
-        "mes" 'cider-eval-last-sexp
 
         "mgb" 'cider-jump-back
         "mge" 'cider-jump-to-compilation-error
@@ -118,6 +148,8 @@ the focus."
         "msi" 'cider-jack-in
         "msn" 'spacemacs/send-ns-form-to-repl
         "msN" 'spacemacs/send-function-to-repl-focus
+        "msr" 'spacemacs/send-region-to-repl
+        "msR" 'spacemacs/send-region-to-repl-focus
         "mss" 'cider-switch-to-repl-buffer
 
         "mtt" 'cider-test-run-tests)
@@ -127,50 +159,48 @@ the focus."
 (defun clojure/init-clj-refactor ()
  (use-package clj-refactor
       :defer t
+      :init
+      (add-hook 'clojure-mode-hook 'clj-refactor-mode)
       :config
       (progn
-        (add-hook 'clojure-mode-hook
-                  (lambda ()
-                    (clj-refactor-mode 1)
-                    (cljr-add-keybindings-with-prefix "C-c C-f")))
-
-        (spacemacs/declare-prefix "mr" "clj-refactor")
-
+        (cljr-add-keybindings-with-prefix "C-c C-f")
+        ;; not supported for now
+        ;; (spacemacs/declare-prefix "mr" "clj-refactor")
         (evil-leader/set-key-for-mode 'clojure-mode
-          "mr-ad" 'cljr-add-declaration
-          "mr-ai" 'cljr-add-import-to-ns
-          "mr-am" 'cljr-add-missing-libspec
-          "mr-ap" 'cljr-add-project-dependency
-          "mr-ar" 'cljr-add-require-to-ns
-          "mr-au" 'cljr-add-use-to-ns
-          "mr-cc" 'cljr-cycle-coll
-          "mr-ci" 'cljr-cycle-if
-          "mr-cn" 'cljr-clean-ns
-          "mr-cp" 'cljr-cycle-privacy
-          "mr-dk" 'cljr-destructure-keys
-          "mr-ef" 'cljr-extract-function
-          "mr-el" 'cljr-expand-let
-          "mr-fu" 'cljr-find-usages
-          "mr-hd" 'cljr-hotload-dependency
-          "mr-il" 'cljr-introduce-let
-          "mr-mf" 'cljr-move-form
-          "mr-ml" 'cljr-move-to-let
-          "mr-pc" 'cljr-project-clean
-          "mr-pf" 'cljr-promote-function
-          "mr-rd" 'cljr-remove-debug-fns
-          "mr-rf" 'cljr-rename-file
-          "mr-rl" 'cljr-remove-let
-          "mr-rr" 'cljr-remove-unused-requires
-          "mr-rs" 'cljr-rename-symbol
-          "mr-ru" 'cljr-replace-use
-          "mr-sn" 'cljr-sort-ns
-          "mr-sp" 'cljr-sort-project-dependencies
-          "mr-sr" 'cljr-stop-referring
-          "mr-tf" 'cljr-thread-first-all
-          "mr-th" 'cljr-thread
-          "mr-tl" 'cljr-thread-last-all
-          "mr-ua" 'cljr-unwind-all
-          "mr-uw" 'cljr-unwind))))
+          "mrad" 'cljr-add-declaration
+          "mrai" 'cljr-add-import-to-ns
+          "mram" 'cljr-add-missing-libspec
+          "mrap" 'cljr-add-project-dependency
+          "mrar" 'cljr-add-require-to-ns
+          "mrau" 'cljr-add-use-to-ns
+          "mrcc" 'cljr-cycle-coll
+          "mrci" 'cljr-cycle-if
+          "mrcn" 'cljr-clean-ns
+          "mrcp" 'cljr-cycle-privacy
+          "mrdk" 'cljr-destructure-keys
+          "mref" 'cljr-extract-function
+          "mrel" 'cljr-expand-let
+          "mrfu" 'cljr-find-usages
+          "mrhd" 'cljr-hotload-dependency
+          "mril" 'cljr-introduce-let
+          "mrmf" 'cljr-move-form
+          "mrml" 'cljr-move-to-let
+          "mrpc" 'cljr-project-clean
+          "mrpf" 'cljr-promote-function
+          "mrrd" 'cljr-remove-debug-fns
+          "mrrf" 'cljr-rename-file
+          "mrrl" 'cljr-remove-let
+          "mrrr" 'cljr-remove-unused-requires
+          "mrrs" 'cljr-rename-symbol
+          "mrru" 'cljr-replace-use
+          "mrsn" 'cljr-sort-ns
+          "mrsp" 'cljr-sort-project-dependencies
+          "mrsr" 'cljr-stop-referring
+          "mrtf" 'cljr-thread-first-all
+          "mrth" 'cljr-thread
+          "mrtl" 'cljr-thread-last-all
+          "mrua" 'cljr-unwind-all
+          "mruw" 'cljr-unwind))))
 
 (defun clojure/init-clojure-mode ()
   (use-package clojure-mode

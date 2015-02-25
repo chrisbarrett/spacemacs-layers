@@ -7,17 +7,21 @@
 
 - [Clojure contribution layer for Spacemacs](#clojure-contribution-layer-for-spacemacs)
     - [Description](#description)
-    - [Packages Included](#packages-included)
+    - [Features](#features)
     - [Install](#install)
         - [Layer](#layer)
         - [Pretty Symbols](#pretty-symbols)
-        - [Cider](#cider)
+        - [Cider and clj-refactor](#cider-and-clj-refactor)
+            - [Quick Start with lein](#quick-start-with-lein)
+            - [More details](#more-details)
     - [Key Bindings](#key-bindings)
         - [Documentation](#documentation)
         - [Evaluation](#evaluation)
         - [Goto](#goto)
         - [REPL](#repl)
         - [Tests](#tests)
+        - [Refactoring](#refactoring)
+        - [Reformatting](#reformatting)
 
 <!-- markdown-toc end -->
 
@@ -25,13 +29,12 @@
 
 This layer adds support for [Clojure][] language using [Cider][].
 
-## Packages Included
+## Features
 
-- [Cider][]
-- [clojure-mode][]
-- [Clj Refactor][]
-- [Cider Auto Complete][]
-- [align-cljlet][]
+- REPL via [cider][]
+- Refactoring via [clj-refactor][]
+- Auto completion via [ac-cider][]
+- Automatic formatting via [align-cljlet][]
 
 ## Install
 
@@ -60,10 +63,23 @@ Or set this variable when loading the configuration layer:
 '((clojure :variables clojure-enable-fancify-symbols t)))
 ```
 
-### Cider
+### Cider and clj-refactor
 
-Cider requires nRepl middleware to function, please check the installation
-instructions at the [cider repository][cider_install].
+#### Quick Start with lein
+
+- Install `lein` via your OS package manager.
+- Create a file `~/.lein/profiles.clj` with the following content:
+
+```clj
+{:user {:plugins [[cider/cider-nrepl "0.9.0-SNAPSHOT"]
+                  [refactor-nrepl "0.3.0-SNAPSHOT"]]}}
+```
+
+#### More details
+
+More info regarding installation of nREPL middleware can be found here:
+- cider: [cider repo][cider_install]
+- clj-refactor: [refactor-nrepl][]
 
 ## Key Bindings
 
@@ -80,8 +96,8 @@ instructions at the [cider repository][cider_install].
     Key Binding       |                 Description
 ----------------------|------------------------------------------------------------
 <kbd>SPC m e b</kbd>  | eval buffer
+<kbd>SPC m e e</kbd>  | eval last sexp
 <kbd>SPC m e r</kbd>  | eval region
-<kbd>SPC m e s</kbd>  | eval last sexp
 
 ### Goto
 
@@ -105,6 +121,8 @@ instructions at the [cider repository][cider_install].
 <kbd>SPC m s i</kbd>  | start REPL
 <kbd>SPC m s n</kbd>  | send and eval ns form in REPL
 <kbd>SPC m s N</kbd>  | send and eval ns form and switch to REPL in `insert state`
+<kbd>SPC m s r</kbd>  | send and eval region in REPL
+<kbd>SPC m s R</kbd>  | send and eval region and switch to REPL in `insert state`
 <kbd>SPC m s s</kbd>  | switch to REPL
 
 ### Tests
@@ -152,10 +170,31 @@ instructions at the [cider repository][cider_install].
 <kbd>SPC m r u a</kbd>  | unwind all
 <kbd>SPC m r u w</kbd>  | unwind
 
+### Reformatting
+
+Forms currently handled:
+- let
+- when-let
+- if-let
+- binding
+- loop
+- with-open
+- literal hashes {}
+- defroute
+- cond
+- condp (except :>> subforms)
+
+More info [here][align-cljlet].
+
+    Key Binding         |                 Description
+------------------------|------------------------------------------------------------
+<kbd>SPC m f l</kbd>      | reformat current form
+
 [Clojure]: http://clojure.org
 [Cider]: https://github.com/clojure-emacs/cider
 [cider_install]: https://github.com/clojure-emacs/cider#installation
 [clojure-mode]: https://github.com/clojure-emacs/clojure-mode
-[Clj Refactor]: https://github.com/clojure-emacs/clj-refactor.el
-[Cider Auto Complete]: https://github.com/clojure-emacs/ac-cider
+[clj-refactor]: https://github.com/clojure-emacs/clj-refactor.el
+[ac-cider]: https://github.com/clojure-emacs/ac-cider
 [align-cljlet]: https://github.com/gstamp/align-cljlet
+[refactor-nrepl]: https://github.com/clojure-emacs/refactor-nrepl
