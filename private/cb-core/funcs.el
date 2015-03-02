@@ -105,11 +105,15 @@ positive or backward if negative."
 (defvar core/kill-buffer-ignored-list
   '("*scratch*" "*Messages*" "*Group*"
     "work_movio.org"
-    "*shell*" "*eshell*" "*ansi-term*"
     "diary.org" "notes.org" "*spacemacs*"))
 
+(defvar core/kill-buffer-if-no-proc-list
+  '("*shell*" "*eshell*" "*ansi-term*"))
+
 (defun core/buffer-ignored-or-live? (buf)
-  (or (-contains? core/kill-buffer-ignored-list (buffer-name buf))
+  (or (-contains? (-concat core/kill-buffer-if-no-proc-list
+                           core/kill-buffer-ignored-list)
+                  (buffer-name buf))
       (get-buffer-process buf)))
 
 (defun core/clean-buffers ()
@@ -124,9 +128,14 @@ positive or backward if negative."
   "Kill the current buffer.
 If this buffer is a member of `core/kill-buffer-ignored-list', bury it rather than killing it."
   (interactive)
-  (if (member (buffer-name (current-buffer)) core/kill-buffer-ignored-list)
-      (bury-buffer)
-    (kill-buffer (current-buffer))))
+  (cond
+   ((-contains? core/kill-buffer-ignored-list (buffer-name (current-buffer)))
+    (bury-buffer))
+   ((and (-contains? core/kill-buffer-if-no-proc-list (buffer-name (current-buffer)))
+         (process-live-p (get-buffer-process (current-buffer))))
+    (bury-buffer))
+   (t
+    (kill-buffer (current-buffer)))))
 
 (defun core/move-file (buffer to-dir)
   "Move BUFFER's corresponding file to DEST."
