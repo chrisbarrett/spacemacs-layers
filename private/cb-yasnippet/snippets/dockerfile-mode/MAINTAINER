@@ -1,0 +1,8 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: MAINTAINER
+# key: m
+# binding: direct-keybinding
+# condition: (yas/bol?)
+# --
+MAINTAINER `(user-full-name)` "`user-mail-address`"
+$0

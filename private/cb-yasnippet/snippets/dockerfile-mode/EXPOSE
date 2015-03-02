@@ -1,0 +1,7 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: EXPOSE
+# key: e
+# condition: (yas/bol?)
+# --
+EXPOSE ${1:port}
+$0

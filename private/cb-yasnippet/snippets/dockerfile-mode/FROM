@@ -1,0 +1,7 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: FROM
+# key: f
+# condition: (yas/bol?)
+# --
+FROM ${1:base-image}
+$0

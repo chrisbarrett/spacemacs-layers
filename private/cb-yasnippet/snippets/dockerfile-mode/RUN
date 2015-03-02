@@ -1,0 +1,7 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: RUN
+# key: r
+# binding: direct-keybinding
+# --
+RUN ${1:shellcmd}
+$0
