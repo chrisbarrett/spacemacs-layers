@@ -1,0 +1,8 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: ENV
+# key: e
+# binding: direct-keybinding
+# condition: (yas/bol?)
+# --
+ENV ${1:name} ${2:value}
+$0
