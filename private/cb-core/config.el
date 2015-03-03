@@ -135,7 +135,7 @@
 
 ;;; Mode listings
 
-(defvar core/lisp-modes
+(defconst core/lisp-modes
   `(cider-repl-mode
     clojure-mode
     clojurescript-mode
@@ -151,12 +151,13 @@
     slime-mode
     slime-repl-mode))
 
-(defvar core/prompt-modes
+(defconst core/prompt-modes
   '(comint-mode
     inf-ruby-mode
     inferior-python-mode
     ielm-mode
     erc-mode
+    term-mode
     utop-mode
     slime-repl-mode
     inferior-scheme-mode
