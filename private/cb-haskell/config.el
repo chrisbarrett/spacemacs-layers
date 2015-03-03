@@ -19,5 +19,6 @@
   "Suppress window-changes."
   (save-window-excursion ad-do-it))
 
+(defadvice ghc-init (around no-op activate))
 
 (add-to-list 'core/indent-commands-alist '(haskell-mode . haskell/format-dwim))
