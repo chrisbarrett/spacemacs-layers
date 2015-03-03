@@ -1,24 +1,14 @@
 (defvar cb-haskell-packages
   '(
-    ;; package cb-haskells go here
     haskell-mode
     shm
+    hindent
     )
   "List of all packages to install and/or initialize. Built-in packages
 which require an initialization must be listed explicitly in the list.")
 
 (defvar cb-haskell-excluded-packages '()
   "List of packages to exclude.")
-
-;; For each package, define a function cb-haskell/init-<package-cb-haskell>
-;;
-;; (defun cb-haskell/init-my-package ()
-;;   "Initialize my package"
-;;   )
-;;
-;; Often the body of an initialize function uses `use-package'
-;; For more info on `use-package', see readme:
-;; https://github.com/jwiegley/use-package
 
 (defun cb-haskell/init-haskell-mode ()
   (use-package haskell-mode
@@ -30,12 +20,10 @@ which require an initialization must be listed explicitly in the list.")
     :config
     (progn
       (setq haskell-process-suggest-haskell-docs-imports t)
-      (setq haskell-process-suggest-remove-import-lines t)
       (setq haskell-process-use-presentation-mode t)
       (setq haskell-interactive-mode-scroll-to-bottom t)
       (setq haskell-interactive-mode-eval-pretty t)
       (setq haskell-interactive-prompt "\nλ> ")
-      (setq haskell-process-path-ghci "ghci-ng")
 
       (custom-set-faces
        '(haskell-operator-face
@@ -49,9 +37,6 @@ which require an initialization must be listed explicitly in the list.")
       (after 'haskell
         (diminish 'interactive-haskell-mode "λ"))
 
-      (when (executable-find "ghci-ng")
-        (add-to-list 'haskell-process-args-cabal-repl "--with-ghc=ghci-ng"))
-
       (put 'haskell-mode 'evil-shift-width 2)
       (add-hook 'haskell-mode-hook 'haskell/configure-flyspell))))
 
@@ -62,7 +47,6 @@ which require an initialization must be listed explicitly in the list.")
     (add-hook 'haskell-mode-hook 'structured-haskell-mode)
     :config
     (progn
-      (require 'shm-case-split)
       (require 'shm-reformat)
       (setq shm-auto-insert-skeletons nil)
 
@@ -76,10 +60,7 @@ which require an initialization must be listed explicitly in the list.")
          ((((background dark))  :background "#51202b")
           (((background light)) :background "#fee8e5")))))))
 
-(defun cb-haskell/init-company-ghc ()
-  (use-package company-ghc
-    :defer t
+(defun cb-haskell/init-hindent ()
+  (use-package hindent
     :config
-    (progn
-      (setq company-ghc-show-info nil)
-      (setq company-ghc-show-module t))))
+    (setq hindent-style "gibiansky")))

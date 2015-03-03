@@ -14,11 +14,12 @@
   (define-key haskell-mode-map (kbd "C-c C-h")       'haskell-hoogle)
   (define-key haskell-mode-map (kbd "C-c C-c")       'haskell-process-cabal-build)
   (define-key haskell-mode-map (kbd "C-c C-k")       'haskell-interactive-mode-clear)
-  (define-key haskell-mode-map (kbd "M-RET")         'haskell/meta-ret)
   (define-key haskell-mode-map (kbd "<backspace>")   'haskell/backspace)
   (define-key haskell-mode-map (kbd "C-c i") 'shm-reformat-decl)
 
   (define-key haskell-mode-map (kbd "#") 'haskell/smart-hash)
+
+  (bind-key "M-RET" 'haskell/meta-ret haskell-mode-map)
   )
 
 (after 'haskell-cabal-mode
