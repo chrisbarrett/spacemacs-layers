@@ -193,3 +193,9 @@
 ;;; Misc config
 
 (setq neo-theme 'arrow)
+
+
+;; HACK: Work around evil-shift-left bug.
+(defadvice evil-shift-left (around ignore-errors activate)
+  (ignore-errors ad-do-it)
+  (back-to-indentation))
