@@ -3,6 +3,7 @@
     haskell-mode
     shm
     hindent
+    hi2
     )
   "List of all packages to install and/or initialize. Built-in packages
 which require an initialization must be listed explicitly in the list.")
@@ -64,3 +65,25 @@ which require an initialization must be listed explicitly in the list.")
   (use-package hindent
     :config
     (setq hindent-style "gibiansky")))
+
+(defun cb-haskell/init-hi2 ()
+  (use-package hi2
+    :diminish hi2-mode
+    :commands turn-on-hi2
+    :init
+    (add-hook 'haskell-mode-hook 'turn-on-hi2)
+    :config
+    (progn
+
+      (defun spacemacs/haskell-show-hi2-guides ()
+        (when (and (boundp 'hi2-mode) hi2-mode)
+          (hi2-enable-show-indentations)))
+
+      (defun spacemacs/haskell-hide-hi2-guides ()
+        (when (and (boundp 'hi2-mode) hi2-mode)
+          (hi2-disable-show-indentations)))
+
+      ;; Show indentation guides for hi2 only in insert state.
+      (add-hook 'evil-normal-state-entry-hook 'spacemacs/haskell-hide-hi2-guides)
+      (add-hook 'evil-insert-state-entry-hook 'spacemacs/haskell-show-hi2-guides)
+      (add-hook 'evil-insert-state-exit-hook  'spacemacs/haskell-hide-hi2-guides))))

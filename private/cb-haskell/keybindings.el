@@ -6,6 +6,12 @@
 
   (evil-define-key 'normal haskell-mode-map (kbd "M-RET") 'haskell/meta-ret)
 
+  (evil-define-key 'normal haskell-mode-map (kbd "<backtab>") 'hi2-indent-backwards)
+  (evil-define-key 'normal haskell-mode-map (kbd "TAB") 'hi2-indent-line)
+
+  (define-key haskell-mode-map (kbd "<backtab>") 'hi2-indent-backwards)
+  (define-key haskell-mode-map (kbd "TAB") 'hi2-indent-line)
+
   (define-key haskell-mode-map (kbd "M-,")           'pop-tag-mark)
   (define-key haskell-mode-map (kbd "M-P")           'flymake-goto-prev-error)
   (define-key haskell-mode-map (kbd "M-N")           'flymake-goto-next-error)
@@ -55,6 +61,6 @@
   (define-key shm-map (kbd "-") nil)
   (define-key shm-map (kbd "DEL") nil)
   (define-key shm-map (kbd "C-<backspace>") nil)
-  ;;(define-key shm-map (kbd "<backtab>") nil)
-  ;;(define-key shm-map (kbd "TAB") nil)
+  (define-key shm-map (kbd "<backtab>") nil)
+  (define-key shm-map (kbd "TAB") nil)
   )
