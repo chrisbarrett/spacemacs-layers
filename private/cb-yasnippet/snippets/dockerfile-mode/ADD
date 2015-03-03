@@ -1,0 +1,8 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: ADD
+# key: a
+# binding: direct-keybinding
+# condition: (yas/bol?)
+# --
+ADD ${1:src} ${2:dest}
+$0

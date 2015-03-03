@@ -1,0 +1,7 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: ONBUILD
+# key: ob
+# binding: direct-keybinding
+# condition: (yas/bol?)
+# --
+ONBUILD $0
