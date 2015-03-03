@@ -4,6 +4,8 @@
   (evil-define-key 'normal haskell-mode-map (kbd "SPC i l") 'haskell/insert-language-pragma)
   (evil-define-key 'normal haskell-mode-map (kbd "SPC i o") 'haskell/insert-ghc-option)
 
+  (evil-define-key 'normal haskell-mode-map (kbd "M-RET") 'haskell/meta-ret)
+
   (define-key haskell-mode-map (kbd "M-,")           'pop-tag-mark)
   (define-key haskell-mode-map (kbd "M-P")           'flymake-goto-prev-error)
   (define-key haskell-mode-map (kbd "M-N")           'flymake-goto-next-error)
@@ -18,8 +20,7 @@
   (define-key haskell-mode-map (kbd "C-c i") 'shm-reformat-decl)
 
   (define-key haskell-mode-map (kbd "#") 'haskell/smart-hash)
-
-  (bind-key "M-RET" 'haskell/meta-ret haskell-mode-map)
+  (define-key haskell-mode-map (kbd "M-RET") 'haskell/meta-ret)
   )
 
 (after 'haskell-cabal-mode
@@ -39,8 +40,8 @@
 
 (after 'shm
   (evil-define-key 'normal shm-map "J" 'haskell/join-line)
+  (evil-define-key 'normal shm-map (kbd "M-RET") nil)
 
-  (define-key shm-map (kbd "C-k")        'shm/kill-node)
   (define-key shm-map (kbd "C-c C-s")    'shm/case-split)
   (define-key shm-map (kbd "C-<return>") 'shm/newline-indent)
   (define-key shm-map (kbd "<return>")   'haskell/ret)
@@ -54,7 +55,6 @@
   (define-key shm-map (kbd "-") nil)
   (define-key shm-map (kbd "DEL") nil)
   (define-key shm-map (kbd "C-<backspace>") nil)
-  (define-key shm-map (kbd "<backtab>") nil)
-  (define-key shm-map (kbd "TAB") nil)
-  (define-key shm-map (kbd "M-r") nil)
+  ;;(define-key shm-map (kbd "<backtab>") nil)
+  ;;(define-key shm-map (kbd "TAB") nil)
   )
