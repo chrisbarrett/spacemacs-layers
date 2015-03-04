@@ -17,10 +17,11 @@ With prefix argument ARG, always create a new terminal."
 
 (defun cb-shell--term-hide ()
   (if (get-register 'term)
-      (jump-to-register 'term t)
+      (or (ignore-errors (jump-to-register 'term t) t)
+          (bury-buffer))
     (bury-buffer)
     (when (< 1 (length (window-list)))
-      (delete-window)))  )
+      (delete-window))))
 
 (defun cb-shell--term-new ()
   (window-configuration-to-register 'term)
