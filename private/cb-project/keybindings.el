@@ -2,4 +2,4 @@
 (bind-key* "s-F" 'project/find-file-in-scope)
 (bind-key* "s-d" 'projectile-find-dir)
 (bind-key* "s-l" 'projectile-switch-project)
-(bind-key* "s-h" 'helm-projectile)
+(bind-key* "s-t" 'helm-projectile)
