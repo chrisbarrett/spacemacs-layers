@@ -254,9 +254,9 @@ which require an initialization must be listed explicitly in the list.")
           (org-jira-mode +1)))
 
       (add-hook 'org-mode-hook 'cb-org/maybe-enable-org-jira)
-
-
-
+      )
+    :config
+    (progn
       ;; Apply JIRA issue number as the org category
 
       (defadvice org-jira-get-issues (after apply-category activate)
@@ -274,5 +274,16 @@ which require an initialization must be listed explicitly in the list.")
         (-when-let (tag (org-entry-get (point) "ID"))
           (org-set-property "CATEGORY" tag)))
 
+      ;; Better feedback on issues
 
-      )))
+      (defadvice org-jira-get-issues (after notify activate)
+        (message "Issues updated."))
+
+      (defadvice org-jira-update-issue (after notify activate)
+        (message "Issue updated."))
+
+      (defadvice org-jira-update-issue-details (after notify activate)
+        (message "Details updated."))
+
+      (defadvice org-jira-update-comments-for-current-issue (after notify activate)
+        (message "Comments updated.")))))
