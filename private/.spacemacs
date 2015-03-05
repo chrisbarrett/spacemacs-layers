@@ -30,11 +30,11 @@
                                        cb-proof
                                        cb-haskell
                                        cb-scala
-                                       cb-csharp
-                                       cb-rust
+                                       ;; cb-csharp
+                                       ;; cb-rust
                                        cb-idris
                                        cb-agda
-                                       cb-coffeescript
+                                       ;; cb-coffeescript
                                        cb-sql
                                        cb-docker
                                        cb-shell
