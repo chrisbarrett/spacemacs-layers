@@ -33,7 +33,12 @@ which require an initialization must be listed explicitly in the list.")
 
       (add-hook 'org-mode-hook 'auto-revert-mode)
       (add-hook 'org-mode-hook 'abbrev-mode)
-      (add-hook 'org-mode-hook 'auto-fill-mode)
+
+      (defun cb-org/maybe-enable-autofill ()
+        (unless (true? org-jira-mode)
+          (turn-on-auto-fill)))
+
+      (add-hook 'org-mode-hook 'cb-org/maybe-enable-autofill)
 
       (setq org-default-notes-file (f-join org-directory "notes.org"))
       (setq org-M-RET-may-split-line nil)
@@ -253,6 +258,7 @@ which require an initialization must be listed explicitly in the list.")
                 (f-descendant-of? (buffer-file-name) org-jira-working-dir))
           (org-jira-mode +1)))
 
+      (add-hook 'org-jira-mode-hook 'turn-off-auto-fill)
       (add-hook 'org-mode-hook 'cb-org/maybe-enable-org-jira)
       )
     :config
