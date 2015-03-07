@@ -30,10 +30,10 @@
 
   ;;; Haskell
 
-  (sp-with-modes '(haskell-mode inf-haskell-mode haskell-c-mode)
+  (sp-with-modes '(haskell-mode inf-haskell-mode haskell-c-mode haskell-interactive-mode)
     (sp-local-pair "{" "}" :post-handlers '(:add sp/internal-and-external-padding))
     (sp-local-pair "(" ")" :post-handlers '(:add sp/external-padding))
-    (sp-local-pair "[" "]" :post-handlers '(:add sp/external-and-external-padding))
+    (sp-local-pair "[" "]" :post-handlers '(:add sp/internal-and-external-padding))
     (sp-local-pair "`" "`" :post-handlers '(:add sp/external-padding))
     (sp-local-pair "'" "'" :actions '(:rem insert))
     )
