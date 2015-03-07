@@ -105,6 +105,9 @@
    ((thing-at-point-looking-at (rx (or "(" "{" "[") (* space)))
     (insert "."))
 
+   ((thing-at-point-looking-at (rx "^"))
+    (insert "."))
+
    (t
     (super-smart-ops-insert "."))))
 

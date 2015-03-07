@@ -26,7 +26,7 @@
     :config
     (progn
       (super-smart-ops-configure-for-mode 'haskell-mode
-        :add '("$" "=" "~")
+        :add '("$" "=" "~" "^")
         :custom
         '(("." . haskell/smart-dot)
           ("," . haskell/smart-comma)
@@ -37,7 +37,7 @@
           (";" . core/semicolon-then-space)))
 
       (super-smart-ops-configure-for-mode 'haskell-interactive-mode
-        :add '("$" "=" "~")
+        :add '("$" "=" "~" "^")
         :custom
         '(("." . haskell/smart-dot)
           ("-" . haskell/smart-minus)
