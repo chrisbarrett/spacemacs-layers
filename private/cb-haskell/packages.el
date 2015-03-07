@@ -23,8 +23,10 @@ which require an initialization must be listed explicitly in the list.")
       (setq haskell-process-suggest-haskell-docs-imports t)
       (setq haskell-process-use-presentation-mode t)
       (setq haskell-interactive-mode-scroll-to-bottom t)
+      (setq haskell-interactive-popup-errors t)
       (setq haskell-interactive-mode-eval-pretty t)
       (setq haskell-interactive-prompt "\nλ> ")
+      (setq haskell-process-show-debug-tips)
 
       (custom-set-faces
        '(haskell-operator-face
