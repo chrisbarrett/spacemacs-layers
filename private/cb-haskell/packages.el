@@ -8,7 +8,7 @@
   "List of all packages to install and/or initialize. Built-in packages
 which require an initialization must be listed explicitly in the list.")
 
-(defvar cb-haskell-excluded-packages '(ghc)
+(defvar cb-haskell-excluded-packages '(ghc) ; ghc-mod is currently broken
   "List of packages to exclude.")
 
 (defun cb-haskell/init-haskell-mode ()
@@ -87,3 +87,13 @@ which require an initialization must be listed explicitly in the list.")
       (add-hook 'evil-normal-state-entry-hook 'spacemacs/haskell-hide-hi2-guides)
       (add-hook 'evil-insert-state-entry-hook 'spacemacs/haskell-show-hi2-guides)
       (add-hook 'evil-insert-state-exit-hook  'spacemacs/haskell-hide-hi2-guides))))
+
+(defun cb-haskell/init-ghc ()
+  (use-package ghc
+    :commands (ghc-case-split)
+    :disabled t
+    :defer t
+    :config
+    (defadvice ghc-init (around no-keybindings activate)
+      (noflet ((define-key (&rest _)))
+        ad-do-it))))
