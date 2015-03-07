@@ -116,7 +116,7 @@
                  (org-agenda-todo-ignore-deadlines 14)
                  (org-agenda-todo-ignore-scheduled 'all)
                  (org-agenda-remove-tags t)
-                 (org-stuck-projects '("-ignore+TODO={READY-TO-START\\|IN-PROGRESS}/-RESOLVED-DONE" ("NEXT") nil "SCHEDULED:\\|\\<IGNORE\\>"))
+                 (org-stuck-projects '("-ignore+TODO={READY-TO-START\\|IN-PROGRESS}+assignee=\"chrisb\"/-RESOLVED-DONE" ("NEXT") nil "SCHEDULED:\\|\\<IGNORE\\>"))
                  ))
 
                ("n" "Next actions"
