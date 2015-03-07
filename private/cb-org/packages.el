@@ -250,8 +250,7 @@ which require an initialization must be listed explicitly in the list.")
 
       (defconst org-jira-working-dir (f-join org-directory "jira"))
       (defconst org-agenda-jira-files
-        (--map (f-join org-jira-working-dir it)
-               '("MM.org" "MKG.org" "projects-list.org")))
+        (f-files org-jira-working-dir (lambda (f) (f-ext? f "org")) t))
 
       (defun cb-org/maybe-enable-org-jira ()
         (when (ignore-errors
