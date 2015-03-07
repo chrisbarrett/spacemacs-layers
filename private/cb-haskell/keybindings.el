@@ -5,12 +5,15 @@
   (evil-define-key 'normal haskell-mode-map (kbd "SPC i o") 'haskell/insert-ghc-option)
 
   (evil-define-key 'normal haskell-mode-map (kbd "M-RET") 'haskell/meta-ret)
+  (define-key haskell-mode-map (kbd "M-RET") 'haskell/meta-ret)
 
   (evil-define-key 'normal haskell-mode-map (kbd "<backtab>") 'hi2-indent-backwards)
   (evil-define-key 'normal haskell-mode-map (kbd "TAB") 'hi2-indent-line)
-
   (define-key haskell-mode-map (kbd "<backtab>") 'hi2-indent-backwards)
   (define-key haskell-mode-map (kbd "TAB") 'hi2-indent-line)
+
+  (evil-define-key 'normal haskell-mode-map (kbd "C-c C-c") 'cb-haskell/C-c-C-c)
+  (define-key haskell-mode-map (kbd "C-c C-c") 'cb-haskell/C-c-C-c)
 
   (define-key haskell-mode-map (kbd "M-,")           'pop-tag-mark)
   (define-key haskell-mode-map (kbd "M-P")           'flymake-goto-prev-error)
@@ -26,7 +29,20 @@
   (define-key haskell-mode-map (kbd "C-c i") 'shm-reformat-decl)
 
   (define-key haskell-mode-map (kbd "#") 'haskell/smart-hash)
-  (define-key haskell-mode-map (kbd "M-RET") 'haskell/meta-ret)
+  )
+
+(after 'ghc
+  (define-key haskell-mode-map (kbd "C-c C-s") 'ghc-case-split)
+  (define-key haskell-mode-map (kbd "C-c C-r") 'ghc-refine)
+
+  (evil-define-key 'normal haskell-mode-map (kbd "C-c C-n") 'ghc-goto-next-hole)
+  (define-key haskell-mode-map (kbd "C-c C-n") 'ghc-goto-next-hole)
+
+  (evil-define-key 'normal haskell-mode-map (kbd "C-c C-p") 'ghc-goto-prev-hole)
+  (define-key haskell-mode-map (kbd "C-c C-p") 'ghc-goto-prev-hole)
+
+  (evil-define-key 'normal haskell-mode-map (kbd "C-c C-k") 'ghc-insert-template-or-signature)
+  (define-key haskell-mode-map (kbd "C-c C-k") 'ghc-insert-template-or-signature)
   )
 
 (after 'haskell-cabal-mode
@@ -36,6 +52,8 @@
 (after 'haskell-interactive-mode
   (define-key haskell-interactive-mode-map (kbd "C-c C-h") 'haskell-hoogle)
   (evil-define-key 'normal haskell-error-mode-map (kbd "q") 'quit-window)
+
+  (evil-define-key 'insert haskell-interactive-mode-map (kbd "<backspace>") 'haskell/backspace)
 
   (evil-define-key 'normal interactive-haskell-mode-map (kbd "M-.") 'haskell-mode-goto-loc)
   (evil-define-key 'normal interactive-haskell-mode-map (kbd ",t") 'haskell-mode-show-type-at)
@@ -48,7 +66,6 @@
   (evil-define-key 'normal shm-map "J" 'haskell/join-line)
   (evil-define-key 'normal shm-map (kbd "M-RET") nil)
 
-  (define-key shm-map (kbd "C-c C-s")    'shm/case-split)
   (define-key shm-map (kbd "C-<return>") 'shm/newline-indent)
   (define-key shm-map (kbd "<return>")   'haskell/ret)
   (define-key shm-map (kbd "SPC") 'haskell/smart-space)

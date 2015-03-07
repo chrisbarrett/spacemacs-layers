@@ -713,3 +713,8 @@ Arg modifies the thing to be inserted."
   (forward-line 1)
   (goto-char (line-beginning-position))
   (call-interactively 'shm/delete-indentation))
+
+(defun cb-haskell/C-c-C-c ()
+  (interactive)
+  (or (when (fboundp 'ghc-auto) (ghc-auto))
+      (haskell-process-cabal-build)))
