@@ -1,5 +1,7 @@
-# key: k
+# -*- mode: snippet; require-final-newline: nil -*-
 # name: defconst
+# key: dc
+# binding: direct-keybinding
 # condition: (yas/bol?)
 # --
 (defconst `(yas/find-identifier-prefix)`$0)
