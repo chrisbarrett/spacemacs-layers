@@ -71,6 +71,7 @@
   (define-key shm-map (kbd "SPC") 'haskell/smart-space)
 
   ;; undefine commands that interfere with smart ops, etc.
+  (define-key shm-map (kbd "C-c C-s") nil)
   (define-key shm-map (kbd ")") nil)
   (define-key shm-map (kbd ",") nil)
   (define-key shm-map (kbd ":") nil)
