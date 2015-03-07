@@ -18,6 +18,7 @@
                                        scala
                                        markdown
                                        cb-core
+                                       cb-flycheck
                                        cb-org
                                        cb-elisp
                                        cb-cosmetic
