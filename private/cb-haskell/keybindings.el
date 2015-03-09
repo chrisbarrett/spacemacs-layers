@@ -53,6 +53,8 @@
   (define-key haskell-interactive-mode-map (kbd "C-c C-h") 'haskell-hoogle)
   (evil-define-key 'normal haskell-error-mode-map (kbd "q") 'quit-window)
 
+  (evil-define-key 'insert haskell-interactive-mode-map (kbd "SPC") 'haskell/interactive-smart-space)
+
   (evil-define-key 'insert haskell-interactive-mode-map (kbd "<backspace>") 'haskell/backspace)
 
   (evil-define-key 'normal interactive-haskell-mode-map (kbd "M-.") 'haskell-mode-goto-loc)
