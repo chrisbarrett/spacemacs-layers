@@ -1,4 +1,4 @@
-# key: d
+# key: do
 # name: do
 # condition: (not (yas/bol?))
 # --
