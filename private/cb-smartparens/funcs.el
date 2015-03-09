@@ -70,7 +70,7 @@ Insert leading padding unless at start of line or after an open round paren."
         (let ((bol-to-point (buffer-substring (line-beginning-position) (point))))
           (cond
            ((s-matches? (rx bol (* space) eol) bol-to-point))
-           ((s-matches? (rx "(" (* space) eol) bol-to-point)
+           ((s-matches? (rx (or "(" "[") (* space) eol) bol-to-point)
             (delete-horizontal-space))
            (t
             (just-one-space))))
