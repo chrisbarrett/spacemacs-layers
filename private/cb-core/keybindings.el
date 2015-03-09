@@ -80,6 +80,10 @@
   (define-key helm-map (kbd "C-SPC")  'helm-toggle-visible-mark)
   )
 
+;;; Occur
+
+(evil-leader/set-key "oo" 'helm-occur)
+(evil-leader/set-key "om" 'helm-multi-occur)
 
 (evil-ex-define-cmd "nospell"
                     (lambda ()
