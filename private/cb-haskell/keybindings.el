@@ -53,6 +53,8 @@
   (define-key haskell-interactive-mode-map (kbd "C-c C-h") 'haskell-hoogle)
   (evil-define-key 'normal haskell-error-mode-map (kbd "q") 'quit-window)
 
+  (evil-define-key 'normal haskell-mode-map (kbd "<return>") 'haskell-process-do-info)
+
   (evil-define-key 'insert haskell-interactive-mode-map (kbd "SPC") 'haskell/interactive-smart-space)
 
   (evil-define-key 'insert haskell-interactive-mode-map (kbd "<backspace>") 'haskell/backspace)
@@ -66,10 +68,11 @@
 
 (after 'shm
   (evil-define-key 'normal shm-map "J" 'haskell/join-line)
+  (evil-define-key 'insert shm-map (kbd "<return>") 'haskell/ret)
   (evil-define-key 'normal shm-map (kbd "M-RET") nil)
 
   (define-key shm-map (kbd "C-<return>") 'shm/newline-indent)
-  (define-key shm-map (kbd "<return>")   'haskell/ret)
+  (define-key shm-map (kbd "<return>") nil)
   (define-key shm-map (kbd "SPC") 'haskell/smart-space)
 
   ;; undefine commands that interfere with smart ops, etc.
