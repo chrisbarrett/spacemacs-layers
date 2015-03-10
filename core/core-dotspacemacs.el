@@ -18,10 +18,11 @@
 Paths must have a trailing slash (ie. `~/.mycontribs/')")
 
 (defvar dotspacemacs-startup-banner 'random
-  "Specify the startup banner. If the value is an integer then the
-banner with the corresponding index is used, if the value is `random'
-then the banner is chosen randomly among the available banners, if
-the value is nil then no banner is displayed.")
+   "Specify the startup banner. If the value is an integer then the
+   text banner with the corresponding index is used, if the value is
+   `random' then the banner is chosen randomly among the available banners,
+   if the value is a string then it must be a path to a .PNG file,
+   if the value is nil then no banner is displayed.")
 
 (defvar dotspacemacs-configuration-layers '()
   "List of configuration layers to load. If it is the symbol `all' instead
@@ -44,7 +45,7 @@ with 2 themes variants, one dark and one light")
 
 (defvar dotspacemacs-major-mode-leader-key ","
   "Major mode leader key is a shortcut key which is the equivalent of
-pressing `<leader> m`")
+pressing `<leader> m`. Set it to `nil` to disable it.")
 
 (defvar dotspacemacs-default-font '("Source Code Pro"
                                     :size 13
@@ -58,6 +59,10 @@ size to make separators look not too crappy.")
   "The key used for Evil commands (ex-commands) and Emacs commands (M-x).
 By default the command key is `:' so ex-commands are executed like in Vim
 with `:' and Emacs commands are executed with `<leader> :'.")
+
+(defvar dotspacemacs-enable-paste-micro-state t
+  "If non nil the paste micro-state is enabled. While enabled pressing `p`
+several times cycle between the kill ring content.'")
 
 (defvar dotspacemacs-guide-key-delay 0.4
   "Guide-key delay in seconds.")
@@ -137,7 +142,7 @@ NOT USED FOR NOW :-)")
   (evil-leader/set-key-for-mode 'dotspacemacs-mode
     "mcc" 'dotspacemacs/sync-configuration-layers)
   (run-at-time
-   "2 sec" nil
+   "1 sec" nil
    (lambda () (message "SPC m c c (or C-c C-c) to apply your changes."))))
 
 (defun dotspacemacs/sync-configuration-layers (arg)
@@ -146,6 +151,7 @@ NOT USED FOR NOW :-)")
 If ARG is non nil then `dotspacemacs/config' is skipped."
   (interactive "P")
   (let ((dotspacemacs-loading-progress-bar nil))
+    (save-buffer)
     (load-file buffer-file-name)
     (dotspacemacs|call-func dotspacemacs/init "Calling dotfile init...")
     (configuration-layer/sync)
