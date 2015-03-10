@@ -39,6 +39,7 @@
                                        cb-sql
                                        cb-docker
                                        cb-shell
+                                       cb-elfeed
                                        )
    ;; A list of packages and/or extensions that will not be install and loaded.
    dotspacemacs-excluded-packages '(rainbow-delimiters)

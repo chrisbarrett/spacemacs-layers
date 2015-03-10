@@ -103,7 +103,7 @@ positive or backward if negative."
 ;;; Buffer management
 
 (defvar core/kill-buffer-ignored-list
-  '("*scratch*" "*Messages*" "*Group*"
+  '("*scratch*" "*Messages*" "*Group*" "*elfeed-search*"
     "work_movio.org"
     "diary.org" "notes.org" "*spacemacs*"))
 
