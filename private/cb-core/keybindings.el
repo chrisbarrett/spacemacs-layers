@@ -21,6 +21,7 @@
 (evil-global-set-key 'normal (kbd "TAB") 'indent-line)
 
 (evil-leader/set-key "wo" 'delete-other-windows)
+(evil-leader/set-key "|" 'core/toggle-window-split)
 
 ;;; Indentation
 
