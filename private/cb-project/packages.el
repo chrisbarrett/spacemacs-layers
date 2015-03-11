@@ -3,6 +3,7 @@
     ;; package cb-projects go here
     projectile
     skeletor
+    helm-projectile
     )
   "List of all packages to install and/or initialize. Built-in packages
 which require an initialization must be listed explicitly in the list.")
@@ -20,18 +21,20 @@ which require an initialization must be listed explicitly in the list.")
 ;; For more info on `use-package', see readme:
 ;; https://github.com/jwiegley/use-package
 
+(require 'use-package)
 
 (defun cb-project/init-projectile ()
   (use-package projectile
+    :bind
+    (("s-f" . projectile-find-file)
+     ("s-F" . project/find-file-in-scope)
+     ("s-d" . projectile-find-dir)
+     ("s-l" . projectile-switch-project))
+    :init
+    (evil-leader/set-key "pa" 'projectile-ag)
     :config
     (progn
-      (add-hook 'after-init-hook
-                (lambda ()
-                  (setq projectile-completion-system 'helm)
-                  (projectile-cleanup-known-projects)))
-
-      (defadvice projectile-cache-current-file (around ignore-errors activate)
-        (ignore-errors ad-do-it))
+      ;;; Vars
 
       (setq projectile-ignored-projects '("/usr/local/"))
       (setq projectile-switch-project-action (lambda () (call-interactively 'magit-status)))
@@ -52,7 +55,25 @@ which require an initialization must be listed explicitly in the list.")
               "elpa"
               "snippets"
               "build"
-              ".ensime_cache")))))
+              ".ensime_cache"))
+
+      (add-hook 'after-init-hook
+                (lambda ()
+                  (setq projectile-completion-system 'helm)
+                  (projectile-cleanup-known-projects)))
+
+      ;; Advice
+
+      (defadvice projectile-cache-current-file (around ignore-errors activate)
+        (ignore-errors ad-do-it))
+
+      (defadvice projectile-replace (around save-window-excursion activate)
+        (save-window-excursion ad-do-it)))))
+
+(defun cb-project/init-helm-projectile ()
+  (use-package helm-projectile
+    :bind
+    (("s-t" . helm-projectile))))
 
 (defun cb-project/init-skeletor ()
   (use-package skeletor
