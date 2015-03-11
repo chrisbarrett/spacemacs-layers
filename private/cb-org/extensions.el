@@ -107,7 +107,10 @@
                          ((org-agenda-span 'fortnight)))
                  (todo "WAITING"
                        ((org-agenda-overriding-header "Waiting")))
-                 (stuck "")
+                 (stuck ""
+                        ((org-agenda-overriding-header "Stuck Cards")))
+                 (todo "READY-TO-START"
+                       ((org-agenda-overriding-header "Upcoming Cards")))
                  (tags-todo "study/NEXT"
                             ((org-agenda-overriding-header "Study"))))
                 ((org-agenda-tag-filter-preset '("-ignore"))
@@ -116,7 +119,7 @@
                  (org-agenda-todo-ignore-deadlines 14)
                  (org-agenda-todo-ignore-scheduled 'all)
                  (org-agenda-remove-tags t)
-                 (org-stuck-projects '("-ignore+TODO={READY-TO-START\\|IN-PROGRESS}+assignee=\"chrisb\"/-RESOLVED-DONE" ("NEXT") nil "SCHEDULED:\\|\\<IGNORE\\>"))
+                 (org-stuck-projects '("-ignore+TODO={IN-PROGRESS}+assignee=\"chrisb\"/-RESOLVED-DONE" ("NEXT") nil "SCHEDULED:\\|\\<IGNORE\\>"))
                  ))
 
                ("n" "Next actions"
