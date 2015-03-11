@@ -95,3 +95,9 @@
                     (lambda ()
                       (interactive)
                       (turn-on-flyspell)))
+
+;;; Frame registers.
+
+(core/make-fn-key-frame-register-command 'f7)
+(core/make-fn-key-frame-register-command 'f8)
+(core/make-fn-key-frame-register-command 'f9)
