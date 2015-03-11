@@ -31,6 +31,8 @@ which require an initialization must be listed explicitly in the list.")
 ;; For more info on `use-package', see readme:
 ;; https://github.com/jwiegley/use-package
 
+(require 'use-package)
+
 (defun cb-elfeed/init-elfeed ()
   (use-package elfeed
     :commands elfeed
@@ -45,4 +47,7 @@ which require an initialization must be listed explicitly in the list.")
                          (kbd "q") 'quit-window)
 
       (spacemacs|evilify elfeed-show-mode-map
-                         (kbd "q") 'elfeed-kill-buffer))))
+                         (kbd "q") 'elfeed-kill-buffer)
+
+      (defconst cb-elfeed/update-timer
+        (run-with-timer 1 (* 60 60) 'elfeed-update)))))
