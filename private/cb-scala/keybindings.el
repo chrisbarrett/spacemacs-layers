@@ -18,6 +18,8 @@
 
   (evil-define-key 'normal ensime-mode-map (kbd "M-N") 'ensime-forward-note)
   (evil-define-key 'normal ensime-mode-map (kbd "M-P") 'ensime-backward-note)
+  (evil-define-key 'normal ensime-mode-map (kbd "RET") 'ensime-inspect-type-at-point)
+  (evil-define-key 'normal scala-mode-map (kbd "RET") 'ensime-inspect-type-at-point)
 
   (evil-leader/set-key-for-mode 'scala-mode "ii" 'ensime-import-type-at-point)
 
