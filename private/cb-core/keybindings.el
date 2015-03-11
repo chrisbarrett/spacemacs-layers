@@ -83,8 +83,10 @@
 
 ;;; Occur
 
+(spacemacs|evilify 'occur-mode)
 (evil-leader/set-key "oo" 'helm-occur)
 (evil-leader/set-key "om" 'helm-multi-occur)
+(evil-leader/set-key "O" 'occur)
 
 (evil-ex-define-cmd "nospell"
                     (lambda ()
