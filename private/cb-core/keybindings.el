@@ -73,6 +73,7 @@
 
 (bind-key* "S-SPC" 'helm-M-x)
 (bind-key* "M-x" 'helm-M-x)
+(bind-key* "s-b" 'helm-buffers-list)
 
 (after 'helm
   (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action)
