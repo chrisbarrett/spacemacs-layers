@@ -2,6 +2,7 @@
 (global-set-key (kbd "s-q") 'save-buffers-kill-emacs)
 (global-set-key (kbd "s-v") 'yank)
 (global-set-key (kbd "s-c") 'copy-region-as-kill)
+(global-set-key (kbd "s-n") 'new-frame)
 
 
 
@@ -104,3 +105,12 @@
 (core/make-fn-key-frame-register-command 'f7)
 (core/make-fn-key-frame-register-command 'f8)
 (core/make-fn-key-frame-register-command 'f9)
+
+;;; Frame navigation
+
+(evil-global-set-key 'normal (kbd "C-w k") 'next-multiframe-window)
+(evil-global-set-key 'normal (kbd "C-w j") 'previous-multiframe-window)
+(evil-global-set-key 'emacs (kbd "C-w k") 'next-multiframe-window)
+(evil-global-set-key 'emacs (kbd "C-w j") 'previous-multiframe-window)
+
+(evil-leader/set-key (kbd "ww") 'ace-window)
