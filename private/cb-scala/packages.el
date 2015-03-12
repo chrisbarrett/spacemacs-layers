@@ -35,10 +35,12 @@ which require an initialization must be listed explicitly in the list.")
     :defer t
     :init
     (progn
+      (setq ensime-default-scala-version "2.11.5")
       (add-hook 'scala-mode-hook 'scala/maybe-start-ensime)
       (add-hook 'ensime-mode-hook (lambda () (aggressive-indent-mode -1))))
     :config
     (progn
+
       (defconst scala/test-file-template
         "package %TESTPACKAGE%
 
@@ -61,6 +63,12 @@ See `ensime-goto-test-config-defaults' for possible template values.")
                   :impl-class-name-fn 'ensime-goto-test--impl-class-name
                   :impl-to-test-dir-fn 'ensime-goto-test--impl-to-test-dir
                   :is-test-dir-fn 'ensime-goto-test--is-test-dir
-                  :test-template-fn (lambda () scala/test-file-template)))
+                  :test-template-fn (lambda () scala/test-file-template))))))
 
+(defun cb-scala/init-sbt-mode ()
+  (use-package sbt-mode
+    :defer t
+    :init
+    (progn
+      (setq sbt:prompt-regexp (rx bol (group (? space) (* alpha) ">" (+ space)) (* space)))
       (setq sbt:program-name "sbt -Dsbt.log.noformat=true"))))
