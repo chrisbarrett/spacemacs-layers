@@ -21,9 +21,6 @@
 (evil-global-set-key 'normal (kbd "C-<down>") 'core/move-line-down)
 (evil-global-set-key 'normal (kbd "TAB") 'indent-line)
 
-(evil-leader/set-key "wo" 'delete-other-windows)
-(evil-leader/set-key "|" 'core/toggle-window-split)
-
 ;;; Indentation
 
 (define-key prog-mode-map (kbd "RET") 'comment-indent-new-line)
@@ -100,13 +97,21 @@
                       (interactive)
                       (turn-on-flyspell)))
 
-;;; Frame registers.
+;;; Window management
+
+(evil-leader/set-key "wo" 'delete-other-windows)
+(evil-leader/set-key "|" 'core/toggle-window-split)
+
+(evil-global-set-key 'normal (kbd "C-w -") 'evil-split-window-below)
+(evil-global-set-key 'normal (kbd "C-w /") 'evil-window-vsplit)
+(evil-global-set-key 'emacs (kbd "C-w -") 'next-multiframe-window)
+(evil-global-set-key 'emacs (kbd "C-w /") 'evil-window-vsplit)
+
+;;; Frame navigation
 
 (core/make-fn-key-frame-register-command 'f7)
 (core/make-fn-key-frame-register-command 'f8)
 (core/make-fn-key-frame-register-command 'f9)
-
-;;; Frame navigation
 
 (evil-global-set-key 'normal (kbd "C-w k") 'next-multiframe-window)
 (evil-global-set-key 'normal (kbd "C-w j") 'previous-multiframe-window)
