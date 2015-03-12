@@ -398,6 +398,13 @@ Typing three in a row will insert a ScalaDoc."
          (command (concat "~test-only  " cleaned-class)))
     (sbt-command command)))
 
+(defun sbt ()
+  (interactive)
+  (require 'sbt-mode)
+  (let ((default-directory (or (sbt:find-root)
+                               (read-directory-name "Project root: " nil nil t))))
+    (sbt-start)))
+
 
 ;;; Ensime utils
 
