@@ -56,6 +56,7 @@ which require an initialization must be listed explicitly in the list.")
               "snippets"
               "build"
               ".ensime_cache"))
+      (setq ag-ignore-list (-map 'regexp-quote projectile-globally-ignored-directories))
 
       (add-hook 'after-init-hook
                 (lambda ()
