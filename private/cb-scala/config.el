@@ -36,12 +36,17 @@
      ;; Pending tests
      (,(rx bol (* space) "[info]" (+ space) (group "-" (+ space) (+ nonl)) (group "(pending)") eol)
       (1 'cb-scala-sbt-pending-face t)
-      (2 '(face (:inherit cb-scala-sbt-pending-face :italic t)) t))
+      (2 '(face cb-scala-sbt-pending-face italic t) t))
 
      ;; Failing tests
      (,(rx bol (* space) "[info]" (+ space) (group "-" (+ nonl)) (group "*** FAILED ***"))
       (1 'cb-scala-sbt-error-face t)
-      (2 '(face (:inherit cb-scala-sbt-error-face :italic t)) t))
+      (2 '(face cb-scala-sbt-error-face italic t) t))
+
+     ;; Ignored tests
+     (,(rx bol (* space) "[info]" (+ space) (group "-" (+ space) (+ nonl)) (group "!!! IGNORED !!!") (* space) eol)
+      (1 'cb-scala-sbt-warning-face t)
+      (2 '(face cb-scala-sbt-warning-face italic t) t))
 
      ;; Stacktraces
      (,(rx bol (* space) (? "[error]" (* space)) (group "at " (+ nonl)))
