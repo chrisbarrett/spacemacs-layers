@@ -13,6 +13,7 @@
 (defvar cb-sql-pre-extensions
   '(
     ;; pre extension cb-sqls go here
+    sql
     )
   "List of all extensions to load before the packages.")
 
@@ -31,3 +32,13 @@
 ;; Often the body of an initialize function uses `use-package'
 ;; For more info on `use-package', see readme:
 ;; https://github.com/jwiegley/use-package
+
+(defun cb-sql/init-sql ()
+  (use-package sql
+    :defer t
+    :config
+    (progn
+      (add-to-list 'aggressive-indent-excluded-modes 'sql-interactive-mode)
+      (add-to-list 'aggressive-indent-excluded-modes 'sql-mode)
+
+      (define-key sql-mode-map (kbd "C-c C-z") 'sql-product-interactive))))
