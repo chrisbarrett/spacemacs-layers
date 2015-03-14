@@ -56,19 +56,15 @@ before layers configuration."
   ;; spacemacs settings.
   (setq-default
    ;; Specify the startup banner. If the value is an integer then the
-   ;; banner with the corresponding index is used, if the value is `random'
-   ;; then the banner is chosen randomly among the available banners, if
-   ;; the value is nil then no banner is displayed.
+   ;; text banner with the corresponding index is used, if the value is
+   ;; `random' then the banner is chosen randomly among the available banners,
+   ;; if the value is a string then it must be a path to a .PNG file,
+   ;; if the value is nil then no banner is displayed.
    dotspacemacs-startup-banner 'doge
    ;; List of themes, the first of the list is loaded when spacemacs starts.
    ;; Press <SPC> T n to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
-   dotspacemacs-themes '(solarized-light
-                         solarized-dark
-                         ;; leuven
-                         ;; monokai
-                         ;; zenburn
-                         )
+   dotspacemacs-themes '(solarized-light solarized-dark)
    ;; If non nil the cursor color matches the state color.
    dotspacemacs-colorize-cursor-according-to-state t
    ;; Default font. `powerline-scale' allows to quickly tweak the mode-line
@@ -81,13 +77,16 @@ before layers configuration."
    ;; The leader key
    dotspacemacs-leader-key "SPC"
    ;; Major mode leader key is a shortcut key which is the equivalent of
-   ;; pressing `<leader> m`
+   ;; pressing `<leader> m`. Set it to `nil` to disable it.
    dotspacemacs-major-mode-leader-key ","
    ;; The command key used for Evil commands (ex-commands) and
    ;; Emacs commands (M-x).
    ;; By default the command key is `:' so ex-commands are executed like in Vim
    ;; with `:' and Emacs commands are executed with `<leader> :'.
    dotspacemacs-command-key ":"
+   ;; If non nil the paste micro-state is enabled. While enabled pressing `p`
+   ;; several times cycle between the kill ring content.
+   dotspacemacs-enable-paste-micro-state t
    ;; Guide-key delay in seconds. The Guide-key is the popup buffer listing
    ;; the commands bound to the current keystrokes.
    dotspacemacs-guide-key-delay 0.4
@@ -138,8 +137,8 @@ before layers configuration."
   (core/install-package 'let-alist)
   (core/install-package 'dash)
   (core/install-package 'dash-functional)
-  (core/install-package 'helm)
-  (require 'helm-mode)
+  ;; (core/install-package 'helm)
+  ;; (require 'helm-mode)
 
   (setq-default git-enable-github-support t)
   (add-to-list 'exec-path "~/.cabal/bin/")
@@ -148,9 +147,10 @@ before layers configuration."
   (load (concat user-emacs-directory "private/cb-core/config.el")))
 
 (defun core/install-package (pkg)
-  (require 'paradox nil t)
+  (unless package-archives
+    (package-refresh-contents))
   (cond
-   ((featurep 'paradox)
+   ((require 'paradox nil t)
     (paradox-require pkg))
    ((package-installed-p pkg)
     (require pkg))
