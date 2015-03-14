@@ -405,6 +405,10 @@ Typing three in a row will insert a ScalaDoc."
                                (read-directory-name "Project root: " nil nil t))))
     (sbt-start)))
 
+(defun scala/sbt-send-ret ()
+  (interactive)
+  (process-send-string (get-buffer-process (current-buffer)) "\n"))
+
 
 ;;; Ensime utils
 

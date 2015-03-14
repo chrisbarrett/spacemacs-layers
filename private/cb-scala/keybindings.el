@@ -30,6 +30,7 @@
 
 
 (after 'sbt-mode
-  (defun scala/sbt-ret () (interactive) (sbt:command "\n"))
-  (evil-define-key 'normal sbt-mode-map (kbd "RET") 'scala/sbt-ret)
-  )
+  (add-hook 'sbt-mode-hook
+            (lambda ()
+              (local-set-key (kbd "C-l") 'comint-clear-buffer)
+              (local-set-key (kbd "C-c RET") 'scala/sb-sendt-ret))))
