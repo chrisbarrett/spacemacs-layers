@@ -18,6 +18,7 @@
     relative-line-numbers
     company-quickhelp
     wgrep-ag
+    workgroups2
     )
   "List of all packages to install and/or initialize. Built-in packages
 which require an initialization must be listed explicitly in the list.")
@@ -168,3 +169,19 @@ which require an initialization must be listed explicitly in the list.")
 (defun cb-core/init-wgrep-ag ()
   (use-package wgrep-ag
     :defer t))
+
+(defun cb-core/init-workgroups2 ()
+  (use-package workgroups2
+    :config
+    (progn
+      (setq wg-prefix-key (kbd "C-c b"))
+      (setq wg-session-file (f-join user-emacs-directory "workgroups-sessions"))
+      (setq wg-first-wg-name "default")
+      (add-hook 'after-init-hook 'workgroups-mode)
+      (add-hook 'workgroups-mode-hook
+                (lambda () (diminish 'workgroups-mode "Ⓦ")))
+
+      (define-key workgroups-mode-map (kbd "C-c b s") 'wg-save-session)
+      (define-key workgroups-mode-map (kbd "C-c b l") 'wg-load-last-workgroup)
+      (define-key workgroups-mode-map (kbd "C-c b ,") 'wg-rename-workgroup)
+      (define-key workgroups-mode-map (kbd "C-c b N") 'wg-switch-to-workgroup-left))))
