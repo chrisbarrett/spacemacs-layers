@@ -140,7 +140,7 @@ which require an initialization must be listed explicitly in the list.")
               (`gnu/linux "locate -i -r %s")
               (`berkeley-unix "locate -i %s")
               (`windows-nt "es %s")
-              (`darwin "mdfind -name %s %s")
+              (`darwin "mdfind -name %s %s | egrep -v '/Library/(Caches|Mail)/'")
               (t "locate %s")))
 
       (custom-set-faces
