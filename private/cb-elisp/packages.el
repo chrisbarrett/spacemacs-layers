@@ -25,6 +25,9 @@ which require an initialization must be listed explicitly in the list.")
 ;; For more info on `use-package', see readme:
 ;; https://github.com/jwiegley/use-package
 
+(require 'use-package)
+(require 's)
+
 (defun cb-elisp/init-eldoc ()
   (use-package eldoc
     :diminish eldoc-mode
@@ -61,15 +64,16 @@ which require an initialization must be listed explicitly in the list.")
   (use-package eval-sexp-fu
     :commands turn-on-eval-sexp-fu-flash-mode
     :init
+    (add-hook 'emacs-lisp-mode-hook 'turn-on-eval-sexp-fu-flash-mode)
+    :config
     (progn
       (add-to-list 'face-remapping-alist '(eval-sexp-fu-flash . core/bg-flash))
       (add-to-list 'face-remapping-alist '(eval-sexp-fu-flash-error . core/bg-flash-red))
-      (add-hook 'emacs-lisp-mode-hook 'turn-on-eval-sexp-fu-flash-mode))
-    :config
-    (define-eval-sexp-fu-flash-command elisp/eval-dwim
-      (eval-sexp-fu-flash
-       (-let [(&plist :beg beg :end end) (elisp/thing-for-eval)]
-         (cons beg end))))))
+
+      (define-eval-sexp-fu-flash-command elisp/eval-dwim
+        (eval-sexp-fu-flash
+         (-let [(&plist :beg beg :end end) (elisp/thing-for-eval)]
+           (cons beg end)))))))
 
 (defun cb-elisp/init-dash ()
   (use-package dash
