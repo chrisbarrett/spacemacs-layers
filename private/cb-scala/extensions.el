@@ -3,6 +3,7 @@
     ;; pre extension cb-scalas go here
     super-smart-ops
     scala-errors
+    scala-pretty-sbt
     )
   "List of all extensions to load before the packages.")
 
@@ -47,3 +48,7 @@
 
 (defun cb-scala/init-scala-errors ()
   (use-package scala-errors))
+
+(defun cb-scala/init-scala-pretty-sbt ()
+  (after 'sbt-mode
+    (require 'scala-pretty-sbt)))
