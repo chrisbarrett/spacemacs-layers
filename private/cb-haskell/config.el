@@ -1,5 +1,5 @@
 (setq haskell-enable-ghci-ng-support t)
-(setq haskell-enable-hindent-support t)
+(setq haskell-enable-hindent-style "gibiansky")
 (setq haskell-enable-shm-support t)
 
 ;;; Show lambda symbol for lambdas.
