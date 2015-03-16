@@ -102,7 +102,7 @@
 (evil-leader/set-key "wo" 'delete-other-windows)
 (evil-leader/set-key "|" 'core/toggle-window-split)
 
-(evil-global-set-key 'normal (kbd "C-w -") 'evil-split-window-below)
+(evil-global-set-key 'normal (kbd "C-w -") 'split-window-below)
 (evil-global-set-key 'normal (kbd "C-w /") 'evil-window-vsplit)
 (evil-global-set-key 'emacs (kbd "C-w -") 'next-multiframe-window)
 (evil-global-set-key 'emacs (kbd "C-w /") 'evil-window-vsplit)
