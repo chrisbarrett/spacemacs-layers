@@ -175,13 +175,31 @@ which require an initialization must be listed explicitly in the list.")
     :config
     (progn
       (setq wg-prefix-key (kbd "C-c b"))
+      (setq wg-open-this-wg "default")
       (setq wg-session-file (f-join user-emacs-directory "workgroups-sessions"))
       (setq wg-first-wg-name "default")
+      (setq wg-emacs-exit-save-behavior nil)
       (add-hook 'after-init-hook 'workgroups-mode)
-      (add-hook 'workgroups-mode-hook
-                (lambda () (diminish 'workgroups-mode "Ⓦ")))
 
-      (define-key workgroups-mode-map (kbd "C-c b s") 'wg-save-session)
-      (define-key workgroups-mode-map (kbd "C-c b l") 'wg-load-last-workgroup)
-      (define-key workgroups-mode-map (kbd "C-c b ,") 'wg-rename-workgroup)
-      (define-key workgroups-mode-map (kbd "C-c b N") 'wg-switch-to-workgroup-left))))
+      (defun cb-core/activate-powerline ()
+        (setq-default mode-line-format '("%e" (:eval (spacemacs/mode-line-prepare))))
+
+        (dolist (buf (-mapcat 'buffer-list (frame-list)))
+          (when (get-buffer buf)
+            (with-current-buffer buf
+              (setq-local mode-line-format '("%e" (:eval (spacemacs/mode-line-prepare))))
+              (powerline-set-selected-window)
+              (powerline-reset)))))
+
+      (add-hook 'wg-after-switch-to-workgroup-hook 'cb-core/activate-powerline)
+      (add-hook 'workgroups-mode-hook (lambda () (diminish 'workgroups-mode "Ⓦ")))
+
+      ;; HACK: Keybindings must be set after workgroups mode is activated.
+
+      (defun cb-core/set-workgroups-keybindings ()
+        (define-key workgroups-mode-map (kbd "C-c b s") 'wg-save-session)
+        (define-key workgroups-mode-map (kbd "C-c b l") 'wg-load-last-workgroup)
+        (define-key workgroups-mode-map (kbd "C-c b ,") 'wg-rename-workgroup)
+        (define-key workgroups-mode-map (kbd "C-c b N") 'wg-switch-to-workgroup-left))
+
+      (add-hook 'workgroups-mode-hook 'cb-core/set-workgroups-keybindings))))
