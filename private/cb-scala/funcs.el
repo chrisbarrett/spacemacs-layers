@@ -1,8 +1,10 @@
-;;; Smart ops  -*- lexical-binding: t; -*-
+;;; -*- lexical-binding: t; -*-
 
 (require 's)
 (require 'dash)
 (require 'noflet)
+
+;;; Smart ops
 
 (defun scala/equals ()
   (interactive)
