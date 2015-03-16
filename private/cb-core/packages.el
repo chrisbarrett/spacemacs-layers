@@ -179,6 +179,8 @@ which require an initialization must be listed explicitly in the list.")
       (setq wg-session-file (f-join user-emacs-directory "workgroups-sessions"))
       (setq wg-first-wg-name "default")
       (setq wg-emacs-exit-save-behavior nil)
+      (setq wg-mode-line-display-on t)
+
       (add-hook 'after-init-hook 'workgroups-mode)
 
       (defun cb-core/activate-powerline ()
@@ -192,7 +194,30 @@ which require an initialization must be listed explicitly in the list.")
               (powerline-reset)))))
 
       (add-hook 'wg-after-switch-to-workgroup-hook 'cb-core/activate-powerline)
-      (add-hook 'workgroups-mode-hook (lambda () (diminish 'workgroups-mode "Ⓦ")))
+      (add-hook 'workgroups-mode-hook (lambda () (diminish 'workgroups-mode " Ⓦ")))
+
+      ;;; Custom workgroups support
+
+      (wg-support 'org-agenda-mode 'org-agenda
+        '((deserialize . (lambda (buffer vars)
+                           (org/agenda-dwim)))))
+
+
+      (defun cb-core/serialise-sbt (buf)
+        "Serialise SBT buffer BUF."
+        (with-current-buffer buf
+          (when (and (derived-mode-p 'comint-mode)
+                     (s-starts-with? "*sbt*" (buffer-name)))
+            (list 'cb-core/wg-deserialize-sbt-buffer
+                  (list default-directory)))))
+
+      (defun cb-core/wg-deserialize-sbt-buffer (buf)
+        (-let [(_ dir) (wg-buf-special-data buf)]
+          (let ((default-directory dir))
+            (sbt-start))))
+
+      (add-to-list 'wg-special-buffer-serdes-functions 'cb-core/serialise-sbt)
+
 
       ;; HACK: Keybindings must be set after workgroups mode is activated.
 
