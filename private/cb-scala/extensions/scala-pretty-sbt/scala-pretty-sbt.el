@@ -71,17 +71,17 @@
       (0 '(face nil invisible t)))
 
      ;; Pending tests
-     (,(rx bol (* space) "[info]" (+ space) (group "-" (+ space) (+ nonl)) (group "(pending)") eol)
+     (,(rx bol (* space) "[info]" (+ space) (group (+ nonl)) (group "(pending)") eol)
       (1 'scala-pretty-sbt-pending-face t)
       (2 '(face scala-pretty-sbt-pending-face italic t) t))
 
      ;; Failing tests
-     (,(rx bol (* space) "[info]" (+ space) (group "-" (+ nonl)) (group "*** FAILED ***"))
+     (,(rx bol (* space) "[info]" (+ space) (group (+ nonl)) (group "*** FAILED ***"))
       (1 'scala-pretty-sbt-error-face t)
       (2 '(face scala-pretty-sbt-error-face italic t) t))
 
      ;; Ignored tests
-     (,(rx bol (* space) "[info]" (+ space) (group "-" (+ space) (+ nonl)) (group "!!! IGNORED !!!") (* space) eol)
+     (,(rx bol (* space) "[info]" (+ space) (group (+ nonl)) (group "!!! IGNORED !!!") (* space) eol)
       (1 'scala-pretty-sbt-warning-face t)
       (2 '(face scala-pretty-sbt-warning-face italic t) t))
 
