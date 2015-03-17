@@ -409,7 +409,9 @@ Typing three in a row will insert a ScalaDoc."
 
 (defun scala/sbt-send-ret ()
   (interactive)
-  (process-send-string (get-buffer-process (current-buffer)) "\n"))
+  (process-send-string (get-buffer-process (current-buffer)) "\n")
+  (goto-char (point-max))
+  (evil-insert-state))
 
 
 ;;; Ensime utils
