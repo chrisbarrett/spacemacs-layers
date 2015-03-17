@@ -35,6 +35,7 @@
 
 (require 's)
 (require 'dash)
+(require 'use-package)
 
 (defun cb-org/init-org-work ()
   (use-package org-work
@@ -64,7 +65,7 @@
       (setq org-agenda-diary-file (f-join org-directory "diary.org"))
       (setq org-agenda-hide-tags-regexp (rx (or "noexport" "someday")))
       (setq org-agenda-insert-diary-extract-time t)
-      (setq org-agenda-ndays 7)
+      (setq org-agenda-span 'week)
       (setq org-agenda-search-view-always-boolean t)
       (setq org-agenda-show-all-dates nil)
       (setq org-agenda-show-inherited-tags nil)
