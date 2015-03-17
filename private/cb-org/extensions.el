@@ -160,6 +160,16 @@
                  (org-habit-show-habits nil)
                  (org-agenda-include-inactive-timestamps t))))))
 
+
+      (defun cb-org/refresh-agenda-buffers ()
+        (--each (--filter-buffers (derived-mode-p 'org-agenda-mode))
+          (with-current-buffer it
+            (org-agenda-redo t))))
+
+      (defconst cb-org/agenda-refresh-timer
+        (let ((5-minutes (* 60 5)))
+          (run-with-timer 5-minutes 5-minutes 'cb-org/refresh-agenda-buffers)))
+
       (add-hook 'org-agenda-mode-hook 'org-agenda-to-appt)
       (add-hook 'org-mode-hook 'visual-line-mode)
       (add-hook 'org-mode-hook 'turn-off-auto-fill)
