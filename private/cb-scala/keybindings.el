@@ -33,4 +33,4 @@
   (add-hook 'sbt-mode-hook
             (lambda ()
               (local-set-key (kbd "C-l") 'comint-clear-buffer)
-              (local-set-key (kbd "C-c RET") 'scala/sb-sendt-ret))))
+              (local-set-key (kbd "C-c RET") 'scala/sbt-send-ret))))
