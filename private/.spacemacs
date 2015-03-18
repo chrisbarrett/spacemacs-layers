@@ -17,6 +17,7 @@
                                        git
                                        scala
                                        markdown
+                                       dockerfile
                                        cb-core
                                        cb-flycheck
                                        cb-org
@@ -37,7 +38,6 @@
                                        cb-agda
                                        ;; cb-coffeescript
                                        cb-sql
-                                       cb-docker
                                        cb-shell
                                        cb-elfeed
                                        )
