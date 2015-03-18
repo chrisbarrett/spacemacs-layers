@@ -1,5 +1,6 @@
 # key: l
 # name: let
+# condition: (not (s-matches? "-l" (current-line)))
 # --
 (let (($1))
   $0)
