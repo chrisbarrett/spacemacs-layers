@@ -47,8 +47,8 @@
       (setq file-template-paths (list core/file-templates-dir))
       (setq file-template-mapping-alist
             (->> (f-files core/file-templates-dir)
-              (-map 'f-filename)
-              (--map (cons (format "\\.%s$" (f-ext it)) it))))
+                 (-map 'f-filename)
+                 (--map (cons (format "\\.%s$" (f-ext it)) it))))
 
       (add-hook 'find-file-not-found-hooks 'file-template-find-file-not-found-hook t)
       (add-hook 'file-template-insert-hook 'core/reset-buffer-undo-history))))
