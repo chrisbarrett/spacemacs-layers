@@ -26,6 +26,13 @@
 ;; For more info on `use-package', see readme:
 ;; https://github.com/jwiegley/use-package
 
+(eval-when-compile
+  (require 'use-package))
+
+(require 's)
+(require 'f)
+(require 'dash)
+
 (defun cb-core/init-super-smart-ops ()
   (use-package super-smart-ops))
 
@@ -33,8 +40,6 @@
   (use-package file-template
     :config
     (progn
-      (require 'f)
-
       (setq core/file-templates-dir (f-join spacemacs-private-directory
                                             "cb-core/extensions/file-template"
                                             "templates"))
