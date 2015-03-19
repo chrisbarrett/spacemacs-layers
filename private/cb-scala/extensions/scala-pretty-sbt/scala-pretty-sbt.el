@@ -143,7 +143,20 @@
      (,(rx bol (* space)
            (? (+ (any digit ":" ".")) (+ space))
            "[" (* nonl) " INFO " (* nonl) "\n")
-      (0 '(face nil invisible t))))))
+      (0 '(face nil invisible t)))
+
+     ;; Download status
+     (,(rx (* space) "[INFO]" (+ space) (group "[SUCCESSFUL ]"))
+      (1 '(face scala-pretty-sbt-success-face display "✔")))
+     (,(rx (* space) "[INFO]" (+ space) (group "downloading"))
+      (1 '(face nil display "⬇")))
+     )))
+
+(defun sbt-prettify-buffer ()
+  "Apply special SBT font locking to the current buffer."
+  (interactive)
+  (scala-pretty-sbt--apply-sbt-font-locking)
+  (font-lock-fontify-buffer))
 
 (add-hook 'sbt-mode-hook 'scala-pretty-sbt--apply-sbt-font-locking)
 
