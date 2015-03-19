@@ -163,15 +163,17 @@
 
 
       (defun cb-org/refresh-agenda-buffers ()
-        (save-window-excursion
-          (save-excursion
-            (--each (--filter-buffers (derived-mode-p 'org-agenda-mode))
-              (with-current-buffer it
-                (org-agenda-redo t))))))
+        (noflet ((message (&rest _)))
+          (save-window-excursion
+            (save-excursion
+              (--each (--filter-buffers (derived-mode-p 'org-agenda-mode))
+                (with-current-buffer it
+                  (org-agenda-redo t)
+                  t))))))
 
       (defconst cb-org/agenda-refresh-timer
-        (let ((5-minutes (* 60 5)))
-          (run-with-timer 5-minutes 5-minutes 'cb-org/refresh-agenda-buffers)))
+        (let ((1-minute 60))
+          (run-with-timer 1-minute 1-minute 'cb-org/refresh-agenda-buffers)))
 
       (add-hook 'org-agenda-mode-hook 'org-agenda-to-appt)
       (add-hook 'org-mode-hook 'visual-line-mode)
