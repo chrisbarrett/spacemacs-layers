@@ -3,5 +3,3 @@
 (setq flycheck-scala-scalastyle-executable "~/bin/scalastyle/scalastyle-batch_2.10.jar")
 
 (add-to-list 'core/indent-commands-alist '(scala-mode . ensime-format-source))
-(add-hook 'sbt-mode-hook 'turn-off-show-smartparens-mode)
-(add-hook 'sbt-mode-hook (lambda () (show-paren-mode -1)))

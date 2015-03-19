@@ -21,6 +21,9 @@ which require an initialization must be listed explicitly in the list.")
 ;; For more info on `use-package', see readme:
 ;; https://github.com/jwiegley/use-package
 
+(eval-when-compile
+  (require 'use-package nil t))
+
 (defun cb-scala/init-scala-mode2 ()
   (use-package scala-mode2
     :defer t
@@ -68,7 +71,10 @@ See `ensime-goto-test-config-defaults' for possible template values.")
 (defun cb-scala/init-sbt-mode ()
   (use-package sbt-mode
     :defer t
-    :init
+    :config
     (progn
       (setq sbt:prompt-regexp (rx bol (group (? space) (* alpha) ">" (+ space)) (* space)))
-      (setq sbt:program-name "sbt -Dsbt.log.noformat=true"))))
+      (setq sbt:program-name "sbt -Dsbt.log.noformat=true")
+      (add-hook 'sbt-mode-hook (lambda () (aggressive-indent-mode -1)))
+      (add-hook 'sbt-mode-hook 'turn-off-show-smartparens-mode)
+      (add-hook 'sbt-mode-hook (lambda () (show-paren-mode -1))))))
