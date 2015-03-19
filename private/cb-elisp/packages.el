@@ -25,8 +25,9 @@ which require an initialization must be listed explicitly in the list.")
 ;; For more info on `use-package', see readme:
 ;; https://github.com/jwiegley/use-package
 
-(require 'use-package)
-(require 's)
+(eval-when-compile
+  (require 'use-package nil t)
+  (require 's nil t))
 
 (defun cb-elisp/init-eldoc ()
   (use-package eldoc

@@ -27,11 +27,10 @@
 ;; https://github.com/jwiegley/use-package
 
 (eval-when-compile
-  (require 'use-package))
-
-(require 's)
-(require 'f)
-(require 'dash)
+  (require 'use-package nil t)
+  (require 's)
+  (require 'f)
+  (require 'dash))
 
 (defun cb-core/init-super-smart-ops ()
   (use-package super-smart-ops))

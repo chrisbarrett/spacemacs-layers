@@ -13,7 +13,6 @@
     autorevert
     hideshow
     helm
-    use-package
     aggressive-indent
     relative-line-numbers
     company-quickhelp
@@ -36,8 +35,12 @@ which require an initialization must be listed explicitly in the list.")
 ;; For more info on `use-package', see readme:
 ;; https://github.com/jwiegley/use-package
 
-(defun cb-core/init-use-package ()
-  (require 'use-package))
+(eval-when-compile
+  (require 'use-package nil t)
+  (require 's nil t)
+  (require 'dash nil t)
+  (require 'f nil t)
+  )
 
 (defun cb-core/init-s ()
   (use-package s

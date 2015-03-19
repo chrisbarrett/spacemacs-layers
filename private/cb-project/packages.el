@@ -21,7 +21,9 @@ which require an initialization must be listed explicitly in the list.")
 ;; For more info on `use-package', see readme:
 ;; https://github.com/jwiegley/use-package
 
-(require 'use-package)
+(eval-when-compile
+  (require 'use-package nil t)
+  (require 's nil t))
 
 (defun cb-project/init-projectile ()
   (use-package projectile

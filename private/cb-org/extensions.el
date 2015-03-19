@@ -33,9 +33,11 @@
 ;; For more info on `use-package', see readme:
 ;; https://github.com/jwiegley/use-package
 
-(require 's)
-(require 'dash)
-(require 'use-package)
+(eval-when-compile
+  (require 'use-package nil t)
+  (require 's nil t)
+  (require 'dash nil t)
+  (require 'noflet nil t))
 
 (defun cb-org/init-org-work ()
   (use-package org-work
