@@ -38,7 +38,7 @@ which require an initialization must be listed explicitly in the list.")
       (add-hook 'haskell-mode-hook 'cb-haskell/set-local-hooks)
 
       (after 'haskell
-        (diminish 'interactive-haskell-mode "λ"))
+        (diminish 'interactive-haskell-mode " λ"))
 
       (put 'haskell-mode 'evil-shift-width 2)
       (add-hook 'haskell-mode-hook 'haskell/configure-flyspell))))
