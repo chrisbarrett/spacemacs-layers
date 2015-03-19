@@ -64,12 +64,16 @@ which require an initialization must be listed explicitly in the list.")
   (use-package eval-sexp-fu
     :commands turn-on-eval-sexp-fu-flash-mode
     :init
-    (add-hook 'emacs-lisp-mode-hook 'turn-on-eval-sexp-fu-flash-mode)
+    (progn
+      (defun cb-elisp/configure-eval-sexp-fu ()
+        (turn-on-eval-sexp-fu-flash-mode)
+        (add-to-list 'face-remapping-alist '(eval-sexp-fu-flash . core/bg-flash))
+        (add-to-list 'face-remapping-alist '(eval-sexp-fu-flash-error . core/bg-flash-red)))
+
+      (add-hook 'emacs-lisp-mode-hook 'cb-elisp/configure-eval-sexp-fu))
+
     :config
     (progn
-      (add-to-list 'face-remapping-alist '(eval-sexp-fu-flash . core/bg-flash))
-      (add-to-list 'face-remapping-alist '(eval-sexp-fu-flash-error . core/bg-flash-red))
-
       (define-eval-sexp-fu-flash-command elisp/eval-dwim
         (eval-sexp-fu-flash
          (-let [(&plist :beg beg :end end) (elisp/thing-for-eval)]
