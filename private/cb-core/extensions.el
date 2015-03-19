@@ -1,7 +1,6 @@
 (defvar cb-core-pre-extensions
   '(
     ;; pre extension cores go here
-    recentf
     iedit
     super-smart-ops
     hl-line
@@ -13,6 +12,7 @@
     ;; post extension cores go here
     ido
     file-template
+    recentf
     )
   "List of all extensions to load after the packages.")
 
@@ -62,33 +62,35 @@
 
 (defun cb-core/init-recentf ()
   (use-package recentf
-    :commands recentf-mode
     :config
     (progn
       (setq recentf-save-file (concat spacemacs-cache-directory "recentf"))
       (setq recentf-max-saved-items 50)
       (setq recentf-max-menu-items 10)
       (setq recentf-keep '(file-remote-p file-readable-p))
+
       (setq recentf-exclude
-            '("\\.elc$"
-              "TAGS"
-              "\\.gz$"
-              "#$"
-              "/elpa/"
-              "/tmp/"
-              "/temp/"
-              "/snippets/"
-              ".emacs.d/url/"
-              "/\\.git/"
-              "/Emacs.app/"
-              "/var/folders/"
-              "^/?sudo"
-              "\\.bbdb"
-              "\\.newsrc"
-              "/gnus$"
-              "/gnus.eld$"
-              "\\.ido\\.last"
-              "\\.org-clock-save\\.el$"))
+            (append recentf-exclude
+                    '("\\.elc$"
+                      "TAGS"
+                      "\\.gz$"
+                      "#$"
+                      "/elpa/"
+                      "/tmp/"
+                      "/temp/"
+                      "/target/"
+                      "/snippets/"
+                      ".emacs.d/url/"
+                      "/\\.git/"
+                      "/Emacs.app/"
+                      "/var/folders/"
+                      "^/?sudo"
+                      "\\.bbdb"
+                      "\\.newsrc"
+                      "/gnus$"
+                      "/gnus.eld$"
+                      "\\.ido\\.last"
+                      "\\.org-clock-save\\.el$")))
 
       (defadvice recentf-cleanup (around hide-messages activate)
         "Do not message when cleaning up recentf list."
