@@ -80,7 +80,6 @@
       (setq org-agenda-span 'week)
       (setq org-agenda-start-on-weekday nil)
       (setq org-agenda-text-search-extra-files '(agenda-archives))
-      (setq org-agenda-sticky t)
 
       (defun cb-org/agenda-custom-commands-delete-other-windows (command-list)
         (-map-when (lambda (spec) (listp (cdr spec)))
