@@ -4,6 +4,7 @@
     recentf
     iedit
     super-smart-ops
+    hl-line
     )
   "List of all extensions to load before the packages.")
 
@@ -100,3 +101,8 @@
     :config
     (custom-set-faces
      `(iedit-occurrence ((t (:background ,solarized-hl-orange :foreground "white")))))))
+
+(defun cb-core/init-hl-line ()
+  (use-package hl-line
+    :config
+    (global-hl-line-mode -1)))
