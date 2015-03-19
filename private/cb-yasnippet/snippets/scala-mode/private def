@@ -1,9 +1,5 @@
-# -*- mode: snippet; require-final-newline: nil -*-
-# name: private def
 # key: pd
-# binding: direct-keybinding
+# name: private def
 # condition: (yas/bol?)
 # --
-private def ${1:fname}${2:(${3:params...})${4:: ${5:Type}}} = ${6:{
-  $0
-}}
+private def ${1:fname}${2:(${3:params...})${4:: ${5:Type}}} = ${6:???}
