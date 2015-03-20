@@ -67,9 +67,9 @@ which require an initialization must be listed explicitly in the list.")
     :init
     (progn
       (defun cb-elisp/configure-eval-sexp-fu ()
-        (turn-on-eval-sexp-fu-flash-mode)
-        (add-to-list 'face-remapping-alist '(eval-sexp-fu-flash . core/bg-flash))
-        (add-to-list 'face-remapping-alist '(eval-sexp-fu-flash-error . core/bg-flash-red)))
+        (core/remap-face 'eval-sexp-fu-flash 'core/bg-flash)
+        (core/remap-face 'eval-sexp-fu-flash-error 'core/bg-flash-red)
+        (turn-on-eval-sexp-fu-flash-mode))
 
       (add-hook 'emacs-lisp-mode-hook 'cb-elisp/configure-eval-sexp-fu))
 

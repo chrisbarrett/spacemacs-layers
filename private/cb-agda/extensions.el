@@ -55,15 +55,15 @@
 
       ;; Remap faces
 
-      (add-to-list 'face-remapping-alist '(agda2-highlight-error-face . flycheck-error))
-      (add-to-list 'face-remapping-alist '(agda2-highlight-keyword-face . font-lock-keyword-face))
-      (add-to-list 'face-remapping-alist '(agda2-highlight-bound-variable-face . font-lock-variable-name-face))
-      (add-to-list 'face-remapping-alist '(agda2-highlight-module-face . font-lock-constant-face))
-      (add-to-list 'face-remapping-alist '(agda2-highlight-datatype-face . font-lock-type-face))
-      (add-to-list 'face-remapping-alist '(agda2-highlight-record-face . font-lock-type-face))
-      (add-to-list 'face-remapping-alist '(agda2-highlight-function-face . default))
-      (add-to-list 'face-remapping-alist '(agda2-highlight-primitive-type-face . font-lock-builtin-face))
-      (add-to-list 'face-remapping-alist '(agda2-highlight-symbol-face . default))
+      (core/remap-face 'agda2-highlight-error-face 'flycheck-error)
+      (core/remap-face 'agda2-highlight-keyword-face 'font-lock-keyword-face)
+      (core/remap-face 'agda2-highlight-bound-variable-face 'font-lock-variable-name-face)
+      (core/remap-face 'agda2-highlight-module-face 'font-lock-constant-face)
+      (core/remap-face 'agda2-highlight-datatype-face 'font-lock-type-face)
+      (core/remap-face 'agda2-highlight-record-face 'font-lock-type-face)
+      (core/remap-face 'agda2-highlight-function-face 'default)
+      (core/remap-face 'agda2-highlight-primitive-type-face 'font-lock-builtin-face)
+      (core/remap-face 'agda2-highlight-symbol-face 'default)
 
       (custom-set-faces
        `(agda2-highlight-number-face

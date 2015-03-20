@@ -41,9 +41,9 @@
        '(proof-locked-face
          ((t (:background nil)))))
 
-      (add-to-list 'face-remapping-alist '(proof-warning-face . flycheck-warning))
-      (add-to-list 'face-remapping-alist '(proof-script-sticky-error-face . flycheck-error))
-      (add-to-list 'face-remapping-alist '(proof-script-highlight-error-face . flycheck-error)))))
+      (core/remap-face 'proof-warning-face 'flycheck-warning)
+      (core/remap-face 'proof-script-sticky-error-face 'flycheck-error)
+      (core/remap-face 'proof-script-highlight-error-face 'flycheck-error))))
 
 (defun cb-proof/init-coq ()
   (use-package coq

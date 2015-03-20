@@ -68,7 +68,32 @@
 (defvar solarized-hl-cyan      "#2aa198")
 (defvar solarized-hl-green     "#859900")
 
-(set-face-italic font-lock-variable-name-face t)
+(custom-set-faces
+ '(font-lock-variable-name-face ((t (:italic t))))
+ '(font-lock-keyword-face ((t (:bold nil)))))
+
+;;; Compat with spacemacs' face remapping.
+
+(defvar core/face-remapping-alist face-remapping-alist
+  "Hacky work-around to prevent spacemacs from killing face remaps.")
+
+(defun core/remap-face (from to)
+  "Add a face remapping from FROM to TO.
+Work around spacemacs' aggressive manipulation of `face-remapping-alist'."
+  (add-to-list 'core/face-remapping-alist (cons from to))
+  (add-to-list 'face-remapping-alist (cons from to)))
+
+(core/remap-face 'flymake-errline 'flycheck-error)
+(core/remap-face 'flymake-warnling 'flycheck-warning)
+
+(defadvice spacemacs//ido-navigation-ms-on-exit (after restore-face-remappings activate)
+  (setq face-remapping-alist (-concat face-remapping-alist core/face-remapping-alist)))
+
+(defadvice spacemacs//ido-setup (after restore-face-remappings activate)
+  (setq face-remapping-alist (-concat face-remapping-alist core/face-remapping-alist)))
+
+(defadvice spacemacs//helm-before-initialize (after restore-face-remappings activate)
+  (setq face-remapping-alist (-concat face-remapping-alist core/face-remapping-alist)))
 
 ;;; Custom faces
 
@@ -84,9 +109,6 @@
   '((t (:background "rosybrown1")))
   "Face for flashing with a red background."
   :group 'cb-faces)
-
-(add-to-list 'face-remapping-alist '(flymake-errline . flycheck-error))
-(add-to-list 'face-remapping-alist '(flymake-warnling . flycheck-warning))
 
 ;;; Saving behaviour
 

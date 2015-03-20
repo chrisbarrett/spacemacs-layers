@@ -47,12 +47,12 @@ which require an initialization must be listed explicitly in the list.")
 
       (put 'idris-mode 'evil-shift-width 2)
 
-      (add-to-list 'face-remapping-alist '(idris-semantic-type-face     . font-lock-type-face))
-      (add-to-list 'face-remapping-alist '(idris-semantic-data-face     . default))
-      (add-to-list 'face-remapping-alist '(idris-semantic-function-face . font-lock-function-name-face))
-      (add-to-list 'face-remapping-alist '(idris-semantic-bound-face    . font-lock-variable-name-face))
-      (add-to-list 'face-remapping-alist '(idris-semantic-implicit-face . font-lock-comment-face))
-      (add-to-list 'face-remapping-alist '(idris-repl-output-face       . compilation-info))
+      (core/remap-face 'idris-semantic-type-face 'font-lock-type-face)
+      (core/remap-face 'idris-semantic-data-face 'default)
+      (core/remap-face 'idris-semantic-function-face 'font-lock-function-name-face)
+      (core/remap-face 'idris-semantic-bound-face 'font-lock-variable-name-face)
+      (core/remap-face 'idris-semantic-implicit-face 'font-lock-comment-face)
+      (core/remap-face 'idris-repl-output-face 'compilation-info)
 
       (add-to-list 'font-lock-keywords-alist
                    '(idris-mode

@@ -28,10 +28,9 @@ which require an initialization must be listed explicitly in the list.")
   (use-package scala-mode2
     :defer t
     :config
-    (progn
-      ;; Var face
-      (set-face-foreground scala-font-lock:var-face solarized-hl-orange)
-      (set-face-underline scala-font-lock:var-face nil))))
+    (custom-set-faces
+     `(scala-font-lock:var-face
+       ((t (:foreground ,solarized-hl-orange :underline nil)))))))
 
 (defun cb-scala/init-ensime ()
   (use-package ensime
