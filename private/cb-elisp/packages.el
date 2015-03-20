@@ -1,8 +1,10 @@
-(defvar cb-elisp-packages
+(defconst cb-elisp-packages
   '(
     ;; package elisps go here
     elisp-slime-nav
     cl-lib-highlight
+    hl-sexp
+    highlight-defined
     paredit
     eval-sexp-fu
     eldoc
@@ -87,3 +89,20 @@ which require an initialization must be listed explicitly in the list.")
 (defun cb-elisp/init-flycheck-cask ()
   (use-package flycheck-cask
     :commands flycheck-cask-setup))
+
+(defun cb-elisp/init-hl-sexp ()
+  (use-package hl-sexp
+    :defer t
+    :init (add-hook 'emacs-lisp-mode-hook 'hl-sexp-mode)
+    :config
+    (custom-set-faces
+     '(hl-sexp-face
+       ((((background dark))  :background "#01304b")
+        (((background light)) :background "#e9f2c5"))))))
+
+(defun cb-elisp/init-highlight-defined ()
+  (use-package highlight-defined
+    :defer t
+    :commands 'highlight-defined-mode
+    :init
+    (add-hook 'emacs-lisp-mode-hook 'highlight-defined-mode)))
