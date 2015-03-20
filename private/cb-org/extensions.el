@@ -168,9 +168,10 @@
           (save-window-excursion
             (save-excursion
               (--each (--filter-buffers (derived-mode-p 'org-agenda-mode))
-                (with-current-buffer it
-                  (org-agenda-redo t)
-                  t))))))
+                (ignore-errors
+                  (with-current-buffer it
+                    (org-agenda-redo t)
+                    t)))))))
 
       (defconst cb-org/agenda-refresh-timer
         (let ((1-minute 60))
