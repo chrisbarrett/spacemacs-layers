@@ -31,7 +31,7 @@
   (define-key haskell-mode-map (kbd "#") 'haskell/smart-hash)
   )
 
-(after 'ghc
+(after '(ghc haskell-mode)
   (define-key haskell-mode-map (kbd "C-c C-s") 'ghc-case-split)
   (define-key haskell-mode-map (kbd "C-c C-r") 'ghc-refine)
 
