@@ -5,6 +5,7 @@
   (evil-define-key 'normal haskell-mode-map (kbd "SPC i o") 'haskell/insert-ghc-option)
 
   (evil-define-key 'normal haskell-mode-map (kbd "M-RET") 'haskell/meta-ret)
+  (evil-define-key 'insert haskell-mode-map (kbd "M-RET") 'haskell/meta-ret)
   (define-key haskell-mode-map (kbd "M-RET") 'haskell/meta-ret)
 
   (evil-define-key 'normal haskell-mode-map (kbd "<backtab>") 'hi2-indent-backwards)
