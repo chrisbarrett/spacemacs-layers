@@ -162,6 +162,12 @@
                  (org-habit-show-habits nil)
                  (org-agenda-include-inactive-timestamps t))))))
 
+      ;; Refresh agenda every minute, so long as Emacs has been idle for a period.
+      ;; This prevents agenda buffers from getting stale.
+
+      (defun cb-org/refresh-if-idle ()
+        (when (< 10 (org-emacs-idle-seconds))
+          (cb-org/refresh-agenda-buffers)))
 
       (defun cb-org/refresh-agenda-buffers ()
         (noflet ((message (&rest _)))
@@ -170,12 +176,14 @@
               (--each (--filter-buffers (derived-mode-p 'org-agenda-mode))
                 (ignore-errors
                   (with-current-buffer it
-                    (org-agenda-redo t)
-                    t)))))))
+                    (org-agenda-redo t)))))))
+        (message "Updated org agenda."))
 
-      (defconst cb-org/agenda-refresh-timer
-        (let ((1-minute 60))
-          (run-with-timer 1-minute 1-minute 'cb-org/refresh-agenda-buffers)))
+      (defvar cb-org/agenda-refresh-timer
+        (run-with-timer 60 60 'cb-org/refresh-if-idle))
+
+
+
 
       (add-hook 'org-agenda-mode-hook 'org-agenda-to-appt)
       (add-hook 'org-mode-hook 'visual-line-mode)
