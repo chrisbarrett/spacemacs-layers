@@ -27,3 +27,5 @@
 
 (define-key org-agenda-mode-map (kbd "C-f") 'evil-scroll-page-down)
 (define-key org-agenda-mode-map (kbd "C-b") 'evil-scroll-page-up)
+
+(evil-leader/set-key "oh" 'helm-org-agenda-files-headings)
