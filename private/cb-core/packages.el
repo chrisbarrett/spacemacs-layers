@@ -17,7 +17,6 @@
     relative-line-numbers
     company-quickhelp
     wgrep-ag
-    workgroups2
     )
   "List of all packages to install and/or initialize. Built-in packages
 which require an initialization must be listed explicitly in the list.")
@@ -172,62 +171,3 @@ which require an initialization must be listed explicitly in the list.")
 (defun cb-core/init-wgrep-ag ()
   (use-package wgrep-ag
     :defer t))
-
-(defun cb-core/init-workgroups2 ()
-  (use-package workgroups2
-    :config
-    (progn
-      (setq wg-prefix-key (kbd "C-c b"))
-      (setq wg-open-this-wg "default")
-      (setq wg-session-file (f-join user-emacs-directory "workgroups-sessions"))
-      (setq wg-first-wg-name "default")
-      (setq wg-emacs-exit-save-behavior nil)
-      (setq wg-mode-line-display-on t)
-
-      (add-hook 'after-init-hook 'workgroups-mode)
-
-      (defun cb-core/activate-powerline ()
-        (setq-default mode-line-format '("%e" (:eval (spacemacs/mode-line-prepare))))
-
-        (dolist (buf (-mapcat 'buffer-list (frame-list)))
-          (when (get-buffer buf)
-            (with-current-buffer buf
-              (setq-local mode-line-format '("%e" (:eval (spacemacs/mode-line-prepare))))
-              (powerline-set-selected-window)
-              (powerline-reset)))))
-
-      (add-hook 'wg-after-switch-to-workgroup-hook 'cb-core/activate-powerline)
-      (add-hook 'workgroups-mode-hook (lambda () (diminish 'workgroups-mode " Ⓦ")))
-
-      ;;; Custom workgroups support
-
-      (wg-support 'org-agenda-mode 'org-agenda
-        '((deserialize . (lambda (buffer vars)
-                           (org/agenda-dwim)))))
-
-
-      (defun cb-core/serialise-sbt (buf)
-        "Serialise SBT buffer BUF."
-        (with-current-buffer buf
-          (when (and (derived-mode-p 'comint-mode)
-                     (s-starts-with? "*sbt*" (buffer-name)))
-            (list 'cb-core/wg-deserialize-sbt-buffer
-                  (list default-directory)))))
-
-      (defun cb-core/wg-deserialize-sbt-buffer (buf)
-        (-let [(_ dir) (wg-buf-special-data buf)]
-          (let ((default-directory dir))
-            (sbt-start))))
-
-      (add-to-list 'wg-special-buffer-serdes-functions 'cb-core/serialise-sbt)
-
-
-      ;; HACK: Keybindings must be set after workgroups mode is activated.
-
-      (defun cb-core/set-workgroups-keybindings ()
-        (define-key workgroups-mode-map (kbd "C-c b s") 'wg-save-session)
-        (define-key workgroups-mode-map (kbd "C-c b l") 'wg-load-last-workgroup)
-        (define-key workgroups-mode-map (kbd "C-c b ,") 'wg-rename-workgroup)
-        (define-key workgroups-mode-map (kbd "C-c b N") 'wg-switch-to-workgroup-left))
-
-      (add-hook 'workgroups-mode-hook 'cb-core/set-workgroups-keybindings))))
