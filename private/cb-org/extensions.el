@@ -176,8 +176,7 @@
               (--each (--filter-buffers (derived-mode-p 'org-agenda-mode))
                 (ignore-errors
                   (with-current-buffer it
-                    (org-agenda-redo t)))))))
-        (message "Updated org agenda."))
+                    (org-agenda-redo t))))))))
 
       (defvar cb-org/agenda-refresh-timer
         (run-with-timer 60 60 'cb-org/refresh-if-idle))
