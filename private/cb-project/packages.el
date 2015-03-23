@@ -45,7 +45,7 @@ which require an initialization must be listed explicitly in the list.")
               ".cabal-sandbox"
               "dist"
               ".idea"
-              "target"
+
               ".eunit"
               ".git"
               ".hg"
@@ -57,7 +57,15 @@ which require an initialization must be listed explicitly in the list.")
               "elpa"
               "snippets"
               "build"
-              ".ensime_cache"))
+
+              ;; Scala
+              ".sbtserver"
+              "target"
+              "project/target"
+              "project/project"
+              ".ensime_cache"
+              ))
+
       (setq ag-ignore-list (-map 'regexp-quote projectile-globally-ignored-directories))
 
       (add-hook 'after-init-hook
