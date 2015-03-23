@@ -88,6 +88,8 @@
                    (lambda (spec) (append spec '(((org-agenda-customise-window-hook 'delete-other-windows)))))
                    command-list))
 
+      (add-hook 'after-init-hook 'org/agenda-dwim)
+
       (setq org-agenda-custom-commands
             (cb-org/agenda-custom-commands-delete-other-windows
              '(
