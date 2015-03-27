@@ -418,7 +418,7 @@ Arg modifies the thing to be inserted."
       (newline)
       (indent-to col))
     (cond (arg
-           (insert "return ")
+           (insert "pure ")
            (message "Return statement"))
           (t
            (yas-insert-first-snippet (lambda (sn)
