@@ -72,7 +72,12 @@ See `ensime-goto-test-config-defaults' for possible template values.")
     :defer t
     :config
     (progn
-      (setq sbt:prompt-regexp (rx bol (group (? space) (* alpha) ">" (+ space)) (* space)))
+      (setq sbt:prompt-regexp (rx bol (group (? space) (or
+                                                        ;; SBT
+                                                        (and (* alpha) ">" (+ space))
+                                                        ;; Activator
+                                                        (and "[" (+ alnum) "] $" (+ space)))
+                                             ) (* space)))
       (setq sbt:program-name "sbt -Dsbt.log.noformat=true")
       (add-hook 'sbt-mode-hook (lambda () (aggressive-indent-mode -1)))
       (add-hook 'sbt-mode-hook 'turn-off-show-smartparens-mode)
