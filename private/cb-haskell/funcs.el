@@ -114,6 +114,9 @@
    ((thing-at-point-looking-at (rx (or "(" "{" "[") (* space)))
     (insert "."))
 
+   ((equal (char-after) (string-to-char "}"))
+    (insert "."))
+
    ((thing-at-point-looking-at (rx "^"))
     (insert "."))
 
