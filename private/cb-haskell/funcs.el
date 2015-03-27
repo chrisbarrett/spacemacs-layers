@@ -367,6 +367,24 @@ Arg modifies the thing to be inserted."
     (haskell/insert-function-template (haskell/first-ident-on-line))
     (message "New function case"))
 
+   ;; Insert deriving clause
+   ((save-excursion
+      (goto-char (line-beginning-position))
+      (and (haskell/in-data-decl?)
+           (s-matches? (rx "}" (* space) eol) (current-line))))
+
+    (goto-char (line-end-position))
+    (when (s-matches? (rx (not space) (* space) "}" (* space) eol)
+                      (current-line))
+      (search-backward "}")
+      (newline-and-indent)
+      (goto-char (line-end-position)))
+
+    (just-one-space)
+    (insert "deriving ()")
+    (forward-char -1)
+    (message "Deriving clause"))
+
    ;; Insert new record field
    ((and (haskell/in-data-decl?)
          (s-matches? (rx bol (* space) "," (* space)) (current-line)))
