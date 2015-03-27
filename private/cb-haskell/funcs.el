@@ -328,9 +328,12 @@
     (message "New arrow"))
 
    ;; Insert new pattern match case below the current one.
-   ((or (s-matches? (rx bol (* space) (+ (not (any "="))) (or "->" "→")) (current-line))
-        (s-matches? (rx bol (* space) "case" (+ space)) (current-line)))
+   ((s-matches? (rx bol (* space) (+ (not (any "="))) (or "->" "→")) (current-line))
     (haskell/newline-indent-to-same-col)
+    (yas-expand-snippet (format "${1:pat} %s $0" (haskell/fmt-rarrow)))
+    (message "New pattern match case"))
+   ((s-matches? (rx bol (* space) "case" (+ space)) (current-line))
+    (newline-and-indent)
     (yas-expand-snippet (format "${1:pat} %s $0" (haskell/fmt-rarrow)))
     (message "New pattern match case"))
 
