@@ -244,7 +244,7 @@
     (let ((case-fold-search nil))
       (while (search-forward-regexp (rx-to-string `(and (or "(" space)
                                                         (group ,sym)
-                                                        (or space eol))
+                                                        (or space ")" eol))
                                                   t)
                                     nil t)
         (replace-match repl t t nil 1)))))
