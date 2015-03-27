@@ -234,9 +234,9 @@
             ("=>" "⇒")
             ("<-" "←")
             ("::" "∷")
-            ("*" "★")
             ("forall" "∀"))
-    (apply 'haskell/rewrite-symbol it)))
+    (apply 'haskell/rewrite-symbol it))
+  )
 
 (defun haskell/rewrite-symbol (sym repl)
   (save-excursion
