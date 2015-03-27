@@ -27,6 +27,7 @@ which require an initialization must be listed explicitly in the list.")
       (setq haskell-interactive-mode-eval-pretty t)
       (setq haskell-interactive-prompt "\nλ> ")
       (setq haskell-process-show-debug-tips)
+      (setq haskell-stylish-on-save t)
 
       (custom-set-faces
        '(haskell-operator-face
