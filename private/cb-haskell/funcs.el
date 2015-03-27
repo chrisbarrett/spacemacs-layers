@@ -259,6 +259,110 @@
 
 ;;; Define smart M-RET command
 
+(defun haskell/meta-ret ()
+  "Open a new line in a context-sensitive way."
+  (interactive)
+  (yas-exit-all-snippets)
+  (cond
+
+   ;; Insert new case below the current type decl.
+   ((s-matches? (rx bol (* space) "data" (+ space)) (current-line))
+    (goto-char (line-end-position))
+    (newline)
+    (insert "| ")
+    (goto-char (line-beginning-position))
+    (hi2-indent-line)
+    (goto-char (line-end-position))
+    (message "New data case"))
+
+   ;; Insert new type decl case below the current one.
+   ((s-matches? (rx bol (* space) "|") (current-line))
+    (haskell/newline-indent-to-same-col)
+    (insert "| ")
+    (message "New data case"))
+
+   ;; Insert new alternative case
+   ((s-matches? (rx bol (* space) "<|>") (current-line))
+    (haskell/newline-indent-to-same-col)
+    (insert "<|> ")
+    (message "New alternative"))
+
+   ;; Insert new applicative case
+   ((s-matches? (rx bol (* space) "<*>") (current-line))
+    (haskell/newline-indent-to-same-col)
+    (insert "<*> ")
+    (message "New applicative"))
+
+   ;; Insert new import
+   ((s-matches? (rx bol (* space) "import") (current-line))
+    (haskell/newline-indent-to-same-col)
+    (insert "import ")
+    (message "New import"))
+
+   ;; Insert pattern match at function definition.
+   ((s-matches? (rx bol (* space) (+ (not space)) (+ space) (or "::" "∷")) (current-line))
+    (haskell/insert-function-template (haskell/first-ident-on-line))
+    (message "New function case"))
+
+   ;; Insert deriving clause
+   ((haskell/at-end-of-record-decl?)
+    (haskell/insert-deriving-clause)
+    (message "Deriving clause"))
+
+   ;; Insert new record field
+   ((and (haskell/in-data-decl?)
+         (s-matches? (rx bol (* space) (or "{" ",") (* space)) (current-line)))
+    (haskell/insert-record-field)
+    (message "New field"))
+
+   ;; Insert new line starting with comma.
+   ((s-matches? (rx bol (* space) ",") (current-line))
+    (haskell/newline-indent-to-same-col)
+    (insert ", ")
+    (message "New entry"))
+
+   ;; Insert new line starting with an arrow.
+   ((s-matches? (rx bol (* space) (or "→" "->")) (current-line))
+    (haskell/newline-indent-to-same-col)
+    (insert (format "%s " (haskell/fmt-rarrow)))
+    (message "New arrow"))
+
+   ;; Insert new pattern match case below the current one.
+   ((or (s-matches? (rx bol (* space) (+ (not (any "="))) (or "->" "→")) (current-line))
+        (s-matches? (rx bol (* space) "case" (+ space)) (current-line)))
+    (haskell/newline-indent-to-same-col)
+    (yas-expand-snippet (format "${1:pat} %s $0" (haskell/fmt-rarrow)))
+    (message "New pattern match case"))
+
+   ;; Insert new line starting with a comma for the current braced expr
+   ((s-matches? (rx bol (* space) (or "[" "{")) (current-line))
+    (haskell/newline-indent-to-same-col)
+    (insert ", ")
+    (message "New entry"))
+
+   ;; Insert new line with a do-binding.
+   ((s-matches? (rx bol (* space) (+ nonl) (or "<-" "←")) (current-line))
+    (back-to-indentation)
+    (let ((col (current-column)))
+      (search-forward-regexp (rx  (or "<-" "←")))
+      (shm/forward-node)
+      (newline)
+      (indent-to col))
+    (yas-expand-snippet (format "${1:b} %s $0" (haskell/fmt-larrow)))
+    (message "New do-binding"))
+
+   ;; New function case.
+   ((haskell/at-decl-for-function? (haskell/first-ident-on-line))
+    (haskell/insert-function-template (haskell/first-ident-on-line))
+    (message "New binding case"))
+
+   (t
+    (goto-char (line-end-position))
+    (hi2-newline-and-indent)
+    (message "New line")))
+
+  (evil-insert-state))
+
 (defun haskell/newline-and-insert-at-col (col str)
   "Insert STR on a new line at COL."
   (goto-char (line-end-position))
@@ -320,145 +424,43 @@
       (when (search-backward-regexp (rx bol (not space)) nil t)
         (thing-at-point-looking-at "data "))))))
 
-(defun haskell/meta-ret (&optional arg)
-  "Open a new line in a context-sensitive way.
+(defun haskell/at-end-of-record-decl? ()
+  (save-excursion
+    (goto-char (line-beginning-position))
+    (and (haskell/in-data-decl?)
+         (s-matches? (rx "}" (* space) eol) (current-line)))))
 
-Arg modifies the thing to be inserted."
-  (interactive "P")
-  (yas-exit-all-snippets)
-  (cond
+(defun haskell/insert-deriving-clause ()
+  (goto-char (line-end-position))
+  (when (s-matches? (rx (not space) (* space) "}" (* space) eol)
+                    (current-line))
+    (search-backward "}")
+    (newline-and-indent)
+    (goto-char (line-end-position)))
 
-   ;; Insert new case below the current type decl.
-   ((s-matches? (rx bol (* space) "data" (+ space)) (current-line))
+  (just-one-space)
+  (insert "deriving ()")
+  (forward-char -1))
+
+(defun haskell/insert-record-field ()
+  (let ((underscore-prefix-style?
+         (s-matches? (rx bol (* space) (or "{" ",") (* space) "_") (current-line)))
+        (col
+         (save-excursion
+           (goto-char (line-beginning-position))
+           (cond ((search-forward-regexp (rx (or "," "{")) nil t)
+                  (forward-char -1)
+                  (current-column))
+                 (t 2)))))
     (goto-char (line-end-position))
     (newline)
-    (insert "| ")
-    (goto-char (line-beginning-position))
-    (hi2-indent-line)
-    (goto-char (line-end-position))
-    (message "New data case"))
-
-   ;; Insert new type decl case below the current one.
-   ((s-matches? (rx bol (* space) "|") (current-line))
-    (haskell/newline-indent-to-same-col)
-    (insert "| ")
-    (message "New data case"))
-
-   ;; Insert new alternative case
-   ((s-matches? (rx bol (* space) "<|>") (current-line))
-    (haskell/newline-indent-to-same-col)
-    (insert "<|> ")
-    (message "New alternative"))
-
-   ;; Insert new applicative case
-   ((s-matches? (rx bol (* space) "<*>") (current-line))
-    (haskell/newline-indent-to-same-col)
-    (insert "<*> ")
-    (message "New applicative"))
-
-   ;; Insert new import
-   ((s-matches? (rx bol (* space) "import") (current-line))
-    (haskell/newline-indent-to-same-col)
-    (insert "import ")
-    (message "New import"))
-
-   ;; Insert pattern match at function definition.
-   ((s-matches? (rx bol (* space) (+ (not space)) (+ space) (or "::" "∷")) (current-line))
-    (haskell/insert-function-template (haskell/first-ident-on-line))
-    (message "New function case"))
-
-   ;; Insert deriving clause
-   ((save-excursion
-      (goto-char (line-beginning-position))
-      (and (haskell/in-data-decl?)
-           (s-matches? (rx "}" (* space) eol) (current-line))))
-
-    (goto-char (line-end-position))
-    (when (s-matches? (rx (not space) (* space) "}" (* space) eol)
-                      (current-line))
-      (search-backward "}")
-      (newline-and-indent)
-      (goto-char (line-end-position)))
-
-    (just-one-space)
-    (insert "deriving ()")
-    (forward-char -1)
-    (message "Deriving clause"))
-
-   ;; Insert new record field
-   ((and (haskell/in-data-decl?)
-         (s-matches? (rx bol (* space) "," (* space)) (current-line)))
-    (let ((underscore-prefix-style?
-           (s-matches? (rx bol (* space) "," (* space) "_") (current-line))))
-      (setq-local haskell/underscore-field? underscore-prefix-style?)
-      (goto-char (line-end-position))
-      (newline)
-      (yas-insert-first-snippet (lambda (sn)
-                                  (equal "record field" (yas--template-name sn))))
-      (message "New field")))
-
-   ;; Insert new line starting with comma.
-   ((s-matches? (rx bol (* space) ",") (current-line))
-    (haskell/newline-indent-to-same-col)
-    (insert ", ")
-    (message "New entry"))
-
-   ;; Insert new line starting with an arrow.
-   ((s-matches? (rx bol (* space) (or "→" "->")) (current-line))
-    (haskell/newline-indent-to-same-col)
-    (insert (format "%s " (haskell/fmt-rarrow)))
-    (message "New arrow"))
-
-   ;; Insert new pattern match case below the current one.
-   ((or (s-matches? (rx bol (* space) (+ (not (any "="))) (or "->" "→")) (current-line))
-        (s-matches? (rx bol (* space) "case" (+ space)) (current-line)))
-    (haskell/newline-indent-to-same-col)
-    (yas-insert-first-snippet (lambda (sn)
-                                (equal "match-case" (yas--template-name sn))))
-    (message "New pattern match case"))
-
-   ;; Insert new line starting with for the current braced expr
-   ((s-matches? (rx bol (* space) (or "[" "{")) (current-line))
-    (haskell/newline-indent-to-same-col)
-    (insert ", ")
-    (message "New entry"))
-
-   ;; Insert new line with a do-binding or return.
-   ((s-matches? (rx bol (* space) (+ nonl) (or "<-" "←")) (current-line))
-    (back-to-indentation)
-    (let ((col (current-column)))
-      (search-forward-regexp (rx  (or "<-" "←")))
-      (shm/forward-node)
-      (newline)
-      (indent-to col))
-    (cond (arg
-           (insert "pure ")
-           (message "Return statement"))
-          (t
-           (yas-insert-first-snippet (lambda (sn)
-                                       (equal "do-binding" (yas--template-name sn))))
-           (message "New do-binding"))))
-
-   ;; New function case.
-   ((haskell/at-decl-for-function? (haskell/first-ident-on-line))
-    (haskell/insert-function-template (haskell/first-ident-on-line))
-    (message "New binding case"))
-
-   (t
-    (goto-char (line-end-position))
-    (hi2-newline-and-indent)
-    (message "New line")))
-
-  (evil-insert-state))
+    (indent-to-column col)
+    (yas-expand-snippet
+     (format ", %s${1:field} %s ${2:T}" (if underscore-prefix-style? "_" "") (haskell/fmt-::)))))
 
 (defun haskell/fmt-::     () (if (haskell/use-unicode-symbols?) "∷" "::"))
 (defun haskell/fmt-rarrow () (if (haskell/use-unicode-symbols?) "→" "->"))
 (defun haskell/fmt-larrow () (if (haskell/use-unicode-symbols?) "←" "<-"))
-
-(defvar-local haskell/underscore-field? nil)
-
-(defun haskell/maybe-field-underscore ()
-  (if (and haskell/underscore-field? (haskell/use-unicode-symbols?)) "_" ""))
 
 
 ;;; SHM smart op integration

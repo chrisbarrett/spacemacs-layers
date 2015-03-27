@@ -1,4 +1,0 @@
-# key: mc
-# name: match-case
-# --
-${1:pat} -> $0
