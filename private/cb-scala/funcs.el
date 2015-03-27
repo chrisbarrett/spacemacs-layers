@@ -400,11 +400,12 @@ Typing three in a row will insert a ScalaDoc."
          (command (concat "~test-only  " cleaned-class)))
     (sbt-command command)))
 
-(defun sbt ()
-  (interactive)
-  (require 'sbt-mode)
-  (let ((default-directory (or (sbt:find-root)
-                               (read-directory-name "Project root: " nil nil t))))
+(autoload 'sbt-start "sbt")
+
+(defun sbt (dir)
+  (interactive (list (or (sbt:find-root)
+                         (read-directory-name "Project root: " nil nil t))))
+  (let ((default-directory dir))
     (sbt-start)))
 
 (defun scala/sbt-send-ret ()
