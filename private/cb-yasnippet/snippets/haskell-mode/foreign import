@@ -3,6 +3,4 @@
 # condition: (yas/bol?)
 # --
 foreign import ccall ${1:unsafe }"${2:header} ${3:function}"
-  ${4:c_$3} :: $0
-`(yas/haskell-insert-import "Foreign")`
-`(yas/haskell-insert-import "Foreign.C.Types")`
+  ${4:c_$3} `(haskell/fmt-::)` ${5:T}

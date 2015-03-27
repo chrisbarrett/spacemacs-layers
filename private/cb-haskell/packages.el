@@ -33,7 +33,8 @@ which require an initialization must be listed explicitly in the list.")
          ((t :italic nil))))
 
       (defun cb-haskell/set-local-hooks ()
-        (add-hook 'before-save-hook 'haskell/unicode-before-save nil t))
+        (add-hook 'before-save-hook 'haskell/unicode-before-save nil t)
+        (add-hook 'evil-insert-state-exit-hook 'haskell/unicode-before-save nil t))
 
       (add-hook 'haskell-mode-hook 'cb-haskell/set-local-hooks)
 

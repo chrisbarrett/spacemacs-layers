@@ -227,8 +227,11 @@
       (insert "\n-- ")
     (shm/simple-indent-newline-same-col)))
 
+(defun haskell/use-unicode-symbols? ()
+  (-contains? (haskell/language-pragmas-in-file) "UnicodeSyntax"))
+
 (defun haskell/unicode-before-save ()
-  (when (-contains? (haskell/language-pragmas-in-file) "UnicodeSyntax")
+  (when (haskell/use-unicode-symbols?)
     (haskell/rewrite-symbols-in-buffer)))
 
 (defun haskell/rewrite-symbols-in-buffer ()
@@ -238,8 +241,7 @@
             ("<-" "←")
             ("::" "∷")
             ("forall" "∀"))
-    (apply 'haskell/rewrite-symbol it))
-  )
+    (apply 'haskell/rewrite-symbol it)))
 
 (defun haskell/rewrite-symbol (sym repl)
   (save-excursion
@@ -250,8 +252,9 @@
                                                         (or space ")" eol))
                                                   t)
                                     nil t)
-        (replace-match repl t t nil 1)))))
 
+        (unless (core/in-string-or-comment?)
+          (replace-match repl t t nil 1))))))
 
 
 ;;; Define smart M-RET command
@@ -311,6 +314,16 @@
       (goto-char (match-beginning 0))
       (current-column))))
 
+(defun haskell/in-data-decl? ()
+  (cond
+   ((core/in-string-or-comment?) nil)
+   ((s-matches? "}" (buffer-substring (line-beginning-position) (point))) nil)
+   ((thing-at-point-looking-at (rx bol (* space) "data ")) t)
+   (t
+    (save-excursion
+      (when (search-backward-regexp (rx bol (not space)) nil t)
+        (thing-at-point-looking-at "data "))))))
+
 (defun haskell/meta-ret (&optional arg)
   "Open a new line in a context-sensitive way.
 
@@ -341,6 +354,12 @@ Arg modifies the thing to be inserted."
     (insert "<|> ")
     (message "New alternative"))
 
+   ;; Insert new applicative case
+   ((s-matches? (rx bol (* space) "<*>") (current-line))
+    (haskell/newline-indent-to-same-col)
+    (insert "<*> ")
+    (message "New applicative"))
+
    ;; Insert new import
    ((s-matches? (rx bol (* space) "import") (current-line))
     (haskell/newline-indent-to-same-col)
@@ -352,6 +371,17 @@ Arg modifies the thing to be inserted."
     (haskell/insert-function-template (haskell/first-ident-on-line))
     (message "New function case"))
 
+   ;; Insert new record field
+   ((and (haskell/in-data-decl?)
+         (s-matches? (rx bol (* space) "," (* space)) (current-line)))
+    (let ((underscore-prefix-style?
+           (s-matches? (rx bol (* space) "," (* space) "_") (current-line))))
+      (haskell/newline-indent-to-same-col)
+      (insert ", ")
+      (when underscore-prefix-style? (insert "_"))
+      (save-excursion (insert (format " %s " (haskell/fmt-::))))
+      (message "New field")))
+
    ;; Insert new line starting with comma.
    ((s-matches? (rx bol (* space) ",") (current-line))
     (haskell/newline-indent-to-same-col)
@@ -359,13 +389,9 @@ Arg modifies the thing to be inserted."
     (message "New entry"))
 
    ;; Insert new line starting with an arrow.
-   ((s-matches? (rx bol (* space) "->") (current-line))
+   ((s-matches? (rx bol (* space) (or "→" "->")) (current-line))
     (haskell/newline-indent-to-same-col)
-    (insert "-> ")
-    (message "New arrow"))
-   ((s-matches? (rx bol (* space) "→") (current-line))
-    (haskell/newline-indent-to-same-col)
-    (insert "→ ")
+    (insert (format "%s " (haskell/fmt-rarrow)))
     (message "New arrow"))
 
    ;; Insert new pattern match case below the current one.
@@ -414,6 +440,11 @@ Arg modifies the thing to be inserted."
     (message "New line")))
 
   (evil-insert-state))
+
+(defun haskell/fmt-::     () (if (haskell/use-unicode-symbols?) "∷" "::"))
+(defun haskell/fmt-rarrow () (if (haskell/use-unicode-symbols?) "→" "->"))
+(defun haskell/fmt-larrow () (if (haskell/use-unicode-symbols?) "←" "<-"))
+
 
 
 ;;; SHM smart op integration

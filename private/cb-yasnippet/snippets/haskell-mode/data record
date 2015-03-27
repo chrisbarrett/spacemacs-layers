@@ -4,5 +4,5 @@
 # condition: (yas/bol?)
 # --
 data ${1:Name} = $1
-  { _${2:attr} :: ${3:T}
+  { _${2:attr} `(haskell/fmt-::)` ${3:T}
   }
