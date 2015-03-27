@@ -116,7 +116,7 @@
 
 
 (global-set-key (kbd "<f2>") 'next-multiframe-window)
-(global-set-key (kbd "s-<f2>") 'previous-multiframe-window)
+(global-set-key (kbd "S-<f2>") 'previous-multiframe-window)
 
 (evil-global-set-key 'normal (kbd "C-w k") 'next-multiframe-window)
 (evil-global-set-key 'normal (kbd "C-w j") 'previous-multiframe-window)
