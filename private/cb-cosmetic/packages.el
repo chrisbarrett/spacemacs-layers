@@ -1,6 +1,5 @@
 (defvar cb-cosmetic-packages
   '(
-    ;; package cb-cosmetic go here
     paren-face
     whitespace
     auto-highlight-symbol
@@ -11,15 +10,8 @@ which require an initialization must be listed explicitly in the list.")
 (defvar cb-cosmetic-excluded-packages '()
   "List of packages to exclude.")
 
-;; For each package, define a function cb-cosmetic/init-<package-cb-paren-face>
-;;
-;; (defun cb-cosmetic/init-my-package ()
-;;   "Initialize my package"
-;;   )
-;;
-;; Often the body of an initialize function uses `use-package'
-;; For more info on `use-package', see readme:
-;; https://github.com/jwiegley/use-package
+(eval-when-compile
+  (require 'use-package nil t))
 
 (defun cb-cosmetic/init-paren-face ()
   (use-package paren-face
@@ -33,7 +25,7 @@ which require an initialization must be listed explicitly in the list.")
           (((background dark))  :foreground "#505070"))))
 
       (add-to-list 'paren-face-modes 'haskell-mode)
-      (add-to-list 'paren-face-modes 'inferior-haskell-mode)
+      (add-to-list 'paren-face-modes 'haskell-interactive-mode)
       (add-to-list 'paren-face-modes 'idris-mode)
       (add-to-list 'paren-face-modes 'agda2-mode)
       (add-to-list 'paren-face-modes 'coq-mode))))
