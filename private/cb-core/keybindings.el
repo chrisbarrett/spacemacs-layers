@@ -38,10 +38,11 @@
 ;;; Company
 
 (after 'company
-  (define-key company-active-map (kbd "C-n") 'company-select-next)
-  (define-key company-active-map (kbd "C-p") 'company-select-previous)
-  (define-key company-active-map (kbd "C-h") 'company-show-doc-buffer)
-  (define-key company-active-map (kbd "C-w") nil))
+  (dolist (map (list company-active-map company-search-map company-filter-map))
+    (define-key map (kbd "C-n") 'company-select-next)
+    (define-key map (kbd "C-p") 'company-select-previous)
+    (define-key map (kbd "C-h") 'company-show-doc-buffer)
+    (define-key map (kbd "C-w") nil)))
 
 ;;; Errors
 
