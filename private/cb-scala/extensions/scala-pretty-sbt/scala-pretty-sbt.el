@@ -127,14 +127,8 @@
       (2 'font-lock-comment-face t)
       (3 'scala-pretty-sbt-warning-face t))
 
-     (,(rx (* space) "[INFO]" (+ space) (group (* nonl)))
+     (,(rx (* space) (or "[INFO]" "[DEBUG]") (+ space) (group (* nonl)))
       (0 'font-lock-comment-face t))
-
-     (,(rx bol (* space)
-           (? (+ (any digit ":" ".")) (+ space))
-           (+ (and "[" (+ (not (any "]"))) "]" (+ space)))
-           "DEBUG" (+ nonl) "\n")
-      (0 '(face nil invisible t)))
 
      (,(rx bol (* space) (group (+ (any digit ":" "."))) (group (+ nonl)))
       (1 '(face nil invisible t))
