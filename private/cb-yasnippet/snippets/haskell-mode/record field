@@ -1,0 +1,4 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: record field
+# --
+  , `(haskell/maybe-field-underscore)`${1:name} `(haskell/fmt-::)` ${2:T}

@@ -376,10 +376,11 @@ Arg modifies the thing to be inserted."
          (s-matches? (rx bol (* space) "," (* space)) (current-line)))
     (let ((underscore-prefix-style?
            (s-matches? (rx bol (* space) "," (* space) "_") (current-line))))
-      (haskell/newline-indent-to-same-col)
-      (insert ", ")
-      (when underscore-prefix-style? (insert "_"))
-      (save-excursion (insert (format " %s " (haskell/fmt-::))))
+      (setq-local haskell/underscore-field? underscore-prefix-style?)
+      (goto-char (line-end-position))
+      (newline)
+      (yas-insert-first-snippet (lambda (sn)
+                                  (equal "record field" (yas--template-name sn))))
       (message "New field")))
 
    ;; Insert new line starting with comma.
@@ -445,6 +446,10 @@ Arg modifies the thing to be inserted."
 (defun haskell/fmt-rarrow () (if (haskell/use-unicode-symbols?) "→" "->"))
 (defun haskell/fmt-larrow () (if (haskell/use-unicode-symbols?) "←" "<-"))
 
+(defvar-local haskell/underscore-field? nil)
+
+(defun haskell/maybe-field-underscore ()
+  (if (and haskell/underscore-field? (haskell/use-unicode-symbols?)) "_" ""))
 
 
 ;;; SHM smart op integration
