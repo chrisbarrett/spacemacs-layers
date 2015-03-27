@@ -283,7 +283,7 @@
 
   (goto-char (line-end-position))
   (newline)
-  (shm-insert-string (concat fname " ")))
+  (shm-insert-string (concat fname " = _")))
 
 (defun haskell/at-decl-for-function? (fname)
   (when fname
@@ -291,7 +291,7 @@
      ;; A type decl exists in this buffer?
      (s-matches? (eval `(rx bol (* space)
                             (? (or "let" "where") (+ space))
-                            ,fname (+ space) "::"))
+                            ,fname (+ space) (or "∷" "::")))
                  (buffer-string))
      ;; At an equation?
      (s-matches? (eval `(rx bol (* space)
@@ -349,6 +349,22 @@ Arg modifies the thing to be inserted."
     (haskell/insert-function-template (haskell/first-ident-on-line))
     (message "New function case"))
 
+   ;; Insert new line starting with comma.
+   ((s-matches? (rx bol (* space) ",") (current-line))
+    (haskell/newline-indent-to-same-col)
+    (insert ", ")
+    (message "New entry"))
+
+   ;; Insert new line starting with an arrow.
+   ((s-matches? (rx bol (* space) "->") (current-line))
+    (haskell/newline-indent-to-same-col)
+    (insert "-> ")
+    (message "New arrow"))
+   ((s-matches? (rx bol (* space) "→") (current-line))
+    (haskell/newline-indent-to-same-col)
+    (insert "→ ")
+    (message "New arrow"))
+
    ;; Insert new pattern match case below the current one.
    ((or (s-matches? (rx bol (* space) (+ (not (any "="))) (or "->" "→")) (current-line))
         (s-matches? (rx bol (* space) "case" (+ space)) (current-line)))
@@ -357,23 +373,17 @@ Arg modifies the thing to be inserted."
                                 (equal "match-case" (yas--template-name sn))))
     (message "New pattern match case"))
 
-   ;; Insert new line starting with comma.
-   ((s-matches? (rx bol (* space) ",") (current-line))
+   ;; Insert new line starting with for the current braced expr
+   ((s-matches? (rx bol (* space) (or "[" "{")) (current-line))
     (haskell/newline-indent-to-same-col)
     (insert ", ")
     (message "New entry"))
-
-   ;; Insert new line starting with an arrow.
-   ((s-matches? (rx bol (* space) (or "->" "→")) (current-line))
-    (haskell/newline-indent-to-same-col)
-    (insert "-> ")
-    (message "New arrow"))
 
    ;; Insert new line with a do-binding or return.
    ((s-matches? (rx bol (* space) (+ nonl) (or "<-" "←")) (current-line))
     (back-to-indentation)
     (let ((col (current-column)))
-      (search-forward "<-")
+      (search-forward-regexp (rx  (or "<-" "←")))
       (shm/forward-node)
       (newline)
       (indent-to col))
