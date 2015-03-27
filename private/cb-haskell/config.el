@@ -2,16 +2,17 @@
 (setq haskell-enable-hindent-style "gibiansky")
 (setq haskell-enable-shm-support t)
 
-;;; Show lambda symbol for lambdas.
 
-(defconst haskell/font-lock-lambda-forms
-  (list
-   ))
+;;; Font locking
 
 (defun haskell/apply-font-locking ()
   (font-lock-add-keywords
    nil
-   `((,(rx space (group "$" (? "!")) space) 1 'font-lock-comment-face)
+   `((,(rx (or bol space "}" ")" "]")
+           (group "$" (? "!"))
+           (or eol space "{" "(" "["))
+      1 'font-lock-comment-face)
+
      ("∀" . font-lock-keyword-face)
 
      ;; Lambda forms
@@ -23,6 +24,17 @@
 (add-hook 'haskell-mode-hook 'haskell/apply-font-locking)
 (add-hook 'haskell-c-mode-hook 'haskell/apply-font-locking)
 (add-hook 'haskell-interactive-mode-hook 'haskell/apply-font-locking)
+
+
+(custom-set-faces
+ `(haskell-interactive-face-compile-error ((t (:foreground nil)))))
+
+(defun haskell/interactive-apply-font-locking ()
+  (font-lock-add-keywords
+   nil
+   `(("Compilation failed." . '(face nil :foreground compilation-error-face)))))
+
+(add-hook 'haskell-interactive-mode-hook 'haskell/interactive-apply-font-locking)
 
 (defadvice haskell-mode-stylish-buffer (around suppress-window-changes activate)
   "Suppress window-changes."
