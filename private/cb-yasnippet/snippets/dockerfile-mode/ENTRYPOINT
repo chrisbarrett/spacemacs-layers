@@ -1,8 +1,6 @@
-# -*- mode: snippet; require-final-newline: nil -*-
-# name: ENTRYPOINT
 # key: ep
+# name: ENTRYPOINT
 # condition: (yas/bol?)
-# binding: direct-keybinding
 # --
-ENTRYPOINT [${1:bin}]
+ENTRYPOINT ["${1:bin}"]
 $0
