@@ -30,17 +30,26 @@ which require an initialization must be listed explicitly in the list.")
       (add-to-list 'paren-face-modes 'agda2-mode)
       (add-to-list 'paren-face-modes 'coq-mode))))
 
-
 (defun cb-cosmetic/init-whitespace ()
   (use-package whitespace
     :diminish whitespace-mode
-    :commands whitespace-mode
-    :init
-    (add-hook 'prog-mode-hook 'core/set-whitespace-mode)
     :config
     (progn
-      (setq whitespace-line-column 80)
       (setq whitespace-style '(face lines-tail))
+
+      (defun core/maybe-enable-whitespace-mode ()
+        (unless (or (derived-mode-p 'haskell-mode 'org-mode)
+                    (and (boundp 'org-src-mode) org-src-mode))
+          (whitespace-mode +1)
+          (setq whitespace-line-column fill-column)))
+
+      (add-hook 'prog-mode-hook 'core/maybe-enable-whitespace-mode)
+
+      ;; HACK: override Spacemacs setting
+      (add-hook 'prog-mode-hook
+                (lambda ()
+                  (setq show-trailing-whitespace nil))
+                t)
 
       (defadvice whitespace-turn-on (around ignore-errors activate)
         "Ignore void-function errors when starting whitespace mode."
