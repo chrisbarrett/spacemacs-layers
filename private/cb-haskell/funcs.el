@@ -283,13 +283,18 @@
 
 (defun haskell/insert-function-template (fname)
   (back-to-indentation)
+  (when (thing-at-point-looking-at "where")
+    (evil-forward-word-begin))
+  (let ((col 0))
+    (when (shm-current-node)
+      (save-excursion
+        (setq col (current-column)))
+      (shm/goto-parent-end))
 
-  (when (shm-current-node)
-    (shm/goto-parent-end))
-
-  (goto-char (line-end-position))
-  (newline)
-  (shm-insert-string (concat fname " = _")))
+    (goto-char (line-end-position))
+    (newline)
+    (indent-to col)
+    (shm-insert-string (concat fname " = _"))))
 
 (defun haskell/at-decl-for-function? (fname)
   (when fname
@@ -304,15 +309,6 @@
                             (? (or "let" "where") (+ space))
                             ,fname (+ nonl) "="))
                  (current-line)))))
-
-(defun haskell/start-col-of-string-on-line (str)
-  "Return the column where STR starts on this line."
-  (when str
-    (save-excursion
-      (goto-char (line-beginning-position))
-      (search-forward str)
-      (goto-char (match-beginning 0))
-      (current-column))))
 
 (defun haskell/in-data-decl? ()
   (cond
@@ -427,12 +423,7 @@ Arg modifies the thing to be inserted."
 
    ;; New function case.
    ((haskell/at-decl-for-function? (haskell/first-ident-on-line))
-    (let* ((ident (haskell/first-ident-on-line))
-           (col (haskell/start-col-of-string-on-line ident)))
-      (haskell/insert-function-template ident)
-      (save-excursion
-        (back-to-indentation)
-        (indent-to col)))
+    (haskell/insert-function-template (haskell/first-ident-on-line))
     (message "New binding case"))
 
    (t
