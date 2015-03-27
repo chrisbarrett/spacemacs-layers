@@ -659,12 +659,13 @@
 
 (defun haskell/haskell-modules ()
   "Get a list of all Haskell modules known to the current project or GHC."
-  (-if-let (session (haskell-session-maybe))
-      (haskell-session-all-modules session t)
-    (->> (shell-command-to-string "ghc-pkg dump")
-         (s-split "---")
-         (-mapcat 'haskell/parse-module)
-         (-map 's-trim))))
+  (-union '("Control.Applicative" "Prelude")
+          (-if-let (session (haskell-session-maybe))
+              (haskell-session-all-modules session t)
+            (->> (shell-command-to-string "ghc-pkg dump")
+                 (s-split "---")
+                 (-mapcat 'haskell/parse-module)
+                 (-map 's-trim)))))
 
 (defun haskell/do-insert-at-imports (str)
   "Prepend STR to this buffer's list of imported modules."
