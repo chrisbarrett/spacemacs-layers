@@ -1,5 +1,13 @@
 (add-to-list 'auto-mode-alist '("Cask$" . emacs-lisp-mode))
 
+(defun cb-elisp/maybe-enable-aggressive-indent ()
+  (if (equal ".ensime" (f-filename (buffer-name)))
+      (aggressive-indent-mode -1)
+    (aggressive-indent-mode +1)))
+
+
+(add-hook 'emacs-lisp-mode-hook 'cb-elisp/maybe-enable-aggressive-indent)
+
 (defadvice eval-buffer (after buffer-evaluated-feedback activate)
   "Print feedback."
   (when (called-interactively-p nil)
