@@ -1,9 +1,9 @@
 ;; Menu-bar looks acceptable in OS X. Otherwise it adds clutter.
 (when (fboundp 'menu-bar-mode)
   (if (and (eq system-type 'darwin)
-           (display-graphic-p))
-      (menu-bar-mode +1)
-    (menu-bar-mode -1)))
+		   (display-graphic-p))
+	  (menu-bar-mode +1)
+	(menu-bar-mode -1)))
 
 (window-numbering-mode -1)
 
@@ -99,9 +99,9 @@ Work around spacemacs' aggressive manipulation of `face-remapping-alist'."
 
 (defface core/bg-flash
   '((((class color) (background light))
-     :background "darkseagreen2")
-    (((class color) (background dark))
-     :background "royalblue4"))
+	 :background "darkseagreen2")
+	(((class color) (background dark))
+	 :background "royalblue4"))
   "Face for flashing with a green background."
   :group 'cb-faces)
 
@@ -121,28 +121,28 @@ Work around spacemacs' aggressive manipulation of `face-remapping-alist'."
 (defadvice ido-find-file (after find-file-sudo activate)
   "Find file as root if necessary."
   (let ((dir (f-dirname (buffer-file-name)))
-        (file (buffer-file-name)))
-    (unless (and file (f-writable? file))
-      (when (and (f-exists? dir) (not (f-writable? dir)))
-        (find-alternate-file (concat "/sudo:root@localhost:" buffer-file-name))))))
+		(file (buffer-file-name)))
+	(unless (and file (f-writable? file))
+	  (when (and (f-exists? dir) (not (f-writable? dir)))
+		(find-alternate-file (concat "/sudo:root@localhost:" buffer-file-name))))))
 
 (defadvice save-buffers-kill-emacs (around no-query-kill-emacs activate)
   "Do not prompt for confirmation for active processes."
   (noflet ((process-list () nil))
-    ad-do-it))
+	ad-do-it))
 
 (defadvice whitespace-cleanup (around whitespace-cleanup-indent-tab activate)
   "Use the current buffer's tab settings when cleaning whitespace."
   (let ((whitespace-indent-tabs-mode indent-tabs-mode)
-        (whitespace-tab-width tab-width))
-    ad-do-it))
+		(whitespace-tab-width tab-width))
+	ad-do-it))
 
 (defadvice comment-indent-new-line (after add-space activate)
   "Insert a leading space after comment start for new comment lines."
   (when (and comment-start
-             (thing-at-point-looking-at (regexp-quote comment-start)))
-    (unless (or (thing-at-point-looking-at (rx (+ space))))
-      (just-one-space))))
+			 (thing-at-point-looking-at (regexp-quote comment-start)))
+	(unless (or (thing-at-point-looking-at (rx (+ space))))
+	  (just-one-space))))
 
 (defadvice insert-for-yank (after clean-whitespace)
   "Clean up whitespace when inserting yanked text."
@@ -152,41 +152,41 @@ Work around spacemacs' aggressive manipulation of `face-remapping-alist'."
 (defadvice display-message-or-buffer (before ansi-color activate)
   "Process ANSI color codes in shell output."
   (let ((buf (ad-get-arg 0)))
-    (and (bufferp buf)
-         (string= (buffer-name buf) "*Shell Command Output*")
-         (with-current-buffer buf
-           (ansi-color-apply-on-region (point-min) (point-max))))))
+	(and (bufferp buf)
+		 (string= (buffer-name buf) "*Shell Command Output*")
+		 (with-current-buffer buf
+		   (ansi-color-apply-on-region (point-min) (point-max))))))
 
 ;;; Mode listings
 
 (defconst core/lisp-modes
   `(cider-repl-mode
-    clojure-mode
-    clojurescript-mode
-    common-lisp-mode
-    emacs-lisp-mode
-    geiser-repl-mode
-    inferior-emacs-lisp-mode
-    inferior-lisp-mode
-    inferior-scheme-mode
-    lisp-mode
-    repl-mode
-    scheme-mode
-    slime-mode
-    slime-repl-mode))
+	clojure-mode
+	clojurescript-mode
+	common-lisp-mode
+	emacs-lisp-mode
+	geiser-repl-mode
+	inferior-emacs-lisp-mode
+	inferior-lisp-mode
+	inferior-scheme-mode
+	lisp-mode
+	repl-mode
+	scheme-mode
+	slime-mode
+	slime-repl-mode))
 
 (defconst core/prompt-modes
   '(comint-mode
-    inf-ruby-mode
-    inferior-python-mode
-    ielm-mode
-    erc-mode
-    term-mode
-    utop-mode
-    slime-repl-mode
-    inferior-scheme-mode
-    inferior-haskell-mode
-    sclang-post-buffer-mode))
+	inf-ruby-mode
+	inferior-python-mode
+	ielm-mode
+	erc-mode
+	term-mode
+	utop-mode
+	slime-repl-mode
+	inferior-scheme-mode
+	inferior-haskell-mode
+	sclang-post-buffer-mode))
 
 ;;; Language modes
 
@@ -199,7 +199,7 @@ Work around spacemacs' aggressive manipulation of `face-remapping-alist'."
   "Highlight todos in programming language modes."
   (font-lock-add-keywords
    nil `((,(rx (or "//" (syntax comment-start)) (* nonl) bow (group (or "FIX" "TODO" "FIXME" "HACK" "REFACTOR")) ":")
-          1 font-lock-warning-face t))))
+		  1 font-lock-warning-face t))))
 
 (add-hook 'prog-mode-hook 'core/set-todo-font-lock)
 
@@ -218,7 +218,6 @@ Work around spacemacs' aggressive manipulation of `face-remapping-alist'."
 ;;; Misc config
 
 (setq neo-theme 'arrow)
-
 
 ;; HACK: Work around evil-shift-left bug.
 (defadvice evil-shift-left (around ignore-errors activate)
