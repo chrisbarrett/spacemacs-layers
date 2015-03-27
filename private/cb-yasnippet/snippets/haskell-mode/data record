@@ -1,11 +1,8 @@
-# -*- mode: snippet; require-final-newline: nil -*-
+# key: dr
 # name: data record
-# key: d
-# binding: direct-keybinding
+# expand-env: ((yas-indent-line (quote fixed)) (yas-wrap-around-region (quote t)))
 # condition: (yas/bol?)
-# expand-env: ((yas-indent-line 'fixed) (yas-wrap-around-region 't))
 # --
-data ${1:Name} = ${2:$1}
-  { ${5:member} :: ${6:type}
-  , ${7:member} :: ${8:type} $0
-  } ${3:deriving (${4:Show, Eq})}
+data ${1:Name} = $1
+  { _${2:attr} :: ${3:T}
+  }
