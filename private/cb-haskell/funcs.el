@@ -265,6 +265,14 @@
   (interactive)
   (yas-exit-all-snippets)
   (cond
+   ;; Append new record field
+   ((haskell/at-record-decl-data-header?)
+    (back-to-indentation)
+    (shm/reparse)
+    (shm/goto-parent-end)
+    (search-backward-regexp (rx (or "," "{")))
+    (haskell/insert-record-field)
+    (message "New field"))
 
    ;; Insert new case below the current type decl.
    ((s-matches? (rx bol (* space) "data" (+ space)) (current-line))
@@ -363,6 +371,14 @@
     (message "New line")))
 
   (evil-insert-state))
+
+(defun haskell/at-record-decl-data-header? ()
+  (when (s-matches? (rx bol (* space) "data" space) (current-line))
+    (shm/reparse)
+    (save-excursion
+      (back-to-indentation)
+      (shm/goto-parent-end)
+      (s-matches? "}" (current-line)))))
 
 (defun haskell/newline-and-insert-at-col (col str)
   "Insert STR on a new line at COL."
@@ -466,18 +482,38 @@
 (defun haskell/insert-record-field ()
   (let ((underscore-prefix-style?
          (s-matches? (rx bol (* space) (or "{" ",") (* space) "_") (current-line)))
-        (col
+
+        (inserting-first-field? (haskell/at-record-with-no-fields?))
+
+        (brace-or-comma-column
          (save-excursion
            (goto-char (line-beginning-position))
            (cond ((search-forward-regexp (rx (or "," "{")) nil t)
                   (forward-char -1)
                   (current-column))
                  (t 2)))))
+
     (goto-char (line-end-position))
-    (newline)
-    (indent-to-column col)
+    (if inserting-first-field?
+        (just-one-space)
+      (newline)
+      (indent-to-column brace-or-comma-column))
+
     (yas-expand-snippet
-     (format ", %s${1:field} %s ${2:T}" (if underscore-prefix-style? "_" "") (haskell/fmt-::)))))
+     (format "%s%s${1:field} %s ${2:T}"
+             (if inserting-first-field? "" ", ")
+             (if underscore-prefix-style? "_" "")
+             (haskell/fmt-::)))))
+
+(defun haskell/at-record-with-no-fields? ()
+  (save-excursion
+    (search-backward-regexp (rx bol (* space) "data"))
+    (let ((limit (save-excursion (forward-line) (line-end-position))))
+      (when (search-forward-regexp (rx "{" (not (any "-"))) limit t)
+        (-if-let* (((&plist :op op :beg beg :end end) (sp-get-enclosing-sexp))
+                   (region (ignore-errors (buffer-substring (1+ beg) (1- end)))))
+            (not (s-matches? (rx graphic) region))
+          t)))))
 
 (defun haskell/fmt-::     () (if (haskell/use-unicode-symbols?) "∷" "::"))
 (defun haskell/fmt-rarrow () (if (haskell/use-unicode-symbols?) "→" "->"))
