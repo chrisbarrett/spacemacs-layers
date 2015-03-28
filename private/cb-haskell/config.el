@@ -13,6 +13,9 @@
            (or eol space "{" "(" "["))
       1 'font-lock-comment-face)
 
+     (,(rx (not (any "(")) (group ",") (not (any ")")))
+      1 'font-lock-comment-face)
+
      ("∀" . font-lock-keyword-face)
 
      ,(core/font-lock-replace-match (rx (or (and space (group-n 1 ".") space)
