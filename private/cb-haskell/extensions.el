@@ -1,25 +1,17 @@
 (defvar cb-haskell-pre-extensions
   '(
-    ;; pre extension cb-haskells go here
+    haskell-parser
     )
   "List of all extensions to load before the packages.")
 
 (defvar cb-haskell-post-extensions
   '(
-    ;; post extension cb-haskells go here
     super-smart-ops
     )
   "List of all extensions to load after the packages.")
 
-;; For each extension, define a function cb-haskell/init-<extension-cb-haskell>
-;;
-;; (defun cb-haskell/init-my-extension ()
-;;   "Initialize my extension"
-;;   )
-;;
-;; Often the body of an initialize function uses `use-package'
-;; For more info on `use-package', see readme:
-;; https://github.com/jwiegley/use-package
+(eval-when-compile
+  (require 'use-package nil t))
 
 (defun cb-haskell/init-super-smart-ops ()
   (use-package super-smart-ops
@@ -46,3 +38,27 @@
           (":" . haskell/ghci-smart-colon)
           ("," . haskell/ghci-smart-comma)
           (";" . core/semicolon-then-space))))))
+
+(defun cb-haskell/init-haskell-parser ()
+  (use-package haskell-parser
+    :defer t
+    :init
+    (eval-after-load 'haskell-mode
+      '(require 'haskell-parser))))
+
+(defun cb-haskell/init-liquid-types ()
+  (use-package liquid-types
+    :defer t
+    :init
+    (progn
+      (defun cb-haskell/maybe-init-liquid-haskell ()
+        (when (executable-find "liquid")
+          (require 'flycheck-liquid)
+          (require 'liquid-tip)
+          (flycheck-add-next-checker 'haskell-ghc 'haskell-hlint)
+          ;; (flycheck-add-next-checker 'haskell-hlint 'haskell-liquid)
+          ;;(flycheck-select-checker 'haskell-liquid)
+          (liquid-tip-init 'ascii)))
+
+      (add-hook 'haskell-mode-hook 'cb-haskell/maybe-init-liquid-haskell)
+      (add-hook 'literate-haskell-mode-hook 'cb-haskell/maybe-init-liquid-haskell))))
