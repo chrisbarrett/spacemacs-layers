@@ -1,5 +1,7 @@
+;; -*- lexical-binding: t; -*-
 (require 'dash)
 (require 's)
+(require 'ert)
 
 (defun haskell/after-subexpr-opening? ()
   (s-matches? (rx (or "{" "[" "{-" "{-#" "(#") (* space) eol)
@@ -237,7 +239,6 @@
 (defun haskell/rewrite-symbols-in-buffer ()
   (--each '(("->" "→")
             ("=>" "⇒")
-            ("=>" "⇒")
             ("<-" "←")
             ("::" "∷")
             ("forall" "∀"))
@@ -299,10 +300,12 @@
     (insert "import ")
     (message "New import"))
 
-   ;; Insert pattern match at function definition.
-   ((s-matches? (rx bol (* space) (+ (not space)) (+ space) (or "::" "∷")) (current-line))
-    (haskell/insert-function-template (haskell/first-ident-on-line))
-    (message "New function case"))
+   ;; New function case.
+   ((haskell/at-decl-for-function? (haskell/first-ident-on-line))
+    (let* ((fname (haskell/first-ident-on-line))
+           (parsed (haskell/parse-function-decl fname)))
+      (haskell/insert-function-template fname parsed)
+      (message "New binding case")))
 
    ;; Insert deriving clause
    ((haskell/at-end-of-record-decl?)
@@ -351,13 +354,8 @@
       (shm/forward-node)
       (newline)
       (indent-to col))
-    (yas-expand-snippet (format "${1:b} %s $0" (haskell/fmt-larrow)))
+    (yas-expand-snippet (format "${1:name} %s $0" (haskell/fmt-larrow)))
     (message "New do-binding"))
-
-   ;; New function case.
-   ((haskell/at-decl-for-function? (haskell/first-ident-on-line))
-    (haskell/insert-function-template (haskell/first-ident-on-line))
-    (message "New binding case"))
 
    (t
     (goto-char (line-end-position))
@@ -388,20 +386,31 @@
   (car (-difference (s-split (rx space) (current-line) t)
                     haskell/haskell-keywords)))
 
-(defun haskell/insert-function-template (fname)
+(defun haskell/insert-function-template (fname parsed-typesig)
   (back-to-indentation)
   (when (thing-at-point-looking-at "where")
     (evil-forward-word-begin))
   (let ((col 0))
-    (when (shm-current-node)
-      (save-excursion
-        (setq col (current-column)))
-      (shm/goto-parent-end))
+    (setq col (current-column))
+    (shm/reparse)
+    (shm/goto-parent-end)
 
     (goto-char (line-end-position))
     (newline)
     (indent-to col)
-    (shm-insert-string (concat fname " = _"))))
+    (-let [(&plist :args args) parsed-typesig]
+      (cond
+       (args
+        (let ((args-fmt
+               (->> args
+                    (--map-indexed (format "${%s:{-%s-}}" (1+ it-index) it))
+                    (s-join " "))))
+          (yas-expand-snippet (format "%s %s = ${%s:_}"
+                                      fname
+                                      args-fmt
+                                      (1+ (length args))))))
+       (t
+        (yas-expand-snippet (format "%s = ${1:_}" fname)))))))
 
 (defun haskell/at-decl-for-function? (fname)
   (when fname
@@ -416,6 +425,15 @@
                             (? (or "let" "where") (+ space))
                             ,fname (+ nonl) "="))
                  (current-line)))))
+
+(defun haskell/back-to-function-typesig (fname)
+  (let ((function-decl-rx
+         (rx-to-string `(and bol (* space) (? (or "let" "where") (+ space))
+                             ,fname (+ space) (or "∷" "::")))))
+
+    (if (s-matches? function-decl-rx (current-line))
+        t
+      (search-backward-regexp function-decl-rx nil t))))
 
 (defun haskell/in-data-decl? ()
   (cond
@@ -464,6 +482,190 @@
 (defun haskell/fmt-::     () (if (haskell/use-unicode-symbols?) "∷" "::"))
 (defun haskell/fmt-rarrow () (if (haskell/use-unicode-symbols?) "→" "->"))
 (defun haskell/fmt-larrow () (if (haskell/use-unicode-symbols?) "←" "<-"))
+
+(defun haskell/parse-function-decl (fname)
+  (save-excursion
+    (when (haskell/back-to-function-typesig fname)
+      (let* ((start (point))
+             (end (progn (shm/goto-parent-end) (point)))
+             (typesig (buffer-substring-no-properties start end)))
+
+        (haskell-parser--parse-typesig typesig)))))
+
+
+;; Type signature parser
+
+(defun haskell-parser--parse-typesig (typesig)
+  (with-temp-buffer
+    (insert typesig)
+    (goto-char (point-min))
+    (haskell-parser--consume-::)
+    (let ((forall      (haskell-parser--consume-forall))
+          (constraints (haskell-parser--parse-constraints))
+          (_           (haskell-parser--consume-whitespace))
+          (types       (haskell-parser--parse-types)))
+
+      (list :forall forall
+            :constraints constraints
+            :args (-butlast types)
+            :return-type (-last-item types)))))
+
+(defun haskell-parser--consume-:: ()
+  (search-forward-regexp (rx (or "∷" "::")))
+  (haskell-parser--consume-whitespace))
+
+(defun haskell-parser--consume-forall ()
+  (when (thing-at-point-looking-at "forall")
+    (search-forward ".")))
+
+(defun haskell-parser--parse-constraints ()
+  (when (s-matches? (rx (or "⇒" "=>"))
+                    (buffer-substring (point) (point-max)))
+    (prog1 (->> (haskell-parser--parse-constraint-exprs)
+                (s-chop-prefix "(")
+                (s-chop-suffix ")")
+                (s-split (rx (* space) "," (* space))))
+      (haskell-parser--consume-constraint-arrow))))
+
+(defun haskell-parser--parse-constraint-exprs ()
+  (let ((start (point)))
+    (haskell-parser--consume-whitespace)
+    (while (not (or (eobp) (eolp)
+                    (thing-at-point-looking-at (rx (or "," "--" "⇒" "=>")))))
+      (when (thing-at-point 'sexp)
+        (forward-sexp)
+        (haskell-parser--consume-whitespace)))
+    (while (s-matches? (rx space) (char-to-string (char-before)))
+      (forward-char -1))
+
+    (buffer-substring start (point))))
+
+(defun haskell-parser--consume-whitespace ()
+  (let (consumed?)
+    (while (and (not (eobp))
+                (s-matches? (rx space) (char-to-string (char-after))))
+      (forward-char)
+      (setq consumed? t))
+    consumed?))
+
+(defun haskell-parser--consume-comments ()
+  (while (or (haskell-parser--consume-brace-comment)
+             (haskell-parser--consume-line-comment))
+    (haskell-parser--consume-newline)))
+
+(defun haskell-parser--consume-brace-comment ()
+  (let ((start (point)))
+    (while (and (not (eobp))
+                (thing-at-point-looking-at (rx (* space) "{-")))
+      (haskell-parser--consume-space)
+      (forward-sexp))
+    (let ((end (point)))
+      (when (/= start end)
+        (buffer-substring start end)))))
+
+(defun haskell-parser--consume-line-comment ()
+  (let ((start (point)))
+    (while (and (not (eobp))
+                (thing-at-point-looking-at (rx (* space) "--")))
+      (goto-char (line-end-position))
+      (forward-char))
+    (let ((end (point)))
+      (when (/= start end)
+        (buffer-substring start end)))))
+
+(defun haskell-parser--consume-newline ()
+  (when (eolp)
+    (unless (eobp)
+      (forward-char)
+      t)))
+
+(defun haskell-parser--consume-arrow ()
+  (haskell-parser--consume-whitespace)
+  (cond
+   ((thing-at-point-looking-at "→")  (forward-char 1))
+   ((thing-at-point-looking-at "->") (forward-char 2)))
+  (haskell-parser--consume-whitespace))
+
+(defun haskell-parser--consume-constraint-arrow ()
+  (haskell-parser--consume-whitespace)
+  (cond
+   ((thing-at-point-looking-at "⇒")  (forward-char 1))
+   ((thing-at-point-looking-at "=>") (forward-char 2)))
+  (haskell-parser--consume-whitespace))
+
+(defun haskell-parser--parse-types ()
+  (let ((acc nil) (continue? t))
+    (while continue?
+      (-if-let (arg (haskell-parser--parse-arg))
+          (!cons arg acc)
+        (setq continue? nil))
+      (haskell-parser--consume-arrow))
+    (nreverse acc)))
+
+(defun haskell-parser--parse-arg ()
+  (unless (eobp)
+    (prog1 (haskell-parser--parse-arg-type)
+      (haskell-parser--consume-comments)
+      (haskell-parser--consume-newline))))
+
+(defun haskell-parser--parse-arg-type ()
+  (let ((start (point)))
+    (haskell-parser--consume-whitespace)
+    (while (not (or (eobp) (eolp)
+                    (thing-at-point-looking-at (rx (or "{-" "--" "→" "->")))))
+      (when (thing-at-point 'sexp)
+        (forward-sexp)
+        (haskell-parser--consume-whitespace)))
+    (while (s-matches? (rx space) (char-to-string (char-before)))
+      (forward-char -1))
+
+
+    (buffer-substring start (point))))
+
+;; parser tests
+
+(ert-deftest haskell-parser-test--parse-single-line-typesig-no-args ()
+  (let ((parsed  (haskell-parser--parse-typesig
+                  "discoeDoge :: Doge (Cate Mus)")))
+    (-let [(&plist :return-type ret :args args) parsed]
+      (should (equal "Doge (Cate Mus)" ret))
+      (should (null args)))))
+
+(ert-deftest haskell-parser-test--parse-complex-typesig ()
+  (let ((parsed  (haskell-parser--parse-typesig
+                  "discoeDoge ∷ Doge (Cate Mus)
+                            → (Bar -> Baz) -- much args
+                            -- ^ hey dawg
+                            -> Doge (Bar, Baz)
+                            {- -> Doge (Mus, Cate) -}
+                            → Foo")))
+    (-let [(&plist :return-type ret :args args) parsed]
+      (should (equal "Foo" ret))
+      (should (equal '("Doge (Cate Mus)" "(Bar -> Baz)" "Doge (Bar, Baz)")
+                     args)))))
+
+(ert-deftest haskell-parser-test--parse-single-line-typesig ()
+  (let ((parsed  (haskell-parser--parse-typesig
+                  "discoeDoge ∷ Doge (Cate Mus) → (Doge -> Cate)")))
+    (-let [(&plist :return-type ret :args args) parsed]
+      (should (equal "(Doge -> Cate)" ret))
+      (should (equal '("Doge (Cate Mus)") args)))))
+
+(ert-deftest haskell-parser-test--parse-single-line-typesig-with-constraint ()
+  (let ((parsed  (haskell-parser--parse-typesig
+                  "discoeDoge ∷ Cate d => Doge → (Doge -> d)")))
+    (-let [(&plist :constraints cs :return-type ret :args args) parsed]
+      (should (equal '("Cate d") cs))
+      (should (equal "(Doge -> d)" ret))
+      (should (equal '("Doge") args)))))
+
+(ert-deftest haskell-parser-test--parse-single-line-typesig-with-multiple-constraints ()
+  (let ((parsed  (haskell-parser--parse-typesig
+                  "discoeDoge ∷ (Cate c, Doge d) => c → (d -> c)")))
+    (-let [(&plist :constraints cs :return-type ret :args args) parsed]
+      (should (equal '("Cate c" "Doge d") cs))
+      (should (equal "(d -> c)" ret))
+      (should (equal '("c") args)))))
 
 
 ;;; SHM smart op integration
@@ -662,7 +864,7 @@
 
 (defun haskell/haskell-modules ()
   "Get a list of all Haskell modules known to the current project or GHC."
-  (-union '("Control.Applicative" "Prelude")
+  (-union '("Control.Applicative")
           (-if-let (session (haskell-session-maybe))
               (haskell-session-all-modules session t)
             (->> (shell-command-to-string "ghc-pkg dump")
