@@ -15,6 +15,11 @@
 
      ("∀" . font-lock-keyword-face)
 
+     ,(core/font-lock-replace-match (rx (or (and space (group-n 1 ".") space)
+                                            (and "(" (group-n 1 ".") ")")
+                                            ))
+                                    1 "·")
+
      ;; Lambda forms
      ,(core/font-lock-replace-match "\\s ?(?\\(\\\\\\)\\s *\\(\\w\\|_\\|(.*)\\).*?\\s *->" 1 "λ")
      ,(core/font-lock-replace-match "\\s ?(?\\(\\\\\\)\\s *\\(\\w\\|_\\|(.*)\\).*?\\s *→" 1 "λ")
