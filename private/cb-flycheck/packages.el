@@ -35,4 +35,5 @@ which require an initialization must be listed explicitly in the list.")
     :config
     (progn
       (setq flycheck-display-errors-function 'flycheck-display-error-messages-unless-error-list)
+      (setq flycheck-check-syntax-automatically '(mode-enabled idle-change save))
       (global-flycheck-mode +1))))
