@@ -70,6 +70,12 @@
   "Context-sensitive hash character."
   (interactive)
   (cond
+   ((s-matches? (rx bol (* space) "#" (* space) eol) (current-line))
+    (delete-region (line-beginning-position) (line-end-position))
+    (insert "{-# ")
+    (save-excursion
+      (insert " #-}")))
+
    ((and (s-matches? (rx (or "{-" "(") (* space) eol)
                      (buffer-substring (line-beginning-position) (point)))
          (s-matches? (rx bol (* space) (or "-}" ")"))
@@ -80,6 +86,32 @@
       (insert " #")))
    (t
     (insert "#"))))
+
+(defun haskell/smart-at ()
+  "Context-sensitive at (@) character."
+  (interactive)
+  (cond
+   ((s-matches? (rx bol (* space) "@" (* space) eol) (current-line))
+    (delete-region (line-beginning-position) (line-end-position))
+    (insert "{-@ ")
+    (save-excursion
+      (insert " @-}")))
+
+   ((and (s-matches? (rx "{-" "(" (* space) eol)
+                     (buffer-substring (line-beginning-position) (point)))
+         (s-matches? (rx bol (* space) "-}")
+                     (buffer-substring (point) (line-end-position))))
+    (delete-horizontal-space)
+    (insert "@ ")
+    (save-excursion
+      (insert " @")))
+
+   ((s-matches? "=" (buffer-substring (point) (line-end-position)))
+    (delete-horizontal-space)
+    (insert "@"))
+
+   (t
+    (super-smart-ops-insert "@"))))
 
 (defun haskell/smart-pipe ()
   "Insert a pipe operator. Add padding, unless we're inside a list."
