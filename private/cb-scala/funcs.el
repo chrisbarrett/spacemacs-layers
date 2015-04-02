@@ -402,9 +402,10 @@ Typing three in a row will insert a ScalaDoc."
 
 (autoload 'sbt-start "sbt")
 
+(autoload 'sbt:find-root "sbt-mode")
+
 (defun sbt (dir)
-  (interactive (list (or (sbt:find-root)
-                         (read-directory-name "Project root: " nil nil t))))
+  (interactive (list (read-directory-name "Project root: " (sbt:find-root) nil t)))
   (let ((default-directory dir))
     (sbt-start)))
 
