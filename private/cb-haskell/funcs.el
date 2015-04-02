@@ -2,7 +2,8 @@
 (require 'dash)
 (require 's)
 (require 'ert)
-(require 'haskell-parser)
+(require 'haskell-parser nil t)
+(require 'super-smart-ops nil t)
 
 (defun haskell/after-subexpr-opening? ()
   (s-matches? (rx (or "{" "[" "{-" "{-#" "(#") (* space) eol)
@@ -311,6 +312,7 @@
 
    ;; New function case.
    ((haskell/at-decl-for-function? (haskell/first-ident-on-line))
+    (back-to-indentation)
     (let* ((fname (haskell/first-ident-on-line))
            (parsed (haskell/parse-function-decl fname)))
       (haskell/insert-function-template fname parsed)
