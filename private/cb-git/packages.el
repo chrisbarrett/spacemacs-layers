@@ -8,7 +8,7 @@
   "List of all packages to install and/or initialize. Built-in packages
 which require an initialization must be listed explicitly in the list.")
 
-(defvar cb-git-excluded-packages '()
+(defvar cb-git-excluded-packages '(magit-gh-pulls)
   "List of packages to exclude.")
 
 ;; For each package, define a function cb-git/init-<package-cb-git>
