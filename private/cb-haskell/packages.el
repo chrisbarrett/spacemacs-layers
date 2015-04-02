@@ -4,12 +4,17 @@
     shm
     hindent
     hi2
+    button-lock pos-tip popup ; liquid-haskell dependencies
     )
   "List of all packages to install and/or initialize. Built-in packages
 which require an initialization must be listed explicitly in the list.")
 
 (defvar cb-haskell-excluded-packages '(ghc) ; ghc-mod is currently broken
   "List of packages to exclude.")
+
+(eval-when-compile
+  (require 'use-package nil t)
+  )
 
 (defun cb-haskell/init-haskell-mode ()
   (use-package haskell-mode
@@ -101,3 +106,8 @@ which require an initialization must be listed explicitly in the list.")
     (defadvice ghc-init (around no-keybindings activate)
       (noflet ((define-key (&rest _)))
         ad-do-it))))
+
+(defun cb-haskell/init-button-lock ()
+  (use-package button-lock
+    :diminish button-lock-mode
+    :defer t))

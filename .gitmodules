@@ -31,3 +31,6 @@
 [submodule "private/cb-agda/extensions/agda-mode"]
 	path = private/cb-agda/extensions/agda-mode
 	url = https://github.com/jwiegley/agda-mode.git
+[submodule "private/cb-haskell/extensions/liquid-types"]
+	path = private/cb-haskell/extensions/liquid-types
+	url = https://github.com/ucsd-progsys/liquid-types.el.git

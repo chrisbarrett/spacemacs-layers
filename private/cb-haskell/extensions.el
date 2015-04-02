@@ -7,6 +7,7 @@
 (defvar cb-haskell-post-extensions
   '(
     super-smart-ops
+    liquid-types
     )
   "List of all extensions to load after the packages.")
 
