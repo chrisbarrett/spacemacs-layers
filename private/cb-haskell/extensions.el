@@ -12,7 +12,8 @@
   "List of all extensions to load after the packages.")
 
 (eval-when-compile
-  (require 'use-package nil t))
+  (require 'use-package nil t)
+  (require 'super-smart-ops nil t))
 
 (defun cb-haskell/init-super-smart-ops ()
   (use-package super-smart-ops
