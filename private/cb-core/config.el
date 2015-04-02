@@ -217,6 +217,8 @@ Work around spacemacs' aggressive manipulation of `face-remapping-alist'."
 
 ;;; Misc config
 
+(add-hook 'diff-auto-refine-mode-hook (lambda () (aggressive-indent-mode -1)))
+
 (setq neo-theme 'arrow)
 
 ;; HACK: Work around evil-shift-left bug.
