@@ -4,6 +4,7 @@
     projectile
     skeletor
     helm-projectile
+    neotree
     )
   "List of all packages to install and/or initialize. Built-in packages
 which require an initialization must be listed explicitly in the list.")
@@ -94,3 +95,11 @@ which require an initialization must be listed explicitly in the list.")
       (setq skeletor-show-project-command 'magit-status)
       (setq skeletor-scala-use-ensime t)
       (setq skeletor-user-directory (concat spacemacs-private-directory "cb-project/project-skeletons")))))
+
+(use-package neotree
+  :defer t
+  :config
+  (progn
+    (core/remap-face 'neo-dir-link-face 'default)
+    (set-face-foreground neo-file-link-face solarized-hl-orange)
+    (set-face-foreground neo-root-dir-face solarized-hl-blue)))
