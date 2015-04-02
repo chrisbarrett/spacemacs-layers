@@ -3,6 +3,7 @@
 (global-set-key (kbd "s-v") 'yank)
 (global-set-key (kbd "s-c") 'copy-region-as-kill)
 (global-set-key (kbd "s-n") 'new-frame)
+(global-set-key (kbd "s-w") 'delete-frame)
 
 
 
