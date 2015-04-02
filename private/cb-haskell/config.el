@@ -23,6 +23,10 @@
                                             ))
                                     1 "·")
 
+     ,(core/font-lock-replace-match (rx space (group "->") space) 1 "→")
+     ,(core/font-lock-replace-match (rx space (group "=>") space) 1 "⇒")
+     ,(core/font-lock-replace-match (rx space (group "::") space) 1 "∷")
+
      ;; Lambda forms
      ,(core/font-lock-replace-match "\\s ?(?\\(\\\\\\)\\s *\\(\\w\\|_\\|(.*)\\).*?\\s *->" 1 "λ")
      ,(core/font-lock-replace-match "\\s ?(?\\(\\\\\\)\\s *\\(\\w\\|_\\|(.*)\\).*?\\s *→" 1 "λ")
