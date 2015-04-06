@@ -1,2 +1,2 @@
-(evil-leader/set-key
-   "oc" 'ranger-control/projectile-cd)
+;; (evil-leader/set-key
+;;    "oc" 'ranger-control/projectile-cd)
