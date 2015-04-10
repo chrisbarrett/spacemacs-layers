@@ -28,9 +28,15 @@ which require an initialization must be listed explicitly in the list.")
   (use-package scala-mode2
     :defer t
     :config
-    (custom-set-faces
-     `(scala-font-lock:var-face
-       ((t (:foreground ,solarized-hl-orange :underline nil)))))))
+    (progn
+      (defun cb-scala/set-local-hooks ()
+        (add-hook 'evil-insert-state-exit-hook 'scala/unicode-buffer))
+
+      (add-hook 'scala-mode-hook 'cb-scala/set-local-hooks)
+
+      (custom-set-faces
+       `(scala-font-lock:var-face
+         ((t (:foreground ,solarized-hl-orange :underline nil))))))))
 
 (defun cb-scala/init-ensime ()
   (use-package ensime
