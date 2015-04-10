@@ -18,7 +18,7 @@
 
 (defun scala/configure-ensime ()
   "Ensure the file exists before starting `ensime-mode'."
-  (if (file-exists-p (buffer-file-name))
+  (if (and (buffer-file-name) (file-exists-p (buffer-file-name)))
       (ensime-mode +1)
     (add-hook 'after-save-hook (lambda () (ensime-mode +1)) nil t))
 
