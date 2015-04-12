@@ -481,13 +481,9 @@
   (let ((function-decl-rx
          (rx-to-string `(and bol (* space) (? (or "let" "where") (+ space))
                              ,fname (+ space) (or "∷" "::")))))
-    (cond
-     ((s-matches? function-decl-rx (current-line))
-      (back-to-indentation)
-      (search-forward-regexp (rx (or "let" "where") (* space))
-                             nil t))
-     (t
-      (search-backward-regexp function-decl-rx nil t)))))
+    (if (s-matches? function-decl-rx (current-line))
+        t
+      (search-backward-regexp function-decl-rx nil t))))
 
 (defun haskell/in-data-decl? ()
   (cond
@@ -560,6 +556,7 @@
 (defun haskell/parse-function-decl (fname)
   (save-excursion
     (when (haskell/back-to-function-typesig fname)
+      (shm/reparse)
       (let* ((start (point))
              (end (progn (shm/goto-parent-end) (point)))
              (typesig (buffer-substring-no-properties start end)))
