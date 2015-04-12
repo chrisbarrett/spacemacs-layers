@@ -97,8 +97,8 @@
                 ((tags-todo "-@work-someday-media/NEXT"
                             ((org-agenda-overriding-header "Next Actions")))
                  (agenda "-@work")
-                 (todo "-@work/WAITING"
-                       ((org-agenda-overriding-header "Waiting")))
+                 (tags-todo "-@work/WAITING"
+                            ((org-agenda-overriding-header "Waiting")))
                  (stuck "-@work")
                  (tags-todo "media|study/NEXT"
                             ((org-agenda-overriding-header "Media & Study"))))
@@ -109,7 +109,8 @@
                 ((tags-todo "-study/NEXT"
                             ((org-agenda-overriding-header "Next Actions")))
                  (agenda ""
-                         ((org-agenda-span 'fortnight)))
+                         ((org-agenda-span 'fortnight)
+                          (org-agenda-show-log t)))
                  (todo "WAITING"
                        ((org-agenda-overriding-header "Waiting")))
                  (stuck ""
@@ -149,18 +150,19 @@
                ("r" "Weekly Review"
                 ((agenda ""
                          ((org-agenda-ndays 21)
-                          (org-agenda-start-day "-7d")))
+                          (org-agenda-start-day "-7d")
+                          (org-agenda-show-log t)))
                  (stuck "")
                  (todo "WAITING"
                        ((org-agenda-overriding-header "Waiting")))
+                 (tags-todo "-@work-someday-media/NEXT"
+                            ((org-agenda-overriding-header "Next Actions")))
                  (tags-todo "someday-skill/MAYBE|NEXT"
                             ((org-agenda-overriding-header "Someday")))
                  (tags-todo "someday&skill"
-                            ((org-agenda-overriding-header "Skills")))
-                 (tags-todo "media"
-                            ((org-agenda-overriding-header "Media"))))
+                            ((org-agenda-overriding-header "Skills"))))
                 ((org-agenda-tag-filter-preset
-                  '("-drill" "-gtd" "-work_habit" "-habit"))
+                  '("-drill" "-gtd" "-work_habit" "-habit" "-ignore"))
                  (org-habit-show-habits nil)
                  (org-agenda-include-inactive-timestamps t))))))
 
