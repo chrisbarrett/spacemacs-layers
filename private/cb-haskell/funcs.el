@@ -456,12 +456,12 @@
                (->> args
                     (--map-indexed (format "${%s:{-%s-}}" (1+ it-index) it))
                     (s-join " "))))
-          (yas-expand-snippet (format "%s %s = ${%s:_}"
+          (yas-expand-snippet (format "%s %s = $0"
                                       fname
                                       args-fmt
                                       (1+ (length args))))))
        (t
-        (yas-expand-snippet (format "%s = ${1:_}$0" fname)))))))
+        (yas-expand-snippet (format "%s = $0" fname)))))))
 
 (defun haskell/at-decl-for-function? (fname)
   (when fname
