@@ -18,6 +18,7 @@
                                        scala
                                        markdown
                                        dockerfile
+                                       finance
                                        cb-core
                                        cb-flycheck
                                        cb-org
