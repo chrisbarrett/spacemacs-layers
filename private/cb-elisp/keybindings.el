@@ -12,7 +12,7 @@
 (evil-define-key 'normal emacs-lisp-mode-map (kbd "K") 'elisp-slime-nav-describe-elisp-thing-at-point)
 
 (evil-leader/set-key "ee" 'toggle-debug-on-error)
-(evil-leader/set-key "el" 'find-library)
-(evil-leader/set-key "ef" 'find-function)
-(evil-leader/set-key "ev" 'find-variable)
-(evil-leader/set-key "eF" 'find-face-definition)
+(evil-leader/set-key "hfl" 'find-library)
+(evil-leader/set-key "hff" 'find-function)
+(evil-leader/set-key "hfv" 'find-variable)
+(evil-leader/set-key "hfF" 'find-face-definition)
