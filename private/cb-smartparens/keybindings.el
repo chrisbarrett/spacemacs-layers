@@ -1,4 +1,4 @@
-(after 'smartparens
+(with-eval-after-load 'smartparens
   (sp-pair "(" ")"   :bind "M-(")
   (sp-pair "{" "}"   :bind "M-{")
   (sp-pair "[" "]"   :bind "M-[")

@@ -9,19 +9,11 @@
 (require 'dash)
 
 
-
-(defun -listify (x)
-  "Wrap X in a list if it is not a list."
-  (if (listp x)
-      x
-    (list x)))
+;;; Useful functions
 
 (defun s-unlines (&rest strs)
   "Join STRS with newlines."
   (s-join "\n" strs))
-
-
-;;; Core forms
 
 (defmacro until (test &rest body)
   "If TEST yields nil, eval BODY... and repeat.
@@ -30,31 +22,6 @@ until TEST returns non-nil."
   (declare (indent 1))
   `(while (not ,test)
      ,@body))
-
-
-(defmacro after (features &rest body)
-  "Like `eval-after-load' - once all FEATURES are loaded, execute the BODY.
-FEATURES may be a symbol or list of symbols."
-  (declare (indent 1))
-  ;; Wrap body in a descending list of `eval-after-load' forms.
-  ;; The last form is eval'd to remove its quote.
-  (eval (->> (-listify (eval features))
-             (--map `(eval-after-load ',it))
-             (--reduce-from `'(,@it ,acc)
-                            `'(progn ,@body)))))
-
-(defmacro command (&rest body)
-  "Declare an `interactive' command with BODY forms."
-  `(lambda (&optional _arg &rest _args)
-     (interactive)
-     ,@body))
-
-(defmacro true? (sym)
-  "Test whether SYM is bound and non-nil."
-  `(and (boundp ',sym) (eval ',sym)))
-
-
-;;; Useful functions
 
 (defun current-region (&optional no-properties)
   "Return the current active region, or nil if there is no region active.

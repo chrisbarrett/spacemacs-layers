@@ -1,4 +1,4 @@
-(after 'csharp-mode
+(with-eval-after-load 'csharp-mode
   (require 'omnisharp)
   (evil-leader/set-key-for-mode 'csharp-mode " ii" 'csharp/insert-using)
 

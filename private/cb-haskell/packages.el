@@ -44,7 +44,7 @@ which require an initialization must be listed explicitly in the list.")
 
       (add-hook 'haskell-mode-hook 'cb-haskell/set-local-hooks)
 
-      (after 'haskell
+      (with-eval-after-load 'haskell
         (diminish 'interactive-haskell-mode " λ"))
 
       (put 'haskell-mode 'evil-shift-width 2)

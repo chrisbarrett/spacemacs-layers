@@ -17,8 +17,10 @@ Prefix ARG is passed to `sp-up-sexp'."
            for map in '(smartparens-mode-map smartparens-strict-mode-map)
            do (eval `(bind-key
                       (kbd key)
-                      (command (with-demoted-errors
-                                   (sp/insert-or-up ,key _arg)))
+                      (lambda (&optional arg)
+                        (interactive)
+                        (with-demoted-errors
+                            (sp/insert-or-up ,key arg)))
                       ,map))))
 
 

@@ -9,7 +9,7 @@
 (evil-define-key 'normal org-mode-map (kbd "RET") 'org-return)
 
 ;; Override clashing keybinding
-(after 'flyspell
+(with-eval-after-load 'flyspell
   (define-key flyspell-mode-map (kbd "C-c $") nil))
 
 (bind-key* "<f12>" 'org-work-toggle-at-work)

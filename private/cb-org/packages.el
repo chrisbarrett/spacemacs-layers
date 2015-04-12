@@ -35,7 +35,7 @@ which require an initialization must be listed explicitly in the list.")
       (add-hook 'org-mode-hook 'abbrev-mode)
 
       (defun cb-org/maybe-enable-autofill ()
-        (unless (true? org-jira-mode)
+        (unless (and (boundp 'org-jira-mode) org-jira-mode)
           (turn-on-auto-fill)))
 
       (add-hook 'org-mode-hook 'cb-org/maybe-enable-autofill)

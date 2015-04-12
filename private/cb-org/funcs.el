@@ -167,7 +167,7 @@ Do not change habits, scheduled items or repeating todos."
 (defun org/agenda-dwim ()
   "Show the work agenda view if at work, otherwise the standard agenda."
   (interactive)
-  (if (true? org-work--at-work?)
+  (if (and (boundp 'org-work--at-work?) org-work--at-work?)
       (org-agenda current-prefix-arg "w")
     (org-agenda current-prefix-arg "A"))
   (delete-other-windows))
@@ -320,7 +320,7 @@ are between the current date (DATE) and Easter Sunday."
   "Move a task from TODO to NEXT when clocking in.
 Skips capture tasks, projects, and subprojects.
 Switch projects and subprojects from NEXT back to TODO."
-  (unless (true? org-capture-mode)
+  (unless (and (boundp 'org-capture-mode) org-capture-mode)
     (cond
      ((and (-contains? '("TODO") (org-get-todo-state))
            (org/task?))

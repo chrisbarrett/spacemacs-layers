@@ -21,7 +21,7 @@
 
 
 ;; Redefine `proof-mode' to derive from `prog-mode'.
-(after 'proof-script
+(with-eval-after-load 'proof-script
   (define-derived-mode proof-mode prog-mode
     proof-general-name
     "Proof General major mode class for proof scripts.

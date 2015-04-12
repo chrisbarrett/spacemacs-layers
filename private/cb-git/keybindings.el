@@ -19,7 +19,7 @@
 (evil-global-set-key 'normal (kbd "g p") 'git-gutter:previous-hunk)
 (evil-global-set-key 'normal (kbd "g P") 'magit-key-mode-popup-pushing)
 
-(after 'magit
+(with-eval-after-load 'magit
   (define-key magit-mode-map (kbd "C-k") 'magit-copy-item-as-kill)
   (define-key magit-mode-map (kbd "C-y") 'magit-copy-item-as-kill)
   )

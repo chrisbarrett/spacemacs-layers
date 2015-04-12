@@ -1,4 +1,4 @@
-(after 'smartparens
+(with-eval-after-load 'smartparens
 
   ;;; Remove apostrophe pair for some modes
 
@@ -131,7 +131,7 @@
 
   (require 'smartparens-ruby)
 
-  (after 'ruby-mode
+  (with-eval-after-load 'ruby-mode
     (modify-syntax-entry ?@ "w" ruby-mode-syntax-table)
     (modify-syntax-entry ?_ "w" ruby-mode-syntax-table)
     (modify-syntax-entry ?! "w" ruby-mode-syntax-table)

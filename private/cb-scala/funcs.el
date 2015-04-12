@@ -498,7 +498,7 @@ Typing three in a row will insert a ScalaDoc."
 
 ;; Tweak behaviour of sbt:find-root to search for build.sbt
 
-(after 'sbt-mode-project
+(with-eval-after-load 'sbt-mode-project
   (defun sbt:find-root ()
     "Starting from the current default-directory, find the top-most
 parent directory that is an sbt root. An sbt root directory is

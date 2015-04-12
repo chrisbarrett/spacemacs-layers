@@ -50,5 +50,5 @@
   (use-package scala-errors))
 
 (defun cb-scala/init-scala-pretty-sbt ()
-  (after 'sbt-mode
+  (with-eval-after-load 'sbt-mode
     (require 'scala-pretty-sbt)))

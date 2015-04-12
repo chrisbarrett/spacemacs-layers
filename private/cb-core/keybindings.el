@@ -38,7 +38,7 @@
 
 ;;; Company
 
-(after 'company
+(with-eval-after-load 'company
   (dolist (map (list company-active-map company-search-map company-filter-map))
     (define-key map (kbd "C-n") 'company-select-next)
     (define-key map (kbd "C-p") 'company-select-previous)
@@ -75,7 +75,7 @@
 (bind-key* "M-x" 'helm-M-x)
 (bind-key* "s-b" 'helm-buffers-list)
 
-(after 'helm
+(with-eval-after-load 'helm
   (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action)
   (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action)
   (define-key helm-map (kbd "C-z")  'helm-select-action)

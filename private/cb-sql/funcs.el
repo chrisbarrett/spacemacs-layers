@@ -4,7 +4,7 @@
 
 (defvar sql/last-type-search-query nil)
 
-(after 'aggressive-indent
+(with-eval-after-load 'aggressive-indent
   (add-to-list 'aggressive-indent-excluded-modes 'sql-analysis-mode))
 
 (defvar sql-analysis-mode-map

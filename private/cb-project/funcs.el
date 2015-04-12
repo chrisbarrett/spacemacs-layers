@@ -23,7 +23,7 @@
     (call-interactively 'project/set-scope)
     (project/find-file-in-scope)))
 
-(after 'projectile
+(with-eval-after-load 'projectile
   (defun projectile-relevant-known-projects ()
     "Return a list of known projects except the current one (if present)."
     (if (projectile-project-p)

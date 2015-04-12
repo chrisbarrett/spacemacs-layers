@@ -1,4 +1,4 @@
-(after 'agda2-mode
+(with-eval-after-load 'agda2-mode
   (evil-define-key 'normal agda2-mode-map
     ",l" 'agda2-load
     ",c" 'agda2-make-case

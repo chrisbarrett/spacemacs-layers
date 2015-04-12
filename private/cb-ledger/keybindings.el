@@ -3,7 +3,7 @@
           (lambda ()
             (evil-leader/set-key "o$" 'ledger/goto-ledger-file)))
 
-(after 'ledger-mode
+(with-eval-after-load 'ledger-mode
   (define-key ledger-mode-map (kbd "C-c C-c") 'ledger-report)
   (define-key ledger-mode-map (kbd "M-RET")   'ledger-toggle-current-transaction)
   (define-key ledger-mode-map (kbd "M-q")     'ledger/format-buffer)

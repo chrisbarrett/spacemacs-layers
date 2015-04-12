@@ -1,5 +1,5 @@
 # -*- mode: snippet -*-
-# name: after
+# name: with-eval-after-load
 # key: a
 # --
-(after '$0)
+(with-eval-after-load '$0)

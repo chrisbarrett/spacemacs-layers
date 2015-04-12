@@ -14,7 +14,7 @@
       (setf (flycheck-error-message err) message)))
   errors)
 
-(after 'flycheck
+(with-eval-after-load 'flycheck
   (put 'haskell-ghc
        'flycheck-error-filter
        (lambda (errors)

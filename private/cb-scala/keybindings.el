@@ -1,4 +1,4 @@
-(after 'scala-mode2
+(with-eval-after-load 'scala-mode2
   (define-key scala-mode-map (kbd "M-RET") 'scala/meta-ret)
   (define-key scala-mode-map (kbd "C-c C-e") 'scala/insert-extends)
 
@@ -8,7 +8,7 @@
     (kbd "<return>") 'scala/ret)
   )
 
-(after 'ensime
+(with-eval-after-load 'ensime
   (define-key ensime-inf-mode-map (kbd "C-c C-z") 'scala/switch-to-src)
   (define-key ensime-mode-map (kbd "C-c C-z") 'ensime-inf-switch)
   (define-key ensime-mode-map (kbd "C-c C-l") 'scala/load-buffer)
@@ -29,7 +29,7 @@
   )
 
 
-(after 'sbt-mode
+(with-eval-after-load 'sbt-mode
   (add-hook 'sbt-mode-hook
             (lambda ()
               (local-set-key (kbd "C-l") 'comint-clear-buffer)

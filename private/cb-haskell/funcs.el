@@ -567,14 +567,14 @@
 ;;; SHM smart op integration
 
 (defun haskell/shm-handle-deletions (n)
-  (when (true? structured-haskell-mode)
+  (when (and (boundp 'structured-haskell-mode) structured-haskell-mode)
     (save-excursion
       (shm-appropriate-adjustment-point 'backward)
       (shm-adjust-dependents (point) (- n)))
     (shm/init t)))
 
 (defun haskell/shm-handle-insertions (n)
-  (when (true? structured-haskell-mode)
+  (when (and (boundp 'structured-haskell-mode) structured-haskell-mode)
     (save-excursion
       (shm-appropriate-adjustment-point 'forward)
       (shm-adjust-dependents (point) n))

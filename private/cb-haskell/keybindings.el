@@ -1,4 +1,6 @@
-(after 'haskell-mode
+(require 'dash)
+
+(with-eval-after-load 'haskell-mode
   (evil-define-key 'normal haskell-mode-map (kbd "SPC i i") 'haskell/insert-import)
   (evil-define-key 'normal haskell-mode-map (kbd "SPC i q") 'haskell/insert-qualified-import)
   (evil-define-key 'normal haskell-mode-map (kbd "SPC i l") 'haskell/insert-language-pragma)
@@ -32,25 +34,27 @@
   (define-key haskell-mode-map (kbd "#") 'haskell/smart-hash)
   )
 
-(after '(ghc haskell-mode)
-  (define-key haskell-mode-map (kbd "C-c C-s") 'ghc-case-split)
-  (define-key haskell-mode-map (kbd "C-c C-r") 'ghc-refine)
 
-  (evil-define-key 'normal haskell-mode-map (kbd "C-c C-n") 'ghc-goto-next-hole)
-  (define-key haskell-mode-map (kbd "C-c C-n") 'ghc-goto-next-hole)
+(with-eval-after-load 'ghc
+  (with-eval-after-load 'haskell-mode
+    (define-key haskell-mode-map (kbd "C-c C-s") 'ghc-case-split)
+    (define-key haskell-mode-map (kbd "C-c C-r") 'ghc-refine)
 
-  (evil-define-key 'normal haskell-mode-map (kbd "C-c C-p") 'ghc-goto-prev-hole)
-  (define-key haskell-mode-map (kbd "C-c C-p") 'ghc-goto-prev-hole)
+    (evil-define-key 'normal haskell-mode-map (kbd "C-c C-n") 'ghc-goto-next-hole)
+    (define-key haskell-mode-map (kbd "C-c C-n") 'ghc-goto-next-hole)
 
-  (evil-define-key 'normal haskell-mode-map (kbd "C-c C-k") 'ghc-insert-template-or-signature)
-  (define-key haskell-mode-map (kbd "C-c C-k") 'ghc-insert-template-or-signature)
-  )
+    (evil-define-key 'normal haskell-mode-map (kbd "C-c C-p") 'ghc-goto-prev-hole)
+    (define-key haskell-mode-map (kbd "C-c C-p") 'ghc-goto-prev-hole)
 
-(after 'haskell-cabal-mode
+    (evil-define-key 'normal haskell-mode-map (kbd "C-c C-k") 'ghc-insert-template-or-signature)
+    (define-key haskell-mode-map (kbd "C-c C-k") 'ghc-insert-template-or-signature)
+    ))
+
+(with-eval-after-load 'haskell-cabal-mode
   (define-key haskell-cabal-mode-map (kbd "C-c C-k") 'haskell-interactive-mode-clear)
   )
 
-(after 'haskell-interactive-mode
+(with-eval-after-load 'haskell-interactive-mode
   (define-key haskell-interactive-mode-map (kbd "C-c C-h") 'haskell-hoogle)
   (evil-define-key 'normal haskell-error-mode-map (kbd "q") 'quit-window)
 
@@ -64,10 +68,10 @@
   (evil-define-key 'normal interactive-haskell-mode-map (kbd ",t") 'haskell-mode-show-type-at)
   )
 
-(after 'haskell-presentation-mode
+(with-eval-after-load 'haskell-presentation-mode
   (evil-define-key 'normal haskell-presentation-mode-map (kbd "q") 'quit-window))
 
-(after 'shm
+(with-eval-after-load 'shm
   (evil-define-key 'normal shm-map "J" 'haskell/join-line)
   (evil-define-key 'insert shm-map (kbd "<return>") 'haskell/ret)
   (evil-define-key 'normal shm-map (kbd "M-RET") nil)
