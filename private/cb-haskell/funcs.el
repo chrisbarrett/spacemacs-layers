@@ -481,10 +481,13 @@
   (let ((function-decl-rx
          (rx-to-string `(and bol (* space) (? (or "let" "where") (+ space))
                              ,fname (+ space) (or "∷" "::")))))
-
-    (if (s-matches? function-decl-rx (current-line))
-        t
-      (search-backward-regexp function-decl-rx nil t))))
+    (cond
+     ((s-matches? function-decl-rx (current-line))
+      (back-to-indentation)
+      (search-forward-regexp (rx (or "let" "where") (* space))
+                             nil t))
+     (t
+      (search-backward-regexp function-decl-rx nil t)))))
 
 (defun haskell/in-data-decl? ()
   (cond
