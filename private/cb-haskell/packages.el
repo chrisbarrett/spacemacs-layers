@@ -34,6 +34,10 @@ which require an initialization must be listed explicitly in the list.")
       (setq haskell-process-show-debug-tips)
       (setq haskell-stylish-on-save t)
 
+      (with-eval-after-load 'yasnippet
+        (setq yas-snippet-dirs
+              (--reject (s-matches? "/haskell-mode" it) yas-snippet-dirs)))
+
       (custom-set-faces
        '(haskell-operator-face
          ((t :italic nil))))
