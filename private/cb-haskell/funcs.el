@@ -461,7 +461,7 @@
                                       args-fmt
                                       (1+ (length args))))))
        (t
-        (yas-expand-snippet (format "%s = ${1:_}" fname)))))))
+        (yas-expand-snippet (format "%s = ${1:_}$0" fname)))))))
 
 (defun haskell/at-decl-for-function? (fname)
   (when fname
