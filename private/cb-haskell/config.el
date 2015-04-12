@@ -28,10 +28,12 @@
      ,(core/font-lock-replace-match (rx space (group "::") space) 1 "∷")
 
      ;; Lambda forms
-     ,(core/font-lock-replace-match "\\s ?(?\\(\\\\\\)\\s *\\(\\w\\|_\\|(.*)\\).*?\\s *->" 1 "λ")
-     ,(core/font-lock-replace-match "\\s ?(?\\(\\\\\\)\\s *\\(\\w\\|_\\|(.*)\\).*?\\s *→" 1 "λ")
-     ,(core/font-lock-replace-match (rx (group "\\") "case") 1
-                                    (propertize "λ" 'face 'font-lock-add-keywords)))))
+     ,(core/font-lock-replace-match
+       (rx (group "\\") (and (* space)
+                             (or word "_" (and "(" (* nonl) ")"))
+                             (*? nonl))
+           (* space) (or "->" "→"))
+       1 "λ"))))
 
 (add-hook 'haskell-mode-hook 'haskell/apply-font-locking)
 (add-hook 'haskell-c-mode-hook 'haskell/apply-font-locking)
