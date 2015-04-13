@@ -711,11 +711,11 @@
 
   haskell//language-pragmas)
 
-
-
 (defun haskell/language-pragmas-in-file ()
   "List the language pragmas set in the current file."
-  (--filter (s-matches? it (buffer-string))
+  (--filter (s-matches?
+             (rx-to-string `(and "{-# LANGUAGE" (+ space) (* nonl) ,it))
+             (buffer-string))
             (haskell/language-pragmas)))
 
 (defun haskell/available-language-pragmas ()
