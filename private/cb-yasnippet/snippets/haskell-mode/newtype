@@ -3,4 +3,4 @@
 # expand-env: ((yas-indent-line (quote fixed)) (yas-wrap-around-region (quote t)))
 # condition: (yas/bol?)
 # --
-newtype ${1:Name} = $1 { un$1 :: ${2:Type} }
+newtype ${1:Name} = ${1:$(car (s-split (rx space) yas-text))} { un${1:$(car (s-split (rx space) yas-text))} :: ${2:Type} }
