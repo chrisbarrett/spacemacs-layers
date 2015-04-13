@@ -38,6 +38,9 @@ which require an initialization must be listed explicitly in the list.")
         (setq yas-snippet-dirs
               (--reject (s-matches? "/haskell-mode" it) yas-snippet-dirs)))
 
+      (with-eval-after-load 'flycheck
+        (add-hook 'haskell-interactive-mode-hook (lambda () (flycheck-mode -1))))
+
       (custom-set-faces
        '(haskell-operator-face
          ((t :italic nil))))
