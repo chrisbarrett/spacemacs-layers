@@ -32,10 +32,7 @@ which require an initialization must be listed explicitly in the list.")
       (setq yas-wrap-around-region t)
       (setq yas-verbosity 0)
 
-      (custom-set-faces
-       '(yas-field-highlight-face
-         ((((background light)) :background "lightgreen")
-          (((background dark)) :background "green4" :foreground "grey80"))))
+      (core/remap-face 'yas-field-highlight-face 'core/bg-hl-ok)
 
       (add-hook 'snippet-mode-hook (lambda () (setq-local require-final-newline nil)))
 
