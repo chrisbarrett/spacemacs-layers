@@ -97,6 +97,18 @@ Work around spacemacs' aggressive manipulation of `face-remapping-alist'."
 
 ;;; Custom faces
 
+(defface core/bg-hl-ok
+  '((((background dark))  :background "#01304b")
+    (((background light)) :background "#e9f2c5"))
+  "Face for highlighting regions that represent an 'OK' state."
+  :group 'cb-faces)
+
+(defface core/bg-hl-red
+  '((((background dark))  :background "#51202b")
+    (((background light)) :background "#fee8e5"))
+  "Face for highlighting regions that represent an error state."
+  :group 'cb-faces)
+
 (defface core/bg-flash
   '((((class color) (background light))
 	 :background "darkseagreen2")

@@ -95,10 +95,7 @@ which require an initialization must be listed explicitly in the list.")
     :defer t
     :init (add-hook 'emacs-lisp-mode-hook 'hl-sexp-mode)
     :config
-    (custom-set-faces
-     '(hl-sexp-face
-       ((((background dark))  :background "#01304b")
-        (((background light)) :background "#e9f2c5"))))))
+    (core/remap-face 'hl-sexp-face 'core/bg-hl-ok)))
 
 (defun cb-elisp/init-highlight-defined ()
   (use-package highlight-defined

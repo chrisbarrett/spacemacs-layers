@@ -66,13 +66,8 @@ which require an initialization must be listed explicitly in the list.")
 
       (add-hook 'haskell-mode-hook 'haskell/init-shm-smart-ops-compat)
 
-      (custom-set-faces
-       '(shm-current-face
-         ((((background dark))  :background "#01304b")
-          (((background light)) :background "#e9f2c5")))
-       '(shm-quarantine-face
-         ((((background dark))  :background "#51202b")
-          (((background light)) :background "#fee8e5")))))))
+      (core/remap-face 'shm-current-face 'core/bg-hl-ok)
+      (core/remap-face 'shm-quarantine-face 'core/bg-hl-red))))
 
 (defun cb-haskell/init-hindent ()
   (use-package hindent
