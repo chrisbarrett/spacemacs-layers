@@ -60,8 +60,8 @@ If there are no arguments, the type of the equation is the return-type."
   (haskell-parser--consume-whitespace))
 
 (defun haskell-parser--parse-forall ()
-  (when (thing-at-point-looking-at "forall")
-    (let* ((start (search-forward-regexp (rx "forall" (* space))))
+  (when (thing-at-point-looking-at (rx (or "forall" "∀")))
+    (let* ((start (search-forward-regexp (rx (or "forall" "∀") (* space))))
            (end (1- (search-forward ".")))
            (vars (buffer-substring-no-properties start end)))
       (s-split (rx space) vars t))))
