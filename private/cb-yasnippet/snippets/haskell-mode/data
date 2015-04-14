@@ -3,4 +3,4 @@
 # expand-env: ((yas-indent-line (quote fixed)) (yas-wrap-around-region (quote t)))
 # condition: (yas/bol?)
 # --
-data ${1:Name} = ${2:$1} $0
+data ${1:Name} = ${2:${1:$(yas/haskell-ctor-name)}} $0

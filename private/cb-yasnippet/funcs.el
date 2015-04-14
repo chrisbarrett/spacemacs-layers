@@ -303,3 +303,9 @@ is not the first, or from an unwritable file)."
   "Find the last declared class or struct name in the current file."
   (when (search-backward-regexp (rx "class" (+ space) (group (+ word))) nil t)
     (match-string 1)))
+
+
+;;; Haskell
+
+(defun yas/haskell-ctor-name (&optional text)
+  (car (s-split (rx space) (or text yas/text))))
