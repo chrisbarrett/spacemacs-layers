@@ -10,7 +10,7 @@
    dotspacemacs-configuration-layer-path '()
    ;; List of configuration layers to load. If it is the symbol `all' instead
    ;; of a list then all discovered layers will be installed.
-   dotspacemacs-configuration-layers '(company-mode
+   dotspacemacs-configuration-layers '(auto-completion
                                        auctex
                                        haskell
                                        osx
@@ -19,6 +19,8 @@
                                        markdown
                                        dockerfile
                                        finance
+                                       org
+                                       syntax-checking
                                        cb-core
                                        cb-flycheck
                                        cb-org

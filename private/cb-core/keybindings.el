@@ -84,7 +84,7 @@
 
 ;;; Occur
 
-(spacemacs|evilify 'occur-mode)
+(evilify 'occur-mode occur-mode-map)
 (evil-leader/set-key "oo" 'helm-occur)
 (evil-leader/set-key "om" 'helm-multi-occur)
 (evil-leader/set-key "O" 'occur)

@@ -44,11 +44,11 @@ which require an initialization must be listed explicitly in the list.")
       (evil-set-initial-state 'elfeed-search-mode 'emacs)
       (evil-set-initial-state 'elfeed-show-mode 'emacs)
 
-      (spacemacs|evilify elfeed-search-mode-map
-                         (kbd "q") 'quit-window)
+      (evilify 'elfeed-search-mode elfeed-search-mode-map
+               (kbd "q") 'quit-window)
 
-      (spacemacs|evilify elfeed-show-mode-map
-                         (kbd "q") 'elfeed-kill-buffer)
+      (evilify 'elfeed-show-mode elfeed-show-mode-map
+               (kbd "q") 'elfeed-kill-buffer)
 
       (defconst cb-elfeed/update-timer
         (run-with-timer 1 (* 60 60) 'elfeed-update)))))
