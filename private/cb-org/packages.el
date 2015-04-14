@@ -182,17 +182,6 @@ which require an initialization must be listed explicitly in the list.")
          ((((background light)) :background "#f8f1dc")
           (((background dark))  :background "#11303b"))))
 
-
-      (--each '(org-level-1
-                org-level-2
-                org-level-3
-                org-level-4
-                org-level-5
-                org-level-6
-                org-level-7
-                org-level-8)
-        (custom-set-faces `(,it ((t :font ,(car dotspacemacs-default-font))))))
-
       (setq org-todo-keyword-faces
             `(("NEXT" . ,solarized-hl-orange)
               ("ORGANISE_IN" . ,solarized-hl-orange)
