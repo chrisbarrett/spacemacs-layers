@@ -209,7 +209,7 @@
     ((ignore-errors (s-matches? "ExportSpec" (elt (shm-current-node) 0)))
      (delete-horizontal-space)
      (insert ",")
-     (hi2-indent-line)
+     (haskell-indentation-indent-line)
      (just-one-space))
 
     (t
@@ -314,7 +314,7 @@
     (newline)
     (insert "| ")
     (goto-char (line-beginning-position))
-    (hi2-indent-line)
+    (haskell-indentation-indent-line)
     (goto-char (line-end-position))
     (message "New data case"))
 
@@ -402,7 +402,7 @@
 
    (t
     (goto-char (line-end-position))
-    (hi2-newline-and-indent)
+    (haskell-indentation-newline-and-indent)
     (message "New line")))
 
   (evil-insert-state))

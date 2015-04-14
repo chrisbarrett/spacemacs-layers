@@ -3,7 +3,6 @@
     haskell-mode
     shm
     hindent
-    hi2
     button-lock pos-tip popup ; liquid-haskell dependencies
     )
   "List of all packages to install and/or initialize. Built-in packages
@@ -55,7 +54,28 @@ which require an initialization must be listed explicitly in the list.")
         (diminish 'interactive-haskell-mode " λ"))
 
       (put 'haskell-mode 'evil-shift-width 2)
-      (add-hook 'haskell-mode-hook 'haskell/configure-flyspell))))
+      (add-hook 'haskell-mode-hook 'haskell/configure-flyspell)))
+
+  (use-package haskell-indentation
+    :diminish haskell-indentation-mode
+    :commands turn-on-haskell-indentation
+    :init
+    (add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
+    :config
+    (progn
+
+      (defun cb-haskell/show-indentation-guides ()
+        (when (and (boundp 'haskell-indentation-mode) haskell-indentation-mode)
+          (haskell-indentation-enable-show-indentations)))
+
+      (defun cb-haskell/hide-indentation-guides ()
+        (when (and (boundp 'haskell-indentation-mode) haskell-indentation-mode)
+          (haskell-indentation-disable-show-indentations)))
+
+      ;; Show indentation guides for haskell-indentation only in insert state.
+      (add-hook 'evil-normal-state-entry-hook 'cb-haskell/hide-indentation-guides)
+      (add-hook 'evil-insert-state-entry-hook 'cb-haskell/show-indentation-guides)
+      (add-hook 'evil-insert-state-exit-hook  'cb-haskell/hide-indentation-guides))))
 
 (defun cb-haskell/init-shm ()
   (use-package shm
@@ -76,28 +96,6 @@ which require an initialization must be listed explicitly in the list.")
   (use-package hindent
     :config
     (setq hindent-style "gibiansky")))
-
-(defun cb-haskell/init-hi2 ()
-  (use-package hi2
-    :diminish hi2-mode
-    :commands turn-on-hi2
-    :init
-    (add-hook 'haskell-mode-hook 'turn-on-hi2)
-    :config
-    (progn
-
-      (defun spacemacs/haskell-show-hi2-guides ()
-        (when (and (boundp 'hi2-mode) hi2-mode)
-          (hi2-enable-show-indentations)))
-
-      (defun spacemacs/haskell-hide-hi2-guides ()
-        (when (and (boundp 'hi2-mode) hi2-mode)
-          (hi2-disable-show-indentations)))
-
-      ;; Show indentation guides for hi2 only in insert state.
-      (add-hook 'evil-normal-state-entry-hook 'spacemacs/haskell-hide-hi2-guides)
-      (add-hook 'evil-insert-state-entry-hook 'spacemacs/haskell-show-hi2-guides)
-      (add-hook 'evil-insert-state-exit-hook  'spacemacs/haskell-hide-hi2-guides))))
 
 (use-package ghc
   :commands (ghc-case-split)
