@@ -17,7 +17,7 @@
   "List of all packages to install and/or initialize. Built-in packages
 which require an initialization must be listed explicitly in the list.")
 
-(defvar cb-flycheck-excluded-packages '()
+(defvar cb-flycheck-excluded-packages '(flycheck-pos-tip)
   "List of packages to exclude.")
 
 ;; For each package, define a function cb-flycheck/init-<package-cb-flycheck>
