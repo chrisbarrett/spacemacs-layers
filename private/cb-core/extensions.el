@@ -32,6 +32,9 @@
   (require 'f)
   (require 'dash))
 
+;; Add extension subdirs to load-path
+(--each (f-directories (f-join user-emacs-directory "private/cb-core/extensions/"))
+  (push it load-path))
 (defun cb-core/init-super-smart-ops ()
   (use-package super-smart-ops))
 
