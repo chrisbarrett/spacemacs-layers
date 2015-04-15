@@ -1,6 +1,5 @@
 (defvar cb-core-pre-extensions
   '(
-    ;; pre extension cores go here
     iedit
     super-smart-ops
     hl-line
@@ -9,22 +8,11 @@
 
 (defvar cb-core-post-extensions
   '(
-    ;; post extension cores go here
     ido
     file-template
     recentf
     )
   "List of all extensions to load after the packages.")
-
-;; For each extension, define a function cb-core/init-<extension-core>
-;;
-;; (defun cb-core/init-my-extension ()
-;;   "Initialize my extension"
-;;   )
-;;
-;; Often the body of an initialize function uses `use-package'
-;; For more info on `use-package', see readme:
-;; https://github.com/jwiegley/use-package
 
 (eval-when-compile
   (require 'use-package nil t)
@@ -35,6 +23,7 @@
 ;; Add extension subdirs to load-path
 (--each (f-directories (f-join user-emacs-directory "private/cb-core/extensions/"))
   (push it load-path))
+
 (defun cb-core/init-super-smart-ops ()
   (use-package super-smart-ops))
 
@@ -83,6 +72,8 @@
                       "\\.gz$"
                       "#$"
                       "/elpa/"
+                      "/log/"
+                      "/logs/"
                       "/tmp/"
                       "/temp/"
                       "/target/"
