@@ -56,19 +56,20 @@ which require an initialization must be listed explicitly in the list.")
       (defun colors//tweak-theme-colors-font-lock (&optional restore)
         "Nilify some font locks. If RESTORE in non nil the font locks are
  restored."
-        ;; To make the variables stand out, keyword coloring is disabled
-        (cond
-         (restore
-          (set-attributes-from-alist
-           'font-lock-function-name-face original-font-lock-function-name-face-attributes)
-          (set-attributes-from-alist
-           'font-lock-keyword-face original-font-lock-keyword-face-attributes))
-         (t
-          (set-face-attribute 'font-lock-function-name-face nil
-                              :foreground nil :slant 'normal :weight 'normal)
-          (set-face-attribute 'font-lock-keyword-face nil
-                              :foreground nil :slant 'normal :weight 'bold)))
-        (font-lock-fontify-buffer))
+        (unless (eq 'spacemacs-mode major-mode)
+          ;; To make the variables stand out, keyword coloring is disabled
+          (cond
+           (restore
+            (set-attributes-from-alist
+             'font-lock-function-name-face original-font-lock-function-name-face-attributes)
+            (set-attributes-from-alist
+             'font-lock-keyword-face original-font-lock-keyword-face-attributes))
+           (t
+            (set-face-attribute 'font-lock-function-name-face nil
+                                :foreground nil :slant 'normal :weight 'normal)
+            (set-face-attribute 'font-lock-keyword-face nil
+                                :foreground nil :slant 'normal :weight 'bold)))
+          (font-lock-fontify-buffer)))
 
       (defun colors//tweak-theme-colors (theme)
         "Tweak color themes by adjusting rainbow-identifiers colors settings an by
@@ -76,8 +77,12 @@ disabling some faces in order to make colored identifiers stand out."
         (interactive)
         ;; tweak the saturation and lightness of identifier colors
         (pcase theme
+          (`gotham (setq rainbow-identifiers-cie-l*a*b*-saturation 45
+                         rainbow-identifiers-cie-l*a*b*-lightness 60))
           (`leuven (setq rainbow-identifiers-cie-l*a*b*-saturation 100
-                                  rainbow-identifiers-cie-l*a*b*-lightness 40))
+                         rainbow-identifiers-cie-l*a*b*-lightness 40))
+          (`material (setq rainbow-identifiers-cie-l*a*b*-saturation 95
+                           rainbow-identifiers-cie-l*a*b*-lightness 105))
           (`monokai (setq rainbow-identifiers-cie-l*a*b*-saturation 55
                           rainbow-identifiers-cie-l*a*b*-lightness 60))
           (`solarized-dark (setq rainbow-identifiers-cie-l*a*b*-saturation 65

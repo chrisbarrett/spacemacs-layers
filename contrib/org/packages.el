@@ -54,7 +54,7 @@ which require an initialization must be listed explicitly in the list.")
 
       (eval-after-load 'org-indent
         '(spacemacs|hide-lighter org-indent-mode))
-      (add-hook 'org-mode-hook 'org-indent-mode)
+      (setq org-startup-indented t)
 
       (evil-leader/set-key-for-mode 'org-mode
         "mc" 'org-capture
@@ -72,6 +72,9 @@ which require an initialization must be listed explicitly in the list.")
         '(progn
            (define-key org-agenda-mode-map "j" 'org-agenda-next-line)
            (define-key org-agenda-mode-map "k" 'org-agenda-previous-line)
+           ;; Since we override SPC, let's make RET do that functionality
+           (define-key org-agenda-mode-map
+             (kbd "RET") 'org-agenda-show-and-scroll-up)
            (define-key org-agenda-mode-map
              (kbd "SPC") evil-leader--default-map))))
     :config

@@ -54,6 +54,7 @@
     flx-ido
     flyspell
     fringe-helper
+    gh-md
     golden-ratio
     google-translate
     guide-key-tip
@@ -741,29 +742,40 @@ which require an initialization must be listed explicitly in the list.")
         (ad-disable-advice 'evil-visual-paste 'after 'spacemacs/evil-visual-paste)
         (ad-activate 'evil-visual-paste))
 
-
       ;; define text objects
-      (defmacro spacemacs|define-and-bind-text-object (key name start-regex end-regex)
+      (defmacro spacemacs|define-text-object (key name start end)
         (let ((inner-name (make-symbol (concat "evil-inner-" name)))
-              (outer-name (make-symbol (concat "evil-outer-" name))))
+              (outer-name (make-symbol (concat "evil-outer-" name)))
+              (start-regex (regexp-opt (list start)))
+              (end-regex (regexp-opt (list end))))
           `(progn
              (evil-define-text-object ,inner-name (count &optional beg end type)
                (evil-select-paren ,start-regex ,end-regex beg end type count nil))
              (evil-define-text-object ,outer-name (count &optional beg end type)
                (evil-select-paren ,start-regex ,end-regex beg end type count t))
              (define-key evil-inner-text-objects-map ,key (quote ,inner-name))
-             (define-key evil-outer-text-objects-map ,key (quote ,outer-name)))))
-      ;; between dollars sign:
-      (spacemacs|define-and-bind-text-object "$" "dollar" "\\$" "\\$")
-      ;; between pipe characters:
-      (spacemacs|define-and-bind-text-object "|" "bar" "|" "|")
-      ;; between percent signs:
-      (spacemacs|define-and-bind-text-object "%" "percent" "%" "%")
+             (define-key evil-outer-text-objects-map ,key (quote ,outer-name))
+             (when (configuration-layer/package-usedp 'evil-surround)
+               (push (cons (string-to-char ,key)
+                           (if ,end
+                               (cons ,start ,end)
+                             ,start))
+                     evil-surround-pairs-alist)))))
 
-      ;; add star block
-      (spacemacs|define-and-bind-text-object "*" "star-block" "/*" "*/")
-      ;; add slash block
-      (spacemacs|define-and-bind-text-object "/" "slash-block" "//" "//")
+      (defun spacemacs//standard-text-objects ()
+        ;; between dollars sign:
+        (spacemacs|define-text-object "$" "dollar" "$" "$")
+        ;; define stars
+        (spacemacs|define-text-object "*" "star" "*" "*")
+        ;; define block star text object
+        (spacemacs|define-text-object "8" "block-star" "/*" "*/")
+        ;; between pipe characters:
+        (spacemacs|define-text-object "|" "bar" "|" "|")
+        ;; between percent signs:
+        (spacemacs|define-text-object "%" "percent" "%" "%"))
+
+      (add-to-hook 'prog-mode-hook '(spacemacs//standard-text-objects))
+      (add-to-hook 'emacs-lisp-mode '(lambda () (spacemacs|define-text-object ";" "elisp-comment" ";; " "")))
 
       ;; support smart 1parens-strict-mode
       (if (ht-contains? configuration-layer-all-packages 'smartparens)
@@ -935,6 +947,9 @@ which require an initialization must be listed explicitly in the list.")
     :init
     (progn
       (global-evil-search-highlight-persist)
+      (set-face-attribute 'evil-search-highlight-persist-highlight-face nil
+                          :inherit 'region
+                          :background nil)
       ;; (set-face-attribute )
       (evil-leader/set-key "sc" 'evil-search-highlight-persist-remove-all)
       (define-key evil-search-highlight-persist-map (kbd "C-x SPC") 'rectangle-mark-mode)
@@ -1105,6 +1120,8 @@ which require an initialization must be listed explicitly in the list.")
 
 (defun spacemacs/init-fringe-helper ())
 
+(defun spacemacs/init-gh-md ())
+
 (defun spacemacs/init-golden-ratio ()
   (use-package golden-ratio
     :defer t
@@ -1119,6 +1136,25 @@ which require an initialization must be listed explicitly in the list.")
                           :evil-leader "tg")
     :config
     (progn
+      (setq golden-ratio-exclude-modes '("bs-mode"
+                                         "calc-mode"
+                                         "ediff-mode"
+                                         "dired-mode"
+                                         "gud-mode"
+                                         "gdb-locals-mode"
+                                         "gdb-registers-mode"
+                                         "gdb-breakpoints-mode"
+                                         "gdb-threads-mode"
+                                         "gdb-frames-mode"
+                                         "gdb-inferior-io-mode"
+                                         "gud-mode"
+                                         "gdb-inferior-io-mode"
+                                         "gdb-disassembly-mode"
+                                         "gdb-memory-mode"
+                                         "restclient-mode"
+                                         "speedbar-mode"
+                                         ))
+
       (setq golden-ratio-extra-commands
             (append golden-ratio-extra-commands
                     '(windmove-left
@@ -1269,21 +1305,33 @@ which require an initialization must be listed explicitly in the list.")
               (call-interactively 'helm-do-ag))
           (message "error: helm-ag not found.")))
 
-      (defun spacemacs/helm-do-search-dwim (&optional arg)
-        "Execute the first found search tool.
+      (defun spacemacs//helm-do-search-find-tool (tools)
+        "Create a cond form given a TOOLS string list and evaluate it."
+        (eval `(cond
+                ,@(mapcar (lambda (x)
+                            `((executable-find ,x)
+                              ',(let ((func (intern
+                                             (format "spacemacs/helm-do-%s"
+                                                     x))))
+                                  (if (fboundp func)
+                                      func
+                                    (intern (format "helm-do-%s" x))))))
+                          tools)
+                (t 'helm-do-grep))))
 
-Search for a search tool in the following order pt > ag > ack > grep.
-If ARG is non nil then the search order is changed to ack > grep (ag and pt are
-ignored)."
+      (defun spacemacs/helm-smart-do-search (&optional arg)
+        "Execute the first found search tool in `dotspacemacs-search-tools'.
+
+Search for a search tool in the order provided by `dotspacemacs-search-tools'
+If ARG is non nil then `ag' and `pt' and ignored."
         (interactive "P")
-        (call-interactively
-         (if arg
-             (cond (((executable-find "ack") 'spacemacs/helm-do-ack)
-                    (t 'helm-do-grep)))
-           (cond ((executable-find "pt") 'spacemacs/helm-do-pt)
-                 ((executable-find "ag") 'helm-do-ag)
-                 ((executable-find "ack") 'spacemacs/helm-do-ack)
-                 (t 'helm-do-grep)))))
+        (let ((tools
+               (if arg
+                   (delq nil (mapcar (lambda (x)
+                                       (and (not (member x '("ag" "pt"))) x))
+                                     dotspacemacs-search-tools))
+                 dotspacemacs-search-tools)))
+          (call-interactively (spacemacs//helm-do-search-find-tool tools))))
 
       ;; use helm by default for M-x
       (unless (configuration-layer/package-usedp 'smex)
@@ -1302,7 +1350,7 @@ ignored)."
         "ry"  'helm-show-kill-ring
         "rr"  'helm-register
         "rm"  'helm-all-mark-rings
-        "s/"  'spacemacs/helm-do-search-dwim
+        "s/"  'spacemacs/helm-smart-do-search
         "sa"  'helm-do-ag
         "sg"  'helm-do-grep
         "sk"  'spacemacs/helm-do-ack
@@ -1486,12 +1534,6 @@ ARG non nil means that the editing style is `vim'."
 (defun spacemacs/init-helm-ag ()
   (use-package helm-ag
     :defer t
-    :init
-    (progn
-      (defun spacemacs/helm-do-ack ()
-
-        )
-      )
     :config
     (evil-define-key 'normal helm-ag-map "SPC" evil-leader--default-map)))
 
@@ -1566,24 +1608,37 @@ ARG non nil means that the editing style is `vim'."
               (call-interactively 'helm-projectile-ag))
           (message "error: helm-ag not found.")))
 
-      (defun spacemacs/helm-projectile-search-dwim (&optional arg)
-        "Execute the first found search tool.
+      (defun spacemacs//helm-projectile-do-search-find-tool (tools)
+        "Create a cond form given a TOOLS string list and evaluate it."
+        (eval `(cond
+                ,@(mapcar (lambda (x)
+                            `((executable-find ,x)
+                              ',(let ((func (intern
+                                             (format "spacemacs/helm-projectile-%s"
+                                                     x))))
+                                  (if (fboundp func)
+                                      func
+                                    (intern (format "helm-projectile-%s" x))))))
+                          tools)
+                (t 'helm-do-grep))))
 
-Search for a search tool in the following order pt > ag > ack > grep.
-If ARG is non nil then the search order is changed to ack > grep (ag and pt are
-ignored)."
+      (defun spacemacs/helm-projectile-smart-do-search (&optional arg)
+        "Execute the first found search tool in `dotspacemacs-search-tools'.
+
+Search for a search tool in the order provided by `dotspacemacs-search-tools'
+If ARG is non nil then `ag' and `pt' and ignored."
         (interactive "P")
-        (call-interactively
-         (if arg
-             (cond (((executable-find "ack") 'helm-projectile-ack)
-                    (t 'helm-projectile-grep)))
-           (cond ((executable-find "pt") 'spacemacs/helm-projectile-pt)
-                 ((executable-find "ag") 'helm-projectile-ag)
-                 ((executable-find "ack") 'spacemacs/helm-projectile-ack)
-                 (t 'helm-projectile-grep)))))
+        (let ((tools
+               (if arg
+                   (delq nil (mapcar (lambda (x)
+                                       (and (not (member x '("ag" "pt"))) x))
+                                     dotspacemacs-search-tools))
+                 dotspacemacs-search-tools)))
+          (call-interactively (spacemacs//helm-projectile-do-search-find-tool
+                               tools))))
 
       (evil-leader/set-key
-        "/"   'spacemacs/helm-projectile-search-dwim
+        "/"   'spacemacs/helm-projectile-smart-do-search
         "pb"  'helm-projectile-switch-to-buffer
         "pd"  'helm-projectile-find-dir
         "pe"  'helm-projectile-recentf
@@ -1602,6 +1657,7 @@ ignored)."
     :init
     (setq helm-swoop-split-with-multiple-windows t
           helm-swoop-split-direction 'split-window-vertically
+          helm-swoop-speed-or-color t
           helm-swoop-split-window-function 'helm-default-display-buffer)
     (evil-leader/set-key
       "sS"    'helm-multi-swoop
@@ -2220,6 +2276,13 @@ displayed in the mode-line.")
              (list (spacemacs-powerline-minor-modes line-face 'l)
                    (powerline-raw mode-line-process line-face 'l)
                    (powerline-raw " " line-face)))
+           ;; erc
+           (when (and active
+                      (boundp 'erc-track-mode))
+             ;; Copied from erc-track.el -> erc-modified-channels-display
+             (let* ((buffers (mapcar 'car erc-modified-channels-alist))
+                    (long-names (mapcar #'(lambda (buf) (or (buffer-name buf) "")) buffers)))
+               long-names))
            ;; version control
            (when (and active (or flycheckp spacemacs-mode-line-minor-modesp))
              (list (funcall separator-left (if vc-face line-face face1) vc-face)))
@@ -2228,6 +2291,11 @@ displayed in the mode-line.")
                      (powerline-raw " " vc-face)
                      (funcall separator-right vc-face face2))
              (list (funcall separator-right face1 face2)))
+           ;; org-pomodoro current pomodoro
+           (when (and active
+                      (fboundp 'org-pomodoro-active-p)
+                      (org-pomodoro-active-p))
+             org-pomodoro-mode-line)
            ;; org clocked task
            (when (and active
                       spacemacs-mode-line-org-clock-current-taskp
@@ -2508,17 +2576,15 @@ It is a string holding:
       ;; don't create a pair with single quote in dotspacemacs-mode
       (sp-local-pair 'dotspacemacs-mode "'" nil :actions nil)
 
-      (setq sp-cancel-autoskip-on-backward-movement nil))
+      (setq sp-show-pair-delay 0
+            sp-show-pair-from-inside t ; fix paren highlighting in normal mode
+            sp-cancel-autoskip-on-backward-movement nil))
     :config
     (progn
       (require 'smartparens-config)
       (spacemacs|diminish smartparens-mode " ⓟ" " p")
 
-      ;; disabled for now because it does not play well with evil
-      ;; the point has to be on behind a closing parenthesis to
-      ;; trigger the highlight.
-      ;; When point is on a pair, highlight the matching one
-      ;; (show-smartparens-global-mode +1)
+      (show-smartparens-global-mode +1)
 
       (defun spacemacs/smartparens-pair-newline (id action context)
         (save-excursion

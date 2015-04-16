@@ -17,6 +17,7 @@
     company
     company-c-headers
     flycheck
+    helm-gtags
     stickyfunc-enhance
     )
   "List of all packages to install and/or initialize. Built-in packages
@@ -30,6 +31,9 @@ which require an initialization must be listed explicitly in the list.")
     :defer t
     :config
     (progn
+      (add-to-list 'auto-mode-alist '("\\.cxx$" . c++-mode))
+      (add-to-list 'auto-mode-alist '("\\.hpp$" . c++-mode))
+      (add-to-list 'auto-mode-alist '("\\.h$" . c++-mode))
       (require 'compile)
       (add-to-list 'semantic-default-submodes 'global-semantic-stickyfunc-mode)
       (add-to-list 'semantic-default-submodes 'global-semantic-idle-summary-mode)
@@ -51,6 +55,11 @@ which require an initialization must be listed explicitly in the list.")
 
 (defun c-c++/post-init-flycheck ()
   (add-to-hooks 'flycheck-mode '(c-mode-hook c++-mode-hook)))
+
+(defun c-c++/post-init-helm-gtags ()
+  (add-hook 'c-mode-common-hook 'helm-gtags-mode)
+  (spacemacs/gtags-define-keys-for-mode 'c-mode)
+  (spacemacs/gtags-define-keys-for-mode 'c++-mode))
 
 (defun c-c++/init-srefactor ()
   (use-package srefactor

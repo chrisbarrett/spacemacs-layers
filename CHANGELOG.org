@@ -1,4 +1,14 @@
-* Releases 0.101.x (2015/04/13)
+* Release 0.102.x (in progress)
+_(includes all the hot fixes and backports of version 0.101.x)_
+** Initial Release
+*** New dotfile variables
+- `dotspacemacs-search-tools` list of search tool executable names.
+  Spacemacs uses the first installed tool of the list. Supported
+  tools are `ag`, `pt`, `ack` and `grep`.
+*** Various Improvements and Changes
+- Startup buffer: beautify widgets by giving them different faces
+  (thanks to tuhdo)
+* Release 0.101.x (2015/04/13)
 ** Hot new features
 *** Choose your own editing style
 Thanks to the new `holy-mode` Spacemacs can now  be used by Vim users
@@ -19,16 +29,16 @@ Spacemacs now officially support auto-completion. The old layer
 `company-mode` has been removed and `auto-complete` has been removed
 from the spacemacs layer.
 They are now part of a new layer called `auto-completion`.
-You'll have to this layer to your dotfile to enable auto-completion.
+You'll have to this add layer to your dotfile to enable auto-completion.
 *** Syntax checking
 Flycheck has been removed from the Spacemacs layer and moved to a new
 layer called `syntax-checking`.
-You'll have to this layer to your dotfile to enable on the fly syntax
+You'll have to add this layer to your dotfile to enable the fly syntax
 checking.
 *** Org
 Org packages have been removed from Spacemacs layer and moved to a new
 `org` layer.
-You'll have to this layer to your dotfile to enable the Org
+You'll have to add this layer to your dotfile to enable the Org
 configuration of Spacemacs.
 *** New shortcuts in startup buffer
 Recent files, project and bookmarks can be displayed on the startup
@@ -248,7 +258,14 @@ a batch of packages.
 - Typo and documentation updates (thanks to danielwuz, swaroopch,
   CestDiego, IvanMalison, agevelt, nwolfe)
 ** Hot Fixes
-None
+- Don't display the release notes in the startup buffer when Emacs is restarted
+  after a fresh install
+- Org layer: exclude ox-gfm since it seems problematic for some users.
+- Startup buffer: fix widget activation in `holy-mode` (thanks to tuhdo)
+- Startup buffer: Don't fontify the startup buffer when `rainbow-identifiers`
+  package is used
+- revert back `ag` as the default search tool instead of `pt`, `pt` can
+  conflict with `pt` command line tool from TCL parser tools.
 ** Backports
 None
 * Previous Releases
