@@ -169,7 +169,6 @@ before layers configuration."
   (core/install-package 'dash-functional)
   (core/install-package 'helm) ;; HACK: needed for Spacemacs
 
-  (setq-default git-enable-github-support t)
   (add-to-list 'exec-path "~/.cabal/bin/")
   (add-to-list 'exec-path "~/bin/")
   (load (concat user-emacs-directory "private/cb-core/funcs.el"))
