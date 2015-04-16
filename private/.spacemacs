@@ -10,47 +10,48 @@
    dotspacemacs-configuration-layer-path '()
    ;; List of configuration layers to load. If it is the symbol `all' instead
    ;; of a list then all discovered layers will be installed.
-   dotspacemacs-configuration-layers '(auto-completion
-                                       auctex
-                                       haskell
-                                       osx
-                                       git
-                                       scala
-                                       markdown
-                                       dockerfile
-                                       finance
-                                       org
-                                       syntax-checking
-                                       cb-core
-                                       cb-flycheck
-                                       cb-org
-                                       cb-elisp
-                                       cb-cosmetic
-                                       cb-spelling
-                                       cb-git
-                                       cb-yasnippet
-                                       cb-project
-                                       cb-smartparens
-                                       cb-ledger
-                                       cb-proof
-                                       cb-haskell
-                                       cb-scala
-                                       ;; cb-csharp
-                                       ;; cb-rust
-                                       cb-idris
-                                       cb-agda
-                                       ;; cb-coffeescript
-                                       cb-sql
-                                       cb-shell
-                                       cb-elfeed
-                                       cb-calc
-                                       )
+   dotspacemacs-configuration-layers
+   '(auto-completion
+     auctex
+     haskell
+     osx
+     git
+     scala
+     markdown
+     dockerfile
+     finance
+     org
+     syntax-checking
+     cb-core
+     cb-flycheck
+     cb-org
+     cb-elisp
+     cb-cosmetic
+     cb-spelling
+     cb-git
+     cb-yasnippet
+     cb-project
+     cb-smartparens
+     cb-ledger
+     cb-proof
+     cb-haskell
+     cb-scala
+     ;; cb-csharp
+     ;; cb-rust
+     cb-idris
+     cb-agda
+     ;; cb-coffeescript
+     cb-sql
+     cb-shell
+     cb-elfeed
+     cb-calc
+     )
    ;; A list of packages and/or extensions that will not be install and loaded.
-   dotspacemacs-excluded-packages '(rainbow-delimiters)
+   dotspacemacs-excluded-packages '()
    ;; If non-nil spacemacs will delete any orphan packages, i.e. packages that
    ;; are declared in a layer which is not a member of
    ;; the list `dotspacemacs-configuration-layers'
-   dotspacemacs-delete-orphan-packages t))
+   dotspacemacs-delete-orphan-packages nil))
 
 (defun dotspacemacs/init ()
   "Initialization function.
@@ -59,16 +60,31 @@ before layers configuration."
   ;; This setq-default sexp is an exhaustive list of all the supported
   ;; spacemacs settings.
   (setq-default
-   ;; Specify the startup banner. If the value is an integer then the
-   ;; text banner with the corresponding index is used, if the value is
-   ;; `random' then the banner is chosen randomly among the available banners,
-   ;; if the value is a string then it must be a path to a .PNG file,
-   ;; if the value is nil then no banner is displayed.
-   dotspacemacs-startup-banner 'doge
+   ;; Either `vim' or `emacs'. Evil is always enabled but if the variable
+   ;; is `emacs' then the `holy-mode' is enabled at startup.
+   dotspacemacs-editing-style 'vim
+   ;; If non nil output loading progess in `*Messages*' buffer.
+   dotspacemacs-verbose-loading nil
+   ;; Specify the startup banner. Default value is `official', it displays
+   ;; the official spacemacs logo. An integer value is the index of text
+   ;; banner, `random' chooses a random text banner in `core/banners'
+   ;; directory. A string value must be a path to a .PNG file.
+   ;; If the value is nil then no banner is displayed.
+   ;; dotspacemacs-startup-banner 'official
+   dotspacemacs-startup-banner 'official
+   ;; t if you always want to see the changelog at startup
+   dotspacemacs-always-show-changelog nil
+   ;; List of items to show in the startup buffer. If nil it is disabled.
+   ;; Possible values are: `recents' `bookmarks' `projects'."
+   dotspacemacs-startup-lists '(recents projects)
    ;; List of themes, the first of the list is loaded when spacemacs starts.
    ;; Press <SPC> T n to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
-   dotspacemacs-themes '(solarized-light solarized-dark)
+   dotspacemacs-themes '(solarized-light
+                         solarized-dark
+                         leuven
+                         monokai
+                         zenburn)
    ;; If non nil the cursor color matches the state color.
    dotspacemacs-colorize-cursor-according-to-state t
    ;; Default font. `powerline-scale' allows to quickly tweak the mode-line
@@ -80,9 +96,13 @@ before layers configuration."
                                :powerline-scale 1.1)
    ;; The leader key
    dotspacemacs-leader-key "SPC"
+   ;; The leader key accessible in `emacs state' and `insert state'
+   dotspacemacs-emacs-leader-key nil
    ;; Major mode leader key is a shortcut key which is the equivalent of
    ;; pressing `<leader> m`. Set it to `nil` to disable it.
    dotspacemacs-major-mode-leader-key ","
+   ;; Major mode leader key accessible in `emacs state' and `insert state'
+   dotspacemacs-major-mode-emacs-leader-key nil
    ;; The command key used for Evil commands (ex-commands) and
    ;; Emacs commands (M-x).
    ;; By default the command key is `:' so ex-commands are executed like in Vim
@@ -126,17 +146,20 @@ before layers configuration."
    dotspacemacs-smartparens-strict-mode t
    ;; If non nil advises quit functions to keep server open when quitting.
    dotspacemacs-persistent-server nil
+   ;; List of search tool executable names. Spacemacs uses the first installed
+   ;; tool of the list. Supported tools are `ag', `pt', `ack' and `grep'.
+   dotspacemacs-search-tools '("ag" "pt" "ack" "grep")
    ;; The default package repository used if no explicit repository has been
    ;; specified with an installed package.
    ;; Not used for now.
-   dotspacemacs-default-package-repository nil)
+   dotspacemacs-default-package-repository nil
+   )
   ;; User initialization goes here
-
   (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/"))
 
   (if package-alist
-     (package-initialize)
-   (package-refresh-contents))
+      (package-initialize)
+    (package-refresh-contents))
 
   (core/install-package 's)
   (core/install-package 'noflet)
