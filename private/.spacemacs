@@ -133,16 +133,18 @@ before layers configuration."
   ;; User initialization goes here
 
   (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/"))
-  (package-initialize)
 
-  (core/install-package 'noflet)
+  (if package-alist
+     (package-initialize)
+   (package-refresh-contents))
+
   (core/install-package 's)
+  (core/install-package 'noflet)
   (core/install-package 'f)
   (core/install-package 'let-alist)
   (core/install-package 'dash)
   (core/install-package 'dash-functional)
-  ;; (core/install-package 'helm)
-  ;; (require 'helm-mode)
+  (core/install-package 'helm) ;; HACK: needed for Spacemacs
 
   (setq-default git-enable-github-support t)
   (add-to-list 'exec-path "~/.cabal/bin/")
@@ -151,8 +153,6 @@ before layers configuration."
   (load (concat user-emacs-directory "private/cb-core/config.el")))
 
 (defun core/install-package (pkg)
-  (unless package-archives
-    (package-refresh-contents))
   (cond
    ((require 'paradox nil t)
     (paradox-require pkg))

@@ -5,7 +5,8 @@
 	  (menu-bar-mode +1)
 	(menu-bar-mode -1)))
 
-(window-numbering-mode -1)
+(when (boundp 'window-numbering-mode)
+  (window-numbering-mode -1))
 
 (defvar spacemacs-private-directory (concat user-emacs-directory "private/"))
 (defvar spacemacs-autosaves-directory (concat user-emacs-directory "autosaves/"))
