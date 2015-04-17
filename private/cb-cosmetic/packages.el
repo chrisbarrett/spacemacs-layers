@@ -38,7 +38,7 @@ which require an initialization must be listed explicitly in the list.")
       (setq whitespace-style '(face lines-tail))
 
       (defun core/maybe-enable-whitespace-mode ()
-        (unless (or (derived-mode-p 'haskell-mode 'org-mode)
+        (unless (or (derived-mode-p 'haskell-mode 'org-mode 'scala-mode)
                     (and (boundp 'org-src-mode) org-src-mode))
           (whitespace-mode +1)
           (setq whitespace-line-column fill-column)))
