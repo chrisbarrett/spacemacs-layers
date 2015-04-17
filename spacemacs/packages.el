@@ -874,12 +874,12 @@ which require an initialization must be listed explicitly in the list.")
             '(motion visual))
       ;; emacs and insert states (make it also available in other states
       ;; for consistency and POLA.)
-      (mapc (lambda (s)
-              (eval `(define-key
-                       ,(intern (format "evil-%S-state-map" s))
-                       ,(kbd dotspacemacs-emacs-leader-key)
-                       evil-leader--default-map)))
-            '(emacs insert normal visual motion))
+      ;; (mapc (lambda (s)
+      ;;         (eval `(define-key
+      ;;                  ,(intern (format "evil-%S-state-map" s))
+      ;;                  ,(kbd dotspacemacs-emacs-leader-key)
+      ;;                  evil-leader--default-map)))
+      ;;       '(emacs insert normal visual motion))
       ;; experimental: map SPC m to ,
       (when dotspacemacs-major-mode-leader-key
         (add-hook 'after-change-major-mode-hook

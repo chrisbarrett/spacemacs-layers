@@ -93,12 +93,13 @@ a key sequence. NAME is a symbol name used as the prefix command."
                      ,(kbd dotspacemacs-major-mode-leader-key)
                      major-mode-map)))
           '(normal motion))
-    (mapc (lambda (s)
-            (eval `(define-key
-                     ,(intern (format "evil-%S-state-local-map" s))
-                     ,(kbd dotspacemacs-major-mode-emacs-leader-key)
-                     major-mode-map)))
-          '(emacs insert normal motion visual))))
+    ;; (mapc (lambda (s)
+    ;;         (eval `(define-key
+    ;;                  ,(intern (format "evil-%S-state-local-map" s))
+    ;;                  ,(kbd dotspacemacs-major-mode-emacs-leader-key)
+    ;;                  major-mode-map)))
+    ;;       '(emacs insert normal motion visual))
+    ))
 
 (defun spacemacs/split-and-new-line ()
   "Split a quoted string or s-expression and insert a new line with
