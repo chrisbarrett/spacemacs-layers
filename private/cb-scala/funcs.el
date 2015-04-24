@@ -457,11 +457,33 @@ Typing three in a row will insert a ScalaDoc."
            (kill-proc-buffer
             (lambda (_ status)
               (when (s-matches? "finished" status)
+                (scala/fix-ensime-file)
                 (ignore-errors
                   (funcall kill-process-buffer))
                 (message "Ensime successfully initialised"))))
            )
       (set-process-sentinel proc kill-proc-buffer))))
+
+(defun scala/fix-ensime-file (&optional file)
+  "Fix malformed scalariform settings in FILE."
+  (interactive)
+  (let* ((ensime-prefer-noninteractive t)
+         (file (or file (ensime-config-find))))
+    (with-current-buffer (find-file-noselect file)
+      (scala/fix-dot-ensime)
+      (let ((modified? (buffer-modified-p)))
+        (save-buffer 0)
+        (if modified?
+            (message "Fixed ensime file")
+          (message "No changes were needed"))))))
+
+(defun scala/fix-dot-ensime ()
+  (let ((invalid-formatter-rx
+         (rx ":alignSingleLineCaseStatements" (group ".") "maxArrowIndent")))
+    (save-excursion
+      (goto-char (point-min))
+      (while (search-forward-regexp invalid-formatter-rx nil t)
+        (replace-match "_" t t nil 1)))))
 
 
 ;;; Test switching
