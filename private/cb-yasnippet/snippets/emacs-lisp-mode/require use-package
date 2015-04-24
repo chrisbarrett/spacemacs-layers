@@ -1,0 +1,7 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: require use-package
+# key: rup
+# binding: direct-keybinding
+# --
+(eval-when-compile
+  (require 'use-package nil t))
