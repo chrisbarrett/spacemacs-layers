@@ -52,9 +52,9 @@ which require an initialization must be listed explicitly in the list.")
       (defconst scala/test-file-template
         "package %TESTPACKAGE%
 
-import org.scalatest.{ FunSpec, Matchers }
+import org.scalatest.{ WordSpec, Matchers }
 
-class %TESTCLASS% extends FunSpec with Matchers {
+class %TESTCLASS% extends WordSpec with Matchers {
 
 }
 "
