@@ -1,6 +1,9 @@
+;;; packages.el --- cb-git Layer packages File for Spacemacs
+;;; Commentary:
+;;; Code:
+
 (defvar cb-git-packages
   '(
-    ;; package cb-gits go here
     git-gutter
     git-auto-commit-mode
     git-commit-mode
@@ -11,15 +14,8 @@ which require an initialization must be listed explicitly in the list.")
 (defvar cb-git-excluded-packages '()
   "List of packages to exclude.")
 
-;; For each package, define a function cb-git/init-<package-cb-git>
-;;
-;; (defun cb-git/init-my-package ()
-;;   "Initialize my package"
-;;   )
-;;
-;; Often the body of an initialize function uses `use-package'
-;; For more info on `use-package', see readme:
-;; https://github.com/jwiegley/use-package
+(eval-when-compile
+  (require 'use-package nil t))
 
 (defun cb-git/init-git-auto-commit-mode ()
   (use-package git-auto-commit-mode

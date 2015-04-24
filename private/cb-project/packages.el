@@ -1,6 +1,9 @@
+;;; packages.el --- cb-project Layer packages File for Spacemacs
+;;; Commentary:
+;;; Code:
+
 (defvar cb-project-packages
   '(
-    ;; package cb-projects go here
     projectile
     skeletor
     helm-projectile
@@ -11,16 +14,6 @@ which require an initialization must be listed explicitly in the list.")
 
 (defvar cb-project-excluded-packages '()
   "List of packages to exclude.")
-
-;; For each package, define a function cb-project/init-<package-cb-project>
-;;
-;; (defun cb-project/init-my-package ()
-;;   "Initialize my package"
-;;   )
-;;
-;; Often the body of an initialize function uses `use-package'
-;; For more info on `use-package', see readme:
-;; https://github.com/jwiegley/use-package
 
 (eval-when-compile
   (require 'use-package nil t)

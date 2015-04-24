@@ -1,3 +1,7 @@
+;;; extensions.el --- cb-haskell Layer extensions File for Spacemacs
+;;; Commentary:
+;;; Code:
+
 (defvar cb-haskell-pre-extensions
   '(
     haskell-parser

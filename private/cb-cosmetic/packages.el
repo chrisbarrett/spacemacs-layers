@@ -1,3 +1,7 @@
+;;; packages.el --- cb-cosmetic Layer packages File for Spacemacs
+;;; Commentary:
+;;; Code:
+
 (defvar cb-cosmetic-packages
   '(
     paren-face

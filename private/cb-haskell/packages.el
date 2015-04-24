@@ -1,3 +1,7 @@
+;;; packages.el --- cb-haskell Layer packages File for Spacemacs
+;;; Commentary:
+;;; Code:
+
 (defvar cb-haskell-packages
   '(
     haskell-mode
@@ -12,8 +16,7 @@ which require an initialization must be listed explicitly in the list.")
   "List of packages to exclude.")
 
 (eval-when-compile
-  (require 'use-package nil t)
-  )
+  (require 'use-package nil t))
 
 (defun cb-haskell/init-haskell-mode ()
   (use-package haskell-mode

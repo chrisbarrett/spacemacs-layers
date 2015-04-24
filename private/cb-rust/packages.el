@@ -1,6 +1,9 @@
+;;; packages.el --- cb-rust Layer packages File for Spacemacs
+;;; Commentary:
+;;; Code:
+
 (defvar cb-rust-packages
   '(
-    ;; package cb-rusts go here
     rust-mode
     flycheck-rust
     )
@@ -10,15 +13,8 @@ which require an initialization must be listed explicitly in the list.")
 (defvar cb-rust-excluded-packages '()
   "List of packages to exclude.")
 
-;; For each package, define a function cb-rust/init-<package-cb-rust>
-;;
-;; (defun cb-rust/init-my-package ()
-;;   "Initialize my package"
-;;   )
-;;
-;; Often the body of an initialize function uses `use-package'
-;; For more info on `use-package', see readme:
-;; https://github.com/jwiegley/use-package
+(eval-when-compile
+  (require 'use-package nil t))
 
 (defun cb-rust/init-rust-mode ()
   (use-package rust-mode

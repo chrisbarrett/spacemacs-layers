@@ -1,14 +1,6 @@
 ;;; extensions.el --- cb-agda Layer extensions File for Spacemacs
-;;
-;; Copyright (c) 2012-2014 Sylvain Benner
-;; Copyright (c) 2014-2015 Sylvain Benner & Contributors
-;;
-;; Author: Sylvain Benner <sylvain.benner@gmail.com>
-;; URL: https://github.com/syl20bnr/spacemacs
-;;
-;; This file is not part of GNU Emacs.
-;;
-;;; License: GPLv3
+;;; Commentary:
+;;; Code:
 
 (defvar cb-agda-pre-extensions
   '(agda-mode)
@@ -19,6 +11,8 @@
     aggressive-indent)
   "List of all extensions to load after the packages.")
 
+(eval-when-compile
+  (require 'use-package nil t))
 
 (defun cb-agda/init-super-smart-ops ()
   (use-package super-smart-ops

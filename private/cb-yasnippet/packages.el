@@ -1,12 +1,17 @@
+;;; packages.el --- cb-yasnippet Layer packages File for Spacemacs
+;;; Commentary:
+;;; Code:
+
 (defvar cb-yasnippet-packages
-  '(
-    yasnippet
-    )
+  '(yasnippet)
   "List of all packages to install and/or initialize. Built-in packages
 which require an initialization must be listed explicitly in the list.")
 
 (defvar cb-yasnippet-excluded-packages '()
   "List of packages to exclude.")
+
+(eval-when-compile
+  (require 'use-package nil t))
 
 (defun cb-yasnippet/init-yasnippet ()
   (use-package yasnippet

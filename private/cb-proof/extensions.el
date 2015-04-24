@@ -1,6 +1,9 @@
+;;; extensions.el --- cb-proof Layer extensions File for Spacemacs
+;;; Commentary:
+;;; Code:
+
 (defvar cb-proof-pre-extensions
   '(
-    ;; pre extension cb-proofs go here
     proof-site
     coq
     proof-script
@@ -9,20 +12,11 @@
   "List of all extensions to load before the packages.")
 
 (defvar cb-proof-post-extensions
-  '(
-    ;; post extension cb-proofs go here
-    )
+  '()
   "List of all extensions to load after the packages.")
 
-;; For each extension, define a function cb-proof/init-<extension-cb-proof>
-;;
-;; (defun cb-proof/init-my-extension ()
-;;   "Initialize my extension"
-;;   )
-;;
-;; Often the body of an initialize function uses `use-package'
-;; For more info on `use-package', see readme:
-;; https://github.com/jwiegley/use-package
+(eval-when-compile
+  (require 'use-package nil t))
 
 (defun cb-proof/init-proof-site ()
   (use-package proof-site

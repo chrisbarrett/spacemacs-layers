@@ -1,3 +1,7 @@
+;;; extensions.el --- cb-core Layer extensions File for Spacemacs
+;;; Commentary:
+;;; Code:
+
 (defvar cb-core-pre-extensions
   '(
     iedit

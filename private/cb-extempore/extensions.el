@@ -11,7 +11,7 @@
   "List of all extensions to load after the packages.")
 
 (eval-when-compile
-  (require 'use-package))
+  (require 'use-package nil t))
 
 (defun cb-extempore/init-extempore ()
   (use-package extempore

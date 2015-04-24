@@ -1,23 +1,17 @@
+;;; packages.el --- cb-idris Layer packages File for Spacemacs
+;;; Commentary:
+;;; Code:
+
 (defvar cb-idris-packages
-  '(
-    ;; package cb-idriss go here
-    idris-mode
-    )
+  '(idris-mode)
   "List of all packages to install and/or initialize. Built-in packages
 which require an initialization must be listed explicitly in the list.")
 
 (defvar cb-idris-excluded-packages '()
   "List of packages to exclude.")
 
-;; For each package, define a function cb-idris/init-<package-cb-idris>
-;;
-;; (defun cb-idris/init-my-package ()
-;;   "Initialize my package"
-;;   )
-;;
-;; Often the body of an initialize function uses `use-package'
-;; For more info on `use-package', see readme:
-;; https://github.com/jwiegley/use-package
+(eval-when-compile
+  (require 'use-package nil t))
 
 (defun cb-idris/init-idris-mode ()
   (use-package idris-mode
