@@ -69,6 +69,9 @@ which require an initialization must be listed explicitly in the list.")
 
       (setq ag-ignore-list (-map 'regexp-quote projectile-globally-ignored-directories))
 
+      (defadvice projectile-invalidate-cache (before recentf-cleanup activate)
+        (recentf-cleanup))
+
       (add-hook 'after-init-hook
                 (lambda ()
                   (setq projectile-completion-system 'helm)
