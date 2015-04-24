@@ -104,6 +104,12 @@ Work around spacemacs' aggressive manipulation of `face-remapping-alist'."
   "Face for highlighting regions that represent an 'OK' state."
   :group 'cb-faces)
 
+(defface core/bg-hl-template
+  '((((background dark))  :background "#3f4d91")
+    (((background light)) :background "#9ea0e5"))
+  "Face for active template fields."
+  :group 'cb-faces)
+
 (defface core/bg-hl-red
   '((((background dark))  :background "#51202b")
     (((background light)) :background "#fee8e5"))

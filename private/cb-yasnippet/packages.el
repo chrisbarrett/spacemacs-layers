@@ -22,7 +22,7 @@ which require an initialization must be listed explicitly in the list.")
       (setq yas-wrap-around-region t)
       (setq yas-verbosity 0)
 
-      (core/remap-face 'yas-field-highlight-face 'core/bg-hl-ok)
+      (core/remap-face 'yas-field-highlight-face 'core/bg-hl-template)
 
       (add-hook 'snippet-mode-hook (lambda () (setq-local require-final-newline nil)))
 
