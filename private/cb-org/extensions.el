@@ -155,7 +155,8 @@
                 ((org-agenda-tag-filter-preset
                   '("-drill" "-gtd" "-work_habit" "-habit" "-ignore"))
                  (org-habit-show-habits nil)
-                 (org-agenda-include-inactive-timestamps t))))))
+                 (org-agenda-include-inactive-timestamps t)
+                 (org-agenda-use-time-grid nil))))))
 
       ;; Refresh agenda every minute, so long as Emacs has been idle for a period.
       ;; This prevents agenda buffers from getting stale.
