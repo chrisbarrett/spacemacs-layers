@@ -7,6 +7,7 @@
     org
     org-drill-table
     org-jira
+    gnuplot
     )
   "List of all packages to install and/or initialize. Built-in packages
 which require an initialization must be listed explicitly in the list.")
@@ -277,3 +278,18 @@ which require an initialization must be listed explicitly in the list.")
 
       (defadvice org-jira-update-comments-for-current-issue (after notify activate)
         (message "Comments updated.")))))
+
+(defun cb-org/init-gnuplot ()
+  (use-package gnuplot
+    :defer t
+    :config
+    (progn
+      (setq gnuplot-image-format "png")
+      (setq gnuplot-inline-image-mode 'dedicated)
+      (add-hook 'gnuplot-mode-hook 'page-break-lines-mode)
+
+      (defadvice org-plot/gnuplot (around display-buffer activate)
+        (ignore-errors ad-do-it)
+        (-when-let (buf (get-buffer gnuplot-image-buffer-name))
+          (display-buffer buf)))
+      )))

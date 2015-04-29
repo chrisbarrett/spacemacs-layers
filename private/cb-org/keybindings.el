@@ -5,6 +5,7 @@
 (define-key org-mode-map (kbd "C-c C-k") 'org/ctrl-c-ctrl-k)
 (define-key org-mode-map (kbd "C-c RET") 'org/ctrl-c-ret)
 (define-key org-mode-map (kbd "C-c ;")   nil)
+(define-key org-mode-map (kbd "M-C-g")   'org-plot/gnuplot)
 
 (evil-define-key 'normal org-mode-map (kbd "RET") 'org-return)
 
@@ -29,3 +30,4 @@
 (define-key org-agenda-mode-map (kbd "C-b") 'evil-scroll-page-up)
 
 (evil-leader/set-key "oh" 'helm-org-agenda-files-headings)
+(evil-leader/set-key-for-mode 'org-mode "mP" 'org-plot/gnuplot)
