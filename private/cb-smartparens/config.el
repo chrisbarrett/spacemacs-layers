@@ -6,6 +6,7 @@
     (sp-local-pair "'" "'" :actions '(:rem insert)))
 
   (sp-local-pair 'org-mode                 "'" "'" :actions '(:rem insert))
+  (sp-local-pair 'extempore-mode           "'" "'" :actions '(:rem insert))
   (sp-local-pair 'text-mode                "'" "'" :actions '(:rem insert))
   (sp-local-pair 'minibuffer-inactive-mode "'" "'" :actions '(:rem insert))
 
