@@ -192,7 +192,9 @@ Work around spacemacs' aggressive manipulation of `face-remapping-alist'."
 	repl-mode
 	scheme-mode
 	slime-mode
-	slime-repl-mode))
+	slime-repl-mode
+    extempore-mode
+    inferior-extempore-mode))
 
 (defconst core/prompt-modes
   '(comint-mode
