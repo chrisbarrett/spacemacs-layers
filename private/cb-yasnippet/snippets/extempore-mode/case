@@ -1,0 +1,8 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: case
+# key: c
+# binding: direct-keybinding
+# --
+(case ${1:x}
+  ($2)
+  (else $0))

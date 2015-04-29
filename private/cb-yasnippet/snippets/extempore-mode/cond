@@ -1,0 +1,7 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: cond
+# key: c
+# binding: direct-keybinding
+# --
+(cond ($1)
+      (else $0))

@@ -1,0 +1,6 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: play-note
+# key: pn
+# binding: direct-keybinding
+# --
+(play-note (now) $0)

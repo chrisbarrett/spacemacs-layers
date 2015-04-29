@@ -1,0 +1,7 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: bind-instrument
+# key: bi
+# binding: direct-keybinding
+# condition: (yas/bol?)
+# --
+(bind-instrument $0)

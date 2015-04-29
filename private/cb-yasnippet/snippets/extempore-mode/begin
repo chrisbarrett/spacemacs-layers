@@ -1,0 +1,6 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: begin
+# key: b
+# binding: direct-keybinding
+# --
+(begin $0)

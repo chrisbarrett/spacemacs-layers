@@ -1,0 +1,7 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: play
+# key: p
+# binding: direct-keybinding
+# condition: (yas/bol?)
+# --
+(play $0)

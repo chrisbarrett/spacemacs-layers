@@ -1,0 +1,13 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: define-loop
+# key: dl
+# binding: direct-keybinding
+# condition: (yas/bol?)
+# --
+(define (${1:fname} beat dur)
+  $0
+  (callback (*metro* beat) '$1
+            (+ beat dur)
+            dur))
+
+($1 (*metro* 'get-beat n) d)
