@@ -40,21 +40,8 @@ which require an initialization must be listed explicitly in the list.")
     :diminish whitespace-mode
     :config
     (progn
-      (setq whitespace-style '(face lines-tail))
-
-      (defun core/maybe-enable-whitespace-mode ()
-        (unless (or (derived-mode-p 'haskell-mode 'org-mode 'scala-mode)
-                    (and (boundp 'org-src-mode) org-src-mode))
-          (whitespace-mode +1)
-          (setq whitespace-line-column fill-column)))
-
-      (add-hook 'prog-mode-hook 'core/maybe-enable-whitespace-mode)
-
       ;; HACK: override Spacemacs setting
-      (add-hook 'prog-mode-hook
-                (lambda ()
-                  (setq show-trailing-whitespace nil))
-                t)
+      (remove-hook 'prog-mode-hook (lambda () (setq show-trailing-whitespace 1)))
 
       (defadvice whitespace-turn-on (around ignore-errors activate)
         "Ignore void-function errors when starting whitespace mode."
