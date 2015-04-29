@@ -18,4 +18,13 @@
     :mode (("\\.xtm\\'" . extempore-mode))
     :commands (extempore-mode extempore-repl)
     :config
-    (setq extempore-keydef (kbd "C-c C-c"))))
+    (progn
+      (setq extempore-keydef (kbd "C-c C-c"))
+      (setq extempore-tab-completion nil)
+      (setq user-extempore-directory "/usr/local/Cellar/extempore/0.59")
+      (core/remap-face 'extempore-blink-face 'core/bg-hl-ok)
+      (core/remap-face 'extempore-sb-blink-face 'core/bg-hl-ok)
+
+      (define-key extempore-mode-map (kbd "C-c C-.") 'extempore-stop)
+      (define-key extempore-mode-map (kbd "C-c C-b") 'extempore-send-buffer-or-region)
+      (define-key extempore-mode-map (kbd "C-c C-f") 'extempore-send-buffer-or-region))))
