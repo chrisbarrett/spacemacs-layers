@@ -7,6 +7,8 @@
 
 
 
+(global-unset-key (kbd "C-z"))
+
 (global-set-key (kbd "C-c e e") 'toggle-debug-on-error)
 (global-set-key (kbd "C-x a a") 'align-regexp)
 
