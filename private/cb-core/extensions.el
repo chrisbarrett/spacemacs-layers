@@ -13,7 +13,6 @@
 (defvar cb-core-post-extensions
   '(
     ido
-    file-template
     recentf
     )
   "List of all extensions to load after the packages.")
@@ -30,23 +29,6 @@
 
 (defun cb-core/init-super-smart-ops ()
   (use-package super-smart-ops))
-
-(defun cb-core/init-file-template ()
-  (use-package file-template
-    :config
-    (progn
-      (setq core/file-templates-dir (f-join spacemacs-private-directory
-                                            "cb-core/extensions/file-template"
-                                            "templates"))
-      (setq file-template-insert-automatically t)
-      (setq file-template-paths (list core/file-templates-dir))
-      (setq file-template-mapping-alist
-            (->> (f-files core/file-templates-dir)
-                 (-map 'f-filename)
-                 (--map (cons (format "\\.%s$" (f-ext it)) it))))
-
-      (add-hook 'find-file-not-found-hooks 'file-template-find-file-not-found-hook t)
-      (add-hook 'file-template-insert-hook 'core/reset-buffer-undo-history))))
 
 (defun cb-core/init-ido ()
   (use-package ido

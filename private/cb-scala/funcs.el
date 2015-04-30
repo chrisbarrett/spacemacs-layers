@@ -377,31 +377,6 @@ Typing three in a row will insert a ScalaDoc."
     (point)))
 
 
-;;; File template
-
-(defun scala/package-for-current-file ()
-  (-if-let* ((root (and (buffer-file-name) (projectile-project-p)))
-             (pkg-id (scala/filepath-to-package-name root (buffer-file-name))))
-      (cond
-       ((s-blank? pkg-id) "")
-       ((s-matches? (rx (or "Test" "IntTest" "Spec" "Prop") (? "s") eos)
-                    (f-no-ext (f-filename (buffer-file-name))))
-        "")
-       (t
-        (format "package %s\n\n" pkg-id)
-        ))
-    ""))
-
-(defun scala/filepath-to-package-name (root file-name)
-  (->> (f-dirname file-name)
-       (s-chop-prefix root)
-       f-split
-       nreverse
-       (--take-while (not (or (equal "src" it) (equal "scala" it))))
-       nreverse
-       (s-join ".")))
-
-
 ;;; SBT
 
 (defun scala/tests-watch ()

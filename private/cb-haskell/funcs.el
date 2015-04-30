@@ -839,44 +839,6 @@
   (setq-local flyspell-generic-check-word-predicate 'haskell/flyspell-verify))
 
 
-;;; File template utils
-
-(defun haskell/file-name->module ()
-  (-if-let (root (and (buffer-file-name) (projectile-project-p)))
-
-      (->> (f-no-ext (buffer-file-name))
-           (s-chop-prefix root)
-           f-split
-           (-drop 1)
-           (--map (let ((x (substring it 0 1))
-                        (xs (substring it 1)))
-                    (concat (s-upcase x) xs)))
-           (s-join "."))
-
-    (s-upper-camel-case (f-filename (f-no-ext (buffer-name))))))
-
-(defun haskell/last-declared-type-name ()
-  "Find the last type declared with `data' or `newtype'"
-  (save-excursion
-    (when (search-backward-regexp (rx bol (* space)
-                                      (or "newtype" "data")
-                                      (+ space)
-                                      (group (+ word)))
-                                  nil t))
-    (match-string-no-properties 1)))
-
-(defun haskell/last-imported-header ()
-  "Find the last header imported by a foreign import decl."
-  (save-excursion
-    (when (search-backward-regexp (rx bol (* space)
-                                      "foreign" (+ space) "import" (+ space)
-                                      (* nonl)
-                                      "\""
-                                      (group (+ graphic)))
-                                  nil t)
-      (match-string-no-properties 1))))
-
-
 ;;; Commands
 
 (defun haskell/join-line ()

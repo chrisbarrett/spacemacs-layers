@@ -28,6 +28,12 @@
 (define-key prog-mode-map (kbd "M-q") 'core/indent-dwim)
 (evil-define-key 'normal  prog-mode-map (kbd "M-q") 'core/indent-dwim)
 
+(with-eval-after-load 'sgml-mode
+  (evil-define-key 'normal  sgml-mode-map (kbd "M-q") 'core/indent-dwim))
+
+(with-eval-after-load 'nxml-mode
+  (evil-define-key 'normal nxml-mode-map (kbd "M-q") 'core/indent-dwim))
+
 (global-set-key (kbd "<backtab>") 'core/outdent)
 (evil-global-set-key 'normal (kbd "<backtab>") 'core/outdent)
 

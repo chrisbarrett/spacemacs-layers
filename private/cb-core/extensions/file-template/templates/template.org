@@ -1,4 +1,0 @@
-#+TITLE: %((core/template-org-skeleton-title (buffer-file-name))%)
-#+AUTHOR: %U
-
-%@

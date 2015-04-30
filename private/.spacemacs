@@ -23,6 +23,7 @@
      org
      syntax-checking
      cb-core
+     cb-autoinsert
      cb-flycheck
      cb-org
      cb-elisp
