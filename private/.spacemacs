@@ -36,7 +36,7 @@
      cb-proof
      cb-haskell
      cb-scala
-     ;; cb-csharp
+     cb-csharp
      ;; cb-rust
      cb-idris
      cb-agda
