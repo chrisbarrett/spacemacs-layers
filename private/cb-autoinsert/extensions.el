@@ -35,33 +35,35 @@
       (setq auto-insert-alist
             '(((haskell-mode . "Haskell Src File")
                nil
-               "module " (cb-autoinsert/haskell-module) " where" \n
-               \n
-               _                                                 \n)
+               "module " (cb-autoinsert/haskell-module) " where" "\n"
+               "\n"
+               _
+               "\n")
 
               ((idris-mode . "Idris Src File")
                nil
-               "module " (cb-autoinsert/idris-module) \n
-               \n
-               "%default total"                       \n
-               \n
-               _                                      \n)
+               "module " (cb-autoinsert/idris-module) "\n"
+               "\n"
+               "%default total"                       "\n"
+               "\n"
+               _
+               "\n")
 
               ((org-mode . "Org file")
                nil
-               "#+TITLE: " (cb-autoinsert/org-title) \n
-               "#+AUTHOR: " user-full-name           \n
-               \n)
+               "#+TITLE: " (cb-autoinsert/org-title) "\n"
+               "#+AUTHOR: " user-full-name           "\n"
+               "\n")
 
               ((csharp-mode . "C# Src File")
                nil
-               "using System;"                      \n
-               "using System.Linq;"                 \n
-               "using System.Collections.Generic;"  \n
-               \n
-               (cb-autoinsert/csharp-type-decl) "{" \n
-               > _                                  \n
-               "}"                                  \n)
+               "using System;"                       "\n"
+               "using System.Linq;"                  "\n"
+               "using System.Collections.Generic;"   "\n"
+               "\n"
+               (cb-autoinsert/csharp-type-decl) " {" "\n"
+               > _                                   "\n"
+               "}"                                   "\n")
 
               ((scala-mode . "Scala Src File")
                nil
@@ -85,13 +87,13 @@
 
               ((html-mode . "HTML file")
                nil
-               "<!DOCTYPE html>"      \n
-               "<html>"               \n
-               "<head>"               \n
-               "<title>" _ "</title>" \n
-               -2 "</head>"           \n
-               "<body>"               \n
-               -2 "</body>"           \n
-               -2 "</html>"           \n)))
+               "<!DOCTYPE html>"          "\n"
+               "<html>"                   "\n"
+               "  <head>"                 "\n"
+               "    <title>" _ "</title>" "\n"
+               "  </head>"                "\n"
+               "  <body>"                 "\n"
+               "  </body>"                "\n"
+               "</html>"                  "\n")))
 
       (auto-insert-mode +1))))
