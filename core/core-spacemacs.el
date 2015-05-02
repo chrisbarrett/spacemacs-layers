@@ -183,7 +183,7 @@ FILE-TO-LOAD is an explicit file to load after the installation."
     (when (dotspacemacs/install 'with-wizard)
       (dotspacemacs/sync-configuration-layers)
       (spacemacs-buffer/append
-       "The dofile has been installed.\n"))))
+       "The dotfile has been installed.\n"))))
 
 (defun spacemacs/display-and-copy-version ()
   "Echo the current spacemacs version and copy it."
@@ -198,7 +198,7 @@ FILE-TO-LOAD is an explicit file to load after the installation."
 (defun spacemacs/get-last-version (repo owner remote branch)
   "Return the last tagged version of BRANCH on REMOTE repository from
 OWNER REPO."
-  (let ((url (format "http://github.com/%s/%s" owner repo)))
+  (let ((url (format "https://github.com/%s/%s" owner repo)))
     (unless (spacemacs/git-has-remote remote)
       (spacemacs/git-declare-remote remote url)))
   (spacemacs/git-fetch-tags remote branch)

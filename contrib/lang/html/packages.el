@@ -10,7 +10,7 @@
 ;;
 ;;; License: GPLv3
 
-(defvar html-packages
+(setq html-packages
   '(
     company
     css-mode
@@ -26,15 +26,13 @@
     yasnippet
     haml-mode
     slim-mode
-    )
-  "List of all packages to install and/or initialize. Built-in packages
-which require an initialization must be listed explicitly in the list.")
+    ))
 
 (defun html/init-css-mode ()
   (use-package css-mode
     :defer t
     :init
-    (push '(company-css :with company-yasnippet) company-backends-css-mode)))
+    (push 'company-css company-backends-css-mode)))
 
 (defun html/init-helm-css-scss ()
   (use-package helm-css-scss
@@ -48,6 +46,9 @@ which require an initialization must be listed explicitly in the list.")
     :defer t
     :config
     (progn
+      ;; Only use smartparens in web-mode
+      (sp-local-pair 'web-mode "<%" "%>")
+      (setq web-mode-enable-auto-pairing nil)
 
       (evil-leader/set-key-for-mode 'web-mode
         "meh" 'web-mode-dom-errors-show
@@ -115,6 +116,7 @@ which require an initialization must be listed explicitly in the list.")
      ("\\.mustache\\'"   . web-mode)
      ("\\.handlebars\\'" . web-mode)
      ("\\.hbs\\'"        . web-mode)
+     ("\\.eco\\'"        . web-mode)
      ("\\.djhtml\\'"     . web-mode))))
 
 (defun html/init-emmet-mode ()
@@ -127,7 +129,10 @@ which require an initialization must be listed explicitly in the list.")
       (add-hook 'css-mode-hook 'emmet-mode))
     :config
     (progn
-      (local-set-key (kbd "<tab>") 'emmet-expand-yas)
+      (evil-define-key 'insert emmet-mode-keymap (kbd "TAB") 'emmet-expand-yas)
+      (evil-define-key 'insert emmet-mode-keymap (kbd "<tab>") 'emmet-expand-yas)
+      (evil-define-key 'emacs emmet-mode-keymap (kbd "TAB") 'emmet-expand-yas)
+      (evil-define-key 'emacs emmet-mode-keymap (kbd "<tab>") 'emmet-expand-yas)
       (spacemacs|hide-lighter emmet-mode))))
 
 (defun html/post-init-evil-matchit ()

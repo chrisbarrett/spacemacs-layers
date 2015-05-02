@@ -10,7 +10,7 @@
 ;;
 ;;; License: GPLv3
 
-(defvar org-packages
+(setq org-packages
   '(
     evil-org
     org
@@ -18,16 +18,13 @@
     org-pomodoro
     org-repo-todo
     ox-gfm
-    )
-  "List of all packages to install and/or initialize. Built-in packages
-which require an initialization must be listed explicitly in the list.")
+    ))
 
-(defvar org-excluded-packages
+(setq org-excluded-packages
   '(
     ;; seems to be problematic, to investigate
     ox-gfm
-    )
-  "List of packages to exclude.")
+    ))
 
 (defun org/init-evil-org ()
   (use-package evil-org
@@ -62,6 +59,7 @@ which require an initialization must be listed explicitly in the list.")
         "me" 'org-export-dispatch
         "mf" 'org-set-effort
         "mi" 'org-clock-in
+        "mj" 'helm-org-in-buffer-headings
         "mo" 'org-clock-out
         "mm" 'org-ctrl-c-ctrl-c
         "mq" 'org-clock-cancel

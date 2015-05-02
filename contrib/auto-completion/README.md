@@ -25,6 +25,10 @@ The following completion engines are supported:
 - [company][]
 - [auto-complete][]
 
+Snippets are supported via [yasnippet][].
+
+This layer also configures `hippie-expand`.
+
 ## Install
 
 To use this configuration layer add it to your `~/.spacemacs`
@@ -91,7 +95,7 @@ In `packages.el`:
 
 ```elisp
 ;; Add the relevant packages to the layer
-(defvar python-packages
+(setq python-packages
   '(...
     company
     company-anaconda
@@ -136,3 +140,4 @@ In `packages.el`:
 
 [company]: http://company-mode.github.io/
 [auto-complete]: http://auto-complete.org/
+[yasnippet]: https://github.com/capitaomorte/yasnippet

@@ -12,14 +12,14 @@
 
 ;; Extensions are in emacs_paths/extensions
 ;; Pre extensions are loaded *before* the packages
-(defvar spacemacs-pre-extensions
+(setq spacemacs-pre-extensions
   '(
     evil-evilified-state
     holy-mode
     ))
 
 ;; Post extensions are loaded *after* the packages
-(defvar spacemacs-post-extensions
+(setq spacemacs-post-extensions
   '(
     centered-cursor
     emoji-cheat-sheet
@@ -209,10 +209,9 @@
     "mtb" 'spacemacs/ert-run-tests-buffer
     "mtq" 'ert)
 
-  (when (configuration-layer/layer-usedp 'auto-completion)
-    (push '(company-capf :with company-yasnippet)
-          company-backends-emacs-lisp-mode)
-    (spacemacs|add-company-hook emacs-lisp-mode)))
+  ;; company support
+  (push 'company-capf company-backends-emacs-lisp-mode)
+  (spacemacs|add-company-hook emacs-lisp-mode))
 
 (defun spacemacs/init-emacs-builtin-process-menu ()
   (evilify process-menu-mode process-menu-mode-map))

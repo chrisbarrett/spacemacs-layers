@@ -10,17 +10,15 @@
 ;;
 ;;; License: GPLv3
 
-(defvar gtags-pre-extensions
+(setq gtags-pre-extensions
   '(
     ;; pre extension gtagss go here
-    )
-  "List of all extensions to load before the packages.")
+    ))
 
-(defvar gtags-post-extensions
+(setq gtags-post-extensions
   '(
     ;; post extension gtagss go here
-    )
-  "List of all extensions to load after the packages.")
+    ))
 
 ;; For each extension, define a function gtags/init-<extension-gtags>
 ;;
