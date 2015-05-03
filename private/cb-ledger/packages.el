@@ -33,10 +33,11 @@ which require an initialization must be listed explicitly in the list.")
               ("cash flow" "ledger -f %(ledger-file) bal ^income ^expenses")
               ("checking" "ledger -f %(ledger-file) --start-of-week friday -p 'this week' -r reg 'checking' --invert")))
       (setq ledger-report-format-specifiers
-            '(("account" . cbledger:read-account)
-              ("payee" . cbledger:read-payee)
-              ("ledger-file" . ledger-report-ledger-file-format-specifier)
-              ("value" . ledger-report-value-format-specifier)))
+            '(("ledger-file" . ledger-report-ledger-file-format-specifier)
+              ("payee" . ledger-report-payee-format-specifier)
+              ("account" . ledger-report-account-format-specifier)
+              ("tagname" . ledger-report-tagname-format-specifier)
+              ("tagvalue" . ledger-report-tagvalue-format-specifier)))
 
       (custom-set-faces
        '(ledger-occur-xact-face
