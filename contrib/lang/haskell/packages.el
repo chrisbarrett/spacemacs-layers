@@ -48,7 +48,6 @@
       (set-face-attribute 'ghc-face-warn nil :underline nil))))
 
 (defun haskell/init-haskell-mode ()
-  (require 'haskell-yas)
   (use-package haskell-mode
     :defer t
     :config
