@@ -11,6 +11,7 @@ which require an initialization must be listed explicitly in the list.")
   "List of packages to exclude.")
 
 (eval-when-compile
+  (require 'dash nil t)
   (require 'use-package nil t))
 
 (defun cb-ledger/init-ledger-mode ()
@@ -24,14 +25,30 @@ which require an initialization must be listed explicitly in the list.")
       (setq ledger-post-use-completion-engine :ido)
       (setq ledger-fontify-xact-state-overrides nil)
       (setq ledger-reports
-            '(("assets" "ledger -f %(ledger-file) bal assets")
-              ("balance" "ledger -f %(ledger-file) bal")
-              ("register" "ledger -f %(ledger-file) reg")
-              ("payee" "ledger -f %(ledger-file) reg @%(payee)")
-              ("account" "ledger -f %(ledger-file) reg %(account)")
-              ("net worth" "ledger -f %(ledger-file) bal ^assets ^liabilities")
-              ("cash flow" "ledger -f %(ledger-file) bal ^income ^expenses")
-              ("checking" "ledger -f %(ledger-file) --start-of-week friday -p 'this week' -r reg 'checking' --invert")))
+            (-let* (((month day year) (calendar-current-date))
+                    (pay-day-of-month 13)
+                    (before-pay-day (< day pay-day-of-month))
+                    ((pay-month pay-year)
+                     (cond
+                      ((and (= 1 month) before-pay-day)
+                       (list 12 (1- year)))
+                      (before-pay-day
+                       (list (1- month) year))
+                      (t
+                       (list month year))))
+                    (last-payday (format "%s-%02d-%s" pay-year pay-month pay-day-of-month)))
+
+              `(("assets" "ledger -f %(ledger-file) bal assets")
+                ("balance" "ledger -f %(ledger-file) bal")
+                ("register" "ledger -f %(ledger-file) reg")
+                ("payee" "ledger -f %(ledger-file) reg @%(payee)")
+                ("account" "ledger -f %(ledger-file) reg %(account)")
+                ("net worth" "ledger -f %(ledger-file) bal ^assets ^liabilities")
+                ("cash flow" "ledger -f %(ledger-file) bal ^income ^expenses")
+                ("this week" "ledger -f %(ledger-file) -p 'this week' -r reg 'checking' --invert")
+                ("this month" "ledger -f %(ledger-file) -p 'this month' -r reg 'checking' --invert")
+                ("since payday" ,(concat "ledger -f %(ledger-file) -b '" last-payday "' -r reg 'checking' --invert")))))
+
       (setq ledger-report-format-specifiers
             '(("ledger-file" . ledger-report-ledger-file-format-specifier)
               ("payee" . ledger-report-payee-format-specifier)
