@@ -47,6 +47,7 @@
      cb-elfeed
      cb-calc
      cb-extempore
+     cb-groovy
      )
    ;; A list of packages and/or extensions that will not be install and loaded.
    dotspacemacs-excluded-packages '(rainbow-delimiters)
