@@ -111,7 +111,12 @@
                  (tags-todo "study/NEXT"
                             ((org-agenda-overriding-header "Study"))))
                 ((org-agenda-tag-filter-preset '("-ignore"))
-                 (org-agenda-files (list org-work-file org-agenda-diary-file org-jira-working-dir))
+                 (org-agenda-files (-keep 'identity (list org-work-file
+                                                          (let ((archive (concat org-work-file "_archive")))
+                                                            (when (f-exists? archive)
+                                                              archive))
+                                                          org-agenda-diary-file
+                                                          org-jira-working-dir)))
                  (org-deadline-warning-days 0)
                  (org-agenda-todo-ignore-deadlines 14)
                  (org-agenda-todo-ignore-scheduled 'all)
