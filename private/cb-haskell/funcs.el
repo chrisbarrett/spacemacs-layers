@@ -25,13 +25,16 @@
     (call-interactively 'shm/space))))
 
 (defun haskell/interactive-smart-space ()
-  "Use shm space, but perform extra padding inside lists."
   (interactive)
-  (if (haskell-interactive-at-compile-message)
-      (haskell-interactive-mode-space)
+  (cond
+   ((haskell-interactive-at-compile-message)
+    (haskell-interactive-mode-space))
+   ((and (haskell/after-subexpr-opening?) (haskell/before-subexp-closing?))
     (delete-horizontal-space)
     (insert " ")
-    (save-excursion (insert " "))))
+    (save-excursion (insert " ")))
+   (t
+    (insert " "))))
 
 
 ;;; Define smart operators.
