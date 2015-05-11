@@ -201,10 +201,6 @@
     (add-hook 'haskell-mode-hook 'structured-haskell-mode)
     :config
     (progn
-      (when (require 'shm-case-split nil 'noerror)
-        ;;TODO: Find some better bindings for case-splits
-        (define-key shm-map (kbd "C-c S") 'shm/case-split)
-        (define-key shm-map (kbd "C-c C-s") 'shm/do-case-split))
 
       (evil-define-key 'normal shm-map
         (kbd "RET") nil
