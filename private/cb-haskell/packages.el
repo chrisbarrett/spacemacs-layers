@@ -84,7 +84,9 @@ which require an initialization must be listed explicitly in the list.")
   (use-package shm
     :commands structured-haskell-mode
     :init
-    (add-hook 'haskell-mode-hook 'structured-haskell-mode)
+    (progn
+      (add-hook 'haskell-mode-hook 'structured-haskell-mode)
+      (add-hook 'ghc-core-mode-hook (lambda () (structured-haskell-mode -1))))
     :config
     (progn
       (require 'shm-reformat)
