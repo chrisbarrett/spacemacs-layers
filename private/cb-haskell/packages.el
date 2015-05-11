@@ -187,19 +187,17 @@ which require an initialization must be listed explicitly in the list.")
     (progn
       (defadvice ghc-check-syntax (around no-op activate))
 
-      (with-eval-after-load 'haskell-mode
-        (define-key haskell-mode-map (kbd "C-c C-s") 'ghc-case-split)
-        (define-key haskell-mode-map (kbd "C-c C-r") 'ghc-refine)
+      (require 'haskell-mode)
 
-        (evil-define-key 'normal haskell-mode-map (kbd "C-c C-n") 'ghc-goto-next-hole)
-        (define-key haskell-mode-map (kbd "C-c C-n") 'ghc-goto-next-hole)
+      (define-key haskell-mode-map (kbd "C-c C-s") 'ghc-case-split)
+      (define-key haskell-mode-map (kbd "C-c C-r") 'ghc-refine)
 
-        (evil-define-key 'normal haskell-mode-map (kbd "C-c C-p") 'ghc-goto-prev-hole)
-        (define-key haskell-mode-map (kbd "C-c C-p") 'ghc-goto-prev-hole)
-
-        (evil-define-key 'normal haskell-mode-map (kbd "C-c C-k") 'ghc-insert-template-or-signature)
-        (define-key haskell-mode-map (kbd "C-c C-k") 'ghc-insert-template-or-signature)
-        ))))
+      (evil-define-key 'normal haskell-mode-map (kbd "C-c C-n") 'ghc-goto-next-hole)
+      (define-key haskell-mode-map (kbd "C-c C-n") 'ghc-goto-next-hole)
+      (evil-define-key 'normal haskell-mode-map (kbd "C-c C-p") 'ghc-goto-prev-hole)
+      (define-key haskell-mode-map (kbd "C-c C-p") 'ghc-goto-prev-hole)
+      (evil-define-key 'normal haskell-mode-map (kbd "C-c C-k") 'ghc-insert-template-or-signature)
+      (define-key haskell-mode-map (kbd "C-c C-k") 'ghc-insert-template-or-signature))))
 
 (defun cb-haskell/init-button-lock ()
   (use-package button-lock
