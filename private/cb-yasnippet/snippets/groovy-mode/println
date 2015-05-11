@@ -1,0 +1,7 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: println
+# key: p
+# binding: direct-keybinding
+# condition: (yas/bol?)
+# --
+println $0
