@@ -108,8 +108,12 @@
                         ((org-agenda-overriding-header "Stuck Cards")))
                  (todo "READY-TO-START"
                        ((org-agenda-overriding-header "Upcoming Cards")))
+                 (stuck "+@work"
+                        ((org-agenda-overriding-header "Stuck Tasks")
+                         (org-stuck-projects cb-org/default-stuck-projects)))
                  (tags-todo "study/NEXT"
-                            ((org-agenda-overriding-header "Study"))))
+                            ((org-agenda-overriding-header "Study")))
+                 )
                 ((org-agenda-tag-filter-preset '("-ignore"))
                  (org-agenda-files (-keep 'identity (list org-work-file
                                                           (let ((archive (concat org-work-file "_archive")))

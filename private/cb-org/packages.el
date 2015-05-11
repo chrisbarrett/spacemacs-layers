@@ -21,9 +21,13 @@ which require an initialization must be listed explicitly in the list.")
 (defun cb-org/init-org ()
   (use-package org
     :init
-    (defconst org-directory
-      (let ((in-dropbox (f-join user-dropbox-directory "org/")))
-        (if (f-exists? in-dropbox) in-dropbox "~/org/")))
+    (progn
+      (defconst cb-org/default-stuck-projects
+        '("-ignore+TODO={TODO_OUT\\|PROJECT}/-MAYBE-DONE-CANCELLED" ("NEXT") nil "SCHEDULED:\\|\\<IGNORE\\>"))
+
+      (defconst org-directory
+        (let ((in-dropbox (f-join user-dropbox-directory "org/")))
+          (if (f-exists? in-dropbox) in-dropbox "~/org/"))))
     :config
     (progn
       (require 's)
@@ -66,7 +70,7 @@ which require an initialization must be listed explicitly in the list.")
       (setq org-reverse-note-order nil)
       (setq org-startup-indented t)
       (setq org-startup-with-inline-images t)
-      (setq org-stuck-projects '("-ignore+TODO={TODO_OUT\\|PROJECT}/-MAYBE-DONE-CANCELLED" ("NEXT") nil "SCHEDULED:\\|\\<IGNORE\\>"))
+      (setq org-stuck-projects cb-org/default-stuck-projects)
       (setq org-support-shift-select t)
       (setq org-todo-keywords '((type "MAYBE(m)" "TODO(t)" "NEXT(n)" "WAITING(w@/!)" "|" "DONE(d!)" "CANCELLED(c@)")
                                 (type "PROJECT(p)" "|")))
