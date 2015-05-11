@@ -211,7 +211,7 @@
         (kbd "P") 'shm/yank
         (kbd "RET") 'shm/newline-indent
         (kbd "RET") 'shm/newline-indent
-        (kbd "M-RET") 'evil-ret
+        (kbd "M-RET") nil
         )
 
       (evil-define-key 'operator shm-map
