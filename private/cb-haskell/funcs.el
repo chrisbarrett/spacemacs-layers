@@ -590,7 +590,7 @@
 
 ;;; Options insertion
 
-(defvar haskell/ghc-options
+(defconst haskell/ghc-options
   '("-fcase-merge"
     "-fcse"
     "-fdefer-type-errors"
@@ -626,12 +626,13 @@
     "-fno-warn-type-defaults"
     "-fno-warn-unrecognised-pragmas"
     "-fno-warn-unsafe"
+    "-fno-warn-unticked-promoted-constructors"
     "-fno-warn-unused-binds"
     "-fno-warn-unused-do-bind"
     "-fno-warn-unused-imports"
     "-fno-warn-unused-matches"
     "-fno-warn-wrong-do-bind"
-    "-fnowarn-missing-import-lists"
+    "-fno-warn-missing-import-lists"
     "-fwarn-amp"
     "-fwarn-deprecated-flags"
     "-fwarn-duplicate-constraints"
@@ -658,6 +659,7 @@
     "-fwarn-typed-holes"
     "-fwarn-unrecognised-pragmas"
     "-fwarn-unsafe"
+    "-fwarn-unticked-promoted-constructors"
     "-fwarn-unused-binds"
     "-fwarn-unused-do-bind"
     "-fwarn-unused-imports"
