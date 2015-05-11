@@ -191,6 +191,7 @@ which require an initialization must be listed explicitly in the list.")
 
       (define-key haskell-mode-map (kbd "C-c C-s") 'ghc-case-split)
       (define-key haskell-mode-map (kbd "C-c C-r") 'ghc-refine)
+      (define-key haskell-mode-map (kbd "C-c C-a") 'ghc-auto)
 
       (evil-define-key 'normal haskell-mode-map (kbd "C-c C-n") 'ghc-goto-next-hole)
       (define-key haskell-mode-map (kbd "C-c C-n") 'ghc-goto-next-hole)
