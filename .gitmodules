@@ -34,3 +34,6 @@
 [submodule "private/cb-haskell/extensions/liquid-types"]
 	path = private/cb-haskell/extensions/liquid-types
 	url = https://github.com/ucsd-progsys/liquid-types.el.git
+[submodule "private/cb-flycheck/extensions/haskell-flycheck"]
+	path = private/cb-flycheck/extensions/haskell-flycheck
+	url = https://github.com/chrisdone/haskell-flycheck.git
