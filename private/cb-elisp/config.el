@@ -43,14 +43,9 @@
 
    ;; General keywords
    (,(rx "(" (group (or "until"
-                        "hook-fn"
-                        "hook-fns"
-                        "lambda+"
                         "let-alist"
-                        "after"
                         "noflet"
                         "ert-deftest"
-                        "ac-define-source"
                         "evil-global-set-keys"
                         "flycheck-declare-checker"
                         "flycheck-define-checker")
