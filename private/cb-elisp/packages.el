@@ -95,4 +95,15 @@ which require an initialization must be listed explicitly in the list.")
     :defer t
     :commands 'highlight-defined-mode
     :init
-    (add-hook 'emacs-lisp-mode-hook 'highlight-defined-mode)))
+    (add-hook 'emacs-lisp-mode-hook 'highlight-defined-mode)
+    :config
+    (progn
+      (custom-set-faces
+       `(highlight-defined-function-name-face
+         ((((background dark))  (:foreground "#708784"))
+          (((background light)) (:foreground "#708784"))))
+       `(highlight-defined-builtin-function-name-face ((t (:foreground ,solarized-hl-cyan))))
+       `(highlight-defined-special-form-name-face ((t (:italic t))))
+       `(highlight-defined-face-name-face
+         ((((background dark))  (:foreground "#8D88AE"))
+          (((background light)) (:foreground "#706D84"))))))))
