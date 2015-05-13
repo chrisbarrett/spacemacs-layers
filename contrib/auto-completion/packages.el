@@ -109,8 +109,8 @@
       (let ((map company-active-map))
         ;; use TAB to auto-complete instead of RET
         (define-key map (kbd "j") 'spacemacs//company-complete-start)
-        (define-key map [return] 'nil)
-        (define-key map (kbd "RET") 'nil)
+        (define-key map [return] 'company-complete-selection)
+        (define-key map (kbd "RET") 'company-complete-selection)
         (define-key map [tab] 'company-complete-common-or-cycle)
         (define-key map (kbd "TAB") 'company-complete-common-or-cycle)
         (define-key map (kbd "<tab>") 'company-complete-common-or-cycle)
