@@ -257,7 +257,8 @@
 (defun haskell/format-dwim ()
   (interactive "*")
   (hindent/reformat-decl)
-  (haskell-mode-stylish-buffer))
+  (haskell-mode-stylish-buffer)
+  (haskell/rewrite-symbols-in-buffer))
 
 (defun haskell/ret ()
   "Insert a newline, possibly continuing a comment."
@@ -269,17 +270,14 @@
 (defun haskell/use-unicode-symbols? ()
   (-contains? (haskell/language-pragmas-in-file) "UnicodeSyntax"))
 
-(defun haskell/unicode-before-save ()
-  (when (haskell/use-unicode-symbols?)
-    (haskell/rewrite-symbols-in-buffer)))
-
 (defun haskell/rewrite-symbols-in-buffer ()
-  (--each '(("->" "→")
-            ("=>" "⇒")
-            ("<-" "←")
-            ("::" "∷")
-            ("forall" "∀"))
-    (apply 'haskell/rewrite-symbol it)))
+  (when (haskell/use-unicode-symbols?)
+    (--each '(("->" "→")
+              ("=>" "⇒")
+              ("<-" "←")
+              ("::" "∷")
+              ("forall" "∀"))
+      (apply 'haskell/rewrite-symbol it))))
 
 (defun haskell/rewrite-symbol (sym repl)
   (save-excursion
