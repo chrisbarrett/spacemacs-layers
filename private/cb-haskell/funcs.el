@@ -455,9 +455,9 @@
        (args
         (let ((args-fmt
                (->> args
-                    (--map-indexed (format "${%s:{-%s-}}" (1+ it-index) it))
+                    (--map-indexed (format "${%s:x%s}" (1+ it-index) it-index))
                     (s-join " "))))
-          (yas-expand-snippet (format "%s %s = $0"
+          (yas-expand-snippet (format "%s %s = ${%s:undefined}"
                                       fname
                                       args-fmt
                                       (1+ (length args))))))
