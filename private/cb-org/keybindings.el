@@ -17,6 +17,7 @@
 
 (spacemacs/declare-prefix "o" "org")
 (evil-leader/set-key "oa" 'org/agenda-dwim)
+(evil-leader/set-key "ob" 'org-iswitchb)
 (evil-leader/set-key "oc" 'org-clock-goto)
 (evil-leader/set-key "od" 'org/goto-diary)
 (evil-leader/set-key "ok" 'org-capture)
