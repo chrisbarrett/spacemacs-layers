@@ -13,7 +13,6 @@
     org-indent
     org-archive
     org-table
-    org-protocol
     org-habit
     org-src
     org-clock
@@ -213,20 +212,6 @@
   (use-package org-table
     :config
     (add-hook 'org-ctrl-c-ctrl-c-hook 'org/recalculate-whole-table)))
-
-(defun cb-org/init-org-protocol ()
-  (use-package org-protocol
-    :config
-    (defadvice org-protocol-do-capture (after show-growl-notification activate)
-      "Show Growl notification when capturing links."
-      (when (equal system-type 'darwin)
-        (let* ((parts (org-protocol-split-data (ad-get-arg 0) t org-protocol-data-separator))
-               ;; Pop the template selector if present.
-               (template (or (and (>= 2 (length (car parts))) (pop parts))
-                             org-protocol-default-template-key))
-               (title (or (cadr parts) ""))
-               (url (org-protocol-sanitize-uri (car parts))))
-          (org/growl "Link Stored" (or title url)))))))
 
 (defun cb-org/init-org-habit ()
   (use-package org-habit
