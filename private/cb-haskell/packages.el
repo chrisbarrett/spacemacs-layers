@@ -54,6 +54,7 @@ which require an initialization must be listed explicitly in the list.")
         (add-hook 'evil-insert-state-exit-hook 'haskell/rewrite-symbols-in-buffer nil t))
 
       (add-hook 'haskell-mode-hook 'cb-haskell/set-local-hooks)
+      (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
 
       (with-eval-after-load 'haskell
         (diminish 'interactive-haskell-mode " λ"))
