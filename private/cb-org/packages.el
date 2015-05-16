@@ -221,9 +221,9 @@ which require an initialization must be listed explicitly in the list.")
 
       ;; Hooks
 
-      (add-hook 'org-mode-hook 'org/add-local-hooks)
-      (add-hook 'org-after-todo-state-change-hook 'org/set-next-todo-state)
-      (add-hook 'org-after-todo-statistics-hook 'org/children-done-parent-done))))
+      (add-hook 'org-mode-hook 'cb-org/add-local-hooks)
+      (add-hook 'org-after-todo-state-change-hook 'cb-org/set-next-todo-state)
+      (add-hook 'org-after-todo-statistics-hook 'cb-org/children-done-parent-done))))
 
 (defun cb-org/init-org-drill-table ()
   (use-package org-drill-table

@@ -39,7 +39,7 @@
       (add-hook 'org-mode-hook 'maybe-enable-org-work-mode)
       (add-hook 'after-init-hook 'org-work-maybe-start-work))
     :config
-    (add-hook 'org-work-state-changed-hook 'org/refresh-agenda-when-toggling-work)))
+    (add-hook 'org-work-state-changed-hook 'cb-org/refresh-agenda-when-toggling-work)))
 
 (defun cb-org/init-org-agenda ()
   (use-package org-agenda
@@ -53,7 +53,7 @@
                   (run-hooks 'org-agenda-customise-window-hook))))
     :config
     (progn
-      (setq org-agenda-auto-exclude-function 'org/exclude-tasks-on-hold)
+      (setq org-agenda-auto-exclude-function 'cb-org/exclude-tasks-on-hold)
       (setq org-agenda-diary-file (f-join org-directory "diary.org"))
       (setq org-agenda-hide-tags-regexp (rx (or "noexport" "someday")))
       (setq org-agenda-insert-diary-extract-time t)
@@ -78,7 +78,7 @@
                    (lambda (spec) (append spec '(((org-agenda-customise-window-hook 'delete-other-windows)))))
                    command-list))
 
-      (add-hook 'after-init-hook 'org/agenda-dwim)
+      (add-hook 'after-init-hook 'cb-org/agenda-dwim)
 
       (setq org-agenda-custom-commands
             (cb-org/agenda-custom-commands-delete-other-windows
@@ -201,7 +201,7 @@
   (use-package org-archive
     :config
     (progn
-      (setq org-archive-default-command 'org/archive-done-tasks)
+      (setq org-archive-default-command 'cb-org/archive-done-tasks)
 
       (defadvice org-archive-subtree
           (before add-inherited-tags-before-org-archive-subtree activate)
@@ -211,7 +211,7 @@
 (defun cb-org/init-org-table ()
   (use-package org-table
     :config
-    (add-hook 'org-ctrl-c-ctrl-c-hook 'org/recalculate-whole-table)))
+    (add-hook 'org-ctrl-c-ctrl-c-hook 'cb-org/recalculate-whole-table)))
 
 (defun cb-org/init-org-habit ()
   (use-package org-habit
@@ -264,12 +264,12 @@
       (setq org-clock-history-length 20)
       (setq org-clock-in-resume t)
       (setq org-clock-report-include-clocking-task t)
-      (setq org-clock-in-switch-to-state 'org/clock-in-to-next-state)
+      (setq org-clock-in-switch-to-state 'cb-org/clock-in-to-next-state)
       (setq org-clock-out-remove-zero-time-clocks t)
 
       (org-clock-persistence-insinuate)
 
-      (add-hook 'org-clock-out-hook 'org/remove-empty-clock-drawers t))))
+      (add-hook 'org-clock-out-hook 'cb-org/remove-empty-clock-drawers t))))
 
 (defun cb-org/init-org-crypt ()
   (use-package org-crypt
@@ -278,7 +278,7 @@
       (setq org-crypt-disable-auto-save 'encypt)
       (org-crypt-use-before-save-magic)
       (add-to-list 'org-tags-exclude-from-inheritance "crypt")
-      (add-hook 'org-ctrl-c-ctrl-c-hook 'org/decrypt-entry))))
+      (add-hook 'org-ctrl-c-ctrl-c-hook 'cb-org/decrypt-entry))))
 
 (defun cb-org/init-org-drill ()
   (use-package org-drill
@@ -333,7 +333,7 @@ table tr.tr-even td {
   (use-package ox-texinfo
     :config
     (progn
-      (add-hook 'org-ctrl-c-ctrl-c-hook 'org/C-c-C-c-export-koma-letter t)
+      (add-hook 'org-ctrl-c-ctrl-c-hook 'cb-org/C-c-C-c-export-koma-letter t)
       (add-to-list 'org-latex-classes '("koma-letter" "
 \\documentclass[paper=A4,pagesize,fromalign=right,
                fromrule=aftername,fromphone,fromemail,
