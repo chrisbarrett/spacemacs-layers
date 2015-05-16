@@ -9,6 +9,7 @@
     hindent
     button-lock pos-tip popup ; liquid-haskell dependencies
     ghc
+    smartparens
     )
   "List of all packages to install and/or initialize. Built-in packages
 which require an initialization must be listed explicitly in the list.")
@@ -215,3 +216,34 @@ which require an initialization must be listed explicitly in the list.")
   (use-package button-lock
     :diminish button-lock-mode
     :defer t))
+
+(defun cb-haskell/init-smartparens ()
+  (use-package smartparens
+    :config
+    (progn
+      ;; FIX: Ensure Smartparens functions do not trigger indentation as a side-effect.
+
+      (defmacro cb-haskell/sp-advise-to-preserve-indent-level (fname)
+        `(defadvice ,fname (around preserve-indentation activate)
+           (if (derived-mode-p 'haskell-mode)
+               (let ((col (current-indentation)))
+                 (atomic-change-group
+                   ad-do-it
+                   (save-excursion
+                     (goto-char (line-beginning-position))
+                     (delete-horizontal-space)
+                     (indent-to col))))
+             ad-do-it)))
+
+      (cb-haskell/sp-advise-to-preserve-indent-level sp-kill-sexp)
+      (cb-haskell/sp-advise-to-preserve-indent-level sp-unwrap-sexp)
+      (cb-haskell/sp-advise-to-preserve-indent-level sp-forward-slurp-sexp)
+      (cb-haskell/sp-advise-to-preserve-indent-level sp-backward-slurp-sexp)
+      (cb-haskell/sp-advise-to-preserve-indent-level sp-forward-barf-sexp)
+      (cb-haskell/sp-advise-to-preserve-indent-level sp-backward-barf-sexp)
+      (cb-haskell/sp-advise-to-preserve-indent-level sp-join-sexp)
+      (cb-haskell/sp-advise-to-preserve-indent-level sp-absorb-sexp)
+      (cb-haskell/sp-advise-to-preserve-indent-level sp-splice-sexp)
+      (cb-haskell/sp-advise-to-preserve-indent-level sp-splice-sexp-killing-around)
+      (cb-haskell/sp-advise-to-preserve-indent-level sp-splice-sexp-killing-forward)
+      (cb-haskell/sp-advise-to-preserve-indent-level sp-splice-sexp-killing-backward))))
