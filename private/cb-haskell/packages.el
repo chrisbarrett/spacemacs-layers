@@ -186,6 +186,16 @@ which require an initialization must be listed explicitly in the list.")
     :defer t
     :config
     (progn
+      ;; HACK: Redefine asshole init function so it doesn't clobber the major
+      ;; mode's map.
+      (defun ghc-init ()
+        (ghc-abbrev-init)
+        (ghc-type-init)
+        (unless ghc-initialized
+          (ghc-comp-init)
+          (setq ghc-initialized t))
+        (ghc-import-module))
+
       (defadvice ghc-check-syntax (around no-op activate))
 
       (require 'haskell-mode)
