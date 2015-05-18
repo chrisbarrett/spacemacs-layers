@@ -2,17 +2,19 @@
 ;;; Commentary:
 ;;; Code:
 
-(defvar cb-org-packages
+(defconst cb-org-packages
   '(
     org
     org-drill-table
     org-jira
     gnuplot
+    ;; required by org-babel for exporting syntax highlighting in code blocks
+    htmlize
     )
   "List of all packages to install and/or initialize. Built-in packages
 which require an initialization must be listed explicitly in the list.")
 
-(defvar cb-org-excluded-packages '()
+(defconst cb-org-excluded-packages '()
   "List of packages to exclude.")
 
 (eval-when-compile
@@ -297,3 +299,7 @@ which require an initialization must be listed explicitly in the list.")
         (-when-let (buf (get-buffer gnuplot-image-buffer-name))
           (display-buffer buf)))
       )))
+
+(defun cb-org/init-htmlize ()
+  (use-package htmlize
+    :defer t))
