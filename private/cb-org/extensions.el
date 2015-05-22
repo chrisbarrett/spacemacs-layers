@@ -304,6 +304,7 @@
       (setq org-export-exclude-tags '("noexport" "crypt"))
       (setq org-html-html5-fancy t)
       (setq org-html-postamble nil)
+      (setq org-export-html-postamble nil)
       (setq org-html-table-row-tags
             (cons
              '(cond
