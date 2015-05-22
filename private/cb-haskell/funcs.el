@@ -420,6 +420,8 @@
   "Insert STR on a new line at COL."
   (goto-char (line-end-position))
   (newline)
+  (when (s-ends-with? ".lhs" (buffer-name))
+    (insert "> "))
   (indent-to col)
   (insert str))
 
@@ -428,6 +430,8 @@
   (let ((col (save-excursion (back-to-indentation) (current-column))))
     (goto-char (line-end-position))
     (newline)
+    (when (s-ends-with? ".lhs" (buffer-name))
+      (insert "> "))
     (indent-to col)))
 
 (defvar haskell/haskell-keywords
@@ -435,7 +439,7 @@
     "import" "infixl" "infixr" "newtype" "data" "type" "if" "then" "else"))
 
 (defun haskell/first-ident-on-line ()
-  (car (-difference (s-split (rx space) (current-line) t)
+  (car (-difference (s-split (rx (? ">") space) (current-line) t)
                     haskell/haskell-keywords)))
 
 (defun haskell/insert-function-template (fname parsed-typesig)
@@ -449,6 +453,9 @@
 
     (goto-char (line-end-position))
     (newline)
+    (when (s-ends-with? ".lhs" (buffer-file-name))
+      (insert "> "))
+
     (indent-to col)
     (-let [(&plist :args args) parsed-typesig]
       (cond
@@ -481,10 +488,14 @@
 (defun haskell/back-to-function-typesig (fname)
   (let ((function-decl-rx
          (rx-to-string `(and bol (? ">") (* space) (? (or "let" "where") (+ space))
-                             ,fname (+ space) (or "∷" "::")))))
-    (if (s-matches? function-decl-rx (current-line))
-        t
-      (search-backward-regexp function-decl-rx nil t))))
+                             (group-n 1 ,fname) (+ space) (or "∷" "::")))))
+    (cond
+     ((s-matches? function-decl-rx (current-line))
+      (goto-char (line-beginning-position))
+      (search-forward-regexp function-decl-rx)
+      (goto-char (match-beginning 1)))
+     ((search-backward-regexp function-decl-rx nil t)
+      (goto-char (match-beginning 1))))))
 
 (defun haskell/in-data-decl? ()
   (cond
@@ -560,6 +571,7 @@
       (shm/reparse)
       (let* ((start (point))
              (end (progn (shm/goto-parent-end) (point)))
+             (end (if (= end (point)) (line-end-position) end))
              (typesig (buffer-substring-no-properties start end)))
 
         (haskell-parser-parse-typesig typesig)))))
