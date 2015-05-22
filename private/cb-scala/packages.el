@@ -20,6 +20,7 @@ which require an initialization must be listed explicitly in the list.")
 (defun cb-scala/init-scala-mode2 ()
   (use-package scala-mode2
     :defer t
+    :mode (("/conf/routes$" . conf-mode))
     :config
     (progn
       (defun cb-scala/set-local-hooks ()
