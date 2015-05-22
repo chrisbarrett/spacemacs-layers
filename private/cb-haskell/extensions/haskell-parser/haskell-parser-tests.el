@@ -37,6 +37,13 @@
       (should (equal "Doge (Cate Mus)" ret))
       (should (null args)))))
 
+(ert-deftest haskell-parser-test--parse-single-line-typesig-no-args-lhs ()
+  (let ((parsed  (haskell-parser-parse-typesig
+                  "> dogeomorphism :: Doge (Cate Mus)")))
+    (-let [(&plist :return-type ret :args args) parsed]
+      (should (equal "Doge (Cate Mus)" ret))
+      (should (null args)))))
+
 (ert-deftest haskell-parser-test--parse-single-line-typesig-forall-no-args ()
   (let ((parsed  (haskell-parser-parse-typesig
                   "dogeomorphism :: forall c. Doge (Cate Mus)")))
@@ -51,17 +58,49 @@
       (should (equal "Doge (Cate Mus)" ret))
       (should (null args)))))
 
-(ert-deftest haskell-parser-test--parse-complex-typesig ()
+(ert-deftest haskell-parser-test--parse-multiline-typesig ()
   (let ((parsed  (haskell-parser-parse-typesig
-                  "dogeomorphism ∷ Doge (Cate Mus)
-                                 → (Bar → Baz) -- much args
-                                 -- ^ hey dawg
-                                 → Doge (Bar, Baz)
-                                 {- → Doge (Mus, Cate) -}
-                                 → Foo")))
+                  "dogeomorphism ∷ Doge
+                                 → Cate
+                                 → Mus")))
     (-let [(&plist :return-type ret :args args) parsed]
-      (should (equal "Foo" ret))
-      (should (equal '("Doge (Cate Mus)" "(Bar → Baz)" "Doge (Bar, Baz)")
+      (should (equal "Mus" ret))
+      (should (equal '("Doge" "Cate")
+                     args)))))
+
+(ert-deftest haskell-parser-test--parse-multiline-typesig-lhs ()
+  (let ((parsed  (haskell-parser-parse-typesig
+                  "
+> dogeomorphism ∷ Doge
+>               → Cate
+>               → Mus")))
+    (-let [(&plist :return-type ret :args args) parsed]
+      (should (equal "Mus" ret))
+      (should (equal '("Doge" "Cate")
+                     args)))))
+
+(ert-deftest haskell-parser-test--discard-comments-in-typesig1 ()
+  (let ((parsed  (haskell-parser-parse-typesig
+                  "dogeomorphism ∷ Doge → Cate → Mus -- so typesig")))
+    (-let [(&plist :return-type ret :args args) parsed]
+      (should (equal "Mus" ret))
+      (should (equal '("Doge" "Cate")
+                     args)))))
+
+(ert-deftest haskell-parser-test--discard-comments-in-typesig2 ()
+  (let ((parsed  (haskell-parser-parse-typesig
+                  "dogeomorphism ∷ Doge {- very complex -} → Cate → Mus")))
+    (-let [(&plist :return-type ret :args args) parsed]
+      (should (equal "Mus" ret))
+      (should (equal '("Doge" "Cate")
+                     args)))))
+
+(ert-deftest haskell-parser-test--discard-comments-in-typesig1 ()
+  (let ((parsed  (haskell-parser-parse-typesig
+                  "dogeomorphism ∷ Doge → Cate → Mus --^ so typesig")))
+    (-let [(&plist :return-type ret :args args) parsed]
+      (should (equal "Mus" ret))
+      (should (equal '("Doge" "Cate")
                      args)))))
 
 (ert-deftest haskell-parser-test--parse-single-line-typesig ()
@@ -96,6 +135,34 @@
       (should (equal '("Cate c" "Doge d") cs))
       (should (equal "(d → c)" ret))
       (should (equal '("c") args)))))
+
+(ert-deftest haskell-parser-test--parse-complex-typesig ()
+  (let ((parsed  (haskell-parser-parse-typesig
+                  "dogeomorphism ∷ Doge (Cate Mus)
+                                 → (Bar → Baz) -- much args
+                                 -- ^ hey dawg
+                                 → Doge (Bar, Baz)
+                                 {- → Doge (Mus, Cate) -}
+                                 → Foo")))
+    (-let [(&plist :return-type ret :args args) parsed]
+      (should (equal "Foo" ret))
+      (should (equal '("Doge (Cate Mus)" "(Bar → Baz)" "Doge (Bar, Baz)")
+                     args)))))
+
+(ert-deftest haskell-parser-test--parse-complex-typesig-lhs ()
+  (let ((parsed  (haskell-parser-parse-typesig
+                  "
+> dogeomorphism ∷ Doge (Cate Mus)
+>               → (Bar → Baz) -- much args
+>               -- ^ hey dawg
+>               → Doge (Bar, Baz)
+>               {- → Doge (Mus, Cate) -}
+>               → Foo")))
+    (-let [(&plist :return-type ret :args args) parsed]
+      (should (equal "Foo" ret))
+      (should (equal '("Doge (Cate Mus)" "(Bar → Baz)" "Doge (Bar, Baz)")
+                     args)))))
+
 
 (provide 'haskell-parser-tests)
 

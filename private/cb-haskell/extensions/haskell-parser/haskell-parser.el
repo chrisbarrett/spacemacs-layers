@@ -43,8 +43,9 @@ If there are no arguments, the type of the equation is the return-type."
   (with-temp-buffer
     (insert typesig)
     (goto-char (point-min))
-    (haskell-parser--consume-::)
-    (let ((forall      (haskell-parser--parse-forall))
+    (let ((_           (haskell-parser--consume-whitespace))
+          (_           (haskell-parser--consume-::))
+          (forall      (haskell-parser--parse-forall))
           (_           (haskell-parser--consume-whitespace))
           (constraints (haskell-parser--parse-constraints))
           (_           (haskell-parser--consume-whitespace))
@@ -64,7 +65,8 @@ If there are no arguments, the type of the equation is the return-type."
     (let* ((start (search-forward-regexp (rx (or "forall" "∀") (* space))))
            (end (1- (search-forward ".")))
            (vars (buffer-substring-no-properties start end)))
-      (s-split (rx space) vars t))))
+      (->> (s-split (rx space) vars t)
+           (-map 'haskell-parser--chop-birdtrack)))))
 
 (defun haskell-parser--parse-constraints ()
   (when (s-matches? (rx (or "⇒" "=>"))
@@ -72,7 +74,8 @@ If there are no arguments, the type of the equation is the return-type."
     (prog1 (->> (haskell-parser--parse-constraint-exprs)
                 (s-chop-prefix "(")
                 (s-chop-suffix ")")
-                (s-split (rx (* space) "," (* space))))
+                (s-split (rx (* space) "," (* space)))
+                (-map 'haskell-parser--chop-birdtrack))
       (haskell-parser--consume-constraint-arrow))))
 
 (defun haskell-parser--parse-constraint-exprs ()
@@ -88,18 +91,33 @@ If there are no arguments, the type of the equation is the return-type."
 
     (buffer-substring start (point))))
 
+(defun haskell-parser--chop-birdtrack (s)
+  (s-chop-suffix "\n>" s))
+
 (defun haskell-parser--consume-whitespace ()
   (let (consumed?)
-    (while (and (not (eobp))
-                (s-matches? (rx space) (char-to-string (char-after))))
-      (forward-char)
+    (when (haskell-parser--consume-birdtrack)
       (setq consumed? t))
+
+    (while (and (not (eobp))
+                (or (eolp)
+                    (s-matches? (rx space) (char-to-string (char-after)))))
+      (forward-char)
+      (haskell-parser--consume-birdtrack)
+      (setq consumed? t))
+
     consumed?))
+
+(defun haskell-parser--consume-birdtrack ()
+  (when (and (bolp) (not (eobp))
+             (equal (char-after) ?>))
+    (forward-char)
+    t))
 
 (defun haskell-parser--consume-comments ()
   (while (or (haskell-parser--consume-brace-comment)
              (haskell-parser--consume-line-comment))
-    (haskell-parser--consume-newline)))
+    (haskell-parser--consume-newline-and-birdtrack)))
 
 (defun haskell-parser--consume-brace-comment ()
   (let ((start (point)))
@@ -116,16 +134,17 @@ If there are no arguments, the type of the equation is the return-type."
     (while (and (not (eobp))
                 (thing-at-point-looking-at (rx (* space) "--")))
       (goto-char (line-end-position))
-      (forward-char))
+      (unless (eobp)
+        (forward-char)))
     (let ((end (point)))
       (when (/= start end)
         (buffer-substring start end)))))
 
-(defun haskell-parser--consume-newline ()
-  (when (eolp)
-    (unless (eobp)
-      (forward-char)
-      t)))
+(defun haskell-parser--consume-newline-and-birdtrack ()
+  (when (and (eolp) (not (eobp)))
+    (forward-char)
+    (haskell-parser--consume-birdtrack)
+    t))
 
 (defun haskell-parser--consume-arrow ()
   (haskell-parser--consume-whitespace)
@@ -148,13 +167,16 @@ If there are no arguments, the type of the equation is the return-type."
           (!cons arg acc)
         (setq continue? nil))
       (haskell-parser--consume-arrow))
-    (nreverse acc)))
+
+    (->> (nreverse acc)
+         (-map 'haskell-parser--chop-birdtrack)
+         (--remove (s-matches? (rx bos (* space) eos) it)))))
 
 (defun haskell-parser--parse-arg ()
   (unless (eobp)
     (prog1 (haskell-parser--parse-arg-type)
       (haskell-parser--consume-comments)
-      (haskell-parser--consume-newline))))
+      (haskell-parser--consume-newline-and-birdtrack))))
 
 (defun haskell-parser--parse-arg-type ()
   (let ((start (point)))
