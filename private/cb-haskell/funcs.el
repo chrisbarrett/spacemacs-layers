@@ -10,7 +10,7 @@
               (buffer-substring (line-beginning-position) (point))))
 
 (defun haskell/before-subexp-closing? ()
-  (s-matches? (rx bol (* space) (or "}" "]" "-}" "#-}" "#)"))
+  (s-matches? (rx bol (? ">") (* space) (or "}" "]" "-}" "#-}" "#)"))
               (buffer-substring (point) (line-end-position))))
 
 (defun haskell/smart-space ()
@@ -51,7 +51,7 @@
   "Non-nil if point is between empty square or curly braces."
   (and (s-matches? (rx (or "{" "[") (* space) eol)
                    (buffer-substring (line-beginning-position) (point)))
-       (s-matches? (rx bol (* space) (or "}" "]"))
+       (s-matches? (rx bol (? ">") (* space) (or "}" "]"))
                    (buffer-substring (point) (line-end-position)))))
 
 (defun haskell/smart-minus ()
@@ -60,7 +60,7 @@
   (cond
    ((and (s-matches? (rx "{" (* space) eol)
                      (buffer-substring (line-beginning-position) (point)))
-         (s-matches? (rx bol (* space) "}")
+         (s-matches? (rx bol (? ">") (* space) "}")
                      (buffer-substring (point) (line-end-position))))
     (delete-horizontal-space)
     (insert "- ")
@@ -73,7 +73,7 @@
   "Context-sensitive hash character."
   (interactive)
   (cond
-   ((s-matches? (rx bol (* space) "#" (* space) eol) (current-line))
+   ((s-matches? (rx bol (? ">") (* space) "#" (* space) eol) (current-line))
     (delete-region (line-beginning-position) (line-end-position))
     (insert "{-# ")
     (save-excursion
@@ -81,7 +81,7 @@
 
    ((and (s-matches? (rx (or "{-" "(") (* space) eol)
                      (buffer-substring (line-beginning-position) (point)))
-         (s-matches? (rx bol (* space) (or "-}" ")"))
+         (s-matches? (rx bol (? ">") (* space) (or "-}" ")"))
                      (buffer-substring (point) (line-end-position))))
     (delete-horizontal-space)
     (insert "# ")
@@ -94,7 +94,7 @@
   "Context-sensitive at (@) character."
   (interactive)
   (cond
-   ((s-matches? (rx bol (* space) "@" (* space) eol) (current-line))
+   ((s-matches? (rx bol (? ">") (* space) "@" (* space) eol) (current-line))
     (delete-region (line-beginning-position) (line-end-position))
     (insert "{-@ ")
     (save-excursion
@@ -102,7 +102,7 @@
 
    ((and (s-matches? (rx "{-" "(" (* space) eol)
                      (buffer-substring (line-beginning-position) (point)))
-         (s-matches? (rx bol (* space) "-}")
+         (s-matches? (rx bol (? ">") (* space) "-}")
                      (buffer-substring (point) (line-end-position))))
     (delete-horizontal-space)
     (insert "@ ")
@@ -194,7 +194,7 @@
 
     ((and (s-matches? (rx (or "{-#" "{-" "(#") eol)
                       (buffer-substring (line-beginning-position) (point)))
-          (s-matches? (rx bol (or "#-}" "-}" "#)"))
+          (s-matches? (rx bol (? ">") (or "#-}" "-}" "#)"))
                       (buffer-substring (point) (line-end-position))))
      (atomic-change-group
        (delete-char 1)
@@ -263,7 +263,7 @@
 (defun haskell/ret ()
   "Insert a newline, possibly continuing a comment."
   (interactive "*")
-  (if (s-matches? (rx bol (* space) "--") (current-line))
+  (if (s-matches? (rx bol (? ">") (* space) "--") (current-line))
       (insert "\n-- ")
     (shm/simple-indent-newline-same-col)))
 
@@ -310,7 +310,7 @@
     (message "New field"))
 
    ;; Insert new case below the current type decl.
-   ((s-matches? (rx bol (* space) "data" (+ space)) (current-line))
+   ((s-matches? (rx bol (? ">") (* space) "data" (+ space)) (current-line))
     (goto-char (line-end-position))
     (newline)
     (insert "| ")
@@ -320,25 +320,25 @@
     (message "New data case"))
 
    ;; Insert new type decl case below the current one.
-   ((s-matches? (rx bol (* space) "|") (current-line))
+   ((s-matches? (rx bol (? ">") (* space) "|") (current-line))
     (haskell/newline-indent-to-same-col)
     (insert "| ")
     (message "New data case"))
 
    ;; Insert new alternative case
-   ((s-matches? (rx bol (* space) "<|>") (current-line))
+   ((s-matches? (rx bol (? ">") (* space) "<|>") (current-line))
     (haskell/newline-indent-to-same-col)
     (insert "<|> ")
     (message "New alternative"))
 
    ;; Insert new applicative case
-   ((s-matches? (rx bol (* space) "<*>") (current-line))
+   ((s-matches? (rx bol (? ">") (* space) "<*>") (current-line))
     (haskell/newline-indent-to-same-col)
     (insert "<*> ")
     (message "New applicative"))
 
    ;; Insert new import
-   ((s-matches? (rx bol (* space) "import") (current-line))
+   ((s-matches? (rx bol (? ">") (* space) "import") (current-line))
     (haskell/newline-indent-to-same-col)
     (insert "import ")
     (message "New import"))
@@ -358,40 +358,40 @@
 
    ;; Insert new record field
    ((and (haskell/in-data-decl?)
-         (s-matches? (rx bol (* space) (or "{" ",") (* space)) (current-line)))
+         (s-matches? (rx bol (? ">") (* space) (or "{" ",") (* space)) (current-line)))
     (haskell/insert-record-field)
     (message "New field"))
 
    ;; Insert new line starting with comma.
-   ((s-matches? (rx bol (* space) ",") (current-line))
+   ((s-matches? (rx bol (? ">") (* space) ",") (current-line))
     (haskell/newline-indent-to-same-col)
     (insert ", ")
     (message "New entry"))
 
    ;; Insert new line starting with an arrow.
-   ((s-matches? (rx bol (* space) (or "→" "->")) (current-line))
+   ((s-matches? (rx bol (? ">") (* space) (or "→" "->")) (current-line))
     (haskell/newline-indent-to-same-col)
     (insert (format "%s " (haskell/fmt-rarrow)))
     (message "New arrow"))
 
    ;; Insert new pattern match case below the current one.
-   ((s-matches? (rx bol (* space) (+ (not (any "="))) (or "->" "→")) (current-line))
+   ((s-matches? (rx bol (? ">") (* space) (+ (not (any "="))) (or "->" "→")) (current-line))
     (haskell/newline-indent-to-same-col)
     (yas-expand-snippet (format "${1:pat} %s $0" (haskell/fmt-rarrow)))
     (message "New pattern match case"))
-   ((s-matches? (rx bol (* space) "case" (+ space)) (current-line))
+   ((s-matches? (rx bol (? ">") (* space) "case" (+ space)) (current-line))
     (newline-and-indent)
     (yas-expand-snippet (format "${1:pat} %s $0" (haskell/fmt-rarrow)))
     (message "New pattern match case"))
 
    ;; Insert new line starting with a comma for the current braced expr
-   ((s-matches? (rx bol (* space) (or "[" "{")) (current-line))
+   ((s-matches? (rx bol (? ">") (* space) (or "[" "{")) (current-line))
     (haskell/newline-indent-to-same-col)
     (insert ", ")
     (message "New entry"))
 
    ;; Insert new line with a do-binding.
-   ((s-matches? (rx bol (* space) (+ nonl) (or "<-" "←")) (current-line))
+   ((s-matches? (rx bol (? ">") (* space) (+ nonl) (or "<-" "←")) (current-line))
     (back-to-indentation)
     (let ((col (current-column)))
       (search-forward-regexp (rx  (or "<-" "←")))
@@ -409,7 +409,7 @@
   (evil-insert-state))
 
 (defun haskell/at-record-decl-data-header? ()
-  (when (s-matches? (rx bol (* space) "data" space) (current-line))
+  (when (s-matches? (rx bol (? ">") (* space) "data" space) (current-line))
     (shm/reparse)
     (save-excursion
       (back-to-indentation)
@@ -468,19 +468,19 @@
   (when fname
     (or
      ;; A type decl exists in this buffer?
-     (s-matches? (eval `(rx bol (* space)
+     (s-matches? (eval `(rx bol (? ">") (* space)
                             (? (or "let" "where") (+ space))
                             ,fname (+ space) (or "∷" "::")))
                  (buffer-string))
      ;; At an equation?
-     (s-matches? (eval `(rx bol (* space)
+     (s-matches? (eval `(rx bol (? ">") (* space)
                             (? (or "let" "where") (+ space))
                             ,fname (+ nonl) "="))
                  (current-line)))))
 
 (defun haskell/back-to-function-typesig (fname)
   (let ((function-decl-rx
-         (rx-to-string `(and bol (* space) (? (or "let" "where") (+ space))
+         (rx-to-string `(and bol (? ">") (* space) (? (or "let" "where") (+ space))
                              ,fname (+ space) (or "∷" "::")))))
     (if (s-matches? function-decl-rx (current-line))
         t
@@ -490,10 +490,10 @@
   (cond
    ((core/in-string-or-comment?) nil)
    ((s-matches? "}" (buffer-substring (line-beginning-position) (point))) nil)
-   ((thing-at-point-looking-at (rx bol (* space) "data ")) t)
+   ((thing-at-point-looking-at (rx bol (? ">") (* space) "data ")) t)
    (t
     (save-excursion
-      (when (search-backward-regexp (rx bol (not space)) nil t)
+      (when (search-backward-regexp (rx bol (? ">") (not space)) nil t)
         (thing-at-point-looking-at "data "))))))
 
 (defun haskell/at-end-of-record-decl? ()
@@ -516,7 +516,7 @@
 
 (defun haskell/insert-record-field ()
   (let ((underscore-prefix-style?
-         (s-matches? (rx bol (* space) (or "{" ",") (* space) "_") (current-line)))
+         (s-matches? (rx bol (? ">") (* space) (or "{" ",") (* space) "_") (current-line)))
 
         (inserting-first-field? (haskell/at-record-with-no-fields?))
 
@@ -542,7 +542,7 @@
 
 (defun haskell/at-record-with-no-fields? ()
   (save-excursion
-    (search-backward-regexp (rx bol (* space) "data"))
+    (search-backward-regexp (rx bol (? ">") (* space) "data"))
     (let ((limit (save-excursion (forward-line) (line-end-position))))
       (when (search-forward-regexp (rx "{" (not (any "-"))) limit t)
         (-if-let* (((&plist :op op :beg beg :end end) (sp-get-enclosing-sexp))
@@ -778,7 +778,7 @@
 
     (cond
      ;; Move directly to import statements.
-     ((search-forward-regexp (rx bol "import") nil t))
+     ((search-forward-regexp (rx bol (? ">") "import") nil t))
 
      ;; Move past module declaration.
      ((search-forward "module" nil t)
@@ -835,8 +835,8 @@
 (defun haskell/flyspell-verify ()
   "Prevent common flyspell false positives in haskell-mode."
   (and (flyspell-generic-progmode-verify)
-       (not (or (s-matches? (rx bol (* space) "{-#") (current-line))
-                (s-matches? (rx bol (* space) "foreign import") (current-line))))))
+       (not (or (s-matches? (rx bol (? ">") (* space) "{-#") (current-line))
+                (s-matches? (rx bol (? ">") (* space) "foreign import") (current-line))))))
 
 (defun haskell/configure-flyspell ()
   (setq-local flyspell-generic-check-word-predicate 'haskell/flyspell-verify))
