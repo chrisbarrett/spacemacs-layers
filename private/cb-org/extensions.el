@@ -100,7 +100,8 @@
                             ((org-agenda-overriding-header "Next Actions")))
                  (agenda ""
                          ((org-agenda-span 'fortnight)
-                          (org-agenda-show-log t)))
+                          (org-agenda-show-log t)
+                          (org-agenda-use-time-grid nil)))
                  (todo "WAITING"
                        ((org-agenda-overriding-header "Waiting")))
                  (stuck ""
@@ -131,40 +132,38 @@
                 ((tags-todo "-someday/NEXT"))
                 ((org-agenda-overriding-header "Next Actions")))
 
-               ("g" . "GTD contexts")
-               ("gg" "Anywhere"
-                ((tags-todo "@computer")
-                 (tags-todo "@errand")
-                 (tags-todo "@home")
-                 (tags-todo "@leisure")
-                 (tags-todo "@phone")
-                 (tags-todo "@work")))
-               ("gc" "Computer" tags-todo "@computer")
-               ("ge" "Errands" tags-todo "@errand")
-               ("gp" "Phone" tags-todo "@phone")
-               ("gw" "Work" tags-todo "@work")
-               ("gh" "Home" tags-todo "@home")
-               ("gl" "Leisure" tags-todo "@leisure")
-
                ("r" "Weekly Review"
                 ((agenda ""
-                         ((org-agenda-ndays 21)
+                         ((org-agenda-overriding-header "Review Previous Week")
+                          (org-agenda-ndays 7)
                           (org-agenda-start-day "-7d")
                           (org-agenda-show-log t)))
-                 (stuck "")
+                 (agenda ""
+                         ((org-agenda-overriding-header "Review Upcoming Events")
+                          (org-agenda-ndays 14)))
+                 (stuck ""
+                        ((org-agenda-overriding-header "Review Stuck Projects")))
                  (todo "WAITING"
-                       ((org-agenda-overriding-header "Waiting")))
+                       ((org-agenda-overriding-header "Review Tasks on Hold")))
+
                  (tags-todo "-@work-someday-media/NEXT"
                             ((org-agenda-overriding-header "Next Actions")))
+                 (tags-todo "-@work+goals+3_months/PROJECT|NEXT"
+                            ((org-agenda-overriding-header "Review 3 Month Goals")))
+                 (tags-todo "-@work+goals+1_year/PROJECT|NEXT"
+                            ((org-agenda-overriding-header "Review 1 Year Goals")))
+                 (tags-todo "-@work+goals+3_years/MAYBE|SOMEDAY|PROJECT|NEXT"
+                            ((org-agenda-overriding-header "Review 3 Year Goals")))
                  (tags-todo "someday-skill/MAYBE|NEXT"
-                            ((org-agenda-overriding-header "Someday")))
+                            ((org-agenda-overriding-header "Decide whether to promote any SOMEDAY items to NEXT actions")))
                  (tags-todo "someday&skill"
-                            ((org-agenda-overriding-header "Skills"))))
+                            ((org-agenda-overriding-header "Decide whether to promote any learning tasks to NEXT actions"))))
                 ((org-agenda-tag-filter-preset
                   '("-drill" "-gtd" "-work_habit" "-habit" "-ignore"))
                  (org-habit-show-habits nil)
                  (org-agenda-include-inactive-timestamps t)
-                 (org-agenda-use-time-grid nil))))))
+                 (org-agenda-use-time-grid nil)
+                 (org-agenda-dim-blocked-tasks nil))))))
 
       ;; Refresh agenda every minute, so long as Emacs has been idle for a period.
       ;; This prevents agenda buffers from getting stale.
