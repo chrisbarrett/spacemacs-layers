@@ -25,7 +25,7 @@ which require an initialization must be listed explicitly in the list.")
     :init
     (progn
       (defconst cb-org/default-stuck-projects
-        '("-ignore+TODO={TODO_OUT\\|PROJECT}/-MAYBE-DONE-CANCELLED" ("NEXT") nil "SCHEDULED:\\|\\<IGNORE\\>"))
+        '("-ignore-3_years+TODO={TODO_OUT\\|PROJECT}/-MAYBE-DONE-CANCELLED" ("NEXT") nil "SCHEDULED:\\|\\<IGNORE\\>"))
 
       (defconst org-directory
         (let ((in-dropbox (f-join user-dropbox-directory "org/")))
@@ -75,7 +75,8 @@ which require an initialization must be listed explicitly in the list.")
       (setq org-stuck-projects cb-org/default-stuck-projects)
       (setq org-support-shift-select t)
       (setq org-todo-keywords '((type "MAYBE(m)" "TODO(t)" "NEXT(n)" "WAITING(w@/!)" "|" "DONE(d!)" "CANCELLED(c@)")
-                                (type "PROJECT(p)" "|")))
+                                (type "PROJECT(p)" "|")
+                                (type "SOMEDAY(S)" "|")))
       (setq org-hierarchical-todo-statistics nil)
       (setq org-checkbox-hierarchical-statistics t)
       (setq org-tag-persistent-alist
@@ -116,7 +117,7 @@ which require an initialization must be listed explicitly in the list.")
 
               ("s" "Someday" entry
                (file+olp org-default-notes-file "Someday")
-               "* MAYBE %?"
+               "* SOMEDAY %?"
                :clock-keep t)
 
               ("S" "Shopping" checkitem
