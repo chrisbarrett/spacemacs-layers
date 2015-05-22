@@ -1,0 +1,8 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# key: js
+# name: src javascript
+# condition: (yas/bol?)
+# --
+#+begin_src javascript
+$0
+#+end_src
