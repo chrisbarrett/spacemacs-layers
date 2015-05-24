@@ -106,7 +106,7 @@
                        ((org-agenda-overriding-header "Waiting")))
                  (stuck ""
                         ((org-agenda-overriding-header "Stuck Cards")))
-                 (todo "READY-TO-START"
+                 (todo "READY-TO-START|TO-DO" ; MKG uses TO-DO for cards not started.
                        ((org-agenda-overriding-header "Upcoming Cards")))
                  (stuck "+@work"
                         ((org-agenda-overriding-header "Stuck Tasks")
@@ -125,7 +125,9 @@
                  (org-agenda-todo-ignore-deadlines 14)
                  (org-agenda-todo-ignore-scheduled 'all)
                  (org-agenda-remove-tags t)
-                 (org-stuck-projects '("-ignore+TODO={IN-PROGRESS}+assignee=\"chrisb\"/-RESOLVED-DONE" ("NEXT") nil "SCHEDULED:\\|\\<IGNORE\\>"))
+                 (org-stuck-projects
+                  ;; MKG uses TO-DO for cards not started.
+                  '("-ignore+TODO={IN-PROGRESS\\|TO-DO}+assignee=\"chrisb\"/-RESOLVED-DONE" ("NEXT") nil "SCHEDULED:\\|\\<IGNORE\\>"))
                  ))
 
                ("n" "Next actions"
