@@ -73,11 +73,18 @@
   "Context-sensitive hash character."
   (interactive)
   (cond
-   ((s-matches? (rx bol (? ">") (* space) "#" (* space) eol) (current-line))
-    (delete-region (line-beginning-position) (line-end-position))
-    (insert "{-# ")
-    (save-excursion
-      (insert " #-}")))
+   ((equal "#" (char-to-string (char-before)))
+    (let ((col (current-indentation)))
+      (save-restriction
+        (narrow-to-region (line-beginning-position) (point))
+        (delete-char -1)
+        (just-one-space)
+        (indent-to col)
+        (insert "{-# "))
+      (save-excursion
+        (insert " #-}")
+        (unless (eolp)
+          (just-one-space)))))
 
    ((and (s-matches? (rx (or "{-" "(") (* space) eol)
                      (buffer-substring (line-beginning-position) (point)))
