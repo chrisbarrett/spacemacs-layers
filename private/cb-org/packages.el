@@ -258,7 +258,7 @@ which require an initialization must be listed explicitly in the list.")
       ;; Apply JIRA issue number as the org category
 
       (defadvice org-jira-get-issues (after apply-category activate)
-        (org-map-entries '(cb-org/apply-to-headlines-at-level 1 'cb-org/apply-id-as-category)
+        (org-map-entries '(cb-org/apply-to-headlines-at-level 1 'cb-org/maybe-apply-id-as-category)
                          nil
                          (f-entries org-jira-working-dir)))
 
@@ -268,9 +268,10 @@ which require an initialization must be listed explicitly in the list.")
           (when (= n level)
             (funcall fn))))
 
-      (defun cb-org/apply-id-as-category ()
-        (-when-let (tag (org-entry-get (point) "ID"))
-          (org-set-property "CATEGORY" tag)))
+      (defun cb-org/maybe-apply-id-as-category ()
+        (unless (org-entry-get nil "CATEGORY")
+          (-when-let (tag (org-entry-get (point) "ID"))
+            (org-set-property "CATEGORY" tag))))
 
       ;; Better feedback on issues
 
