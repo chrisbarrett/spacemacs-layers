@@ -47,7 +47,12 @@ which require an initialization must be listed explicitly in the list.")
                 ("cash flow" "ledger -f %(ledger-file) bal ^income ^expenses")
                 ("this week" "ledger -f %(ledger-file) -p 'this week' -r reg 'checking' --invert")
                 ("this month" "ledger -f %(ledger-file) -p 'this month' -r reg 'checking' --invert")
-                ("since payday" ,(concat "ledger -f %(ledger-file) -b '" last-payday "' -r reg 'checking' --invert")))))
+                ("reg since payday"
+                 ,(concat "ledger -f %(ledger-file) -b '" last-payday
+                          "' -r reg 'checking' --invert"))
+                ("bal since payday"
+                 ,(concat "ledger -f %(ledger-file) -b '" last-payday
+                          "' -r bal 'checking' --invert")))))
 
       (setq ledger-report-format-specifiers
             '(("ledger-file" . ledger-report-ledger-file-format-specifier)
