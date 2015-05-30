@@ -16,6 +16,10 @@
   (define-key ensime-mode-map (kbd "M-N") 'ensime-forward-note)
   (define-key ensime-mode-map (kbd "M-P") 'ensime-backward-note)
 
+  (evil-define-key 'normal ensime-inspector-mode-map
+    (kbd "M-.") 'ensime-inspector-browse-source
+    (kbd "K") 'ensime-inspector-browse-doc)
+
   (evil-define-key 'normal ensime-mode-map (kbd "M-N") 'ensime-forward-note)
   (evil-define-key 'normal ensime-mode-map (kbd "M-P") 'ensime-backward-note)
   (evil-define-key 'normal ensime-mode-map (kbd "RET") 'ensime-inspect-type-at-point)
