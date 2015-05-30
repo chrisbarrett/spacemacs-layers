@@ -20,6 +20,7 @@
     org-drill
     ox
     ox-texinfo
+    cb-org-latex-preview-retina
     )
   "List of all extensions to load after the packages.")
 
@@ -349,3 +350,6 @@ table tr.tr-even td {
 [NO-DEFAULT-PACKAGES]
 [EXTRA]
 [PACKAGES]")))))
+
+(defun cb-org/init-cb-org-latex-preview-retina ()
+  (use-package cb-org-latex-preview-retina))
