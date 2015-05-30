@@ -99,14 +99,15 @@ Typing three in a row will insert a ScalaDoc."
 (defun scala/unicode-buffer ()
   "Rewrite symbols in buffer."
   (interactive)
-  (--each scala/unicode-mapping-alist
-    (-let* (((ascii . unicode) it)
-            (match-ascii  (rx-to-string `(and space (group ,ascii) space)
-                                        nil)))
-      (save-excursion
-        (goto-char (point-min))
-        (while (search-forward-regexp match-ascii nil t)
-          (replace-match unicode nil t nil 1))))))
+  (when (derived-mode-p 'scala-mode)
+    (--each scala/unicode-mapping-alist
+      (-let* (((ascii . unicode) it)
+              (match-ascii  (rx-to-string `(and space (group ,ascii) space)
+                                          nil)))
+        (save-excursion
+          (goto-char (point-min))
+          (while (search-forward-regexp match-ascii nil t)
+            (replace-match unicode nil t nil 1)))))))
 
 
 ;;; Smart editing commands
