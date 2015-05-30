@@ -18,7 +18,7 @@
     org-clock
     org-crypt
     org-drill
-    org-export
+    ox
     ox-texinfo
     )
   "List of all extensions to load after the packages.")
@@ -298,15 +298,16 @@
       (defadvice org-drill (after save-buffers activate)
         (org-save-all-org-buffers)))))
 
-(defun cb-org/init-org-export ()
-  (use-package org-export
+(defun cb-org/init-ox ()
+  (use-package ox
     :defer t
+    :init
+    (setq org-export-backends '(ascii html latex md koma-letter))
     :config
     (progn
       (setq org-export-exclude-tags '("noexport" "crypt"))
       (setq org-html-html5-fancy t)
       (setq org-html-postamble nil)
-      (setq org-export-html-postamble nil)
       (setq org-html-table-row-tags
             (cons
              '(cond
