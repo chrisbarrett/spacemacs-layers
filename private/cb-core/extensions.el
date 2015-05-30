@@ -70,6 +70,7 @@
                       "/var/folders/"
                       "^/?sudo"
                       "\\.bbdb"
+                      "/\\.cache/"
                       "\\.newsrc"
                       "/gnus$"
                       "/gnus.eld$"
