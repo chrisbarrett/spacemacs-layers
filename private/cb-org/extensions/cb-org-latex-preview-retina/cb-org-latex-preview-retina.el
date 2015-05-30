@@ -27,59 +27,88 @@
 (require 'org)
 (require 'ox-latex)
 
+(defconst cb-org-latex-preview-scaling-factor 2)
+
 (defun cb-org-latex-preview-create-retina-image-with-dvipng (string tofile options buffer)
-  (let* ((tofile (format "%s@2X.%s" (file-name-sans-extension tofile) (file-name-extension tofile)))
-         (texfilebase (make-temp-name (expand-file-name "orgtex" temporary-file-directory)))
-         (texfile (concat texfilebase ".tex"))
-         (dvifile (concat texfilebase ".dvi"))
-         (pngfile (concat texfilebase ".png"))
-         (fnh (face-attribute 'default :height nil))
-         (scale (* 2 (or (plist-get options (if buffer :scale :html-scale)) 1.0)))
-         (dpi (number-to-string (* scale (floor (* 0.9 (if buffer fnh 140.))))))
-         (fg (or (plist-get options (if buffer :foreground :html-foreground))
-                 "Black"))
-         (bg (or (plist-get options (if buffer :background :html-background))
-                 "Transparent")))
-    (if (eq fg 'default)
-        (setq fg (org-dvipng-color :foreground))
-      (unless (string= fg "Transparent") (setq fg (org-dvipng-color-format fg))))
+  (let* ((dest-file (format "%s@2X.%s" (file-name-sans-extension tofile) (file-name-extension tofile)))
+         (base-path (make-temp-name (expand-file-name "orgtex" temporary-file-directory)))
+         (tex-file (concat base-path ".tex"))
+         (dvi-file (concat base-path ".dvi"))
+         (png-file (concat base-path ".png"))
+         (tex-content (cb-org-latex-preview--mk-latex-file-content string))
 
-    (if (eq bg 'default)
-        (setq bg (org-dvipng-color :background))
-      (unless (string= bg "Transparent") (setq bg (org-dvipng-color-format bg))))
+         (height (face-attribute 'default :height nil))
+         (scale-prop (or (plist-get options (if buffer :scale :html-scale)) 1.0))
+         (scale (* cb-org-latex-preview-scaling-factor scale-prop))
+         (dpi (number-to-string (* scale (floor (* 0.9 (if buffer height 140.0))))))
 
-    (let ((latex-header (org-create-formula--latex-header)))
-      (with-temp-file texfile
-        (insert latex-header)
-        (insert "\n\\begin{document}\n" string "\n\\end{document}\n")))
+         (fg (cb-org-latex-preview--fg-colour buffer options))
+         (bg (cb-org-latex-preview--bg-colour buffer options)))
+    (unwind-protect
+        (condition-case err
+            (cb-org-latex-preview--create
+             tex-content dest-file tex-file dvi-file png-file dpi fg bg)
+          (error
+           (if org-format-latex-signal-error
+               (error (error-message-string err))
+             (message (error-message-string err)))))
 
-    (let ((dir default-directory))
-      (ignore-errors
-        (cd temporary-file-directory)
-        (call-process "latex" nil nil nil texfile))
-      (cd dir))
+      (cb-org-latex-preview--remove-intermediate-files base-path))))
 
-    (if (not (file-exists-p dvifile))
-        (progn (message "Failed to create dvi file from %s" texfile) nil)
-      (ignore-errors
-        (call-process "dvipng" nil nil nil
-                      "-fg" fg "-bg" bg
-                      "-D" dpi
-                      ;;"-x" scale "-y" scale
-                      "-T" "tight"
-                      "-o" pngfile
-                      dvifile))
-      (if (not (file-exists-p pngfile))
-          (if org-format-latex-signal-error
-              (error "Failed to create png file from %s" texfile)
-            (message "Failed to create png file from %s" texfile)
-            nil)
-        ;; Use the requested file name and clean up
-        (copy-file pngfile tofile 'replace)
-        (cl-loop for e in '(".dvi" ".tex" ".aux" ".log" ".png" ".out") do
-                 (if (file-exists-p (concat texfilebase e))
-                     (delete-file (concat texfilebase e))))
-        pngfile))))
+(defun cb-org-latex-preview--mk-latex-file-content (str)
+  (let ((header (org-create-formula--latex-header)))
+    (format "%s\n\\begin{document}\n%s\n\\end{document}\n" header str)))
+
+(defun cb-org-latex-preview--create (tex-content dest-file tex-file dvi-file png-file dpi fg bg)
+  (with-temp-file tex-file (insert tex-content))
+
+  (let ((dir default-directory))
+    (ignore-errors
+      (cd temporary-file-directory)
+      (call-process "latex" nil nil nil tex-file))
+    (cd dir))
+
+  (cl-assert (file-exists-p dvi-file) nil "Failed to create dvi file from %s" tex-file)
+
+  (ignore-errors
+    (call-process "dvipng" nil nil nil
+                  "-fg" fg "-bg" bg
+                  "-D" dpi
+                  "-T" "tight"
+                  "-o" png-file
+                  dvi-file))
+
+  (cl-assert (file-exists-p png-file) nil "Failed to create png file from %s" png-file)
+
+  (copy-file png-file dest-file 'replace)
+  png-file)
+
+(defun cb-org-latex-preview--fg-colour (buffer options)
+  (let ((colour (or (plist-get options (if buffer :foreground :html-foreground))
+                    "Black")))
+    (cond
+     ((equal colour 'default)
+      (org-dvipng-color :foreground))
+     ((equal colour "Transparent")
+      colour)
+     (t
+      (org-dvipng-color-format colour)))))
+
+(defun cb-org-latex-preview--bg-colour (buffer options)
+  (let ((colour (or (plist-get options (if buffer :background :html-background))
+                    "Transparent")))
+    (cond
+     ((equal colour 'default)
+      (org-dvipng-color :background))
+     ((equal colour "Transparent")
+      colour)
+     (t
+      (org-dvipng-color-format colour)))))
+
+(defun cb-org-latex-preview--remove-intermediate-files (base-path)
+  (cl-loop for e in '(".dvi" ".tex" ".aux" ".log" ".png" ".out") do
+           (when (file-exists-p (concat base-path e))
+             (delete-file (concat base-path e)))))
 
 (defadvice org-create-formula-image-with-dvipng (after export-retina-version activate)
   (apply 'cb-org-latex-preview-create-retina-image-with-dvipng
