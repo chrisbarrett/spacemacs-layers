@@ -23,6 +23,7 @@
      org
      syntax-checking
      cb-core
+     cb-sunrise-commander
      cb-autoinsert
      cb-flycheck
      cb-org

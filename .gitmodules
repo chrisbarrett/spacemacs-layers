@@ -37,3 +37,6 @@
 [submodule "private/cb-flycheck/extensions/haskell-flycheck"]
 	path = private/cb-flycheck/extensions/haskell-flycheck
 	url = https://github.com/chrisdone/haskell-flycheck.git
+[submodule "private/cb-sunrise-commander/extensions/sunrise-commander"]
+	path = private/cb-sunrise-commander/extensions/sunrise-commander
+	url = https://github.com/escherdragon/sunrise-commander.git
