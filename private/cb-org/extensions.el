@@ -81,6 +81,27 @@
 
       (add-hook 'after-init-hook 'cb-org/agenda-dwim)
 
+      (defun cb-org/org-file? (path)
+        (or (f-ext? path "org")
+            (f-ext? path "org_archive")))
+
+      (defun cb-org/main-org-files ()
+        (-distinct (cons org-default-notes-file (cb-org/work-files))))
+
+      (defun cb-org/work-files ()
+        (let ((jira-files
+               (when (boundp 'org-jira-working-dir)
+                 (f-files org-jira-working-dir 'cb-org/org-file?)))
+
+              (top-level-files
+               (f-files org-directory (lambda (f)
+                                        (and (s-matches? (rx (or "work" "diary")) (f-filename f))
+                                             (cb-org/org-file? f))))))
+
+          (-distinct (-concat jira-files top-level-files))))
+
+      (setq org-agenda-files (cb-org/main-org-files))
+
       (setq org-agenda-custom-commands
             (cb-org/agenda-custom-commands-delete-other-windows
              '(
@@ -116,12 +137,7 @@
                             ((org-agenda-overriding-header "Study")))
                  )
                 ((org-agenda-tag-filter-preset '("-ignore"))
-                 (org-agenda-files (-keep 'identity (list org-work-file
-                                                          (let ((archive (concat org-work-file "_archive")))
-                                                            (when (f-exists? archive)
-                                                              archive))
-                                                          org-agenda-diary-file
-                                                          org-jira-working-dir)))
+                 (org-agenda-files (cb-org/work-files))
                  (org-deadline-warning-days 0)
                  (org-agenda-todo-ignore-deadlines 14)
                  (org-agenda-todo-ignore-scheduled 'all)
@@ -166,7 +182,8 @@
                  (org-habit-show-habits nil)
                  (org-agenda-include-inactive-timestamps t)
                  (org-agenda-use-time-grid nil)
-                 (org-agenda-dim-blocked-tasks nil))))))
+                 (org-agenda-dim-blocked-tasks nil)
+                 (org-agenda-files (cb-org/main-org-files)))))))
 
       ;; Refresh agenda every minute, so long as Emacs has been idle for a period.
       ;; This prevents agenda buffers from getting stale.
