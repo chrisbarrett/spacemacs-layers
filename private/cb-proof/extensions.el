@@ -31,10 +31,10 @@
        '(proof-eager-annotation-face
          ((t (:inherit default :background nil :underline "darkgoldenrod"))))
        '(proof-error-face
-         ((t (:background nil))))
-       '(proof-locked-face
          ((t (:background nil)))))
 
+      (core/remap-face 'proof-queue-face 'core/bg-flash)
+      (core/remap-face 'proof-locked-face 'core/bg-hl-ok)
       (core/remap-face 'proof-warning-face 'flycheck-warning)
       (core/remap-face 'proof-script-sticky-error-face 'flycheck-error)
       (core/remap-face 'proof-script-highlight-error-face 'flycheck-error))))
@@ -71,6 +71,14 @@
         (condition-case _
             ad-do-it
           (wrong-type-argument nil)))
+
+      (evil-define-key 'normal coq-mode-map
+        (kbd "S-<return>")  'proof-undo-last-successful-command
+        (kbd "C-<return>")  'proof-assert-next-command-interactive
+        (kbd "RET")         'proof-assert-next-command-interactive)
+
+      (define-key coq-mode-map (kbd "S-<return>")  'proof-undo-last-successful-command)
+      (define-key coq-mode-map (kbd "C-<return>")   'proof-assert-next-command-interactive)
 
       (define-key coq-mode-map (kbd "M-RET")   'coq/meta-ret)
       (define-key coq-mode-map (kbd "C-c C-m") 'coq-insert-match)
