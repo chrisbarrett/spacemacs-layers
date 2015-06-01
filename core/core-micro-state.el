@@ -10,9 +10,9 @@
 ;; This file is not part of GNU Emacs.
 ;;
 ;;; License: GPLv3
-(require 'lv)
+(require 'corelv)
 
-(defun spacemacs//defface-micro-state-faces ()
+(defun spacemacs/defface-micro-state-faces ()
   "Define faces for micro-states."
   (let* ((hname 'spacemacs-micro-state-header-face)
          (bname 'spacemacs-micro-state-binding-face)
@@ -35,7 +35,7 @@ Characters enclosed in `[]' will have this face applied to them."
     (set-face-attribute bname nil
                         :foreground err
                         :bold t)))
-(spacemacs//defface-micro-state-faces)
+(spacemacs/defface-micro-state-faces)
 
 (defmacro spacemacs|define-micro-state (name &rest props)
   "Define a micro-state called NAME.
@@ -65,6 +65,10 @@ Available PROPS:
     If BOOLEAN is non nil then the micro-state never exits. A binding
     with an explicitly set `exit t' property is required. Default is nil.
 
+`:execute-binding-on-enter BOOLEAN'
+    If BOOLEAN is non nil then execute the micro-state command bound to
+    to the pressed key that started the micro-state.
+
 `:bindings EXPRESSIONS'
     One or several EXPRESSIONS with the form
     (STRING1 SYMBOL1 :doc STRING
@@ -87,7 +91,7 @@ used."
          (doc (spacemacs/mplist-get props :doc))
          (persistent (plist-get props :persistent))
          (disable-leader (plist-get props :disable-evil-leader))
-         (msg-func (if (plist-get props :use-minibuffer) 'message 'lv-message))
+         (msg-func (if (plist-get props :use-minibuffer) 'message 'corelv-message))
          (exec-binding (plist-get props :execute-binding-on-enter))
          (on-enter (spacemacs/mplist-get props :on-enter))
          (on-exit (spacemacs/mplist-get props :on-exit))
@@ -237,9 +241,9 @@ pressed)."
 
 (defun spacemacs//micro-state-close-window ()
   "Close micro-state help window."
-  (when (window-live-p lv-wnd)
-    (let ((buf (window-buffer lv-wnd)))
-      (delete-window lv-wnd)
+  (when (window-live-p corelv-wnd)
+    (let ((buf (window-buffer corelv-wnd)))
+      (delete-window corelv-wnd)
       (kill-buffer buf))))
 
 (provide 'core-micro-state)

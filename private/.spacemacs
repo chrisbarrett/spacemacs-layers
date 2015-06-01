@@ -21,6 +21,8 @@
      dockerfile
      finance
      org
+     emacs-lisp
+     shell
      syntax-checking
      cb-core
      cb-sunrise-commander

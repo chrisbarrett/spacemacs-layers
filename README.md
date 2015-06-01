@@ -451,6 +451,11 @@ environment. You can have anti-aliasing if you use the `utf8` separator.
 Note that by default the `utf8` separator is used in a terminal.
 See the powerline section in the [documentation][powerline-doc].
 
+7. **Why is after-init-hook not executed ?**
+Don't launch Spacemacs with `emacs -q -l init.el` command. This command will
+run the hooked function in `after-init-hook` before the evaluation of the
+passed `-l init.el` file.
+
 ## Windows
 
 1. **Why do the fonts look crappy on Windows ?**
@@ -459,7 +464,8 @@ also recommended to disable smooth scrolling on Windows.
 
 2. **Why is there no Spacemacs logo in the startup buffer ?**
 A GUI build of emacs supporting image display is required.
-You can follow the instructions [here][Windows Image Support]. Alternatively you can download binaries of emacs with image support
+You can follow the instructions [here][Windows Image Support]. Alternatively you
+can download binaries of emacs with image support
 included such as this [one][Windows Gui Build].
 
 3. **How to fix the error: The directory ~/.emacs.d/server is unsafe ?**
@@ -469,6 +475,12 @@ Change the owner of the directory `~/.emacs.d/server`:
   - select the Tab “Owner”
   - change the owner to your account name
   Source: [Stackoverflow][so-server-unsafe]
+
+4. **I followed installation instructions and it's not working, why?**
+Make sure your `HOME` directory is set. Go to the Environment Variables
+panel, add a new user variable called `HOME` and give it the value
+`%USERPROFILE%`. You can check that the variable is set correctly by
+opening a new command line window and type `echo %HOME%`.
 
 ## OS X
 
@@ -511,16 +523,16 @@ details.
 [emacs-mac-port]: https://github.com/railwaycat/homebrew-emacsmacport
 [emacs-mac-port-server]: https://github.com/railwaycat/emacs-mac-port/blob/master/README-mac#L210-L213
 [homebrew]: https://github.com/Homebrew/homebrew
-[Elixir]: contrib/lang/erlang-elixir
-[Haskell]: contrib/lang/haskell
+[Elixir]: contrib/!lang/erlang-elixir
+[Haskell]: contrib/!lang/haskell
 [LaTeX]: contrib/auctex
-[JavaScript]: contrib/lang/javascript
-[Python]: contrib/lang/python
-[R]: contrib/lang/ess
-[Ruby]: contrib/lang/ruby
-[Scala]: contrib/lang/scala
-[Clojure]: contrib/lang/clojure
-[C-C++]: contrib/lang/c-c++
+[JavaScript]: contrib/!lang/javascript
+[Python]: contrib/!lang/python
+[R]: contrib/!lang/ess
+[Ruby]: contrib/!lang/ruby
+[Scala]: contrib/!lang/scala
+[Clojure]: contrib/!lang/clojure
+[C-C++]: contrib/!lang/c-c++
 [powerline-srgb-issue]: https://github.com/milkypostman/powerline/issues/54
 [powerline-doc]: doc/DOCUMENTATION.md#powerline-separators
 [so-server-unsafe]: http://stackoverflow.com/questions/885793/emacs-error-when-calling-server-start

@@ -36,6 +36,12 @@
 (defvar helm-spacemacs-all-packages '()
   "Hash table of all packages in all layers.")
 
+(defvar helm-spacemacs-all-pre-extensions '()
+  "Hash table of all pre-extensions in all layers.")
+
+(defvar helm-spacemacs-all-post-extensions '()
+  "Hash table of all post-extensions in all layers.")
+
 ;;;###autoload
 (define-minor-mode helm-spacemacs-mode
   "Layers discovery with helm interface."
@@ -53,7 +59,11 @@
             (configuration-layer//load-layer-files layer '("funcs.el"
                                                            "config.el"))))
         (setq helm-spacemacs-all-packages (configuration-layer/get-packages
-                                           helm-spacemacs-all-layers)))))
+                                           helm-spacemacs-all-layers))
+        (setq helm-spacemacs-all-pre-extensions
+              (configuration-layer/get-extensions helm-spacemacs-all-layers t))
+        (setq helm-spacemacs-all-post-extensions
+              (configuration-layer/get-extensions helm-spacemacs-all-layers)))))
 
 ;;;###autoload
 (defun helm-spacemacs ()
@@ -63,6 +73,7 @@
   (helm :buffer "*helm: spacemacs*"
         :sources `(,(helm-spacemacs//layer-source)
                    ,(helm-spacemacs//package-source)
+                   ,(helm-spacemacs//dotspacemacs-source)
                    ,(helm-spacemacs//toggle-source))))
 
 (defun helm-spacemacs//layer-source ()
@@ -85,8 +96,14 @@
   "Return the sorted candidates for package source."
   (let (result)
     (ht-aeach (dolist (layer value)
-                (push (format "(%s) %s" layer key) result))
+                (push (format "(%s) package: %s" layer key) result))
               helm-spacemacs-all-packages)
+    (ht-aeach (dolist (layer value)
+                (push (format "(%s) pre-extension: %s" layer key) result))
+              helm-spacemacs-all-pre-extensions)
+    (ht-aeach (dolist (layer value)
+                (push (format "(%s) post-extension: %s" layer key) result))
+              helm-spacemacs-all-post-extensions)
     (sort result 'string<)))
 
 (defun helm-spacemacs//toggle-source ()
@@ -102,6 +119,22 @@
     (dolist (toggle spacemacs-toggles)
       (push (symbol-name (car toggle)) result))
     (sort result 'string<)))
+
+(defun helm-spacemacs//dotspacemacs-source ()
+  `((name . "Dotfile")
+    (candidates . ,(helm-spacemacs//dotspacemacs-candidates))
+    (candidate-number-limit)
+    (action . (("Go to variable" . helm-spacemacs//go-to-dotfile-variable)))))
+
+(defun helm-spacemacs//dotspacemacs-candidates ()
+  "Return the sorted candidates for all the dospacemacs variables."
+  (sort (all-completions "" obarray
+                         (lambda (x)
+                           (and (boundp x)
+                                (not (keywordp x))
+                                (string-prefix-p "dotspacemacs"
+                                                 (symbol-name x)))))
+        'string<))
 
 (defun helm-spacemacs//layer-action-open-file (file candidate)
   "Open FILE of the passed CANDIDATE."
@@ -137,13 +170,16 @@
 (defun helm-spacemacs//package-action-goto-init-func (candidate)
   "Open the file `packages.el' and go to the init function."
   (save-match-data
-    (string-match "^(\\(.+\\))\s\\(.+\\)$" candidate)
+    (string-match "^(\\(.+\\))\s\\(.+\\):\s\\(.+\\)$" candidate)
     (let* ((layer (match-string 1 candidate))
-           (package (match-string 2 candidate))
+           (type (match-string 2 candidate))
+           (package (match-string 3 candidate))
            (path (file-name-as-directory
                   (concat (ht-get configuration-layer-paths (intern layer))
                           layer)))
-           (filename (concat path "packages.el")))
+           (filename (cond ((string-equal "package" type)
+                            (concat path "packages.el"))
+                           (t (concat path "extensions.el")))))
       (find-file filename)
       (goto-char (point-min))
       (re-search-forward (format "init-%s" package))
@@ -154,6 +190,15 @@
   (let ((toggle (assq (intern candidate) spacemacs-toggles)))
     (when toggle
       (funcall (plist-get (cdr toggle) :function)))))
+
+(defun helm-spacemacs//go-to-dotfile-variable (candidate)
+  "Go to candidate in the dotfile."
+  (find-file dotspacemacs-filepath)
+  (goto-char (point-min))
+  ;; try to exclude comments
+  (re-search-forward (format "^[a-z\s\\(\\-]*%s" candidate))
+  (beginning-of-line))
+
 
 (provide 'helm-spacemacs)
 

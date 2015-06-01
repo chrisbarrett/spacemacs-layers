@@ -13,16 +13,12 @@
 (setq org-packages
   '(
     evil-org
+    htmlize
     org
     org-bullets
     org-pomodoro
+    org-present
     org-repo-todo
-    ox-gfm
-    ))
-
-(setq org-excluded-packages
-  '(
-    ;; seems to be problematic, to investigate
     ox-gfm
     ))
 
@@ -35,10 +31,13 @@
     (progn
       (evil-leader/set-key-for-mode 'org-mode
            "a" nil "ma" 'org-agenda
+           "b" nil "mb" 'org-tree-to-indirect-buffer 
            "c" nil "mA" 'org-archive-subtree
            "o" nil "mC" 'evil-org-recompute-clocks
-           "l" nil "ml" 'evil-org-open-links
-           "t" nil "mt" 'org-show-todo-tree)
+           "l" nil "mo" 'evil-org-open-links
+           "t" nil "mT" 'org-show-todo-tree)
+      (evil-define-key 'normal evil-org-mode-map
+        "O" 'evil-open-above)
       (spacemacs|diminish evil-org-mode " ⓔ" " e"))))
 
 (defun org/init-org ()
@@ -52,19 +51,64 @@
       (eval-after-load 'org-indent
         '(spacemacs|hide-lighter org-indent-mode))
       (setq org-startup-indented t)
+      (let ((dir (configuration-layer/get-layer-property 'org :dir)))
+        (setq org-export-async-init-file (concat dir "org-async-init.el")))
 
+      (defmacro spacemacs|org-emphasize (fname char)
+        "Make function for setting the emphasis in org mode"
+        `(defun ,fname () (interactive)
+                (org-emphasize ,char)))
+
+      ;; Insert key for org-mode and markdown a la C-h k
+      ;; from SE endless http://emacs.stackexchange.com/questions/2206/i-want-to-have-the-kbd-tags-for-my-blog-written-in-org-mode/2208#2208
+      (defun spacemacs/insert-keybinding-org (key)
+        "Ask for a key then insert its description.
+Will work on both org-mode and any mode that accepts plain html."
+        (interactive "kType key sequence: ")
+        (let* ((tag "@@html:<kbd>@@ %s @@html:</kbd>@@"))
+          (if (null (equal key "\r"))
+              (insert
+               (format tag (help-key-description key nil)))
+            (insert (format tag ""))
+            (forward-char -8))))
       (evil-leader/set-key-for-mode 'org-mode
+        "m'" 'org-edit-special
         "mc" 'org-capture
         "md" 'org-deadline
         "me" 'org-export-dispatch
         "mf" 'org-set-effort
-        "mi" 'org-clock-in
+
+        ;; headings
+        "mhi" 'org-insert-heading-after-current
+        "mhI" 'org-insert-heading
+
+        "mI" 'org-clock-in
         "mj" 'helm-org-in-buffer-headings
-        "mo" 'org-clock-out
-        "mm" 'org-ctrl-c-ctrl-c
-        "mq" 'org-clock-cancel
-        "mr" 'org-refile
-        "ms" 'org-schedule)
+        (if dotspacemacs-major-mode-leader-key
+            (concat "m" dotspacemacs-major-mode-leader-key)
+          "m,") 'org-ctrl-c-ctrl-c
+          "mn" 'org-narrow-to-subtree
+          "mN" 'widen
+          "mO" 'org-clock-out
+          "mq" 'org-clock-cancel
+          "mR" 'org-refile
+          "ms" 'org-schedule
+
+          ;; insertion of common elements
+          "mil" 'org-insert-link
+          "mif" 'org-footnote-new
+          "mik" 'spacemacs/insert-keybinding-org
+
+          ;; images and other link types have no commands in org mode-line
+          ;; could be inserted using yasnippet?
+          ;; region manipulation
+          "mxb" (spacemacs|org-emphasize spacemacs/org-bold ?*)
+          "mxc" (spacemacs|org-emphasize spacemacs/org-code ?~)
+          "mxi" (spacemacs|org-emphasize spacemacs/org-italic ?/)
+          "mxr" (spacemacs|org-emphasize spacemacs/org-clear ? )
+          "mxs" (spacemacs|org-emphasize spacemacs/org-strike-through ?+)
+          "mxu" (spacemacs|org-emphasize spacemacs/org-underline ?_)
+          "mxv" (spacemacs|org-emphasize spacemacs/org-verbose ?=))
 
       (eval-after-load "org-agenda"
         '(progn
@@ -77,9 +121,16 @@
              (kbd "SPC") evil-leader--default-map))))
     :config
     (progn
+      (font-lock-add-keywords
+       'org-mode '(("\\(@@html:<kbd>@@\\) \\(.*\\) \\(@@html:</kbd>@@\\)"
+                    (1 font-lock-comment-face prepend)
+                    (2 font-lock-function-name-face)
+                    (3 font-lock-comment-face prepend))))
       (require 'org-indent)
       (define-key global-map "\C-cl" 'org-store-link)
-      (define-key global-map "\C-ca" 'org-agenda))))
+      (define-key global-map "\C-ca" 'org-agenda)
+      (evil-leader/set-key
+        "Cc" 'org-capture))))
 
 (defun org/init-org-bullets ()
   (use-package org-bullets
@@ -96,6 +147,33 @@
       (evil-leader/set-key-for-mode 'org-mode
         "mp" 'org-pomodoro))))
 
+(defun org/init-org-present ()
+  (use-package org-present
+    :defer t
+    :init
+    (progn
+      (evilify nil org-present-mode-keymap
+               "h" 'org-present-prev
+               "l" 'org-present-next
+               "q" 'org-present-quit)
+      (defun spacemacs//org-present-start ()
+        "Initiate `org-present' mode"
+        (org-present-big)
+        (org-display-inline-images)
+        (org-present-hide-cursor)
+        (org-present-read-only)
+        (evil-evilified-state))
+      (defun spacemacs//org-present-end ()
+        "Terminate `org-present' mode"
+        (org-present-small)
+        (org-remove-inline-images)
+        (org-present-show-cursor)
+        (org-present-read-write)
+        (evil-normal-state))
+      (add-hook 'org-present-mode-hook 'spacemacs//org-present-start)
+      (add-hook 'org-present-mode-quit-hook 'spacemacs//org-present-end))))
+
+
 (defun org/init-org-repo-todo ()
   (use-package org-repo-todo
     :commands (ort/capture-todo
@@ -110,5 +188,8 @@
         "mgt" 'ort/goto-todos))))
 
 (defun org/init-ox-gfm ()
-  (use-package ox-gfm
+  (eval-after-load 'org '(require 'ox-gfm)))
+
+(defun org/init-htmlize ()
+ (use-package htmlize
     :defer t))
