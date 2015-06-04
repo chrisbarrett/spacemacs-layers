@@ -16,6 +16,7 @@
 (defun cb-calc/init-calc ()
   (use-package calc
     :defer t
+    :bind (("C-x c" . quick-calc))
     :config
     (setq math-additional-units '((GiB "1024 * MiB" "Giga Byte")
                                   (MiB "1024 * KiB" "Mega Byte")
