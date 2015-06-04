@@ -32,3 +32,11 @@
 
 (evil-leader/set-key "oh" 'helm-org-agenda-files-headings)
 (evil-leader/set-key-for-mode 'org-mode "mP" 'org-plot/gnuplot)
+
+;; Remove ahs keys that override org keybindings
+(with-eval-after-load 'auto-highlight-symbol
+  (define-key auto-highlight-symbol-mode-map (kbd "M-<left>") nil)
+  (define-key auto-highlight-symbol-mode-map (kbd "M-<right>") nil)
+  (define-key auto-highlight-symbol-mode-map (kbd "M-S-<left>") nil)
+  (define-key auto-highlight-symbol-mode-map (kbd "M-S-<right>") nil)
+  )
