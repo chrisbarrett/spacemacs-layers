@@ -443,15 +443,18 @@ Typing three in a row will insert a ScalaDoc."
 (defun scala/fix-ensime-file (&optional file)
   "Fix malformed scalariform settings in FILE."
   (interactive)
+  (require 'ensime)
   (let* ((ensime-prefer-noninteractive t)
-         (file (or file (ensime-config-find))))
-    (with-current-buffer (find-file-noselect file)
+         (file (or file (ensime-config-find)))
+         (buf (find-file-noselect file)))
+    (with-current-buffer buf
       (scala/fix-dot-ensime)
       (let ((modified? (buffer-modified-p)))
         (save-buffer 0)
         (if modified?
             (message "Fixed ensime file")
-          (message "No changes were needed"))))))
+          (message "No changes were needed"))))
+    (kill-buffer buf)))
 
 (defun scala/fix-dot-ensime ()
   (let ((invalid-formatter-rx
