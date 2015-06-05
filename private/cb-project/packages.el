@@ -2,17 +2,18 @@
 ;;; Commentary:
 ;;; Code:
 
-(defvar cb-project-packages
+(defconst cb-project-packages
   '(
     projectile
     skeletor
     helm-projectile
     neotree
+    helm-ag
     )
   "List of all packages to install and/or initialize. Built-in packages
 which require an initialization must be listed explicitly in the list.")
 
-(defvar cb-project-excluded-packages '()
+(defconst cb-project-excluded-packages '()
   "List of packages to exclude.")
 
 (eval-when-compile
@@ -82,6 +83,12 @@ which require an initialization must be listed explicitly in the list.")
   (use-package helm-projectile
     :bind
     (("s-t" . helm-projectile))))
+
+(defun cb-project/init-helm-ag ()
+  (use-package helm-ag
+    :defer t
+    :config
+    (setq helm-ag-insert-at-point 'symbol)))
 
 (defun cb-project/init-skeletor ()
   (use-package skeletor
