@@ -2,16 +2,17 @@
 ;;; Commentary:
 ;;; Code:
 
-(defvar cb-git-packages
+(defconst cb-git-packages
   '(
-    git-gutter
     git-auto-commit-mode
     git-commit-mode
+    diff-hl
     )
   "List of all packages to install and/or initialize. Built-in packages
 which require an initialization must be listed explicitly in the list.")
 
-(defvar cb-git-excluded-packages '()
+(defconst cb-git-excluded-packages
+  '(git-gutter git-gutter-fringe)
   "List of packages to exclude.")
 
 (eval-when-compile
@@ -38,8 +39,11 @@ which require an initialization must be listed explicitly in the list.")
           (when (buffer-live-p buf)
             (kill-buffer buf)))))))
 
-(defun cb-git/init-git-gutter ()
-  (use-package git-gutter
+(defun cb-git/init-diff-hl ()
+  (use-package diff-hlt
     :defer t
-    :config
-    (global-git-gutter-mode +1)))
+    :init
+    (progn
+      (setq diff-hl-side 'right)
+      (add-hook 'prog-mode-hook 'diff-hl-mode)
+      (add-hook 'dired-mode-hook 'diff-hl-dired-mode))))
