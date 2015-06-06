@@ -374,12 +374,15 @@ The PDF will be created at DEST."
 
 (defun cb-org/display-links ()
   (interactive)
-  (with-current-buffer (find-file-noselect org-default-notes-file)
-    (-when-let (mark (save-excursion (org-find-exact-headline-in-buffer "Links")))
-      (clone-indirect-buffer "*Org Links*" t)
-      (goto-char (marker-position mark))
-      (org-narrow-to-subtree)
-      (org-content))))
+  (let ((bufname "*Org Links*"))
+    (-if-let (buf (get-buffer bufname))
+        (display-buffer buf)
+      (with-current-buffer (find-file-noselect org-default-notes-file)
+        (-when-let (mark (save-excursion (org-find-exact-headline-in-buffer "Links")))
+          (clone-indirect-buffer bufname t)
+          (goto-char (marker-position mark))
+          (org-narrow-to-subtree)
+          (org-content))))))
 
 
 ;;; Capture template utils
