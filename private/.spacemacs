@@ -22,6 +22,7 @@
      finance
      org
      emacs-lisp
+     restclient
      shell
      syntax-checking
      cb-core
@@ -52,6 +53,7 @@
      cb-extempore
      cb-groovy
      cb-crontab
+     cb-js
      )
    ;; A list of packages and/or extensions that will not be install and loaded.
    dotspacemacs-excluded-packages '(rainbow-delimiters)
