@@ -151,6 +151,7 @@ which require an initialization must be listed explicitly in the list.")
     :config
     (progn
       (add-to-list 'aggressive-indent-excluded-modes 'haskell-interactive-mode)
+      (add-to-list 'aggressive-indent-excluded-modes 'restclient-mode)
       (global-aggressive-indent-mode))))
 
 
