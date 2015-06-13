@@ -15,8 +15,17 @@
   (use-package sunrise-commander
     :config
     (progn
-      (evil-ex-define-cmd "sr" 'sr-dired)
+      (setq sr-windows-locked nil)
+      (setq sr-cursor-follows-mouse nil)
 
+      (defun cb-sunrise-commander/dired-this-dir ()
+        (interactive)
+        (sr-dired default-directory))
+
+      (evil-ex-define-cmd "sr" 'sunrise)
+      (evil-ex-define-cmd "sd" 'cb-sunrise-commander/dired-this-dir)
+
+      (global-set-key (kbd "C-x d") 'sr-dired)
       (define-key sr-mode-map (kbd "j") 'dired-next-line)
       (define-key sr-mode-map (kbd "k") 'dired-previous-line)
       (define-key sr-mode-map (kbd "n") 'sr-goto-dir)
