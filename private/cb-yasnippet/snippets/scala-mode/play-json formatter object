@@ -1,0 +1,11 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: play-json formatter object
+# key: o
+# binding: direct-keybinding
+# condition: (yas/bol?)
+# --
+object ${1:Name} {
+  implicit val ${1:$(s-lower-camel-case yas/text)}Format: Format[$1] = (
+    (JsPath \ "$2").format[$0]
+  )($1.apply, unlift($1.unapply))
+}
