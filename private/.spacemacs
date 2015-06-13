@@ -160,11 +160,11 @@ before layers configuration."
    dotspacemacs-default-package-repository nil
    )
   ;; User initialization goes here
-  (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/"))
 
-  (if package-alist
-      (package-initialize)
-    (package-refresh-contents))
+  (require 'package)
+  (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/"))
+  (unless package-alist (package-refresh-contents))
+  (package-initialize)
 
   (core/install-package 's)
   (core/install-package 'noflet)
