@@ -110,11 +110,14 @@ If this buffer is a member of `core/kill-buffer-ignored-list', bury it rather th
   (let ((dest (f-join to-dir (f-filename (core/buffer-file-name-assert-exists buffer)))))
     (core/rename-file-and-buffer buffer dest)))
 
-(defun core/rename-file-and-buffer (buffer dest-path)
+(defun core/rename-file-and-buffer (buffer dest-dir dest-filename)
   "Rename the current buffer and file it is visiting."
   (interactive (let ((cur (core/buffer-file-name-assert-exists)))
-                 (list (current-buffer) (read-file-name "New name: " cur))))
-  (let ((src (core/buffer-file-name-assert-exists buffer)))
+                 (list (current-buffer)
+                       (read-directory-name "Move to directory: " (f-dirname cur))
+                       (read-string "New name: " (f-filename cur)))))
+  (let ((src (core/buffer-file-name-assert-exists buffer))
+        (dest-path (f-join dest-dir dest-filename)))
     (or (core/try-move-file-with-vc src dest-path)
         (core/try-rename-file src dest-path))
     (message "File '%s' moved to '%s'" (f-short (f-filename src)) (f-short dest-path))))
