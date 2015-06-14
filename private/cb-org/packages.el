@@ -244,7 +244,8 @@ which require an initialization must be listed explicitly in the list.")
       (setq org-jira-use-status-as-todo t)
 
       (defconst org-jira-working-dir (f-join org-directory "jira"))
-      (defconst org-agenda-jira-files
+
+      (defun cb-org/jira-files ()
         (f-files org-jira-working-dir (lambda (f) (f-ext? f "org")) t))
 
       (defun cb-org/maybe-enable-org-jira ()
@@ -257,12 +258,12 @@ which require an initialization must be listed explicitly in the list.")
       )
     :config
     (progn
-      ;; Apply JIRA issue number as the org category
+      ;; Apply JIRA issue number as the default org category
 
       (defadvice org-jira-get-issues (after apply-category activate)
         (org-map-entries '(cb-org/apply-to-headlines-at-level 1 'cb-org/maybe-apply-id-as-category)
                          nil
-                         (f-entries org-jira-working-dir)))
+                         (cb-org/jira-files)))
 
       (defun cb-org/apply-to-headlines-at-level (n fn)
         "Apply FN over headings at level N."
