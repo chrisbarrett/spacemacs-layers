@@ -7,6 +7,7 @@
     super-smart-ops
     scala-errors
     scala-pretty-sbt
+    scala-yasnippet
     )
   "List of all extensions to load before the packages.")
 
@@ -46,3 +47,8 @@
 (defun cb-scala/init-scala-pretty-sbt ()
   (with-eval-after-load 'sbt-mode
     (require 'scala-pretty-sbt)))
+
+(defun cb-scala/init-scala-yasnippet ()
+  (with-eval-after-load 'scala-mode
+    (require 'scala-yasnippet)
+    (scala-yasnippet-initialise)))

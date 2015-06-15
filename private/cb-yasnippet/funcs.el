@@ -1,4 +1,13 @@
 ;;; Utilities
+;;; Commentary:
+;;; Code:
+
+(eval-when-compile
+  (require 's nil t)
+  (require 'f nil t)
+  (require 'dash nil t)
+  (require 'dash-functional nil t)
+  (require 'yasnippet nil t))
 
 (defmacro yas-with-field-restriction (&rest body)
   "Narrow the buffer to the current active field and execute BODY.
@@ -185,7 +194,7 @@ Otherwise delete backwards."
                 (eq (point) (marker-position (yas--field-start field))))
            (yas--skip-and-clear field)
            (yas-next-field 1))
-          (smartparens-mode
+          ((and (boundp 'smartparens-mode) smartparens-mode)
            (call-interactively 'sp-backward-delete-char))
           (t
            (call-interactively 'backward-delete-char)))))
@@ -230,47 +239,6 @@ is not the first, or from an unwritable file)."
       (setf (yas--template-file template) (buffer-file-name)))))
 
 
-;;; Scala
-
-(defun yas/scala-find-case-class-parent ()
-  (save-excursion
-    (if (search-backward-regexp
-         (rx (or
-              (and bol (* space)
-                   (or (and (? "abstract" (+ space) (? "sealed" (+ space))) "class")
-                       "trait")
-                   (+ space) (group-n 1 (+ alnum)))
-              (and bol (* space)
-                   "case" (+ space) "class" (* anything) space
-                   "extends" (+ space) (group-n 1 (+ alnum)) (* space) eol)))
-         nil t)
-        (match-string 1)
-      "")))
-
-
-(defun yas/scala-parse-attrs (attrs)
-  (let ((matches (s-match-strings-all
-                  (rx bow
-                      (group (+ word))
-                      (* space) ":" (* space)
-                      (group (+ (any word)))) attrs)))
-    (-map (-lambda ((_ name type))
-            (list :name name :type type)) matches)))
-
-(defun yas/scala-slick-star-fields (attrs)
-  (let ((names (--map (plist-get it :name) (yas/scala-parse-attrs attrs))))
-    (s-join ", " names)))
-
-(defun yas/scala-slick-column-defs (attrs)
-  (let ((defs (-map 'yas/scala-slick-attr-to-def (yas/scala-parse-attrs attrs)))
-        (indent (current-indentation)))
-    (s-join (concat "\n" (s-repeat indent " ")) defs)))
-
-(defun yas/scala-slick-attr-to-def (attr)
-  (-let [(&plist :name name :type type) attr]
-    (format "def %s = column[%s](\"%s\")" name type name)))
-
-
 ;;; Rust
 
 (defun yas/rust-bol-or-after-accessibility-modifier? ()
@@ -308,4 +276,4 @@ is not the first, or from an unwritable file)."
 ;;; Haskell
 
 (defun yas/haskell-ctor-name (&optional text)
-  (car (s-split (rx space) (or text yas/text))))
+  (car (s-split (rx space) (or text yas-text))))
