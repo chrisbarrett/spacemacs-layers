@@ -1,0 +1,7 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: override lazy val
+# key: olv
+# binding: direct-keybinding
+# condition: (yas/bol?)
+# --
+override lazy val ${1:ident} = $0
