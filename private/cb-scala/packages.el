@@ -42,6 +42,19 @@ which require an initialization must be listed explicitly in the list.")
       (add-hook 'ensime-mode-hook (lambda () (aggressive-indent-mode -1))))
     :config
     (progn
+      (setq ensime-sem-high-faces
+            `((var . scala-font-lock:var-face)
+              ;; (val . (:inherit font-lock-constant-face :slant italic))
+              ;; (varField . scala-font-lock:var-face)
+              ;; (valField . (:inherit font-lock-constant-face :slant italic))
+              ;; (functionCall . font-lock-function-name-face)
+              (operator . font-lock-keyword-face)
+              (param . (:slant italic))
+              (class . font-lock-type-face)
+              (trait .  (:inherit font-lock-type-face :slant italic))
+              (object . font-lock-constant-face)
+              (package . font-lock-preprocessor-face)
+              ))
 
       (defconst scala/test-file-template
         "package %TESTPACKAGE%
