@@ -43,7 +43,7 @@
                           (s-chop-prefix root)
                           f-split
                           nreverse
-                          (--take-while (not (or (equal "src" it) (equal "scala" it))))
+                          (--take-while (not (-contains? '("src" "app" "scala" "test" "tests") it)))
                           nreverse
                           (s-join "."))))
       (cond
