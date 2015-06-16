@@ -39,9 +39,10 @@ The rest of the line must be blank."
   (s-matches? (rx bol (* space) (* word) (* space) eol)
               (buffer-substring (line-beginning-position) (line-end-position))))
 
+(defvar scala-yasnippet--root (file-name-directory load-file-name))
+
 (defun scala-yasnippet-initialise ()
-  (let ((this-dir (file-name-directory (or load-file-name (buffer-file-name)))))
-    (add-to-list 'yas-snippet-dirs (concat this-dir "snippets") t)))
+  (add-to-list 'yas-snippet-dirs (concat scala-yasnippet--root "snippets") t))
 
 ;;; Slick table mapping template
 

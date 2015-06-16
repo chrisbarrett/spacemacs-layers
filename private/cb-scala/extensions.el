@@ -49,6 +49,6 @@
     (require 'scala-pretty-sbt)))
 
 (defun cb-scala/init-scala-yasnippet ()
-  (with-eval-after-load 'scala-mode
+  (with-eval-after-load 'scala-mode2
     (require 'scala-yasnippet)
     (scala-yasnippet-initialise)))
