@@ -400,7 +400,8 @@ Typing three in a row will insert a ScalaDoc."
 (defun sbt (dir)
   (interactive (list (read-directory-name "Project root: " (sbt:find-root) nil t)))
   (noflet ((sbt:find-root (&rest args) dir))
-    (sbt-start)))
+    (let ((buf (save-window-excursion (sbt-start))))
+      (pop-to-buffer buf))))
 
 (defun scala/sbt-send-ret ()
   (interactive)
