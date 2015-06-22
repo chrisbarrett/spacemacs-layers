@@ -194,6 +194,8 @@ which require an initialization must be listed explicitly in the list.")
               ("ORGANISE_OUT" . ,solarized-hl-orange)
               ("TODO_OUT" . ,solarized-hl-orange)
               ("READY" . ,solarized-hl-blue)
+              ("ON-HOL" . ,solarized-hl-magenta)
+              ("OPEN" . font-lock-comment-face)
               ("WAITING" . ,solarized-hl-magenta)))
 
       ;; Advice
