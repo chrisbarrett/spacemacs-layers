@@ -87,9 +87,9 @@ See `ensime-goto-test-config-defaults' for possible template values.")
     (progn
       (setq sbt:prompt-regexp (rx bol (group (? space) (or
                                                         ;; SBT
-                                                        (and (* alpha) ">" (+ space))
+                                                        (and (+ (any alpha "-")) ">" (+ space))
                                                         ;; Activator
-                                                        (and "[" (+ alnum) "] $" (+ space)))
+                                                        (and "[" (+ (any alpha "-")) "] $" (+ space)))
                                              ) (* space)))
       (setq sbt:program-name "sbt -Dsbt.log.noformat=true")
       (add-hook 'sbt-mode-hook (lambda () (aggressive-indent-mode -1)))
