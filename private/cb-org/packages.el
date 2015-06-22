@@ -260,6 +260,27 @@ which require an initialization must be listed explicitly in the list.")
       )
     :config
     (progn
+
+      (defun cb-org/jira-morning-sync ()
+        (call-interactively 'org-jira-get-issues)
+        (cb-org/jira-refresh-all))
+
+      (defun cb-org/jira-try-refresh-heading-as-issue ()
+        (when (org-entry-get nil "assignee")
+          (org-jira-refresh-issue)))
+
+      (defun cb-org/jira-refresh-all ()
+        (interactive)
+        (org-map-entries '(cb-org/apply-to-headlines-at-level 1 'cb-org/jira-try-refresh-heading-as-issue)
+                         nil (cb-org/jira-files))
+        (--each (cb-org/jira-files)
+          (with-current-buffer (find-file-noselect it)
+            (save-buffer)))
+
+        (message "Jira issues updated."))
+
+      (define-key org-jira-entry-mode-map (kbd "C-c i R") 'cb-org/jira-refresh-all)
+
       ;; Apply JIRA issue number as the default org category
 
       (defadvice org-jira-get-issues (after apply-category activate)
