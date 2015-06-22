@@ -151,7 +151,11 @@ If this buffer is a member of `core/kill-buffer-ignored-list', bury it rather th
     (with-current-buffer buf
       (rename-buffer dest)
       (set-visited-file-name dest)
-      (set-buffer-modified-p nil))))
+      (set-buffer-modified-p nil))
+
+    (recentf-cleanup)
+    (when (projectile-project-p)
+      (projectile-invalidate-cache))))
 
 (defun core/delete-file-and-buffer (filename buffer)
   "Delete a file and its associated buffer."
@@ -161,6 +165,9 @@ If this buffer is a member of `core/kill-buffer-ignored-list', bury it rather th
         (vc-delete-file filename)
       (delete-file filename)))
   (ignore-errors (kill-buffer buffer))
+  (recentf-cleanup)
+  (when (projectile-project-p)
+    (projectile-invalidate-cache))
   (message "File '%s' successfully removed" (f-short filename)))
 
 (defun core/toggle-window-split ()
