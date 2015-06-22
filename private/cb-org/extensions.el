@@ -133,6 +133,8 @@
                  (stuck "+@work"
                         ((org-agenda-overriding-header "Stuck Tasks")
                          (org-stuck-projects cb-org/default-stuck-projects)))
+                 (todo "ON-HOL"
+                       ((org-agenda-overriding-header "On Hold")))
                  (tags-todo "study/NEXT"
                             ((org-agenda-overriding-header "Study")))
                  )
