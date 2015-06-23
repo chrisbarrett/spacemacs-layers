@@ -18,6 +18,7 @@
     org-clock
     org-crypt
     org-drill
+    org-capture
     ox
     ox-texinfo
     cb-org-latex-preview-retina
@@ -40,7 +41,14 @@
       (add-hook 'org-mode-hook 'maybe-enable-org-work-mode)
       (add-hook 'after-init-hook 'org-work-maybe-start-work))
     :config
-    (add-hook 'org-work-state-changed-hook 'cb-org/refresh-agenda-when-toggling-work)))
+    (progn
+
+      (defun cb-org/refresh-agenda-when-toggling-work ()
+        "Refresh the agenda when toggling between work states."
+        (when (derived-mode-p 'org-agenda-mode)
+          (cb-org/agenda-dwim)))
+
+      (add-hook 'org-work-state-changed-hook 'cb-org/refresh-agenda-when-toggling-work))))
 
 (defun cb-org/init-org-agenda ()
   (use-package org-agenda
@@ -54,6 +62,10 @@
                   (run-hooks 'org-agenda-customise-window-hook))))
     :config
     (progn
+
+      (defun cb-org/exclude-tasks-on-hold (tag)
+        (and (equal tag "hold") (concat "-" tag)))
+
       (setq org-agenda-auto-exclude-function 'cb-org/exclude-tasks-on-hold)
       (setq org-agenda-diary-file (f-join org-directory "diary.org"))
       (setq org-agenda-hide-tags-regexp (rx (or "noexport" "someday")))
@@ -201,17 +213,39 @@
   (use-package org-archive
     :config
     (progn
+
+      (defun cb-org/archive-done-tasks ()
+        (interactive)
+        (atomic-change-group
+          (org-map-entries (lambda ()
+                             ;; HACK: Ensure point does not move past the next
+                             ;; item to archive.
+                             (let ((org-map-continue-from (point)))
+                               (org-archive-subtree)))
+                           "/DONE|PAID|VOID|CANCELLED" 'tree)))
+
       (setq org-archive-default-command 'cb-org/archive-done-tasks)
 
-      (defadvice org-archive-subtree
-          (before add-inherited-tags-before-org-archive-subtree activate)
-        "Add inherited tags before org-archive-subtree."
+      (defadvice org-archive-subtree (before apply-inherited-tags activate)
         (org-set-tags-to (org-get-tags-at))))))
 
 (defun cb-org/init-org-table ()
   (use-package org-table
     :config
-    (add-hook 'org-ctrl-c-ctrl-c-hook 'cb-org/recalculate-whole-table)))
+    (progn
+
+      (defun cb-org/recalculate-whole-table ()
+        "Recalculate the current table using `org-table-recalculate'."
+        (interactive "*")
+        (when (org-at-table-p)
+          (let ((before (buffer-substring (org-table-begin) (org-table-end))))
+            (org-table-recalculate '(16))
+            (let ((after (buffer-substring (org-table-begin) (org-table-end))))
+              (if (equal before after)
+                  (message "Table up-to-date")
+                (message "Table updated"))))))
+
+      (add-hook 'org-ctrl-c-ctrl-c-hook 'cb-org/recalculate-whole-table))))
 
 (defun cb-org/init-org-habit ()
   (use-package org-habit
@@ -259,15 +293,67 @@
     :init nil
     :config
     (progn
+
+      (defun cb-org/project? ()
+        "Any task with a todo keyword subtask"
+        (save-restriction
+          (widen)
+          (let ((has-subtask)
+                (subtree-end (save-excursion (org-end-of-subtree t)))
+                (is-a-task (member (nth 2 (org-heading-components)) org-todo-keywords-1)))
+            (save-excursion
+              (forward-line 1)
+              (while (and (not has-subtask)
+                          (< (point) subtree-end)
+                          (re-search-forward "^\*+ " subtree-end t))
+                (when (member (org-get-todo-state) org-todo-keywords-1)
+                  (setq has-subtask t))))
+            (and is-a-task has-subtask))))
+
+      (defun cb-org/task? ()
+        "Any task with a todo keyword and no subtask"
+        (save-restriction
+          (widen)
+          (let ((has-subtask)
+                (subtree-end (save-excursion (org-end-of-subtree t)))
+                (is-a-task (member (nth 2 (org-heading-components)) org-todo-keywords-1)))
+            (save-excursion
+              (forward-line 1)
+              (while (and (not has-subtask)
+                          (< (point) subtree-end)
+                          (re-search-forward "^\*+ " subtree-end t))
+                (when (member (org-get-todo-state) org-todo-keywords-1)
+                  (setq has-subtask t))))
+            (and is-a-task (not has-subtask)))))
+
+      (defun cb-org/clock-in-to-next-state (_kw)
+        "Move a task from TODO to NEXT when clocking in.
+Skips capture tasks, projects, and subprojects.
+Switch projects and subprojects from NEXT back to TODO."
+        (unless (and (boundp 'org-capture-mode) org-capture-mode)
+          (cond
+           ((and (-contains? '("TODO") (org-get-todo-state))
+                 (cb-org/task?))
+            "NEXT")
+           ((and (-contains? '("NEXT") (org-get-todo-state))
+                 (cb-org/project?))
+            "TODO"))))
+
+      (setq org-clock-in-switch-to-state 'cb-org/clock-in-to-next-state)
       (setq org-clock-persist t)
       (setq org-clock-persist-query-resume nil)
       (setq org-clock-history-length 20)
       (setq org-clock-in-resume t)
       (setq org-clock-report-include-clocking-task t)
-      (setq org-clock-in-switch-to-state 'cb-org/clock-in-to-next-state)
       (setq org-clock-out-remove-zero-time-clocks t)
 
       (org-clock-persistence-insinuate)
+
+      (defun cb-org/remove-empty-clock-drawers ()
+        "Remove empty clock drawers at point."
+        (save-excursion
+          (beginning-of-line 0)
+          (org-remove-empty-drawer-at "LOGBOOK" (point))))
 
       (add-hook 'org-clock-out-hook 'cb-org/remove-empty-clock-drawers t))))
 
@@ -275,10 +361,29 @@
   (use-package org-crypt
     :config
     (progn
+
+      (defun cb-org/looking-at-pgp-section?? ()
+        (unless (org-before-first-heading-p)
+          (save-excursion
+            (org-back-to-heading t)
+            (let ((heading-point (point))
+                  (heading-was-invisible-p
+                   (save-excursion
+                     (outline-end-of-heading)
+                     (outline-invisible-p))))
+              (forward-line)
+              (looking-at "-----BEGIN PGP MESSAGE-----")))))
+
+      (defun cb-org/decrypt-entry ()
+        (when (cb-org/looking-at-pgp-section??)
+          (org-decrypt-entry)
+          t))
+
+      (add-hook 'org-ctrl-c-ctrl-c-hook 'cb-org/decrypt-entry)
+
       (setq org-crypt-disable-auto-save 'encypt)
       (org-crypt-use-before-save-magic)
-      (add-to-list 'org-tags-exclude-from-inheritance "crypt")
-      (add-hook 'org-ctrl-c-ctrl-c-hook 'cb-org/decrypt-entry))))
+      (add-to-list 'org-tags-exclude-from-inheritance "crypt"))))
 
 (defun cb-org/init-org-drill ()
   (use-package org-drill
@@ -335,7 +440,38 @@ table tr.tr-even td {
   (use-package ox-texinfo
     :config
     (progn
+
+      (defun cb-org-export/koma-letter-at-subtree (dest)
+        "Define a command to export the koma letter subtree at point to PDF.
+With a prefix arg, prompt for the output destination. Otherwise
+generate use the name of the current file to generate the
+exported file's name. The PDF will be created at DEST."
+        (interactive
+         (list (if current-prefix-arg
+                   (ido-read-file-name "Destination: " nil nil nil ".pdf")
+                 (concat (f-no-ext (buffer-file-name)) ".pdf"))))
+
+        (let ((tmpfile (make-temp-file "org-export-" nil ".org")))
+          (cb-org-write-subtree-content tmpfile)
+          (with-current-buffer (find-file-noselect tmpfile)
+            (unwind-protect
+                (-if-let (exported (org-koma-letter-export-to-pdf))
+                    (f-move exported dest)
+                  (error "Export failed"))
+              (kill-buffer)))
+          (async-shell-command (format "open %s" (shell-quote-argument dest)))
+          (message "opening %s..." dest)))
+
+      (defun cb-org/C-c-C-c-export-koma-letter ()
+        "Export the koma letter at point."
+        (when (ignore-errors
+                (s-matches? (rx "latex_class:" (* space) "koma")
+                            (cb-org-subtree-content)))
+          (call-interactively 'org-export-koma-letter-at-subtree)
+          'export-koma-letter))
+
       (add-hook 'org-ctrl-c-ctrl-c-hook 'cb-org/C-c-C-c-export-koma-letter t)
+
       (add-to-list 'org-latex-classes '("koma-letter" "
 \\documentclass[paper=A4,pagesize,fromalign=right,
                fromrule=aftername,fromphone,fromemail,
@@ -351,3 +487,110 @@ table tr.tr-even td {
 
 (defun cb-org/init-cb-org-latex-preview-retina ()
   (use-package cb-org-latex-preview-retina))
+
+(defun cb-org/init-org-capture ()
+  (use-package org-capture
+    :config
+    (progn
+
+      (defun cb-org/parse-html-title (html)
+        "Extract the title from an HTML document."
+        (-let (((_ title) (s-match (rx "<title>" (group (* nonl)) "</title>") html))
+               ((_ charset) (-map 'intern (s-match (rx "charset=" (group (+ (any "-" alnum)))) html))))
+          (if (-contains? coding-system-list charset)
+              (decode-coding-string title charset)
+            title)))
+
+      (defun cb-org/url-retrieve-html (url)
+        "Download the resource at URL and attempt to extract an HTML title."
+        (unless (s-matches? (rx "." (or "pdf" "mov" "mp4" "m4v" "aiff" "wav" "mp3") eol) url)
+          (with-current-buffer (url-retrieve-synchronously url t)
+            (buffer-string))))
+
+      (defun cb-org/last-url-kill ()
+        "Return the most recent URL in the kill ring or X pasteboard."
+        (--first (s-matches? (rx bos (or "http" "https" "www")) it)
+                 (cons (current-kill 0 t) kill-ring)))
+
+      (defun cb-org/read-url-for-capture ()
+        "Return a capture template string for a URL org-capture."
+        (let* ((url (core/read-string-with-default "URL" (cb-org/last-url-kill)))
+               (title (cb-org/parse-html-title (cb-org/url-retrieve-html url))))
+          (format "* [[%s][%s]]" url (or title url))))
+
+      (setq org-capture-templates
+            `(
+              ("t" "Todo" entry
+               (file+olp org-default-notes-file "Tasks")
+               "* TODO %?"
+               :clock-keep t)
+
+              ("T" "Todo (work)" entry
+               (file+olp org-work-file "Tasks")
+               "* TODO %?"
+               :clock-keep t)
+
+
+              ("n" "Next Action" entry
+               (file+olp org-default-notes-file "Tasks")
+               "* NEXT %?"
+               :clock-keep t)
+
+              ("N" "Next Action (work)" entry
+               (file+olp org-work-file "Tasks")
+               "* NEXT %?"
+               :clock-keep t)
+
+
+              ("d" "Diary" entry
+               (file+datetree org-agenda-diary-file)
+               "* %?\n%^t"
+               :clock-keep t)
+
+
+              ("h" "Habit" entry
+               (file+olp org-default-notes-file "Habits/Recurring")
+               ,(s-unlines
+                 "* TODO %?"
+                 "SCHEDULED: %t"
+                 ":PROPERTIES:"
+                 ":STYLE: habit"
+                 ":END:")
+               :clock-keep t)
+
+
+              ("l" "Link" entry
+               (file+olp org-default-notes-file "Links")
+               (function cb-org/read-url-for-capture)
+               :immediate-finish t
+               :clock-keep t)
+
+              ("L" "Link (work)" entry
+               (file+olp org-work-file "Links")
+               (function cb-org/read-url-for-capture)
+               :immediate-finish t
+               :clock-keep t)
+
+
+
+              ("s" "Someday" entry
+               (file+olp org-default-notes-file "Someday")
+               "* SOMEDAY %?"
+               :clock-keep t)
+
+              ("m" "Listening" entry
+               (file+olp org-default-notes-file "Media" "Listening")
+               "* MAYBE Listen to %i%?"
+               :clock-keep t)
+
+              ("v" "Viewing" entry
+               (file+olp org-default-notes-file "Media" "Viewing")
+               "* MAYBE Watch %i%?"
+               :clock-keep t)
+
+              ("r" "Reading" entry
+               (file+olp org-default-notes-file "Media" "Reading")
+               "* MAYBE Read %i%?"
+               :clock-keep t)
+
+              )))))

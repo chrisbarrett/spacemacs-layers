@@ -90,81 +90,6 @@ which require an initialization must be listed explicitly in the list.")
               ("@phone" . 112)
               ("@work" . 119)
               (:endgroup)))
-      (setq org-capture-templates
-            `(("t" "Todo" entry
-               (file+olp org-default-notes-file "Tasks")
-               "* TODO %?"
-               :clock-keep t)
-
-              ("d" "Diary" entry
-               (file+datetree org-agenda-diary-file)
-               "* %?\n%^t"
-               :clock-keep t)
-
-              ("h" "Habit" entry
-               (file+olp org-default-notes-file "Habits/Recurring")
-               ,(s-unlines
-                 "* TODO %?"
-                 "SCHEDULED: %t"
-                 ":PROPERTIES:"
-                 ":STYLE: habit"
-                 ":END:")
-               :clock-keep t)
-
-              ("l" "Link" entry
-               (file+olp org-default-notes-file "Links")
-               (function cb-org/read-url-for-capture)
-               :immediate-finish t
-               :clock-keep t)
-
-              ("s" "Someday" entry
-               (file+olp org-default-notes-file "Someday")
-               "* SOMEDAY %?"
-               :clock-keep t)
-
-              ("S" "Shopping" checkitem
-               (file+olp org-default-notes-file "Tasks" "Shopping")
-               "- [ ] %?"
-               :clock-keep t)
-
-              ("z" "Note" entry
-               (file+olp org-default-notes-file "Notes")
-               "* %i%?"
-               :clock-keep t)
-
-              ("m" "Listening" entry
-               (file+olp org-default-notes-file "Media" "Listening")
-               "* MAYBE Listen to %i%?"
-               :clock-keep t)
-
-              ("v" "Viewing" entry
-               (file+olp org-default-notes-file "Media" "Viewing")
-               "* MAYBE Watch %i%?"
-               :clock-keep t)
-
-              ("r" "Reading" entry
-               (file+olp org-default-notes-file "Media" "Reading")
-               "* MAYBE Read %i%?"
-               :clock-keep t)
-
-              ;;; Work items
-
-              ("T" "Work Todo" entry
-               (file+olp org-work-file "Tasks")
-               "* TODO %?"
-               :clock-keep t)
-
-              ("L" "Work Link" entry
-               (file+olp org-work-file "Links")
-               (function cb-org/read-url-for-capture)
-               :immediate-finish t
-               :clock-keep t)
-
-              ("Z" "Work Note" entry
-               (file+olp org-work-file "Notes")
-               "* %i%?"
-               :clock-keep t))
-            )
 
       (setq org-global-properties
             `(("Effort_ALL" . ,(concat "1:00 2:00 3:00 4:00 "
@@ -226,10 +151,66 @@ which require an initialization must be listed explicitly in the list.")
         (when (s-matches? (rx bol (+ "*") (* space) eol) (current-line))
           (goto-char (line-end-position))))
 
+
       ;; Hooks
 
+      (defun cb-org/tidy-org-buffer ()
+        "Perform cosmetic fixes to the current org buffer."
+        (save-restriction
+          (org-table-map-tables 'org-table-align 'quiet)
+          ;; Realign tags.
+          (org-set-tags 4 t)
+          ;; Remove empty properties drawers.
+          (save-excursion
+            (goto-char (point-min))
+            (while (search-forward-regexp ":PROPERTIES:" nil t)
+              (save-excursion
+                (org-remove-empty-drawer-at "PROPERTIES" (match-beginning 0)))))))
+
+      (defun cb-org/mark-next-parent-tasks-todo ()
+        "Visit each parent task and change state to TODO."
+        (let ((mystate (or (and (fboundp 'org-state)
+                                state)
+                           (nth 2 (org-heading-components)))))
+          (when mystate
+            (save-excursion
+              (while (org-up-heading-safe)
+                (when (-contains? '("NEXT" "WAITING" "MAYBE")
+                                  (nth 2 (org-heading-components)))
+                  (org-todo "TODO")))))))
+
+      (defun cb-org/add-local-hooks ()
+        "Set buffer-local hooks for orgmode."
+        (add-hook 'after-save-hook 'cb-org/diary-update-appt-on-save nil t)
+        (add-hook 'org-after-todo-state-change-hook 'cb-org/mark-next-parent-tasks-todo nil t)
+        (add-hook 'org-clock-in-hook 'cb-org/mark-next-parent-tasks-todo nil t)
+        (add-hook 'before-save-hook 'cb-org/tidy-org-buffer nil t))
+
+
       (add-hook 'org-mode-hook 'cb-org/add-local-hooks)
+
+
+      (defun cb-org/set-next-todo-state ()
+        "When marking a todo to DONE, set the next TODO as NEXT.
+Do not change habits, scheduled items or repeating todos."
+        (when (equal org-state "DONE")
+          (save-excursion
+            (when (and (ignore-errors (outline-forward-same-level 1) t)
+                       (equal (org-get-todo-state) "TODO"))
+              (unless (or (org-is-habit-p)
+                          (org-entry-get (point) "STYLE")
+                          (org-entry-get (point) "LAST_REPEAT")
+                          (org-get-scheduled-time (point)))
+                (org-todo "NEXT"))))))
+
       (add-hook 'org-after-todo-state-change-hook 'cb-org/set-next-todo-state)
+
+
+      (defun cb-org/children-done-parent-done (n-done n-todo)
+        "Mark the parent task as done when all children are completed."
+        (let (org-log-done org-log-states) ; turn off logging
+          (org-todo (if (zerop n-todo) "DONE" "TODO"))))
+
       (add-hook 'org-after-todo-statistics-hook 'cb-org/children-done-parent-done))))
 
 (defun cb-org/init-org-drill-table ()

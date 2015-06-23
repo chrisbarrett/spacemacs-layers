@@ -34,64 +34,6 @@
   (org-tags-view nil))
 
 
-;; Project management
-
-(defun cb-org/project? ()
-  "Any task with a todo keyword subtask"
-  (save-restriction
-    (widen)
-    (let ((has-subtask)
-          (subtree-end (save-excursion (org-end-of-subtree t)))
-          (is-a-task (member (nth 2 (org-heading-components)) org-todo-keywords-1)))
-      (save-excursion
-        (forward-line 1)
-        (while (and (not has-subtask)
-                    (< (point) subtree-end)
-                    (re-search-forward "^\*+ " subtree-end t))
-          (when (member (org-get-todo-state) org-todo-keywords-1)
-            (setq has-subtask t))))
-      (and is-a-task has-subtask))))
-
-(defun cb-org/task? ()
-  "Any task with a todo keyword and no subtask"
-  (save-restriction
-    (widen)
-    (let ((has-subtask)
-          (subtree-end (save-excursion (org-end-of-subtree t)))
-          (is-a-task (member (nth 2 (org-heading-components)) org-todo-keywords-1)))
-      (save-excursion
-        (forward-line 1)
-        (while (and (not has-subtask)
-                    (< (point) subtree-end)
-                    (re-search-forward "^\*+ " subtree-end t))
-          (when (member (org-get-todo-state) org-todo-keywords-1)
-            (setq has-subtask t))))
-      (and is-a-task (not has-subtask)))))
-
-
-;;; Work
-
-(defun cb-org/refresh-agenda-when-toggling-work ()
-  "Refresh the agenda when toggling between work states."
-  (when (derived-mode-p 'org-agenda-mode)
-    (cb-org/agenda-dwim)))
-
-;;; Tidy on save
-
-(defun cb-org/tidy-org-buffer ()
-  "Perform cosmetic fixes to the current org buffer."
-  (save-restriction
-    (org-table-map-tables 'org-table-align 'quiet)
-    ;; Realign tags.
-    (org-set-tags 4 t)
-    ;; Remove empty properties drawers.
-    (save-excursion
-      (goto-char (point-min))
-      (while (search-forward-regexp ":PROPERTIES:" nil t)
-        (save-excursion
-          (org-remove-empty-drawer-at "PROPERTIES" (match-beginning 0)))))))
-
-
 ;;; Tree editing
 
 (defun cb-org-narrow-to-subtree-content ()
@@ -125,39 +67,6 @@
     (call-interactively 'org-refile)))
 
 
-;;; Cascade TODO state changes.
-
-(defun cb-org/set-next-todo-state ()
-  "When marking a todo to DONE, set the next TODO as NEXT.
-Do not change habits, scheduled items or repeating todos."
-  (when (equal org-state "DONE")
-    (save-excursion
-      (when (and (ignore-errors (outline-forward-same-level 1) t)
-                 (equal (org-get-todo-state) "TODO"))
-        (unless (or (org-is-habit-p)
-                    (org-entry-get (point) "STYLE")
-                    (org-entry-get (point) "LAST_REPEAT")
-                    (org-get-scheduled-time (point)))
-          (org-todo "NEXT"))))))
-
-(defun cb-org/children-done-parent-done (n-done n-todo)
-  "Mark the parent task as done when all children are completed."
-  (let (org-log-done org-log-states) ; turn off logging
-    (org-todo (if (zerop n-todo) "DONE" "TODO"))))
-
-(defun cb-org/mark-next-parent-tasks-todo ()
-  "Visit each parent task and change state to TODO."
-  (let ((mystate (or (and (fboundp 'org-state)
-                          state)
-                     (nth 2 (org-heading-components)))))
-    (when mystate
-      (save-excursion
-        (while (org-up-heading-safe)
-          (when (-contains? '("NEXT" "WAITING" "MAYBE")
-                            (nth 2 (org-heading-components)))
-            (org-todo "TODO")))))))
-
-
 ;;; Custom keyboard commands
 
 (defun cb-org/ctrl-c-ctrl-k (&optional n)
@@ -184,9 +93,6 @@ Do not change habits, scheduled items or repeating todos."
 
 
 ;;; Diary utils
-
-(defvar date nil
-  "Dynamic var bound to current date by calendaring functions.")
 
 (defun calendar-nearest-to (target-dayname target-day target-month)
   "Non-nil if the current date is a certain weekday close to an anniversary.
@@ -258,119 +164,7 @@ are between the current date (DATE) and Easter Sunday."
       (appt-check 'force))))
 
 
-;;; Archiving
-
-(defun cb-org/archive-done-tasks ()
-  (interactive)
-  (atomic-change-group
-    (org-map-entries (lambda ()
-                       ;; Ensure point does not move past the next item to
-                       ;; archive.
-                       (setq org-map-continue-from (point))
-                       (org-archive-subtree))
-                     "/DONE|PAID|VOID|CANCELLED" 'tree)))
-
-
-;;; Tables
-
-(defun cb-org/recalculate-whole-table ()
-  "Recalculate the current table using `org-table-recalculate'."
-  (interactive "*")
-  (when (org-at-table-p)
-    (let ((before (buffer-substring (org-table-begin) (org-table-end))))
-      (org-table-recalculate '(16))
-      (let ((after (buffer-substring (org-table-begin) (org-table-end))))
-        (if (equal before after)
-            (message "Table up-to-date")
-          (message "Table updated"))))))
-
-
-;;; Clocks
-
-(defun cb-org/remove-empty-clock-drawers ()
-  "Remove empty clock drawers at point."
-  (save-excursion
-    (beginning-of-line 0)
-    (org-remove-empty-drawer-at "LOGBOOK" (point))))
-
-(defun cb-org/clock-in-to-next-state (_kw)
-  "Move a task from TODO to NEXT when clocking in.
-Skips capture tasks, projects, and subprojects.
-Switch projects and subprojects from NEXT back to TODO."
-  (unless (and (boundp 'org-capture-mode) org-capture-mode)
-    (cond
-     ((and (-contains? '("TODO") (org-get-todo-state))
-           (cb-org/task?))
-      "NEXT")
-     ((and (-contains? '("NEXT") (org-get-todo-state))
-           (cb-org/project?))
-      "TODO"))))
-
-
-;;; Crypt
-
-(defun cb-org/looking-at-pgp-section?? ()
-  (unless (org-before-first-heading-p)
-    (save-excursion
-      (org-back-to-heading t)
-      (let ((heading-point (point))
-            (heading-was-invisible-p
-             (save-excursion
-               (outline-end-of-heading)
-               (outline-invisible-p))))
-        (forward-line)
-        (looking-at "-----BEGIN PGP MESSAGE-----")))))
-
-(defun cb-org/decrypt-entry ()
-  (when (cb-org/looking-at-pgp-section??)
-    (org-decrypt-entry)
-    t))
-
-
-;;; Export
-
-(defun cb-org-export/koma-letter-at-subtree (dest)
-  "Define a command to export the koma letter subtree at point to PDF.
-With a prefix arg, prompt for the output destination. Otherwise
-generate use the name of the current file to generate the
-exported file's name.
-The PDF will be created at DEST."
-  (interactive
-   (list (if current-prefix-arg
-             (ido-read-file-name "Destination: " nil nil nil ".pdf")
-           (concat (f-no-ext (buffer-file-name)) ".pdf"))))
-
-  (let ((tmpfile (make-temp-file "org-export-" nil ".org")))
-    (cb-org-write-subtree-content tmpfile)
-    (with-current-buffer (find-file-noselect tmpfile)
-      (unwind-protect
-          (-if-let (exported (org-koma-letter-export-to-pdf))
-              (f-move exported dest)
-            (error "Export failed"))
-        (kill-buffer)))
-    (async-shell-command (format "open %s" (shell-quote-argument dest)))
-    (message "opening %s..." dest)))
-
-(defun cb-org/C-c-C-c-export-koma-letter ()
-  "Export the koma letter at point."
-  (when (ignore-errors
-          (s-matches? (rx "latex_class:" (* space) "koma")
-                      (cb-org-subtree-content)))
-    (call-interactively 'org-export-koma-letter-at-subtree)
-    'export-koma-letter))
-
-
 ;;; Config support
-
-(defun cb-org/add-local-hooks ()
-  "Set buffer-local hooks for orgmode."
-  (add-hook 'after-save-hook 'cb-org/diary-update-appt-on-save nil t)
-  (add-hook 'org-after-todo-state-change-hook 'cb-org/mark-next-parent-tasks-todo nil t)
-  (add-hook 'org-clock-in-hook 'cb-org/mark-next-parent-tasks-todo nil t)
-  (add-hook 'before-save-hook 'cb-org/tidy-org-buffer nil t))
-
-(defun cb-org/exclude-tasks-on-hold (tag)
-  (and (equal tag "hold") (concat "-" tag)))
 
 (defun cb-org/display-links ()
   (interactive)
@@ -383,31 +177,3 @@ The PDF will be created at DEST."
           (goto-char (marker-position mark))
           (org-narrow-to-subtree)
           (org-content))))))
-
-
-;;; Capture template utils
-
-(defun cb-org/parse-html-title (html)
-  "Extract the title from an HTML document."
-  (-let (((_ title) (s-match (rx "<title>" (group (* nonl)) "</title>") html))
-         ((_ charset) (-map 'intern (s-match (rx "charset=" (group (+ (any "-" alnum)))) html))))
-    (if (-contains? coding-system-list charset)
-        (decode-coding-string title charset)
-      title)))
-
-(defun cb-org/url-retrieve-html (url)
-  "Download the resource at URL and attempt to extract an HTML title."
-  (unless (s-matches? (rx "." (or "pdf" "mov" "mp4" "m4v" "aiff" "wav" "mp3") eol) url)
-    (with-current-buffer (url-retrieve-synchronously url t)
-      (buffer-string))))
-
-(defun cb-org/last-url-kill ()
-  "Return the most recent URL in the kill ring or X pasteboard."
-  (--first (s-matches? (rx bos (or "http" "https" "www")) it)
-           (cons (current-kill 0 t) kill-ring)))
-
-(defun cb-org/read-url-for-capture ()
-  "Return a capture template string for a URL org-capture."
-  (let* ((url (core/read-string-with-default "URL" (cb-org/last-url-kill)))
-         (title (cb-org/parse-html-title (cb-org/url-retrieve-html url))))
-    (format "* [[%s][%s]]" url (or title url))))
