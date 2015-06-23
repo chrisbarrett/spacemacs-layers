@@ -187,27 +187,6 @@
                  (org-agenda-dim-blocked-tasks nil)
                  (org-agenda-files (cb-org/main-org-files)))))))
 
-      ;; Refresh agenda every minute, so long as Emacs has been idle for a period.
-      ;; This prevents agenda buffers from getting stale.
-
-      (defun cb-org/refresh-if-idle ()
-        (when (< 10 (org-emacs-idle-seconds))
-          (cb-org/refresh-agenda-buffers)))
-
-      (defun cb-org/refresh-agenda-buffers ()
-        (noflet ((message (&rest _)))
-          (save-window-excursion
-            (save-excursion
-              (--each (--filter-buffers (derived-mode-p 'org-agenda-mode))
-                (ignore-errors
-                  (with-current-buffer it
-                    (org-agenda-redo t))))))))
-
-      (defvar cb-org/agenda-refresh-timer
-        (run-with-timer 60 60 'cb-org/refresh-if-idle))
-
-
-
 
       (add-hook 'org-agenda-mode-hook 'org-agenda-to-appt)
       (add-hook 'org-mode-hook 'visual-line-mode)
