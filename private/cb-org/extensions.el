@@ -66,6 +66,7 @@
       (defun cb-org/exclude-tasks-on-hold (tag)
         (and (equal tag "hold") (concat "-" tag)))
 
+      (setq org-agenda-include-diary t)
       (setq org-agenda-auto-exclude-function 'cb-org/exclude-tasks-on-hold)
       (setq org-agenda-diary-file (f-join org-directory "diary.org"))
       (setq org-agenda-hide-tags-regexp (rx (or "noexport" "someday")))
@@ -87,10 +88,19 @@
       (setq org-agenda-text-search-extra-files '(agenda-archives))
       (setq org-agenda-use-time-grid nil)
 
-      (defun cb-org/agenda-custom-commands-delete-other-windows (command-list)
-        (-map-when (lambda (spec) (listp (cdr spec)))
-                   (lambda (spec) (append spec '(((org-agenda-customise-window-hook 'delete-other-windows)))))
-                   command-list))
+      (setq org-agenda-clockreport-parameter-plist
+            (list :link t
+                  :maxlevel 5
+                  :indent nil
+                  :narrow 40
+                  :tcolumns 1
+                  :stepskip0 t
+                  :fileskip0 t
+                  :step 'week))
+
+      (setq org-time-clocksum-format
+            (list :hours "%d" :require-hours t
+                  :minutes ":%02d" :require-minutes t))
 
       (add-hook 'after-init-hook 'cb-org/agenda-dwim)
 
@@ -98,22 +108,28 @@
         (or (f-ext? path "org")
             (f-ext? path "org_archive")))
 
-      (defun cb-org/main-org-files ()
-        (-distinct (cons org-default-notes-file (cb-org/work-files))))
+      (defun cb-org/all-org-files ()
+        (-union (cons org-default-notes-file (cb-org/toplevel-files))
+                (cb-org/work-files)))
+
+      (defun cb-org/jira-files ()
+        (when (boundp 'org-jira-working-dir)
+          (f-files org-jira-working-dir 'cb-org/org-file?)))
+
+      (defun cb-org/toplevel-files ()
+        (f-files org-directory (lambda (f)
+                                 (and (s-matches? (rx (or "work" "diary")) (f-filename f))
+                                      (cb-org/org-file? f)))))
 
       (defun cb-org/work-files ()
-        (let ((jira-files
-               (when (boundp 'org-jira-working-dir)
-                 (f-files org-jira-working-dir 'cb-org/org-file?)))
+        (-distinct (-concat (cb-org/jira-files) (cb-org/toplevel-files))))
 
-              (top-level-files
-               (f-files org-directory (lambda (f)
-                                        (and (s-matches? (rx (or "work" "diary")) (f-filename f))
-                                             (cb-org/org-file? f))))))
+      (setq org-agenda-files (cb-org/all-org-files))
 
-          (-distinct (-concat jira-files top-level-files))))
-
-      (setq org-agenda-files (cb-org/main-org-files))
+      (defun cb-org/agenda-custom-commands-delete-other-windows (command-list)
+        (-map-when (lambda (spec) (listp (cdr spec)))
+                   (lambda (spec) (append spec '(((org-agenda-customise-window-hook 'delete-other-windows)))))
+                   command-list))
 
       (setq org-agenda-custom-commands
             (cb-org/agenda-custom-commands-delete-other-windows
@@ -131,34 +147,34 @@
                   '("-work_habit" "-ignore"))))
 
                ("w" "Agenda and work actions"
-                ((tags-todo "-study/NEXT"
+                ((tags-todo "-study+assignee=\"\"+TODO={NEXT}|assignee=\"chrisb\"+TODO={NEXT}"
                             ((org-agenda-overriding-header "Next Actions")))
-                 (agenda ""
-                         ((org-agenda-span 'fortnight)
-                          (org-agenda-show-log t)))
+                 (tags-todo "-hold+assignee=\"chrisb\"+TODO={IN-PROGRESS}"
+                            ((org-agenda-overriding-header "In Progress")))
                  (todo "WAITING"
                        ((org-agenda-overriding-header "Waiting")))
                  (stuck ""
                         ((org-agenda-overriding-header "Stuck Cards")))
-                 (todo "READY-TO-START|TO-DO" ; MKG uses TO-DO for cards not started.
-                       ((org-agenda-overriding-header "Upcoming Cards")))
-                 (stuck "+@work"
-                        ((org-agenda-overriding-header "Stuck Tasks")
-                         (org-stuck-projects cb-org/default-stuck-projects)))
-                 (todo "ON-HOL"
-                       ((org-agenda-overriding-header "On Hold")))
-                 (tags-todo "study/NEXT"
-                            ((org-agenda-overriding-header "Study")))
-                 )
+                 (tags-todo "-hold+assignee=\"chrisb\"+TODO={READY-TO-START\\|TO-DO\\|PROJECT}" ; MKG uses TO-DO for cards not started.
+                            ((org-agenda-overriding-header "Upcoming Cards")))
+                 (tags-todo "+hold+assignee=\"chrisb\"+LEVEL=1|assignee=\"chrisb\"+TODO={ON-HOL}"
+                            ((org-agenda-overriding-header "On Hold")))
+                 (agenda ""))
+
                 ((org-agenda-tag-filter-preset '("-ignore"))
+                 (org-agenda-span 'fortnight)
+                 (org-agenda-dim-blocked-tasks nil)
+                 (org-agenda-clockreport-mode t)
+                 (org-agenda-show-log t)
                  (org-agenda-files (cb-org/work-files))
                  (org-deadline-warning-days 0)
                  (org-agenda-todo-ignore-deadlines 14)
                  (org-agenda-todo-ignore-scheduled 'all)
                  (org-agenda-remove-tags t)
+                 (org-use-property-inheritance t)
                  (org-stuck-projects
                   ;; MKG uses TO-DO for cards not started.
-                  '("-ignore+TODO={IN-PROGRESS\\|TO-DO}+assignee=\"chrisb\"/-RESOLVED-DONE" ("NEXT") nil "SCHEDULED:\\|\\<IGNORE\\>"))
+                  '("-hold-ignore+TODO={PROJECT\\|IN-PROGRESS\\|TO-DO}+assignee=\"chrisb\"/-RESOLVED-DONE" ("NEXT") nil "SCHEDULED:\\|\\<IGNORE\\>"))
                  ))
 
                ("n" "Next actions"
@@ -196,8 +212,7 @@
                  (org-habit-show-habits nil)
                  (org-agenda-include-inactive-timestamps t)
                  (org-agenda-dim-blocked-tasks nil)
-                 (org-agenda-files (cb-org/main-org-files)))))))
-
+                 (org-agenda-files (cb-org/all-org-files)))))))
 
       (add-hook 'org-agenda-mode-hook 'org-agenda-to-appt)
       (add-hook 'org-mode-hook 'visual-line-mode)
