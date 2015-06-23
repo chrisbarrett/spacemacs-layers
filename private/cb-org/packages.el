@@ -262,8 +262,11 @@ which require an initialization must be listed explicitly in the list.")
     (progn
 
       (defun cb-org/jira-morning-sync ()
+        (interactive)
         (call-interactively 'org-jira-get-issues)
         (cb-org/jira-refresh-all))
+
+      (defalias 'org-jira-sync 'cb-org/jira-morning-sync)
 
       (defun cb-org/jira-try-refresh-heading-as-issue ()
         (when (org-entry-get nil "assignee")
