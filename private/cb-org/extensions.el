@@ -85,6 +85,7 @@
       (setq org-agenda-span 'week)
       (setq org-agenda-start-on-weekday nil)
       (setq org-agenda-text-search-extra-files '(agenda-archives))
+      (setq org-agenda-use-time-grid nil)
 
       (defun cb-org/agenda-custom-commands-delete-other-windows (command-list)
         (-map-when (lambda (spec) (listp (cdr spec)))
@@ -134,8 +135,7 @@
                             ((org-agenda-overriding-header "Next Actions")))
                  (agenda ""
                          ((org-agenda-span 'fortnight)
-                          (org-agenda-show-log t)
-                          (org-agenda-use-time-grid nil)))
+                          (org-agenda-show-log t)))
                  (todo "WAITING"
                        ((org-agenda-overriding-header "Waiting")))
                  (stuck ""
@@ -195,7 +195,6 @@
                   '("-drill" "-gtd" "-work_habit" "-habit" "-ignore"))
                  (org-habit-show-habits nil)
                  (org-agenda-include-inactive-timestamps t)
-                 (org-agenda-use-time-grid nil)
                  (org-agenda-dim-blocked-tasks nil)
                  (org-agenda-files (cb-org/main-org-files)))))))
 
