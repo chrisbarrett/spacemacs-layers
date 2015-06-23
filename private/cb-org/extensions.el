@@ -83,7 +83,7 @@
               (tags priority-down category-keep)
               (search category-keep)))
       (setq org-agenda-span 'week)
-      (setq org-agenda-start-on-weekday nil)
+      (setq org-agenda-start-on-weekday 1)
       (setq org-agenda-text-search-extra-files '(agenda-archives))
       (setq org-agenda-use-time-grid nil)
 
