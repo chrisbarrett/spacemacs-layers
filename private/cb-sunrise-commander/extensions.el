@@ -17,6 +17,7 @@
     (progn
       (setq sr-windows-locked nil)
       (setq sr-cursor-follows-mouse nil)
+      (setq sr-windows-default-ratio 33)
 
       (defun cb-sunrise-commander/dired-this-dir ()
         (interactive)
