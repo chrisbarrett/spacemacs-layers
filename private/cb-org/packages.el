@@ -225,6 +225,11 @@ Do not change habits, scheduled items or repeating todos."
     (progn
 
       (setq org-jira-use-status-as-todo t)
+      (setq org-jira-done-states '("CLOSED" "WONT-DO" "RESOLVED"))
+
+      (setq org-jira-default-jql
+            "assignee = currentUser() AND resolution = Unresolved
+             ORDER BY priority DESC, created ASC")
 
       (defconst org-jira-working-dir (f-join org-directory "jira"))
 
@@ -242,28 +247,14 @@ Do not change habits, scheduled items or repeating todos."
     :config
     (progn
 
-      (defun cb-org/jira-morning-sync ()
+      (defun cb-org/jira-sync ()
         (interactive)
         (call-interactively 'org-jira-get-issues)
-        (cb-org/jira-refresh-all))
-
-      (defalias 'org-jira-sync 'cb-org/jira-morning-sync)
-
-      (defun cb-org/jira-try-refresh-heading-as-issue ()
-        (when (org-entry-get nil "assignee")
-          (org-jira-refresh-issue)))
-
-      (defun cb-org/jira-refresh-all ()
-        (interactive)
-        (org-map-entries '(cb-org/apply-to-headlines-at-level 1 'cb-org/jira-try-refresh-heading-as-issue)
-                         nil (cb-org/jira-files))
         (--each (cb-org/jira-files)
           (with-current-buffer (find-file-noselect it)
-            (save-buffer)))
+            (save-buffer))))
 
-        (message "Jira issues updated."))
-
-      (define-key org-jira-entry-mode-map (kbd "C-c i R") 'cb-org/jira-refresh-all)
+      (defalias 'org-jira-sync 'cb-org/jira-sync)
 
       ;; Apply JIRA issue number as the default org category
 
