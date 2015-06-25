@@ -57,6 +57,16 @@
 
 
 
+(defvar scala-pretty-sbt--prompt-regexp
+  (rx bol
+      (group (? space)
+             (or
+              ;; SBT
+              (and (+ (any alpha "-")) ">" (+ space))
+              ;; Activator
+              (and "[" (+ (any alpha "-")) "] $" (+ space))))
+      (* space)))
+
 (defun scala-pretty-sbt--apply-sbt-font-locking ()
   "Apply pretty SBT font locking to the current buffer."
   (font-lock-add-keywords
@@ -64,7 +74,7 @@
    `((,(rx bol (* space) (group "[info]" (* nonl)))
       1 'font-lock-comment-face t)
 
-     (,sbt:prompt-regexp
+     (,scala-pretty-sbt--prompt-regexp
       1 'font-lock-type-face t)
 
      (,(rx bol (* space) (group "[info] "))
