@@ -1,0 +1,4 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+__ENDPOINT-VERB__   __ENDPOINT-PATH__   @controllers.__CONTROLLER-NAME__.__ENDPOINT-HANDLER__()

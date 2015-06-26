@@ -97,7 +97,41 @@ which require an initialization must be listed explicitly in the list.")
     (progn
       (setq skeletor-show-project-command 'magit-status)
       (setq skeletor-scala-use-ensime t)
-      (setq skeletor-user-directory (concat spacemacs-private-directory "cb-project/project-skeletons")))))
+      (setq skeletor-user-directory (concat spacemacs-private-directory "cb-project/project-skeletons"))
+
+      (defconst cb-project/scala-sbt-version "0.13.8")
+      (defconst cb-project/scala-sbt-release-version "0.8.5")
+      (defconst cb-project/scala-play-version "2.3.9")
+      (defconst cb-project/scala-movio-playlib-version "1.1.0")
+
+      (skeletor-define-template "movio-scala-play-project"
+        :title "Scala Play Project (Movio)"
+        :no-license? t
+        :requires-executables
+        '(("scala" . "http://www.scala-lang.org")
+          ("sbt" . "http://www.scala-sbt.org"))
+
+        :substitutions
+        '(("__SCALA-VERSION__" . skeletor-scala--version)
+          ("__SBT-VERSION__" . cb-project/scala-sbt-version)
+          ("__PLAY-VERSION__" . cb-project/scala-play-version)
+          ("__PLAYLIB-VERSION__". cb-project/scala-movio-playlib-version)
+          ("__SBT-RELEASE-VERSION__". cb-project/scala-sbt-release-version)
+          ("__MOVIO-ARTIFACTORY-URL__". movio-artifactory-url)
+          ("__MOVIO-ARTIFACTORY-REPO-URL__". movio-artifactory-repo-url)
+
+          ("__DESCRIPTION__" . (lambda () (read-string "Description: ")))
+          ("__ENDPOINT-PATH__" . (lambda () (concat "/" (read-string "Endpoint path: /"))))
+          ("__ENDPOINT-VERB__" . (lambda () (read-string "HTTP verb: " "GET")))
+          ("__ENDPOINT-HANDLER__" . (lambda () (s-lower-camel-case (read-string "Handler method name: "))))
+          ("__CONTROLLER-NAME__" . (lambda () (s-upper-camel-case (s-chop-suffix ".scala" (read-string "Controller class name: ")))))
+          )
+
+        :after-creation
+        (lambda (dir)
+          (when skeletor-scala-use-ensime
+            (skeletor--log-info "Configuring SBT and ENSIME. This may take a while...")
+            (sbt-gen-ensime dir)))))))
 
 (use-package neotree
   :defer t
