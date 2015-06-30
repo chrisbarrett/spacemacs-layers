@@ -135,7 +135,7 @@
             (cb-org/agenda-custom-commands-delete-other-windows
              '(
                ("A" "Agenda and next actions"
-                ((tags-todo "-@work-someday-media/NEXT"
+                ((tags-todo "-study-@work-someday-media/NEXT"
                             ((org-agenda-overriding-header "Next Actions")))
                  (agenda "-@work")
                  (tags-todo "-@work/WAITING"
@@ -178,7 +178,7 @@
                  ))
 
                ("n" "Next actions"
-                ((tags-todo "-someday/NEXT"))
+                ((tags-todo "-study-someday/NEXT"))
                 ((org-agenda-overriding-header "Next Actions")))
 
                ("r" "Weekly Review"
