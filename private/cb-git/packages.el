@@ -4,9 +4,9 @@
 
 (defconst cb-git-packages
   '(
+    ido-completing-read+
     git-auto-commit-mode
     git-commit-mode
-    diff-hl
     )
   "List of all packages to install and/or initialize. Built-in packages
 which require an initialization must be listed explicitly in the list.")
@@ -38,12 +38,3 @@ which require an initialization must be listed explicitly in the list.")
         (-when-let (buf (get-buffer "COMMIT_EDITMSG"))
           (when (buffer-live-p buf)
             (kill-buffer buf)))))))
-
-(defun cb-git/init-diff-hl ()
-  (use-package diff-hlt
-    :defer t
-    :init
-    (progn
-      (setq diff-hl-side 'right)
-      (add-hook 'prog-mode-hook 'diff-hl-mode)
-      (add-hook 'dired-mode-hook 'diff-hl-dired-mode))))
