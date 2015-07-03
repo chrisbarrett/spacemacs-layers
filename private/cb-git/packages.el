@@ -6,7 +6,6 @@
   '(
     ido-completing-read+
     git-auto-commit-mode
-    git-commit-mode
     )
   "List of all packages to install and/or initialize. Built-in packages
 which require an initialization must be listed explicitly in the list.")
@@ -23,18 +22,3 @@ which require an initialization must be listed explicitly in the list.")
     :diminish git-auto-commit-mode
     :init
     (add-to-list 'safe-local-variable-values '(gac-automatically-push-p . t))))
-
-(defun cb-git/init-git-commit-mode ()
-  (use-package git-commit-mode
-    :config
-    (progn
-      (add-hook 'git-commit-mode-hook 'turn-on-auto-fill)
-      (put 'git-commit-mode 'fill-column 72)
-
-      (add-hook 'git-commit-mode-hook 'end-of-line)
-
-      (defadvice git-commit-commit (after kill-commit-buffer activate)
-        "Ensure the commit buffer is killed."
-        (-when-let (buf (get-buffer "COMMIT_EDITMSG"))
-          (when (buffer-live-p buf)
-            (kill-buffer buf)))))))
