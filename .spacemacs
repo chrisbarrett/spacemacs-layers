@@ -1,8 +1,8 @@
-;; -*- mode: dotspacemacs -*-
+;; -*- mode: emacs-lisp -*-
 ;; This file is loaded by Spacemacs at startup.
 ;; It must be stored in your home directory.
 
-(setq user-layers-directory "~/.spacemacs-layers/")
+(defconst user-layers-directory "~/.spacemacs-layers/")
 
 (defun dotspacemacs/layers ()
   "Configuration Layers declaration."
@@ -181,11 +181,15 @@ before layers configuration."
    )
   ;; User initialization goes here
 
+  ;; The org repo is required for `org-plus-contrib'. This means `package.el'
+  ;; must be explicitly (re)initialised.
   (require 'package)
   (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/"))
   (unless package-alist (package-refresh-contents))
   (package-initialize)
 
+  ;; The following packages are required by layers at the top-level, and must be
+  ;; manually installed before Spacemacs loads those layers.
   (core/install-package 's)
   (core/install-package 'noflet)
   (core/install-package 'f)
@@ -194,8 +198,12 @@ before layers configuration."
   (core/install-package 'dash-functional)
   (core/install-package 'helm) ;; HACK: needed for Spacemacs
 
+  ;; Some random utilities and editor tools are installed in these dirs.
   (add-to-list 'exec-path "~/.cabal/bin/")
   (add-to-list 'exec-path "~/bin/")
+
+  ;; Ensure the `cb-core' layer is loaded before all others. This layer contains
+  ;; utilities needed by other layers.
   (load (concat user-layers-directory "cb-core/funcs.el"))
   (load (concat user-layers-directory "cb-core/config.el")))
 
