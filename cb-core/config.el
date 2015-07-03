@@ -8,7 +8,6 @@
 (when (boundp 'window-numbering-mode)
   (window-numbering-mode -1))
 
-(defvar spacemacs-private-directory (concat user-emacs-directory "private/"))
 (defvar spacemacs-autosaves-directory (concat user-emacs-directory "autosaves/"))
 
 ;;; Compatibility

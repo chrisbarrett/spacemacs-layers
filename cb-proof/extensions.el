@@ -20,10 +20,12 @@
 
 (defun cb-proof/init-proof-site ()
   (use-package proof-site
-    :load-path "private/cb-proof/extensions/proofgeneral/generic"
     :defer t
     :init
-    (require 'proof-site)
+    (progn
+      (add-to-list 'load-path
+                   (f-join user-layers-directory "cb-proof/extensions/proofgeneral/generic"))
+      (require 'proof-site))
     :config
     (progn
       (setq proof-splash-enable nil)

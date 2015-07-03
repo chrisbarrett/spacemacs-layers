@@ -97,7 +97,7 @@ which require an initialization must be listed explicitly in the list.")
     (progn
       (setq skeletor-show-project-command 'magit-status)
       (setq skeletor-scala-use-ensime t)
-      (setq skeletor-user-directory (concat spacemacs-private-directory "cb-project/project-skeletons"))
+      (setq skeletor-user-directory (f-join user-layers-directory "cb-project/project-skeletons"))
 
       (defconst cb-project/scala-sbt-version "0.13.8")
       (defconst cb-project/scala-sbt-release-version "0.8.5")

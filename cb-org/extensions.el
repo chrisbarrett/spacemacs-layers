@@ -33,11 +33,11 @@
 
 (defun cb-org/init-org-work ()
   (use-package org-work
-    :load-path "private/cb-org/extensions/org-work"
     :commands (org-work-maybe-start-work
                maybe-enable-org-work-mode)
     :init
     (progn
+      (add-to-list 'load-path (f-join user-layers-directory "cb-org/extensions/org-work"))
       (add-hook 'org-mode-hook 'maybe-enable-org-work-mode)
       (add-hook 'after-init-hook 'org-work-maybe-start-work))
     :config

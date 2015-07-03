@@ -2,14 +2,14 @@
 ;; This file is loaded by Spacemacs at startup.
 ;; It must be stored in your home directory.
 
-(setq git-gutter-use-fringe t)
+(setq user-layers-directory "~/.spacemacs-layers/")
 
 (defun dotspacemacs/layers ()
   "Configuration Layers declaration."
   (setq-default
    ;; List of additional paths where to look for configuration layers.
    ;; Paths must have a trailing slash (ie. `~/.mycontribs/')
-   dotspacemacs-configuration-layer-path '()
+   dotspacemacs-configuration-layer-path (list user-layers-directory)
    ;; List of configuration layers to load. If it is the symbol `all' instead
    ;; of a list then all discovered layers will be installed.
    dotspacemacs-configuration-layers
@@ -176,6 +176,8 @@ before layers configuration."
    ;; specified with an installed package.
    ;; Not used for now.
    dotspacemacs-default-package-repository nil
+   ;; HACK: Spacemacs currently expects this var to be defined.
+   git-gutter-use-fringe t
    )
   ;; User initialization goes here
 
@@ -194,8 +196,8 @@ before layers configuration."
 
   (add-to-list 'exec-path "~/.cabal/bin/")
   (add-to-list 'exec-path "~/bin/")
-  (load (concat user-emacs-directory "private/cb-core/funcs.el"))
-  (load (concat user-emacs-directory "private/cb-core/config.el")))
+  (load (concat user-layers-directory "cb-core/funcs.el"))
+  (load (concat user-layers-directory "cb-core/config.el")))
 
 (defun core/install-package (pkg)
   (cond

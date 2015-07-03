@@ -17,7 +17,7 @@ which require an initialization must be listed explicitly in the list.")
   (use-package yasnippet
     :init
     (progn
-      (setq yas-snippet-dirs (list (concat spacemacs-private-directory "cb-yasnippet/snippets")))
+      (setq yas-snippet-dirs (list (f-join user-layers-directory "cb-yasnippet/snippets")))
       (add-hook 'prog-mode-hook 'yas-minor-mode)
       (add-hook 'text-mode-hook 'yas-minor-mode)
       (yas-global-mode +1))

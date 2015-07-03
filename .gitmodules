@@ -1,39 +1,18 @@
-[submodule "spacemacs/extensions/projmake-mode"]
-	path = extensions/projmake-mode
-	url = https://github.com/ericbmerritt/projmake-mode
-[submodule "spacemacs/extensions/revive"]
-	path = spacemacs/extensions/revive
-	url = https://github.com/vedang/revive-mode.git
-[submodule "spacemacs/extensions/helm-c-moccur"]
-	path = extensions/helm-c-moccur
-	url = https://github.com/syl20bnr/helm-c-moccur
-[submodule "spacemacs/extensions/evil-org-mode"]
-	path = spacemacs/extensions/evil-org-mode
-	url = https://github.com/syl20bnr/evil-org-mode
-[submodule "spacemacs/extensions/helm-rcirc"]
-	path = spacemacs/extensions/helm-rcirc
-	url = https://github.com/syl20bnr/helm-rcirc
-[submodule "spacemacs/extensions/spray"]
-	path = spacemacs/extensions/spray
-	url = https://github.com/syl20bnr/spray
-[submodule "spacemacs/extensions/yasnippet-snippets"]
-	path = spacemacs/extensions/yasnippet-snippets
-	url = https://github.com/AndreaCrotti/yasnippet-snippets.git
-[submodule "private/cb-proof/extensions/proofgeneral"]
-	path = private/cb-proof/extensions/proofgeneral
+[submodule "cb-proof/extensions/proofgeneral"]
+	path = cb-proof/extensions/proofgeneral
 	url = https://github.com/emacsattic/proofgeneral.git
-[submodule "private/cb-core/extensions/super-smart-ops"]
-	path = private/cb-core/extensions/super-smart-ops
+[submodule "cb-core/extensions/super-smart-ops"]
+	path = cb-core/extensions/super-smart-ops
 	url = https://github.com/chrisbarrett/super-smart-ops.git
-[submodule "private/cb-agda/extensions/agda-mode"]
-	path = private/cb-agda/extensions/agda-mode
+[submodule "cb-agda/extensions/agda-mode"]
+	path = cb-agda/extensions/agda-mode
 	url = https://github.com/jwiegley/agda-mode.git
-[submodule "private/cb-haskell/extensions/liquid-types"]
-	path = private/cb-haskell/extensions/liquid-types
+[submodule "cb-haskell/extensions/liquid-types"]
+	path = cb-haskell/extensions/liquid-types
 	url = https://github.com/ucsd-progsys/liquid-types.el.git
-[submodule "private/cb-flycheck/extensions/haskell-flycheck"]
-	path = private/cb-flycheck/extensions/haskell-flycheck
+[submodule "cb-flycheck/extensions/haskell-flycheck"]
+	path = cb-flycheck/extensions/haskell-flycheck
 	url = https://github.com/chrisdone/haskell-flycheck.git
-[submodule "private/cb-sunrise-commander/extensions/sunrise-commander"]
-	path = private/cb-sunrise-commander/extensions/sunrise-commander
+[submodule "cb-sunrise-commander/extensions/sunrise-commander"]
+	path = cb-sunrise-commander/extensions/sunrise-commander
 	url = https://github.com/escherdragon/sunrise-commander.git
