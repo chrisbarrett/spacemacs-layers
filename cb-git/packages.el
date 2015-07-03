@@ -4,6 +4,7 @@
 
 (defconst cb-git-packages
   '(
+    magit
     ido-completing-read+
     git-auto-commit-mode
     )
@@ -13,6 +14,15 @@ which require an initialization must be listed explicitly in the list.")
 (defconst cb-git-excluded-packages
   '(git-gutter git-gutter-fringe)
   "List of packages to exclude.")
+
+(eval-when-compile
+  (require 'use-package nil t))
+
+(defun cb-git/init-magit ()
+  (use-package magit
+    :defer t
+    :config
+    (remove-hook 'git-commit-mode-hook 'fci-mode)))
 
 (eval-when-compile
   (require 'use-package nil t))
