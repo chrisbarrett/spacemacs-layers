@@ -44,6 +44,13 @@
 (bind-key (kbd "C-c k k") 'core/exit-emacs)
 (bind-key (kbd "C-x C-c") 'core/warn-exit-emacs-rebound)
 
+;;; Personal config
+
+(evil-leader/set-key "fep"
+  (defun cb-core/goto-personal-config ()
+    (interactive)
+    (find-library "personal-config")))
+
 ;;; Company
 
 (with-eval-after-load 'company
