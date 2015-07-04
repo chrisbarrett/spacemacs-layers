@@ -22,7 +22,12 @@ which require an initialization must be listed explicitly in the list.")
   (use-package magit
     :defer t
     :config
-    (remove-hook 'git-commit-mode-hook 'fci-mode)))
+    (progn
+      ;; Remove broken Spacemacs customisation
+      (remove-hook 'git-commit-mode-hook 'fci-mode)
+
+      (core/remap-face 'magit-section-highlight 'core/bg-hl-ok)
+      (core/remap-face 'magit-diff-context-highlight 'core/bg-hl-ok))))
 
 (eval-when-compile
   (require 'use-package nil t))
