@@ -75,7 +75,22 @@
       ;; Define generic browser functions to support mu4e.
       (setq browse-url-browser-function 'eww-browse-url)
       (setq browse-url-mailto-function 'mu4e-multi-compose-new)
-      )))
+
+      ;; Start at the 'To' header when composing.
+      (defun cb-mu4e-goto-to-header ()
+        (interactive)
+        ;; HACK: I can't figure out how to hook into this mode correctly and
+        ;; that makes me sad. :(
+        (run-with-timer 0.03 nil
+                        (lambda ()
+                          (goto-char (point-min))
+                          (search-forward "to:" nil t)
+                          (evil-append-line 1)
+                          (just-one-space))))
+
+      (add-hook 'message-mode-hook 'cb-mu4e-goto-to-header)
+
+
 
 (defun cb-mu4e/init-mu4e-multi ()
   (use-package mu4e-multi
