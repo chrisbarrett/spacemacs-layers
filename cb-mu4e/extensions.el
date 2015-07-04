@@ -69,8 +69,16 @@
              (t
               'html2text)))
 
-      ;; Add option to view html message in a browser. `av` in view to activate
-      (add-to-list 'mu4e-view-actions '("viewInBrowser" . mu4e-action-view-in-browser) t)
+      ;; View html message in eww. `av` in view to activate
+      (add-to-list 'mu4e-view-actions '("ViewInBrowser" . mu4e-action-view-in-browser) t)
+
+      ;; View html message in external browser. `a&` in view to activate
+
+      (defun cb-mu4e-action-view-in-external-browser (msg)
+        (let ((browse-url-browser-function 'browse-url-default-browser))
+          (mu4e-action-view-in-browser msg)))
+
+      (add-to-list 'mu4e-view-actions '("&viewInExternalBrowser" . cb-mu4e-action-view-in-external-browser) t)
 
       ;; Define generic browser functions to support mu4e.
       (setq browse-url-browser-function 'eww-browse-url)
