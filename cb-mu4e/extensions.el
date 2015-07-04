@@ -36,21 +36,30 @@
     :config
     (progn
       (setq mu4e-use-fancy-chars t)
-      (setq mu4e-attachment-dir "~/Downloads")
       (setq mu4e-view-show-images t)
-      (setq mu4e-get-mail-command "offlineimap")
       (setq message-kill-buffer-on-exit t)
 
-      (setq message-send-mail-function 'message-send-mail-with-sendmail)
-      (setq sendmail-program "msmtp")
+      ;; Use offlineimap to manage maildir.
+      (setq mu4e-get-mail-command "offlineimap")
 
-      (setq mu4e-update-interval (* 60 10)) ; 10 minutes
+      ;; Save attachments to Downloads dir.
+      (setq mu4e-attachment-dir (f-expand "~/Downloads"))
+
+      ;; Disable signatures.
+      (setq mu4e-compose-signature nil)
+      (setq mu4e-compose-signature-auto-include nil)
+
+      ;; Put quoted messages after signature.
+      (setq message-forward-before-signature nil)
+
+      ;; Update every 5 minutes.
+      (setq mu4e-update-interval (* 60 5))
 
       ;; use imagemagick, if available
       (when (fboundp 'imagemagick-register-types)
         (imagemagick-register-types))
 
-      ;; Render html emails.
+      ;; Render html emails using something reasonable.
       (setq mu4e-html2text-command
             (cond
              ((executable-find "textutil")
@@ -60,8 +69,10 @@
              (t
               'html2text)))
 
-      ;; add option to view html message in a browser. `aV` in view to activate
-      (add-to-list 'mu4e-view-actions '("ViewInBrowser" . mu4e-action-view-in-browser) t)
+      ;; Add option to view html message in a browser. `av` in view to activate
+      (add-to-list 'mu4e-view-actions '("viewInBrowser" . mu4e-action-view-in-browser) t)
+
+      ;; Define generic browser functions to support mu4e.
       (setq browse-url-browser-function 'eww-browse-url)
       (setq browse-url-mailto-function 'mu4e-multi-compose-new)
       )))
