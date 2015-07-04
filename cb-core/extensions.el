@@ -73,6 +73,7 @@
                       "/\\.cache/"
                       "\\.newsrc"
                       "/gnus$"
+                      "/Mail/"
                       "/gnus.eld$"
                       "\\.ido\\.last"
                       "\\.org-clock-save\\.el$")))
