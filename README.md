@@ -8,4 +8,4 @@ Spacemacs.
 Most of these layers are pretty independent, but may require utilities defined
 in the `cb-core` layer.
 
-[conf_layers]: https://github.com/syl20bnr/spacemacs/blob/master/doc/DOCUMENTATION.md#extensions-and-packages
+[conf_layers]: https://github.com/syl20bnr/spacemacs/blob/master/doc/DOCUMENTATION.org#configuration-layers
