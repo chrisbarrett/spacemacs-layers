@@ -92,6 +92,12 @@
 
 
 
+      ;; Add format=flowed so receiving clients can format plain text correctly.
+      (defun cb-mu4e-flow-text ()
+        (use-hard-newlines t 'guess))
+
+      (add-hook 'mu4e-compose-mode-hook 'cb-mu4e-flow-text))))
+
 (defun cb-mu4e/init-mu4e-multi ()
   (use-package mu4e-multi
     :config
