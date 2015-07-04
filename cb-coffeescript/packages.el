@@ -2,12 +2,12 @@
 ;;; Commentary:
 ;;; Code:
 
-(defvar cb-coffeescript-packages
+(defconst cb-coffeescript-packages
   '(coffee-mode)
   "List of all packages to install and/or initialize. Built-in packages
 which require an initialization must be listed explicitly in the list.")
 
-(defvar cb-coffeescript-excluded-packages '()
+(defconst cb-coffeescript-excluded-packages '()
   "List of packages to exclude.")
 
 (eval-when-compile

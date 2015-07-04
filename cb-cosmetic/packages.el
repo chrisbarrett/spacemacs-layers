@@ -2,7 +2,7 @@
 ;;; Commentary:
 ;;; Code:
 
-(defvar cb-cosmetic-packages
+(defconst cb-cosmetic-packages
   '(
     paren-face
     whitespace
@@ -11,7 +11,7 @@
   "List of all packages to install and/or initialize. Built-in packages
 which require an initialization must be listed explicitly in the list.")
 
-(defvar cb-cosmetic-excluded-packages '()
+(defconst cb-cosmetic-excluded-packages '()
   "List of packages to exclude.")
 
 (eval-when-compile

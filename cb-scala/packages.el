@@ -2,7 +2,7 @@
 ;;; Commentary:
 ;;; Code:
 
-(defvar cb-scala-packages
+(defconst cb-scala-packages
   '(
     scala-mode2
     sbt-mode
@@ -11,7 +11,7 @@
   "List of all packages to install and/or initialize. Built-in packages
 which require an initialization must be listed explicitly in the list.")
 
-(defvar cb-scala-excluded-packages '()
+(defconst cb-scala-excluded-packages '()
   "List of packages to exclude.")
 
 (eval-when-compile

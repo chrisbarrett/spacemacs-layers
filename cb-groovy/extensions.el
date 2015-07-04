@@ -2,11 +2,11 @@
 ;;; Commentary:
 ;;; Code:
 
-(defvar cb-groovy-pre-extensions
+(defconst cb-groovy-pre-extensions
   '(super-smart-ops)
   "List of all extensions to load before the packages.")
 
-(defvar cb-groovy-post-extensions
+(defconst cb-groovy-post-extensions
   '()
   "List of all extensions to load after the packages.")
 

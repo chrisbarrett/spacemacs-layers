@@ -2,11 +2,11 @@
 ;;; Commentary:
 ;;; Code:
 
-(defvar cb-elfeed-packages '(elfeed)
+(defconst cb-elfeed-packages '(elfeed)
   "List of all packages to install and/or initialize. Built-in packages
 which require an initialization must be listed explicitly in the list.")
 
-(defvar cb-elfeed-excluded-packages '()
+(defconst cb-elfeed-excluded-packages '()
   "List of packages to exclude.")
 
 (eval-when-compile

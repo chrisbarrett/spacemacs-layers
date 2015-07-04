@@ -2,11 +2,11 @@
 ;;; Commentary:
 ;;; Code:
 
-(defvar cb-cosmetic-pre-extensions
+(defconst cb-cosmetic-pre-extensions
   '(lambda-mode)
   "List of all extensions to load before the packages.")
 
-(defvar cb-cosmetic-post-extensions
+(defconst cb-cosmetic-post-extensions
   '()
   "List of all extensions to load after the packages.")
 

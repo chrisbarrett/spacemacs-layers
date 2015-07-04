@@ -2,9 +2,9 @@
 ;;; Commentary:
 ;;; Code:
 
-(defvar cb-groovy-packages '(groovy-mode))
+(defconst cb-groovy-packages '(groovy-mode))
 
-(defvar cb-groovy-excluded-packages '())
+(defconst cb-groovy-excluded-packages '())
 
 (eval-when-compile
   (require 'use-package nil t))

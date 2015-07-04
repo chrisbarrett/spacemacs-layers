@@ -2,11 +2,11 @@
 ;;; Commentary:
 ;;; Code:
 
-(defvar cb-sql-pre-extensions
+(defconst cb-sql-pre-extensions
   '(sql)
   "List of all extensions to load before the packages.")
 
-(defvar cb-sql-post-extensions
+(defconst cb-sql-post-extensions
   '()
   "List of all extensions to load after the packages.")
 

@@ -2,11 +2,11 @@
 ;;; Commentary:
 ;;; Code:
 
-(defvar cb-idris-pre-extensions
+(defconst cb-idris-pre-extensions
   '(super-smart-ops)
   "List of all extensions to load before the packages.")
 
-(defvar cb-idris-post-extensions
+(defconst cb-idris-post-extensions
   '()
   "List of all extensions to load after the packages.")
 

@@ -2,12 +2,12 @@
 ;;; Commentary:
 ;;; Code:
 
-(defvar cb-flycheck-packages
+(defconst cb-flycheck-packages
   '(flycheck)
   "List of all packages to install and/or initialize. Built-in packages
 which require an initialization must be listed explicitly in the list.")
 
-(defvar cb-flycheck-excluded-packages '(flycheck-pos-tip)
+(defconst cb-flycheck-excluded-packages '(flycheck-pos-tip)
   "List of packages to exclude.")
 
 (eval-when-compile

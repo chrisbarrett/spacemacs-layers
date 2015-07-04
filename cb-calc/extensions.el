@@ -2,11 +2,11 @@
 ;;; Commentary:
 ;;; Code:
 
-(defvar cb-calc-pre-extensions
+(defconst cb-calc-pre-extensions
   '(calc)
   "List of all extensions to load before the packages.")
 
-(defvar cb-calc-post-extensions
+(defconst cb-calc-post-extensions
   '()
   "List of all extensions to load after the packages.")
 

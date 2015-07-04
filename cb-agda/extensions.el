@@ -2,11 +2,11 @@
 ;;; Commentary:
 ;;; Code:
 
-(defvar cb-agda-pre-extensions
+(defconst cb-agda-pre-extensions
   '(agda-mode)
   "List of all extensions to load before the packages.")
 
-(defvar cb-agda-post-extensions
+(defconst cb-agda-post-extensions
   '(super-smart-ops
     aggressive-indent)
   "List of all extensions to load after the packages.")

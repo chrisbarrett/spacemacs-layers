@@ -2,7 +2,7 @@
 ;;; Commentary:
 ;;; Code:
 
-(defvar cb-proof-pre-extensions
+(defconst cb-proof-pre-extensions
   '(
     proof-site
     coq
@@ -11,7 +11,7 @@
     )
   "List of all extensions to load before the packages.")
 
-(defvar cb-proof-post-extensions
+(defconst cb-proof-post-extensions
   '()
   "List of all extensions to load after the packages.")
 

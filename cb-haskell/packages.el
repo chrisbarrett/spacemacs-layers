@@ -2,7 +2,7 @@
 ;;; Commentary:
 ;;; Code:
 
-(defvar cb-haskell-packages
+(defconst cb-haskell-packages
   '(
     haskell-mode
     shm
@@ -14,7 +14,7 @@
   "List of all packages to install and/or initialize. Built-in packages
 which require an initialization must be listed explicitly in the list.")
 
-(defvar cb-haskell-excluded-packages '()
+(defconst cb-haskell-excluded-packages '()
   "List of packages to exclude.")
 
 (eval-when-compile

@@ -2,12 +2,12 @@
 ;;; Commentary:
 ;;; Code:
 
-(defvar cb-yasnippet-packages
+(defconst cb-yasnippet-packages
   '(yasnippet)
   "List of all packages to install and/or initialize. Built-in packages
 which require an initialization must be listed explicitly in the list.")
 
-(defvar cb-yasnippet-excluded-packages '()
+(defconst cb-yasnippet-excluded-packages '()
   "List of packages to exclude.")
 
 (eval-when-compile

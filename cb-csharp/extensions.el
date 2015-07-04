@@ -2,11 +2,11 @@
 ;;; Commentary:
 ;;; Code:
 
-(defvar cb-csharp-pre-extensions
+(defconst cb-csharp-pre-extensions
   '()
   "List of all extensions to load before the packages.")
 
-(defvar cb-csharp-post-extensions
+(defconst cb-csharp-post-extensions
   '(super-smart-ops)
   "List of all extensions to load after the packages.")
 

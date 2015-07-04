@@ -2,11 +2,11 @@
 ;;; Commentary:
 ;;; Code:
 
-(defvar cb-flycheck-pre-extensions
+(defconst cb-flycheck-pre-extensions
   '()
   "List of all extensions to load before the packages.")
 
-(defvar cb-flycheck-post-extensions
+(defconst cb-flycheck-post-extensions
   '(haskell-flycheck)
   "List of all extensions to load after the packages.")
 

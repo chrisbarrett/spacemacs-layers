@@ -2,11 +2,11 @@
 ;;; Commentary:
 ;;; Code:
 
-(defvar cb-extempore-pre-extensions
+(defconst cb-extempore-pre-extensions
   '(extempore)
   "List of all extensions to load before the packages.")
 
-(defvar cb-extempore-post-extensions
+(defconst cb-extempore-post-extensions
   '()
   "List of all extensions to load after the packages.")
 

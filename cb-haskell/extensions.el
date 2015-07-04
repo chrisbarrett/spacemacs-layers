@@ -2,13 +2,13 @@
 ;;; Commentary:
 ;;; Code:
 
-(defvar cb-haskell-pre-extensions
+(defconst cb-haskell-pre-extensions
   '(
     haskell-parser
     )
   "List of all extensions to load before the packages.")
 
-(defvar cb-haskell-post-extensions
+(defconst cb-haskell-post-extensions
   '(
     super-smart-ops
     liquid-types

@@ -2,7 +2,7 @@
 ;;; Commentary:
 ;;; Code:
 
-(defvar cb-rust-packages
+(defconst cb-rust-packages
   '(
     rust-mode
     flycheck-rust
@@ -10,7 +10,7 @@
   "List of all packages to install and/or initialize. Built-in packages
 which require an initialization must be listed explicitly in the list.")
 
-(defvar cb-rust-excluded-packages '()
+(defconst cb-rust-excluded-packages '()
   "List of packages to exclude.")
 
 (eval-when-compile

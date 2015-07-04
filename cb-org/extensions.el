@@ -2,11 +2,11 @@
 ;;; Commentary:
 ;;; Code:
 
-(defvar cb-org-pre-extensions
+(defconst cb-org-pre-extensions
   '()
   "List of all extensions to load before the packages.")
 
-(defvar cb-org-post-extensions
+(defconst cb-org-post-extensions
   '(
     org-work
     org-agenda

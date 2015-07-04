@@ -2,11 +2,11 @@
 ;;; Commentary:
 ;;; Code:
 
-(defvar cb-autoinsert-pre-extensions
+(defconst cb-autoinsert-pre-extensions
   '(autoinsert)
   "List of all extensions to load before the packages.")
 
-(defvar cb-autoinsert-post-extensions
+(defconst cb-autoinsert-post-extensions
   '()
   "List of all extensions to load after the packages.")
 

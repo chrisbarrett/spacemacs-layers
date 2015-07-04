@@ -2,7 +2,7 @@
 ;;; Commentary:
 ;;; Code:
 
-(defvar cb-core-pre-extensions
+(defconst cb-core-pre-extensions
   '(
     iedit
     super-smart-ops
@@ -10,7 +10,7 @@
     )
   "List of all extensions to load before the packages.")
 
-(defvar cb-core-post-extensions
+(defconst cb-core-post-extensions
   '(
     ido
     recentf

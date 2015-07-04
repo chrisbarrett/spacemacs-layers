@@ -2,11 +2,11 @@
 ;;; Commentary:
 ;;; Code:
 
-(defvar cb-rust-pre-extensions
+(defconst cb-rust-pre-extensions
   '(super-smart-ops)
   "List of all extensions to load before the packages.")
 
-(defvar cb-rust-post-extensions
+(defconst cb-rust-post-extensions
   '()
   "List of all extensions to load after the packages.")
 

@@ -2,7 +2,7 @@
 ;;; Commentary:
 ;;; Code:
 
-(defvar cb-scala-pre-extensions
+(defconst cb-scala-pre-extensions
   '(
     super-smart-ops
     scala-errors
@@ -11,7 +11,7 @@
     )
   "List of all extensions to load before the packages.")
 
-(defvar cb-scala-post-extensions
+(defconst cb-scala-post-extensions
   '()
   "List of all extensions to load after the packages.")
 

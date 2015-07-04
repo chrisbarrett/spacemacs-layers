@@ -2,12 +2,12 @@
 ;;; Commentary:
 ;;; Code:
 
-(defvar cb-idris-packages
+(defconst cb-idris-packages
   '(idris-mode)
   "List of all packages to install and/or initialize. Built-in packages
 which require an initialization must be listed explicitly in the list.")
 
-(defvar cb-idris-excluded-packages '()
+(defconst cb-idris-excluded-packages '()
   "List of packages to exclude.")
 
 (eval-when-compile
