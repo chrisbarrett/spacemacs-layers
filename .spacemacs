@@ -75,6 +75,10 @@
   "Initialization function.
 This function is called at the very startup of Spacemacs initialization
 before layers configuration."
+  ;; Show a backtrace if I've stuffed up something in my configuration.
+  (setq debug-on-error t)
+  (setq debug-on-quit t)
+
   ;; This setq-default sexp is an exhaustive list of all the supported
   ;; spacemacs settings.
   (setq-default
@@ -227,7 +231,11 @@ layers configuration."
   (setq custom-file (concat user-emacs-directory "custom.el"))
   (when (file-exists-p custom-file)
     (load custom-file))
-  (require 'personal-config nil t))
+  (require 'personal-config nil t)
+
+  ;; Disable debugging now that my configuration has loaded.
+  (setq debug-on-error nil)
+  (setq debug-on-quit nil))
 
 ;; Do not write anything past this comment. This is where Emacs will
 ;; auto-generate custom variable definitions.
