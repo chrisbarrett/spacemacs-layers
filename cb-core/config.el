@@ -245,3 +245,10 @@ Work around spacemacs' aggressive manipulation of `face-remapping-alist'."
 (defadvice evil-shift-left (around ignore-errors activate)
   (ignore-errors ad-do-it)
   (back-to-indentation))
+
+;; List of times to show in helm-world-time
+(setq display-time-world-list '(("UTC" "UTC")
+                                ("America/Los_Angeles" "Los Angeles")
+                                ("America/New_York" "New York")
+                                ("Asia/Tokyo" "Tokyo")
+                                ("Australia/Sydney" "Sydney")))
