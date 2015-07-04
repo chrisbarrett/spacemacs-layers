@@ -1,5 +1,7 @@
 # Spacemacs Layers
 
+![Stallman Quote](stallman.jpg)
+
 This repository contains my personal [configuration layers][conf_layers] for
 Spacemacs.
 
