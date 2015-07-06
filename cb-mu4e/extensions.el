@@ -59,6 +59,10 @@
       ;; Put quoted messages after signature.
       (setq message-forward-before-signature nil)
 
+      ;; Use standard citation style.
+      (setq message-citation-line-function 'message-insert-formatted-citation-line)
+      (setq message-citation-line-format "On %a, %b %d %Y, %f wrote:\n")
+
       ;; Update every 5 minutes.
       (setq mu4e-update-interval (* 60 5))
 
