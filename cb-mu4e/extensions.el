@@ -35,6 +35,11 @@
     (evil-leader/set-key "am" 'mu4e)
     :config
     (progn
+
+      (define-key mu4e-headers-mode-map (kbd "J") 'mu4e~headers-jump-to-maildir)
+      (define-key mu4e-headers-mode-map (kbd "j") 'mu4e-headers-next)
+      (define-key mu4e-headers-mode-map (kbd "k") 'mu4e-headers-prev)
+
       (setq mu4e-use-fancy-chars t)
       (setq mu4e-headers-attach-mark (purecopy '("a" . "📎")))
 
