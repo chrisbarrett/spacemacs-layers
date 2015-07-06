@@ -9,6 +9,17 @@
 
 (evil-define-key 'normal org-mode-map (kbd "RET") 'org-return)
 
+(global-set-key (kbd "C-c o a") 'cb-org/agenda-dwim)
+(global-set-key (kbd "C-c o b") 'org-iswitchb)
+(global-set-key (kbd "C-c o c") 'org-clock-goto)
+(global-set-key (kbd "C-c o d") 'cb-org/goto-diary)
+(global-set-key (kbd "C-c o k") 'org-capture)
+(global-set-key (kbd "C-c o s") 'org-search-view)
+(global-set-key (kbd "C-c o n") 'cb-org/goto-notes)
+(global-set-key (kbd "C-c o w") 'cb-org/goto-work)
+(global-set-key (kbd "C-c o t") 'cb-org/todo-list)
+(global-set-key (kbd "C-c o v") 'cb-org/tags-list)
+
 ;; Override clashing keybinding
 (with-eval-after-load 'flyspell
   (define-key flyspell-mode-map (kbd "C-c $") nil))
