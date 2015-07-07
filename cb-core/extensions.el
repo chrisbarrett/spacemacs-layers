@@ -54,6 +54,7 @@
       (setq recentf-exclude
             (append recentf-exclude
                     '("\\.elc$"
+                      "\\.pyc$"
                       "TAGS"
                       "\\.gz$"
                       "#$"
