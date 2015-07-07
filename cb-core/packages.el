@@ -198,7 +198,6 @@ which require an initialization must be listed explicitly in the list.")
       (add-to-list 'aggressive-indent-excluded-modes 'restclient-mode)
       (global-aggressive-indent-mode))))
 
-
 (defun cb-core/init-company-quickhelp ()
   (use-package company-quickhelp
     :init
