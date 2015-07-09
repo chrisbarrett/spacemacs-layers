@@ -22,11 +22,23 @@ which require an initialization must be listed explicitly in the list.")
       (evil-set-initial-state 'elfeed-search-mode 'emacs)
       (evil-set-initial-state 'elfeed-show-mode 'emacs)
 
+      (defun cb-elfeed/search-mode-browse-external-browser ()
+        (interactive)
+        (let ((browse-url-browser-function 'browse-url-default-browser))
+          (call-interactively 'elfeed-search-browse-url)))
+
+      (defun cb-elfeed/show-visit-external-browser ()
+        (interactive)
+        (let ((browse-url-browser-function 'browse-url-default-browser))
+          (call-interactively 'elfeed-show-visit)))
+
       (evilify elfeed-search-mode elfeed-search-mode-map
-               (kbd "q") 'quit-window)
+               (kbd "q") 'quit-window
+               (kbd "&") 'cb-elfeed/search-mode-browse-external-browser)
 
       (evilify elfeed-show-mode elfeed-show-mode-map
-               (kbd "q") 'elfeed-kill-buffer)
+               (kbd "q") 'elfeed-kill-buffer
+               (kbd "&") 'cb-elfeed/show-visit-external-browser)
 
       (defconst cb-elfeed/update-timer
         (run-with-timer 1 (* 60 60) 'elfeed-update)))))
