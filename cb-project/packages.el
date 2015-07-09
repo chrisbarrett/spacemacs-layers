@@ -8,6 +8,7 @@
     skeletor
     helm-projectile
     neotree
+    ag
     helm-ag
     )
   "List of all packages to install and/or initialize. Built-in packages
@@ -19,6 +20,36 @@ which require an initialization must be listed explicitly in the list.")
 (eval-when-compile
   (require 'use-package nil t)
   (require 's nil t))
+
+(defconst cb-project/ignore-list
+  (-map 'regexp-quote
+        '(".cask"
+          ".cabal-sandbox"
+          "dist"
+          ".idea"
+
+          ".eunit"
+          ".git"
+          ".hg"
+          ".fslckout"
+          ".bzr"
+          "_darcs"
+          ".tox"
+          ".svn"
+          "elpa"
+          "snippets"
+          "build"
+
+          ;; Scala
+          ".sbtserver"
+          "target"
+          "project/target"
+          "project/project"
+          ".ensime_cache"
+          )))
+
+(with-eval-after-load 'recentf
+  (setq recentf-exclude (-union recentf-exclude cb-project/ignore-list)))
 
 (defun cb-project/init-projectile ()
   (use-package projectile
@@ -35,33 +66,7 @@ which require an initialization must be listed explicitly in the list.")
 
       (setq projectile-ignored-projects '("/usr/local/"))
       (setq projectile-switch-project-action (lambda () (call-interactively 'magit-status)))
-      (setq projectile-globally-ignored-directories
-            '(".cask"
-              ".cabal-sandbox"
-              "dist"
-              ".idea"
-
-              ".eunit"
-              ".git"
-              ".hg"
-              ".fslckout"
-              ".bzr"
-              "_darcs"
-              ".tox"
-              ".svn"
-              "elpa"
-              "snippets"
-              "build"
-
-              ;; Scala
-              ".sbtserver"
-              "target"
-              "project/target"
-              "project/project"
-              ".ensime_cache"
-              ))
-
-      (setq ag-ignore-list (-map 'regexp-quote projectile-globally-ignored-directories))
+      (setq projectile-globally-ignored-directories cb-project/ignore-list)
 
       (defadvice projectile-invalidate-cache (before recentf-cleanup activate)
         (recentf-cleanup))
@@ -83,6 +88,12 @@ which require an initialization must be listed explicitly in the list.")
   (use-package helm-projectile
     :bind
     (("s-t" . helm-projectile))))
+
+(defun cb-project/init-ag ()
+  (use-package ag
+    :defer t
+    :config
+    (setq ag-ignore-list (-union ag-ignore-list cb-project/ignore-list))))
 
 (defun cb-project/init-helm-ag ()
   (use-package helm-ag
