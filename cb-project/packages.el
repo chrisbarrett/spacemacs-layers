@@ -65,7 +65,9 @@ which require an initialization must be listed explicitly in the list.")
       ;;; Vars
 
       (setq projectile-ignored-projects '("/usr/local/"))
-      (setq projectile-switch-project-action (lambda () (call-interactively 'magit-status)))
+      (setq projectile-switch-project-action (lambda ()
+                                               (projectile-invalidate-cache nil)
+                                               (call-interactively 'magit-status)))
       (setq projectile-globally-ignored-directories cb-project/ignore-list)
 
       (defadvice projectile-invalidate-cache (before recentf-cleanup activate)
