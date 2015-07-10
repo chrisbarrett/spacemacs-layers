@@ -29,10 +29,10 @@
       (setq eshell-scroll-to-bottom-on-input t)
       (setq eshell-prompt-function 'cb-eshell--prompt)
 
-      (evil-set-initial-state 'eshell-mode 'insert)
+      ;; See ./funcs.el for definition.
+      (setq eshell-prompt-regexp (rx bol (* space) "λ" (or ">" "#") " "))
 
-      (with-eval-after-load 'em-prompt
-        (set-face-foreground 'eshell-prompt solarized-hl-cyan))
+      (evil-set-initial-state 'eshell-mode 'insert)
 
       (evil-leader/set-key-for-mode 'eshell-mode "ib" 'eshell-insert-buffer-name)
       (evil-leader/set-key-for-mode 'eshell-mode "ii" 'eshell-insert-process)

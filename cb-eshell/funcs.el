@@ -83,7 +83,7 @@ With prefix argument ARG, always create a new shell."
           :last-command-success? (when (boundp 'eshell-last-command-status)
                                    (or (null eshell-last-command-status)
                                        (= eshell-last-command-status 0))))))
-    (prog1 (cb-eshell--render-prompt prompt)
+    (prog1 (propertize (cb-eshell--render-prompt prompt) 'read-only t 'rear-nonsticky t)
       (setq cb-eshell--last-prompt prompt))))
 
 (defvar-local cb-eshell--last-prompt nil)
@@ -101,10 +101,10 @@ With prefix argument ARG, always create a new shell."
       (t
        (concat "\n\n" (cb-eshell--render-header plist) "\n")))
 
-     (let ((colour (if last-command-success? solarized-hl-green solarized-hl-red)))
-       (propertize (if root-user? ">#" ">") 'face `(:bold t :foreground ,colour)))
+     (let ((colour (if last-command-success? solarized-hl-cyan solarized-hl-red)))
+       (propertize (concat "λ" (if root-user? "#" ">")) 'face `(:bold t :foreground ,colour)))
 
-     " "))  )
+     " ")))
 
 (defun cb-eshell--render-header (plist)
   (-let [(&plist
@@ -159,5 +159,3 @@ With prefix argument ARG, always create a new shell."
 
       ;; Plain dir.
       (propertize dir 'face `(:bold t :foreground ,solarized-hl-blue)))))
-
-(setq eshell-prompt-regexp (rx bol (* space) ">" (? "#") " "))
