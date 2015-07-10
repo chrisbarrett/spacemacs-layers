@@ -26,6 +26,7 @@
       (setq eshell-error-if-no-glob t)
       (setq eshell-glob-case-insensitive t)
       (setq eshell-scroll-to-bottom-on-input t)
+      (setq eshell-prompt-function 'cb-eshell--prompt)
 
       (with-eval-after-load 'em-prompt
         (set-face-foreground 'eshell-prompt solarized-hl-cyan))
@@ -34,10 +35,11 @@
       (evil-leader/set-key-for-mode 'eshell-mode "ii" 'eshell-insert-process)
       (evil-leader/set-key-for-mode 'eshell-mode "iv" 'eshell-insert-envvar)
 
-      (defun cb-eshell/set-keys ()
+      (defun cb-eshell/setup ()
+        (vi-tilde-fringe-mode -1)
         (local-set-key (kbd "C-c RET") 'eshell-toggle-direct-send))
 
-      (add-hook 'eshell-mode-hook 'cb-eshell/set-keys)
+      (add-hook 'eshell-mode-hook 'cb-eshell/setup)
       (add-hook 'eshell-mode-hook 'smartparens-strict-mode)
 
       (defun pcomplete/sudo ()

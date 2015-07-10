@@ -114,6 +114,16 @@
     (sp-local-pair "'" nil   :actions nil)
     )
 
+  ;;; Eshell
+
+  (sp-with-modes 'eshell-mode
+    (sp-local-pair "\"" "\"" :post-handlers)
+    (sp-local-pair "{" "}"   :post-handlers)
+    (sp-local-pair "[" "]"   :post-handlers)
+    (sp-local-pair "(" ")"   :post-handlers)
+    (sp-local-pair "'" nil   :actions nil)
+    )
+
   ;; Extend `sp-navigate-reindent-after-up' to all lisps.
   (let ((ls (assoc 'interactive sp-navigate-reindent-after-up)))
     (setcdr ls (-uniq (-concat (cdr ls) core/lisp-modes))))
