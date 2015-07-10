@@ -62,8 +62,14 @@ With prefix argument ARG, always create a new shell."
   "Find the correct host name for this session."
   (or (file-remote-p default-directory 'host) system-name))
 
+(make-variable-buffer-local 'eshell-last-command-status)
+
 (defun cb-eshell--prompt ()
-  (let* ((status-colour (if (= eshell-last-command-status 0) solarized-hl-green solarized-hl-red))
+  (require 'magit)
+  (let* ((status-colour (if (or (null eshell-last-command-status)
+                                (= eshell-last-command-status 0))
+                            solarized-hl-green
+                          solarized-hl-red))
          (root-user? (= (user-uid) 0))
          (dir (abbreviate-file-name (eshell/pwd))))
     (concat "\n"
@@ -81,14 +87,15 @@ With prefix argument ARG, always create a new shell."
 
                          (-when-let (tag (magit-get-current-tag))
                            (concat
-                            (propertize ":" 'face font-lock-comment-face)
+                            (propertize "," 'face font-lock-comment-face)
                             (propertize tag 'face 'magit-tag)))
 
-                         (propertize "@" 'face font-lock-comment-face)
+                         (propertize "," 'face font-lock-comment-face)
                          (propertize (substring hash 0 6) 'face 'default)
-                         (propertize "}" 'face font-lock-comment-face))))
+                         (propertize "}" 'face font-lock-comment-face)
+                         )))
                   (concat (propertize (s-chop-suffix "/" git-root) 'face `(:bold t :foreground ,solarized-hl-blue))
-                          ;;"\n" (propertize " - " 'face font-lock-comment-face)
+                          "\n" (propertize " - " 'face font-lock-comment-face)
                           git-str
                           "\n"
                           (propertize " - " 'face font-lock-comment-face)
@@ -99,7 +106,7 @@ With prefix argument ARG, always create a new shell."
 
             "\n"
             (propertize (if root-user? ">#" ">")
-                        'face `(:foreground ,status-colour))
+                        'face `(:bold t :foreground ,status-colour))
             " ")))
 
 (setq eshell-prompt-regexp (rx bol (* space) ">" (? "#") " "))
