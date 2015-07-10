@@ -10,3 +10,5 @@ tmp/
 .yas-compiled-snippets.el
 .cask/
 async-bytecomp.log
+cb-eshell/eshell/*
+!cb-eshell/eshell/alias

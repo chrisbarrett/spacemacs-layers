@@ -1,0 +1,6 @@
+alias s magit-status
+alias gd (call-interactively 'magit-diff)
+alias ga git add $*
+alias gc git commit $*
+alias e find-file $1
+alias sd sr-dired
