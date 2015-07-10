@@ -1,6 +1,9 @@
-alias s magit-status
-alias gd (call-interactively 'magit-diff)
-alias ga git add $*
-alias gc git commit $*
-alias e find-file $1
+alias gup git remote update -p && git pull --rebase
+alias gb git branch $*
+alias gco git checkout $*
 alias sd sr-dired
+alias e find-file $1
+alias gc git commit $*
+alias ga git add $*
+alias gd (call-interactively 'magit-diff)
+alias s magit-status
