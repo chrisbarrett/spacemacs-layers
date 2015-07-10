@@ -26,7 +26,7 @@
      org
      emacs-lisp
      restclient
-     shell
+     (shell :variables shell-default-shell 'eshell)
      syntax-checking
      cb-core
      cb-sunrise-commander
