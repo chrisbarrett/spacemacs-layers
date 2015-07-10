@@ -93,9 +93,13 @@ With prefix argument ARG, always create a new shell."
                  :root-user? root-user?
                  ) plist]
     (concat
-     "\n"
-     (unless (equal plist cb-eshell--last-prompt)
-       (concat "\n" (cb-eshell--render-header plist) "\n"))
+     (cond
+      ((null cb-eshell--last-prompt)
+       (concat (cb-eshell--render-header plist) "\n"))
+      ((equal plist cb-eshell--last-prompt)
+       "\n")
+      (t
+       (concat "\n\n" (cb-eshell--render-header plist) "\n")))
 
      (let ((colour (if last-command-success? solarized-hl-green solarized-hl-red)))
        (propertize (if root-user? ">#" ">") 'face `(:bold t :foreground ,colour)))
