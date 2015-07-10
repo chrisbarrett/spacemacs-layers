@@ -15,11 +15,12 @@
     :defer t
     :init
     (progn
-      (setq eshell-directory-name (f-join user-layers-directory "cb-eshell/eshell/"))
+      (setq eshell-directory-name (f-join user-dropbox-directory "emacs/eshell/"))
       (global-set-key (kbd "<f1>") 'cb-eshell-bring))
 
     :config
     (progn
+      (setq eshell-buffer-shorthand t)
       (setq eshell-cmpl-ignore-case t)
       (setq eshell-history-size 10000)
       (setq eshell-hist-ignoredups t)
