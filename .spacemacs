@@ -50,7 +50,8 @@
      cb-agda
      ;; cb-coffeescript
      cb-sql
-     cb-shell
+     ;; cb-shell
+     cb-eshell
      cb-elfeed
      cb-calc
      cb-extempore
