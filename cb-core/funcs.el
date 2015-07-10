@@ -102,7 +102,9 @@ If this buffer is a member of `core/kill-buffer-ignored-list', bury it rather th
          (process-live-p (get-buffer-process (current-buffer))))
     (bury-buffer))
    (t
-    (kill-buffer (current-buffer)))))
+    ;; HACK: Avoid read-only text property errors.
+    (let ((inhibit-read-only t))
+      (kill-buffer (current-buffer))))))
 
 (defun core/move-file (buffer to-dir)
   "Move BUFFER's corresponding file to DEST."
