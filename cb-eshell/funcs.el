@@ -66,47 +66,94 @@ With prefix argument ARG, always create a new shell."
 
 (defun cb-eshell--prompt ()
   (require 'magit)
-  (let* ((status-colour (if (or (null eshell-last-command-status)
-                                (= eshell-last-command-status 0))
-                            solarized-hl-green
-                          solarized-hl-red))
-         (root-user? (= (user-uid) 0))
-         (dir (abbreviate-file-name (eshell/pwd))))
-    (concat "\n"
-            (-if-let (hash (magit-git-string "rev-parse" "HEAD"))
-                ;; Git repo info.
-                (let* ((git-root (locate-dominating-file dir ".git"))
-                       (repo-subdirs (f-relative dir git-root))
-                       (git-str
-                        (concat
-                         (propertize "{" 'face font-lock-comment-face)
+  (let ((prompt
+         (list
+          :directory (abbreviate-file-name (eshell/pwd))
+          :root-user? (= (user-uid) 0)
+          :git-hash (magit-git-string "rev-parse" "HEAD")
+          :git-tag  (magit-get-current-tag)
+          :git-root (locate-dominating-file (eshell/pwd) ".git")
+          :git-branch (magit-get-current-branch)
+          :git-staged? (magit-anything-staged-p)
+          :git-unmerged? (magit-anything-unmerged-p)
+          :git-untracked? (ignore-errors
+                            (not (s-blank? (s-trim (shell-command-to-string "git ls-files --other --directory --exclude-standard")))))
+          :git-unstaged? (magit-anything-staged-p)
+          :git-modified? (magit-anything-modified-p)
+          :last-command-success? (when (boundp 'eshell-last-command-status)
+                                   (or (null eshell-last-command-status)
+                                       (= eshell-last-command-status 0))))))
+    (prog1 (cb-eshell--render-prompt prompt)
+      (setq cb-eshell--last-prompt prompt))))
 
-                         (-if-let (branch (magit-get-current-branch))
-                             (propertize branch 'face 'magit-branch-remote)
-                           (propertize "DETACHED" 'face `(:foreground ,solarized-hl-orange)))
+(defvar-local cb-eshell--last-prompt nil)
 
-                         (-when-let (tag (magit-get-current-tag))
-                           (concat
-                            (propertize "," 'face font-lock-comment-face)
-                            (propertize tag 'face 'magit-tag)))
+(defun cb-eshell--render-prompt (plist)
+  (-let [(&plist :last-command-success? last-command-success?
+                 :root-user? root-user?
+                 ) plist]
+    (concat
+     "\n"
+     (unless (equal plist cb-eshell--last-prompt)
+       (concat "\n" (cb-eshell--render-header plist) "\n"))
 
-                         (propertize "," 'face font-lock-comment-face)
-                         (propertize (substring hash 0 6) 'face 'default)
-                         (propertize "}" 'face font-lock-comment-face)
-                         )))
-                  (concat (propertize (s-chop-suffix "/" git-root) 'face `(:bold t :foreground ,solarized-hl-blue))
-                          "\n" (propertize " - " 'face font-lock-comment-face)
-                          git-str
-                          "\n"
-                          (propertize " - " 'face font-lock-comment-face)
-                          (propertize (concat "/" repo-subdirs) 'face `(:foreground ,solarized-hl-blue))))
+     (let ((colour (if last-command-success? solarized-hl-green solarized-hl-red)))
+       (propertize (if root-user? ">#" ">") 'face `(:bold t :foreground ,colour)))
 
-              ;; Plain dir.
-              (propertize dir 'face `(:bold t :foreground ,solarized-hl-blue)))
+     " "))  )
 
-            "\n"
-            (propertize (if root-user? ">#" ">")
-                        'face `(:bold t :foreground ,status-colour))
-            " ")))
+(defun cb-eshell--render-header (plist)
+  (-let [(&plist
+          :git-branch git-branch
+          :git-hash git-hash
+          :git-tag git-tag
+          :git-root git-root
+          :directory dir
+          :git-staged? git-staged?
+          :git-unstaged? git-unstaged?
+          :git-unmerged? git-unmerged?
+          :git-untracked? git-untracked?
+          :git-modified? git-modified?
+          ) plist]
+    (if git-hash
+        ;; Git repo info.
+        (let ((repo-subdirs (f-relative dir git-root)))
+          (concat (propertize (s-chop-suffix "/" git-root) 'face `(:bold t :foreground ,solarized-hl-blue))
+                  "\n" (propertize " - " 'face font-lock-comment-face)
+
+                  (if git-branch
+                      (concat
+                       (propertize "branch:" 'face font-lock-comment-face)
+                       (propertize git-branch 'face 'magit-branch-remote))
+                    (propertize "DETACHED" 'face `(:foreground ,solarized-hl-orange)))
+
+                  (when git-tag
+                    (concat
+                     (propertize " tag:" 'face font-lock-comment-face)
+                     (propertize git-tag 'face 'magit-tag)))
+
+                  (propertize " sha:" 'face font-lock-comment-face)
+                  (propertize (substring git-hash 0 6) 'face 'default)
+
+                  (when (or git-staged? git-unstaged? git-modified?)
+                    (concat
+                     (propertize " state:{" 'face font-lock-comment-face)
+                     (s-join " "
+                             (-keep 'identity
+                                    (list
+                                     (when git-staged? (propertize "staged" 'face `(:foreground ,solarized-hl-green)))
+                                     (when git-unstaged? (propertize "unstaged" 'face `(:foreground ,solarized-hl-cyan)))
+                                     (when git-unmerged? (propertize "unmerged" 'face `(:foreground ,solarized-hl-magenta)))
+                                     (when git-modified? (propertize "modified" 'face `(:foreground ,solarized-hl-red)))
+                                     (when git-untracked? (propertize "untracked" 'face 'default)))))
+                     (propertize "}" 'face font-lock-comment-face)))
+
+                  "\n"
+                  (propertize " - " 'face font-lock-comment-face)
+                  (propertize (concat "/" repo-subdirs) 'face `(:foreground ,solarized-hl-blue))
+                  "\n"))
+
+      ;; Plain dir.
+      (propertize dir 'face `(:bold t :foreground ,solarized-hl-blue)))))
 
 (setq eshell-prompt-regexp (rx bol (* space) ">" (? "#") " "))
