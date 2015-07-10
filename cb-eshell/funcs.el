@@ -118,7 +118,7 @@ With prefix argument ARG, always create a new shell."
     (if git-hash
         ;; Git repo info.
         (let ((repo-subdirs (f-relative dir git-root)))
-          (concat (propertize (s-chop-suffix "/" git-root) 'face `(:bold t :foreground ,solarized-hl-blue))
+          (concat (propertize (s-chop-suffix "/" git-root) 'face `(:foreground ,solarized-hl-blue))
                   "\n" (propertize " - " 'face font-lock-comment-face)
 
                   (if git-branch
