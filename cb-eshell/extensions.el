@@ -28,6 +28,8 @@
       (setq eshell-scroll-to-bottom-on-input t)
       (setq eshell-prompt-function 'cb-eshell--prompt)
 
+      (evil-set-initial-state 'eshell-mode 'insert)
+
       (with-eval-after-load 'em-prompt
         (set-face-foreground 'eshell-prompt solarized-hl-cyan))
 
