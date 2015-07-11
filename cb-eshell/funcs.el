@@ -183,13 +183,25 @@ With prefix argument ARG, always create a new shell."
                      ;; Git project subdirectory
                      (when git-hash
                        (let ((repo-subdirs (f-relative dir git-root)))
-                         (cb-eshell--prompt-section
-                          (propertize (s-chop-prefix "/" (concat "/" repo-subdirs)) 'face `(:foreground ,solarized-hl-blue))))))))
+                         (concat
+                          (propertize "\n /" 'face 'default)
+                          (cb-eshell--propertize-dir (s-chop-prefix "/" repo-subdirs))))))))
     (concat
      ;; Current directory or git project root.
-     (propertize (f-abbrev (if git-hash (s-chop-suffix "/" git-root) dir)) 'face `(:foreground ,solarized-hl-blue))
+     (cb-eshell--propertize-dir (f-abbrev (if git-hash (s-chop-suffix "/" git-root) dir)))
+     (when git-hash (propertize " ↴" 'face font-lock-comment-face))
      sections
      (unless (s-blank? sections) "\n"))))
+
+(defun cb-eshell--propertize-dir (dir)
+  (let* ((parts (--map (propertize it 'face `(:foreground ,solarized-hl-blue))
+                       (f-split dir)))
+         (str (s-join (propertize (f-path-separator) 'face font-lock-comment-face)
+                      parts))
+         (str (s-chop-prefix "/" str)))
+    (if (s-starts-with? "/~" str)
+        (substring str 1)
+      str)))
 
 (defun cb-eshell--prompt-section (&rest components)
   (concat "\n"
