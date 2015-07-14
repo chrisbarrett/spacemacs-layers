@@ -35,6 +35,15 @@
     (evil-leader/set-key "am" 'mu4e)
     :config
     (progn
+      ;; Enable evil leader in mu4e buffers.
+      (add-to-list 'evil-leader/no-prefix-mode-rx "mu4e-main-mode")
+      (add-to-list 'evil-leader/no-prefix-mode-rx "mu4e-headers-mode")
+      (add-to-list 'evil-leader/no-prefix-mode-rx "mu4e-view-mode")
+      (define-key mu4e-main-mode-map (kbd "SPC") nil)
+      (define-key mu4e-view-mode-map (kbd "SPC") nil)
+      (define-key mu4e-headers-mode-map (kbd "SPC") nil)
+
+      ;; Vim-style navigation.
 
       (define-key mu4e-headers-mode-map (kbd "J") 'mu4e~headers-jump-to-maildir)
       (define-key mu4e-headers-mode-map (kbd "j") 'mu4e-headers-next)
@@ -43,6 +52,8 @@
       (define-key mu4e-view-mode-map (kbd "J") 'mu4e~view-headers-jump-to-maildir)
       (define-key mu4e-view-mode-map (kbd "j") 'mu4e-view-headers-next)
       (define-key mu4e-view-mode-map (kbd "k") 'mu4e-view-headers-prev)
+
+      ;; Set variables
 
       (setq mu4e-use-fancy-chars t)
       (setq mu4e-headers-attach-mark (purecopy '("a" . "📎")))
