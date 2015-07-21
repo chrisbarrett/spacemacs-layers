@@ -55,6 +55,20 @@ Typing three in a row will insert a ScalaDoc."
         (scala/insert-scaladoc))
     (super-smart-ops-insert "/")))
 
+(defun scala/qmark ()
+  "Insert a question mark as a smart operator.
+Typing three in a row will format the undefined function correctly."
+  (interactive "*")
+  (if (s-matches? (rx "=" (* space) "??" (* space) eos) (buffer-substring (line-beginning-position) (point)))
+      (atomic-change-group
+        (delete-horizontal-space t)
+        (insert "?")
+        (save-excursion
+          (search-backward "=")
+          (goto-char (match-end 0))
+          (just-one-space)))
+    (super-smart-ops-insert "?")))
+
 (defun scala/insert-scaladoc ()
   "Insert the skeleton of a ScalaDoc at point."
   (interactive "*")

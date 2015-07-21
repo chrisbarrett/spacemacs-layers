@@ -23,20 +23,20 @@
     :config
     (progn
       (super-smart-ops-configure-for-mode 'scala-mode
-        :add '("?")
         :custom
         '(("=" . scala/equals)
           (":" . scala/colon)
+          ("?" . scala/qmark)
           ("+" . scala/plus)
           ("-" . scala/minus)
           ("/" . scala/slash)
           ("," . core/comma-then-space)))
 
       (super-smart-ops-configure-for-mode 'ensime-inf-mode
-        :add '("?")
         :custom
         '(("=" . scala/equals)
           (":" . scala/repl-colon)
+          ("?" . scala/qmark)
           ("+" . scala/plus)
           ("-" . scala/minus)
           ("," . core/comma-then-space))))))
