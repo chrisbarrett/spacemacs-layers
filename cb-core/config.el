@@ -231,7 +231,7 @@ Work around spacemacs' aggressive manipulation of `face-remapping-alist'."
   (setq buffer-display-table (make-display-table))
   (aset buffer-display-table ?\^M []))
 
-(add-hook 'find-file-hook 'core/hide-dos-eol)
+(add-hook 'after-change-major-mode-hook 'core/hide-dos-eol)
 
 
 
