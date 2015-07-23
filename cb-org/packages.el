@@ -8,6 +8,7 @@
     org-drill-table
     org-jira
     gnuplot
+    org-gcal
     ;; required by org-babel for exporting syntax highlighting in code blocks
     htmlize
     )
@@ -306,3 +307,11 @@ Do not change habits, scheduled items or repeating todos."
 (defun cb-org/init-htmlize ()
   (use-package htmlize
     :defer t))
+
+(defun cb-org/init-org-gcal ()
+  (use-package org-gcal
+    :init
+    (defconst cb-org/gcal-directory
+      (f-join org-directory "gcal"))
+    :config
+    (setq org-gcal-dir (f-slash (f-join spacemacs-cache-directory "org-gcal/")))))

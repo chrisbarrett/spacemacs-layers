@@ -116,13 +116,17 @@
         (when (boundp 'org-jira-working-dir)
           (f-files org-jira-working-dir 'cb-org/org-file?)))
 
+      (defun cb-org/gcal-files ()
+        (when (boundp 'cb-org/gcal-directory)
+          (f-files cb-org/gcal-directory 'cb-org/org-file?)))
+
       (defun cb-org/toplevel-files ()
         (f-files org-directory (lambda (f)
                                  (and (s-matches? (rx (or "work" "diary")) (f-filename f))
                                       (cb-org/org-file? f)))))
 
       (defun cb-org/work-files ()
-        (-distinct (-concat (cb-org/jira-files) (cb-org/toplevel-files))))
+        (-distinct (-concat (cb-org/jira-files) (cb-org/gcal-files) (cb-org/toplevel-files))))
 
       (setq org-agenda-files (cb-org/all-org-files))
 
