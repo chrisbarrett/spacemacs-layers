@@ -80,7 +80,7 @@ With prefix argument ARG, always create a new shell."
                 :staged? (magit-anything-staged-p)
                 :unmerged? (magit-anything-unmerged-p)
                 :untracked? (ignore-errors
-                              (not (s-blank? (s-trim (shell-command-to-string "git ls-files --other --directory --exclude-standard")))))
+                              (not (s-blank? (s-trim (shell-command-to-string "git ls-files --others --exclude-standard")))))
                 :unstaged? (magit-anything-staged-p)
                 :modified? (magit-anything-modified-p))
 
@@ -103,7 +103,7 @@ With prefix argument ARG, always create a new shell."
       ((equal plist cb-eshell--last-prompt)
        "\n")
       (t
-       (concat "\n\n" (cb-eshell--render-header plist) "\n")))
+       (concat "\n\n" (cb-eshell--render-header plist))))
 
      (let ((colour (if last-command-success? solarized-hl-cyan solarized-hl-red)))
        (concat
@@ -127,71 +127,74 @@ With prefix argument ARG, always create a new shell."
              :untracked? git-untracked?
              :modified? git-modified?)
             ) plist)
-          (sections (concat
-                     ;; Display project info when at project root.
-                     (when (equal git-root dir)
-                       (-when-let (parts (-non-nil
-                                          (list
-                                           (when git-hash
-                                             (concat (propertize "vc:" 'face font-lock-comment-face)
-                                                     (propertize "git" 'face 'default)))
-                                           (-when-let (lang (cb-eshell--project-lang git-root))
-                                             (concat
-                                              (propertize "lang:" 'face font-lock-comment-face)
-                                              (propertize lang 'face 'default)))
 
-                                           (-when-let (types (cb-eshell--project-types git-root))
-                                             (concat
-                                              (propertize "type:[" 'face font-lock-comment-face)
-                                              (propertize (s-join " " types) 'face 'default)
-                                              (propertize "]" 'face font-lock-comment-face)
-                                              ))
-                                           )))
-                         (cb-eshell--prompt-section
-                          (propertize "project " 'face font-lock-comment-face)
-                          (s-join " " parts))))
+          (current-directory
+           (if git-hash
+               (let* ((parent (f-slash (f-abbrev (f-parent git-root))))
+                      (subdirs (f-relative dir parent)))
+                 (concat
+                  (propertize parent 'face font-lock-comment-face)
+                  (cb-eshell--propertize-dir subdirs)))
 
-                     ;; Git branch info and status.
-                     (when git-root
-                       (cb-eshell--prompt-section
-                        (if git-branch
-                            (concat
-                             (propertize "branch:" 'face font-lock-comment-face)
-                             (propertize git-branch 'face 'magit-branch-remote))
-                          (propertize "DETACHED" 'face `(:foreground ,solarized-hl-orange)))
+             (cb-eshell--propertize-dir (f-abbrev dir))))
 
-                        (when git-tag
-                          (concat
-                           (propertize " tag:" 'face font-lock-comment-face)
-                           (propertize git-tag 'face 'magit-tag)))
+          (sections
+           (concat
+            ;; Display project info when at project root.
+            (when (equal git-root dir)
+              (-when-let (parts (-non-nil
+                                 (list
+                                  (when git-hash
+                                    (concat (propertize "vc:" 'face font-lock-comment-face)
+                                            (propertize "git" 'face 'default)))
+                                  (-when-let (lang (cb-eshell--project-lang git-root))
+                                    (concat
+                                     (propertize "lang:" 'face font-lock-comment-face)
+                                     (propertize lang 'face 'default)))
 
-                        (propertize " sha:" 'face font-lock-comment-face)
-                        (propertize (substring git-hash 0 6) 'face 'default)
+                                  (-when-let (types (cb-eshell--project-types git-root))
+                                    (concat
+                                     (propertize "type:[" 'face font-lock-comment-face)
+                                     (propertize (s-join " " types) 'face 'default)
+                                     (propertize "]" 'face font-lock-comment-face)
+                                     ))
+                                  )))
+                (cb-eshell--prompt-section
+                 (propertize "project " 'face font-lock-comment-face)
+                 (s-join " " parts))))
 
-                        (-when-let (statuses
-                                    (-non-nil (list
-                                               (when git-staged? (propertize "staged" 'face `(:foreground ,solarized-hl-green)))
-                                               (when git-unstaged? (propertize "unstaged" 'face `(:foreground ,solarized-hl-cyan)))
-                                               (when git-unmerged? (propertize "unmerged" 'face `(:foreground ,solarized-hl-magenta)))
-                                               (when git-modified? (propertize "modified" 'face `(:foreground ,solarized-hl-red)))
-                                               (when git-untracked? (propertize "untracked" 'face 'default)))))
-                          (concat
-                           (propertize " state:[" 'face font-lock-comment-face)
-                           (s-join " " (-non-nil statuses))
-                           (propertize "]" 'face font-lock-comment-face)))))
+            ;; Git branch info and status.
+            (when git-root
+              (cb-eshell--prompt-section
+               (if git-branch
+                   (concat
+                    (propertize "branch:" 'face font-lock-comment-face)
+                    (propertize git-branch 'face 'magit-branch-remote))
+                 (propertize "DETACHED" 'face `(:foreground ,solarized-hl-orange)))
 
-                     ;; Git project subdirectory
-                     (when git-hash
-                       (let ((repo-subdirs (f-relative dir git-root)))
-                         (concat
-                          (propertize "\n /" 'face 'default)
-                          (cb-eshell--propertize-dir (s-chop-prefix "/" repo-subdirs))))))))
+               (when git-tag
+                 (concat
+                  (propertize " tag:" 'face font-lock-comment-face)
+                  (propertize git-tag 'face 'magit-tag)))
+
+               (propertize " sha:" 'face font-lock-comment-face)
+               (propertize (substring git-hash 0 6) 'face 'default)
+
+               (-when-let (statuses
+                           (-non-nil (list
+                                      (when git-staged? (propertize "staged" 'face `(:foreground ,solarized-hl-green)))
+                                      (when git-unstaged? (propertize "unstaged" 'face `(:foreground ,solarized-hl-cyan)))
+                                      (when git-unmerged? (propertize "unmerged" 'face `(:foreground ,solarized-hl-magenta)))
+                                      (when git-modified? (propertize "modified" 'face `(:foreground ,solarized-hl-red)))
+                                      (when git-untracked? (propertize "untracked" 'face 'default)))))
+                 (concat
+                  (propertize " state:[" 'face font-lock-comment-face)
+                  (s-join " " (-non-nil statuses))
+                  (propertize "]" 'face font-lock-comment-face))))))))
     (concat
-     ;; Current directory or git project root.
-     (cb-eshell--propertize-dir (f-abbrev (if git-hash (s-chop-suffix "/" git-root) dir)))
-     (when git-hash (propertize " ↴" 'face font-lock-comment-face))
+     current-directory
      sections
-     (unless (s-blank? sections) "\n"))))
+     "\n")))
 
 (defun cb-eshell--propertize-dir (dir)
   (let* ((parts (--map (propertize it 'face `(:foreground ,solarized-hl-blue))
