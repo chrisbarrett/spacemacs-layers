@@ -107,8 +107,6 @@
 
       (add-to-list 'mu4e-view-actions '("&viewInExternalBrowser" . cb-mu4e-action-view-in-external-browser) t)
 
-      ;; Define generic browser functions to support mu4e.
-      (setq browse-url-browser-function 'eww-browse-url)
       (setq browse-url-mailto-function 'mu4e-multi-compose-new)
 
       ;; Start at the 'To' header when composing.
