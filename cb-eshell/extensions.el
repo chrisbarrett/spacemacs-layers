@@ -10,6 +10,10 @@
   (require 'f nil t)
   (require 'use-package nil t))
 
+;; Disable company for eshell.
+(with-eval-after-load 'company
+  (setq company-global-modes '(not eshell-mode)))
+
 (defun cb-eshell/init-eshell ()
   (use-package eshell
     :defer t
