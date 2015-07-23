@@ -314,4 +314,6 @@ Do not change habits, scheduled items or repeating todos."
     (defconst cb-org/gcal-directory
       (f-join org-directory "gcal"))
     :config
-    (setq org-gcal-dir (f-slash (f-join spacemacs-cache-directory "org-gcal/")))))
+    (progn
+      (setq org-gcal-dir (f-slash (f-join spacemacs-cache-directory "org-gcal/")))
+      (setq org-gcal-token-file (f-join org-gcal-dir ".org-gcal-token")))))
