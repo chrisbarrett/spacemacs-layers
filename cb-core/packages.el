@@ -20,6 +20,7 @@
     company-quickhelp
     ag
     wgrep-ag
+    alert
     )
   "List of all packages to install and/or initialize. Built-in packages
 which require an initialization must be listed explicitly in the list.")
@@ -211,3 +212,8 @@ which require an initialization must be listed explicitly in the list.")
 (defun cb-core/init-wgrep-ag ()
   (use-package wgrep-ag
     :defer t))
+
+(defun cb-core/init-alert ()
+  (use-package alert
+    :config
+    (setq alert-default-style 'message)))
