@@ -8,6 +8,15 @@
     (kbd "<return>") 'scala/ret)
   )
 
+;; HACK: set some scala key bindings in a hook to prevent them mysteriously
+;; leaking into other major modes.
+
+(defun scala/set-normal-state-local-keybindings ()
+  (evil-local-set-key 'normal (kbd "RET") 'ensime-inspect-type-at-point))
+
+(add-hook 'scala-mode-hook 'scala/set-normal-state-local-keybindings)
+
+
 (with-eval-after-load 'ensime
   (define-key ensime-inf-mode-map (kbd "C-c C-z") 'scala/switch-to-src)
   (define-key ensime-mode-map (kbd "C-c C-z") 'ensime-inf-switch)
@@ -26,7 +35,6 @@
   (evil-define-key 'normal ensime-mode-map (kbd "M-N") 'ensime-forward-note)
   (evil-define-key 'normal ensime-mode-map (kbd "M-P") 'ensime-backward-note)
   (evil-define-key 'normal ensime-mode-map (kbd "RET") 'ensime-inspect-type-at-point)
-  (evil-define-key 'normal scala-mode-map (kbd "RET") 'ensime-inspect-type-at-point)
 
   (evil-leader/set-key-for-mode 'scala-mode "ii" 'ensime-import-type-at-point)
 
