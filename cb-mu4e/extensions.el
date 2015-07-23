@@ -15,7 +15,7 @@
 
 ;;; Code:
 
-(defconst cb-mu4e-pre-extensions '(mu4e mu4e-multi))
+(defconst cb-mu4e-pre-extensions '(mu4e mu4e-multi mu4e-modeline-unread-messages))
 
 (defconst cb-mu4e-post-extensions '())
 
@@ -141,3 +141,8 @@
       ;; See `mu4e-multi-account-alist' in personal-config file for accounts
       ;; configuration (not on GitHub).
       (with-eval-after-load 'personal-config (mu4e-multi-enable)))))
+
+(defun cb-mu4e/init-mu4e-modeline-unread-messages ()
+  (use-package mu4e-modeline-unread-messages
+    :config
+    (mu4e-modeline-unread-messages-init)))
