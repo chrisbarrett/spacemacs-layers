@@ -1,8 +1,12 @@
 ;;; -*- lexical-binding: t; -*-
+;;; Code:
 
 (require 's)
 (require 'dash)
 (require 'noflet)
+
+(eval-when-compile
+  (require 'ensime nil t))
 
 ;;; Smart ops
 
@@ -426,13 +430,35 @@ Typing three in a row will format the undefined function correctly."
 
 ;;; Ensime utils
 
+(defun scala/maybe-project-root ()
+  (or (locate-dominating-file default-directory ".ensime") (projectile-project-p)))
+
+(defun scala/inf-ensime-buffer-name ()
+  (-when-let* ((config-file (-if-let (root (scala/maybe-project-root))
+                                (f-join root ".ensime")
+                              (ensime-config-find)))
+               (config (let ((inhibit-redisplay t))
+                         (ensime-config-load config-file)))
+               (name (ensime--get-name config))
+               (bufname (or (plist-get config :buffer)
+                            (concat ensime-default-buffer-prefix name))))
+    (format "*%s*" bufname)))
+
+(defun scala/inf-ensime-buffer ()
+  (-when-let (bufname (scala/inf-ensime-buffer-name))
+    (get-buffer bufname)))
+
 (defun sbt-gen-ensime (dir)
   (interactive (list
-                (let ((dflt (or (locate-dominating-file default-directory ".ensime") (projectile-project-p))))
-                  (read-directory-name "Directory: " nil nil t dflt))))
+                (read-directory-name "Directory: " nil nil t (scala/maybe-project-root))))
 
   (let ((default-directory (f-slash dir)))
-    (message "Initialising Ensime at %s..." default-directory)
+    (-when-let (buf (scala/inf-ensime-buffer))
+      (message "Killing an existing Ensime server.")
+      (kill-buffer buf))
+
+    (message "Initialising Ensime at %s." default-directory)
+
     (let* ((bufname (format "*sbt gen-ensime [%s]*" (f-filename dir)))
            (proc (start-process "gen-ensime" bufname "sbt" "gen-ensime"))
 
@@ -451,9 +477,12 @@ Typing three in a row will format the undefined function correctly."
                 (scala/fix-ensime-file)
                 (ignore-errors
                   (funcall kill-process-buffer))
-                (message "Ensime successfully initialised"))))
-           )
-      (set-process-sentinel proc kill-proc-buffer))))
+                (ensime)
+                (message "Ensime ready.")))))
+
+      (set-process-sentinel proc kill-proc-buffer)
+      (display-buffer bufname)
+      (redisplay))))
 
 (defun scala/fix-ensime-file (&optional file)
   "Fix malformed scalariform settings in FILE."
@@ -493,8 +522,6 @@ Typing three in a row will format the undefined function correctly."
                         ("Prop" . ""))
                       it)
        (concat it ".scala")))
-
-
 
 (defadvice ensime-goto-impl (around display-buffer-nicely activate)
   (let ((impl-file-name (scala/impl-file-for-test-file (buffer-file-name))))
