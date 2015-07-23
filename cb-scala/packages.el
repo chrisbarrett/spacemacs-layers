@@ -42,6 +42,7 @@ which require an initialization must be listed explicitly in the list.")
       (add-hook 'ensime-mode-hook (lambda () (aggressive-indent-mode -1))))
     :config
     (progn
+      (setq ensime-auto-generate-config t)
       (setq ensime-sem-high-faces
             `((var . scala-font-lock:var-face)
               ;; (val . (:inherit font-lock-constant-face :slant italic))
