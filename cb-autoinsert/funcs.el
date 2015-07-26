@@ -46,11 +46,7 @@
                           (--take-while (not (-contains? '("src" "app" "scala" "test" "tests") it)))
                           nreverse
                           (s-join "."))))
-      (cond
-       ((s-blank? pkg-id) "")
-       ((s-matches? (rx (or "Test" "IntTest" "Spec" "Prop") (? "s") eos)
-                    (file-name-base))
-        "")
-       (t
-        (format "package %s\n\n" pkg-id)))
+      (if (s-blank? pkg-id)
+          ""
+        (format "package %s\n\n" pkg-id))
     ""))
