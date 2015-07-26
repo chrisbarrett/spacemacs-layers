@@ -461,6 +461,7 @@ Typing three in a row will format the undefined function correctly."
   (-when-let* ((config-file (-if-let (root (scala/maybe-project-root))
                                 (f-join root ".ensime")
                               (ensime-config-find)))
+               (_ (f-exists? config-file))
                (config (let ((inhibit-redisplay t))
                          (ensime-config-load config-file)))
                (name (ensime--get-name config))
