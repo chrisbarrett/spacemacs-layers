@@ -507,6 +507,7 @@ Typing three in a row will format the undefined function correctly."
 
       (set-process-sentinel proc kill-proc-buffer)
       (display-buffer bufname)
+      (recenter-top-bottom -1)
       (redisplay))))
 
 (defun scala/fix-ensime-file (&optional file)
