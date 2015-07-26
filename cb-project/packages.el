@@ -117,6 +117,7 @@ which require an initialization must be listed explicitly in the list.")
       (defconst cb-project/scala-play-version "2.3.9")
       (defconst cb-project/scala-movio-playlib-version "1.1.0")
       (defconst cb-project/scala-version "2.11.7")
+      (defconst cb-project/scalatest-version "2.2.4")
 
       (skeletor-define-template "movio-scala-play-project"
         :title "Scala Play Project (Movio)"
@@ -158,6 +159,7 @@ which require an initialization must be listed explicitly in the list.")
         '(("__SCALA-VERSION__" . cb-project/scala-version)
           ("__SBT-VERSION__" . cb-project/scala-sbt-version)
           ("__SBT-RELEASE-VERSION__". cb-project/scala-sbt-release-version)
+          ("__SCALATEST-VERSION__". cb-project/scalatest-version)
           ("__MOVIO-ARTIFACTORY-URL__". movio-artifactory-url)
           ("__MOVIO-ARTIFACTORY-REPO-URL__". movio-artifactory-repo-url)
 

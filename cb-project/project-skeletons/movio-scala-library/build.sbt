@@ -12,6 +12,7 @@ libraryDependencies ++= Seq(
   // "org.joda" % "joda-convert" % "1.7",
   // "org.elasticsearch" % "elasticsearch" % "1.4.2",
   // "com.sksamuel.elastic4s" %% "elastic4s" % "1.4.7"
+  "org.scalatest" %% "scalatest" % __SCALATEST-VERSION__ % Test
 )
 
 scalacOptions ++= Seq(
