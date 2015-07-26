@@ -30,6 +30,7 @@ javaOptions in Test += "-Dlogger.file=test/resources/logger.xml"
 
 releaseSettings
 ReleaseKeys.versionBump := sbtrelease.Version.Bump.Minor
+ReleaseKeys.tagName := s"${version.value}"
 
 publishTo <<= version { (v: String) ⇒
   val repo = "__MOVIO-ARTIFACTORY-URL__"
