@@ -65,7 +65,7 @@ which require an initialization must be listed explicitly in the list.")
 (defun cb-core/init-company ()
   (use-package company
     :config
-    (setq company-minimum-prefix-length 3)))
+    (setq-default company-minimum-prefix-length 3)))
 
 (defun cb-core/init-evil ()
   (use-package evil
