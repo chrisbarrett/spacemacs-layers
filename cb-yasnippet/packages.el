@@ -11,18 +11,31 @@ which require an initialization must be listed explicitly in the list.")
   "List of packages to exclude.")
 
 (eval-when-compile
+  (require 's nil t)
+  (require 'dash nil t)
   (require 'use-package nil t))
 
 (defun cb-yasnippet/init-yasnippet ()
   (use-package yasnippet
     :init
     (progn
-      (setq yas-snippet-dirs (list (f-join user-layers-directory "cb-yasnippet/snippets")))
       (add-hook 'prog-mode-hook 'yas-minor-mode)
       (add-hook 'text-mode-hook 'yas-minor-mode)
       (yas-global-mode +1))
     :config
     (progn
+      ;; Set up snippet directories.
+      (push (f-join user-layers-directory "cb-yasnippet/snippets") yas-snippet-dirs)
+      (setq yas-snippet-dirs (--reject (or
+                                        ;; Why is this even symbol even in there? Jeez.
+                                        (equal 'yas-installed-snippets-dir it)
+                                        ;; Don't use snippets from packages.
+                                        (s-matches? "/elpa/" it)
+                                        ;; Ensure all paths exist or yasnippet will fail to load.
+                                        (not (f-dir? it)))
+
+                                       yas-snippet-dirs))
+
       (setq yas-prompt-functions '(yas-ido-prompt))
       (setq yas-wrap-around-region t)
       (setq yas-verbosity 0)
