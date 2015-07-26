@@ -3,12 +3,20 @@
 (evil-leader/set-key "gl" 'magit-log-popup)
 (evil-leader/set-key "gr" 'magit-reflog)
 (evil-leader/set-key "gD" 'magit-diff-working-tree)
-(evil-leader/set-key "gB" 'magit-blame-mode)
+(evil-leader/set-key "gB" 'magit-blame)
 (evil-leader/set-key "gb" 'magit-branch-popup)
 (evil-leader/set-key "gn" 'git-gutter:next-hunk)
 (evil-leader/set-key "gp" 'git-gutter:previous-hunk)
 
 (evil-set-initial-state 'git-commit-mode 'insert)
+
+(evil-global-set-key 'normal (kbd "g b b") 'magit-blame)
+(evil-global-set-key 'normal (kbd "g b q") 'magit-blame-quit)
+(evil-global-set-key 'normal (kbd "g b n") 'magit-blame-next-chunk)
+(evil-global-set-key 'normal (kbd "g b N") 'magit-blame-previous-chunk)
+(evil-global-set-key 'normal (kbd "g b p") 'magit-blame-previous-chunk)
+
+(evil-global-set-key 'normal (kbd "g t") 'spacemacs/time-machine-micro-state)
 
 (evil-global-set-key 'normal (kbd "g c") 'magit-commit-popup)
 (evil-global-set-key 'normal (kbd "g l") 'magit-log-popup)
