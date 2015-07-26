@@ -210,8 +210,14 @@ Typing three in a row will format the undefined function correctly."
 (defun scala/at-case-class? ()
   (s-matches? (rx bol (* space) "case" (+ space) "class" eow) (current-line)))
 
+(defun scala/at-case-object? ()
+  (s-matches? (rx bol (* space) "case" (+ space) "object" eow) (current-line)))
+
 (defun scala/at-abstract-sealed-class? ()
   (s-matches? (rx bol (* space) "abstract" (+ space) "sealed" (+ space) "class" eow) (current-line)))
+
+(defun scala/at-sealed-trait? ()
+  (s-matches? (rx bol (* space) "sealed" (+ space) "trait" eow) (current-line)))
 
 (defun scala/meta-ret ()
   "Create a newline and perform a context-sensitive continuation.
@@ -227,15 +233,33 @@ Typing three in a row will format the undefined function correctly."
     (message "New var binding"))
 
    ;; Insert new type decl case below the current one.
-   ((s-matches? (rx bol (* space) "val" eow) (current-line))
+   ((s-matches? (rx bol (* space) (? "lazy" (+ space)) "val" eow) (current-line))
     (core/open-line-below-current-indentation)
     (yas-insert-first-snippet (lambda (sn) (equal "val" (yas--template-name sn))))
     (message "New val binding"))
 
+   ;; Insert new type decl case below the current one.
+   ((s-matches? (rx bol (* space) "private" (+ space) (? "lazy" (+ space)) "val" eow) (current-line))
+    (core/open-line-below-current-indentation)
+    (yas-insert-first-snippet (lambda (sn) (equal "private val" (yas--template-name sn))))
+    (message "New val binding"))
+
+   ;; Insert new type decl case below the current one.
+   ((s-matches? (rx bol (* space) "protected" (+ space) (? "lazy" (+ space)) "val" eow) (current-line))
+    (core/open-line-below-current-indentation)
+    (yas-insert-first-snippet (lambda (sn) (equal "protected val" (yas--template-name sn))))
+    (message "New val binding"))
+
    ;; Insert new case class.
-   ((or (scala/at-case-class?) (scala/at-abstract-sealed-class?))
+   ((or (scala/at-case-class?) (scala/at-sealed-trait?) (scala/at-abstract-sealed-class?))
     (core/open-line-below-current-indentation)
     (yas-insert-first-snippet (lambda (sn) (equal "case class" (yas--template-name sn))))
+    (message "New case class"))
+
+   ;; Insert new case object.
+   ((scala/at-case-object?)
+    (core/open-line-below-current-indentation)
+    (yas-insert-first-snippet (lambda (sn) (equal "case object" (yas--template-name sn))))
     (message "New case class"))
 
    ;; Insert new type decl case below the current one.
