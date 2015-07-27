@@ -43,6 +43,7 @@ which require an initialization must be listed explicitly in the list.")
     :config
     (progn
       (setq ensime-auto-generate-config t)
+      (setq ensime-prefer-noninteractive t)
       (setq ensime-sem-high-faces
             `((var . scala-font-lock:var-face)
               ;; (val . (:inherit font-lock-constant-face :slant italic))
@@ -79,7 +80,12 @@ See `ensime-goto-test-config-defaults' for possible template values.")
                   :impl-class-name-fn 'ensime-goto-test--impl-class-name
                   :impl-to-test-dir-fn 'ensime-goto-test--impl-to-test-dir
                   :is-test-dir-fn 'ensime-goto-test--is-test-dir
-                  :test-template-fn (lambda () scala/test-file-template))))))
+                  :test-template-fn (lambda () scala/test-file-template)))
+
+
+      ;;; Fix up ensime files before loading
+      (defadvice ensime-config-load (before fix-ensime-file activate)
+        (scala/fix-ensime-file)))))
 
 (defun cb-scala/init-sbt-mode ()
   (use-package sbt-mode
