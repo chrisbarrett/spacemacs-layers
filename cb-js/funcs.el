@@ -39,17 +39,6 @@
      (or (super-smart-ops-delete-last-op)
          (call-interactively 'sp-backward-delete-char))))))
 
-(defun js/split-braced-expression-over-new-lines ()
-  "Split the braced expression on the current line over several lines."
-  (-let [(&plist :beg beg :end end) (sp-get-enclosing-sexp)]
-    (save-excursion
-      (goto-char (1- end))
-      (newline-and-indent)
-      (goto-char (1+ beg))
-      (newline-and-indent)
-      (while (search-forward ";" (line-end-position) t)
-        (insert "\n")))))
-
 (defun js/ret (&optional arg)
   "Insert a newline with context-sensitive formatting."
   (interactive "P")
@@ -58,8 +47,8 @@
     (comment-indent-new-line)
     (just-one-space))
 
-   ((sp/between-blank-curly-braces?)
-    (js/split-braced-expression-over-new-lines)
+   ((sp/between-curly-braces?)
+    (sp/split-braced-expression-over-new-lines (rx (or ";" ",")))
     (forward-line)
     (indent-for-tab-command))
 

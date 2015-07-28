@@ -130,36 +130,12 @@ Typing three in a row will format the undefined function correctly."
 
 ;;; Smart editing commands
 
-(defun scala/after-open-curly? ()
-  (s-matches? (rx "{" (* space) eos)
-              (buffer-substring (line-beginning-position) (point))))
-
-(defun scala/before-close-curly? ()
-  (s-matches? (rx bos (* space) "}")
-              (buffer-substring (point) (line-end-position))))
-
-(defun scala/between-curly-braces-with-content? ()
-  (-let [(&plist :beg beg :end end :op op) (sp-get-enclosing-sexp)]
-    (when (equal op "{")
-      (not (s-blank? (s-trim (buffer-substring (1+ beg) (1- end))))))))
-
-(defun scala/split-braced-expression-over-new-lines ()
-  "Split the braced expression on the current line over several lines."
-  (-let [(&plist :beg beg :end end) (sp-get-enclosing-sexp)]
-    (save-excursion
-      (goto-char (1- end))
-      (newline-and-indent)
-      (goto-char (1+ beg))
-      (newline-and-indent)
-      (while (search-forward ";" (line-end-position) t)
-        (replace-match "\n")))))
-
 (defun scala/after-lambda-arrow? ()
   (s-matches? (rx (* space) "=>" (* space) eos)
               (buffer-substring (line-beginning-position) (point))))
 
 (defun scala/expand-brace-group-for-hanging-lambda ()
-  (scala/split-braced-expression-over-new-lines)
+  (sp/split-braced-expression-over-new-lines (rx ";"))
   (goto-char (plist-get (sp-get-enclosing-sexp) :beg))
   (scala/join-line)
   (goto-char (line-end-position))
@@ -178,23 +154,17 @@ Typing three in a row will format the undefined function correctly."
     (comment-indent-new-line)
     (just-one-space))
 
-   ((sp/between-blank-curly-braces?)
-    (scala/split-braced-expression-over-new-lines)
+   ((sp/between-curly-braces-no-content?)
+    (sp/split-braced-expression-over-new-lines (rx ";"))
     (forward-line)
     (indent-for-tab-command))
 
-   ((and (scala/after-lambda-arrow?) (scala/between-curly-braces-with-content?))
+   ((and (scala/after-lambda-arrow?) (sp/between-curly-braces-with-content?))
     (scala/expand-brace-group-for-hanging-lambda))
 
    ((scala/between-curly-braces-with-content?)
     (delete-horizontal-space)
-    (scala/split-braced-expression-over-new-lines)
-    ;; If point was after the opening brace before splitting, it will not have
-    ;; moved to the next line. Correct this by moving forward to indentation on
-    ;; the next line.
-    (when (scala/after-open-curly?)
-      (forward-line)
-      (back-to-indentation)))
+    (sp/split-braced-expression-over-new-lines (rx ";")))
    (t
     (call-interactively 'comment-indent-new-line))))
 

@@ -100,10 +100,45 @@ Insert leading padding unless at start of line or after an open round paren."
        (s-matches? (rx (not (any "\\")) "\"" eol)
                    (buffer-substring (line-beginning-position) (point)))))
 
-(defun sp/between-blank-curly-braces? ()
+(defun sp/between-curly-braces? ()
+  (equal "{" (plist-get (sp-get-enclosing-sexp) :op)))
+
+(defun sp/depth ()
+  (nth 0 (syntax-ppss)))
+
+(defun sp/between-curly-braces-no-content? ()
   (-let [(&plist :beg beg :end end :op op) (sp-get-enclosing-sexp)]
     (when (equal op "{")
       (s-blank? (s-trim (buffer-substring (1+ beg) (1- end)))))))
+
+(defun sp/between-curly-braces-with-content? ()
+  (and (sp/between-curly-braces?) (not (sp/between-curly-braces-no-content?))))
+
+(defun sp/just-after-open-curly? ()
+  (s-matches? (rx "{" (* space) eos) (buffer-substring (line-beginning-position) (point))))
+
+(defun sp/split-braced-expression-over-new-lines (&optional statement-delimiter-rx)
+  "Split the braced expression on the current line over several lines.
+
+Optionally split the internal lines according to the given regexp
+STATEMENT-DELIMETER-RX."
+  (-let [(&plist :beg beg :end end) (sp-get-enclosing-sexp)]
+    (save-excursion
+      (goto-char (1- end))
+      (newline-and-indent)
+      (goto-char (1+ beg))
+      (newline-and-indent)
+      (let ((start-depth (sp/depth)))
+        (while (search-forward-regexp statement-delimiter-rx (line-end-position) t)
+          (when (equal start-depth (sp/depth))
+            (insert "\n")))))
+
+    ;; If point was after the opening brace before splitting, it will not have
+    ;; moved to the next line. Correct this by moving forward to indentation on
+    ;; the next line.
+    (when (sp/just-after-open-curly?)
+      (forward-line)
+      (back-to-indentation))))
 
 
 ;;; OCaml utils
