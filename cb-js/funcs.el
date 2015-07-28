@@ -47,10 +47,8 @@
     (comment-indent-new-line)
     (just-one-space))
 
-   ((sp/between-curly-braces?)
-    (sp/split-braced-expression-over-new-lines (rx (or ";" ",")))
-    (forward-line)
-    (indent-for-tab-command))
+   ((sp/between-curly-braces? t)
+    (sp/split-braced-expression-over-new-lines (rx (or ";" ","))))
 
    (t
     (call-interactively 'comment-indent-new-line))))

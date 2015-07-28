@@ -155,14 +155,12 @@ Typing three in a row will format the undefined function correctly."
     (just-one-space))
 
    ((sp/between-curly-braces-no-content?)
-    (sp/split-braced-expression-over-new-lines (rx ";"))
-    (forward-line)
-    (indent-for-tab-command))
+    (sp/split-braced-expression-over-new-lines (rx ";")))
 
-   ((and (scala/after-lambda-arrow?) (sp/between-curly-braces-with-content?))
+   ((and (scala/after-lambda-arrow?) (sp/between-curly-braces-with-content? t))
     (scala/expand-brace-group-for-hanging-lambda))
 
-   ((scala/between-curly-braces-with-content?)
+   ((sp/between-curly-braces-with-content? t)
     (delete-horizontal-space)
     (sp/split-braced-expression-over-new-lines (rx ";")))
    (t

@@ -100,19 +100,26 @@ Insert leading padding unless at start of line or after an open round paren."
        (s-matches? (rx (not (any "\\")) "\"" eol)
                    (buffer-substring (line-beginning-position) (point)))))
 
-(defun sp/between-curly-braces? ()
-  (equal "{" (plist-get (sp-get-enclosing-sexp) :op)))
+(defun sp/between-curly-braces? (&optional same-line?)
+  (-let [(&plist :beg beg :end end :op op) (sp-get-enclosing-sexp)]
+    (when (equal op "{")
+      (if same-line?
+          (= (line-number-at-pos beg) (line-number-at-pos end))
+        t))))
 
 (defun sp/depth ()
   (nth 0 (syntax-ppss)))
 
-(defun sp/between-curly-braces-no-content? ()
+(defun sp/between-curly-braces-no-content? (&optional same-line?)
   (-let [(&plist :beg beg :end end :op op) (sp-get-enclosing-sexp)]
     (when (equal op "{")
-      (s-blank? (s-trim (buffer-substring (1+ beg) (1- end)))))))
+      (and (s-blank? (s-trim (buffer-substring (1+ beg) (1- end))))
+           (if same-line?
+               (= (line-number-at-pos beg) (line-number-at-pos end))
+             t)))))
 
-(defun sp/between-curly-braces-with-content? ()
-  (and (sp/between-curly-braces?) (not (sp/between-curly-braces-no-content?))))
+(defun sp/between-curly-braces-with-content? (&optional same-line?)
+  (and (sp/between-curly-braces? same-line?) (not (sp/between-curly-braces-no-content? same-line?))))
 
 (defun sp/just-after-open-curly? ()
   (s-matches? (rx "{" (* space) eos) (buffer-substring (line-beginning-position) (point))))
