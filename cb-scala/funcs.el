@@ -131,7 +131,7 @@ Typing three in a row will format the undefined function correctly."
 ;;; Smart editing commands
 
 (defun scala/after-lambda-arrow? ()
-  (s-matches? (rx (* space) "=>" (* space) eos)
+  (s-matches? (rx (* space) (or "=>" "⇒") (* space) eos)
               (buffer-substring (line-beginning-position) (point))))
 
 (defun scala/expand-brace-group-for-hanging-lambda ()
@@ -164,7 +164,7 @@ Typing three in a row will format the undefined function correctly."
     (delete-horizontal-space)
     (sp/split-braced-expression-over-new-lines (rx ";"))
     (goto-char (line-end-position))
-    (unless (s-blank? (current-line))
+    (when (scala/after-lambda-arrow?)
       (just-one-space)))
 
    (t
