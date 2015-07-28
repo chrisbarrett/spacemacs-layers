@@ -137,7 +137,7 @@ Typing three in a row will format the undefined function correctly."
 (defun scala/expand-brace-group-for-hanging-lambda ()
   (sp/split-braced-expression-over-new-lines (rx ";"))
   (goto-char (plist-get (sp-get-enclosing-sexp) :beg))
-  (scala/join-line)
+  (spacemacs/scala-join-line)
   (goto-char (line-end-position))
   (newline-and-indent))
 
@@ -162,7 +162,11 @@ Typing three in a row will format the undefined function correctly."
 
    ((sp/inside-curly-braces-with-content? t)
     (delete-horizontal-space)
-    (sp/split-braced-expression-over-new-lines (rx ";")))
+    (sp/split-braced-expression-over-new-lines (rx ";"))
+    (goto-char (line-end-position))
+    (unless (s-blank? (current-line))
+      (just-one-space)))
+
    (t
     (call-interactively 'comment-indent-new-line))))
 
