@@ -23,14 +23,27 @@ which require an initialization must be listed explicitly in the list.")
     :mode (("/conf/routes$" . conf-mode))
     :config
     (progn
+      (custom-set-faces
+       `(scala-font-lock:var-face
+         ((t (:foreground ,solarized-hl-orange :underline nil)))))
+
       (defun cb-scala/set-local-hooks ()
         (add-hook 'evil-insert-state-exit-hook 'scala/unicode-buffer))
 
       (add-hook 'scala-mode-hook 'cb-scala/set-local-hooks)
 
-      (custom-set-faces
-       `(scala-font-lock:var-face
-         ((t (:foreground ,solarized-hl-orange :underline nil))))))))
+      (define-key scala-mode-map (kbd "M-RET") 'scala/meta-ret)
+      (define-key scala-mode-map (kbd "C-c C-e") 'scala/insert-extends)
+      (evil-define-key 'insert scala-mode-map (kbd "<return>") 'scala/ret)
+
+      ;; HACK: set some scala key bindings in a hook to prevent them mysteriously
+      ;; leaking into other major modes.
+
+      (defun scala/set-normal-state-local-keybindings ()
+        (evil-local-set-key 'normal (kbd "RET") 'ensime-inspect-type-at-point))
+
+      (add-hook 'scala-mode-hook 'scala/set-normal-state-local-keybindings)
+      )))
 
 (defun cb-scala/init-ensime ()
   (use-package ensime
@@ -85,20 +98,48 @@ See `ensime-goto-test-config-defaults' for possible template values.")
 
       ;;; Fix up ensime files before loading
       (defadvice ensime-config-load (before fix-ensime-file activate)
-        (scala/fix-ensime-file)))))
+        (scala/fix-ensime-file))
+
+      (define-key ensime-inf-mode-map (kbd "C-c C-z") 'scala/switch-to-src)
+      (define-key ensime-mode-map (kbd "C-c C-z") 'ensime-inf-switch)
+      (define-key ensime-mode-map (kbd "C-c C-l") 'scala/load-buffer)
+      (define-key ensime-mode-map (kbd "C-c C-h") 'ensime-show-doc-for-symbol-at-point)
+      (define-key ensime-mode-map (kbd "M-N") 'ensime-forward-note)
+      (define-key ensime-mode-map (kbd "M-P") 'ensime-backward-note)
+
+      (evil-define-key 'normal ensime-inspector-mode-map
+        (kbd "M-.") 'ensime-inspector-browse-source
+        (kbd "K") 'ensime-inspector-browse-doc
+        (kbd ",") 'ensime-inspector-backward-page
+        (kbd ".") 'ensime-inspector-forward-page
+        (kbd "^") 'ensime-inspector-backward-page)
+
+      (evil-define-key 'normal ensime-mode-map (kbd "M-N") 'ensime-forward-note)
+      (evil-define-key 'normal ensime-mode-map (kbd "M-P") 'ensime-backward-note)
+      (evil-define-key 'normal ensime-mode-map (kbd "RET") 'ensime-inspect-type-at-point)
+
+      (evil-leader/set-key-for-mode 'scala-mode "ii" 'ensime-import-type-at-point)
+      )))
 
 (defun cb-scala/init-sbt-mode ()
   (use-package sbt-mode
     :defer t
     :config
     (progn
-      (setq sbt:prompt-regexp (rx bol (group (? space) (or
-                                                        ;; SBT
-                                                        (and (+ (any alpha "-")) ">" (+ space))
-                                                        ;; Activator
-                                                        (and "[" (+ (any alpha "-")) "] $" (+ space)))
-                                             ) (* space)))
+      (setq sbt:prompt-regexp
+            (rx bol (group (? space) (or
+                                      ;; SBT
+                                      (and (+ (any alpha "-")) ">" (+ space))
+                                      ;; Activator
+                                      (and "[" (+ (any alpha "-")) "] $" (+ space)))
+                           ) (* space)))
       (setq sbt:program-name "sbt -Dsbt.log.noformat=true")
-      (add-hook 'sbt-mode-hook (lambda () (aggressive-indent-mode -1)))
-      (add-hook 'sbt-mode-hook 'turn-off-show-smartparens-mode)
-      (add-hook 'sbt-mode-hook (lambda () (show-paren-mode -1))))))
+
+      (defun cb-scala/set-up-sbt-mode ()
+        (aggressive-indent-mode -1)
+        (show-smartparens-mode -1)
+        (show-paren-mode -1)
+        (local-set-key (kbd "C-l") 'comint-clear-buffer)
+        (local-set-key (kbd "C-c RET") 'scala/sbt-send-ret))
+
+      (add-hook 'sbt-mode-hook 'cb-scala/set-up-sbt-mode))))

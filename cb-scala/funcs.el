@@ -250,31 +250,6 @@ Typing three in a row will format the undefined function correctly."
   (s-matches? (rx bol (* space) (or "}" "]" ")"))
               (buffer-substring (point) (line-end-position))))
 
-(defun scala/smart-space ()
-  "Insert a space, performing extra padding inside lists."
-  (interactive)
-  (cond
-   ((and (scala/after-subexpr-opening?) (scala/before-subexp-closing?))
-    (delete-horizontal-space)
-    (insert " ")
-    (save-excursion (insert " ")))
-   (t
-    (insert " "))))
-
-(defun scala/backspace ()
-  "Delete backwards with context-sensitive formatting."
-  (interactive)
-  (super-smart-ops--run-with-modification-hooks
-   (cond
-    ((and (scala/after-subexpr-opening?)
-          (scala/before-subexp-closing?)
-          (thing-at-point-looking-at (rx (+ space))))
-     (delete-horizontal-space))
-
-    (t
-     (or (super-smart-ops-delete-last-op)
-         (call-interactively 'sp-backward-delete-char))))))
-
 
 ;;; Insert extends forms
 
