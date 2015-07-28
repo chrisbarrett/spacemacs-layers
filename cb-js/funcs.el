@@ -50,11 +50,6 @@
       (while (search-forward ";" (line-end-position) t)
         (insert "\n")))))
 
-(defun js/between-empty-curly-braces? ()
-  (-let [(&plist :beg beg :end end :op op) (sp-get-enclosing-sexp)]
-    (when (equal op "{")
-      (s-blank? (s-trim (buffer-substring (1+ beg) (1- end)))))))
-
 (defun js/ret (&optional arg)
   "Insert a newline with context-sensitive formatting."
   (interactive "P")
@@ -63,7 +58,7 @@
     (comment-indent-new-line)
     (just-one-space))
 
-   ((js/between-empty-curly-braces?)
+   ((sp/between-blank-curly-braces?)
     (js/split-braced-expression-over-new-lines)
     (forward-line)
     (indent-for-tab-command))

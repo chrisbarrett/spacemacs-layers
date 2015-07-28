@@ -1,3 +1,9 @@
+(eval-when-compile
+  (require 's nil t)
+  (require 'dash nil t)
+  (require 'smartparens nil t)
+  )
+
 ;;; Move up and reformat parens when closing.
 
 (defun sp/insert-or-up (delim &optional arg)
@@ -93,6 +99,11 @@ Insert leading padding unless at start of line or after an open round paren."
   (and (sp-in-string-p id action ctx)
        (s-matches? (rx (not (any "\\")) "\"" eol)
                    (buffer-substring (line-beginning-position) (point)))))
+
+(defun sp/between-blank-curly-braces? ()
+  (-let [(&plist :beg beg :end end :op op) (sp-get-enclosing-sexp)]
+    (when (equal op "{")
+      (s-blank? (s-trim (buffer-substring (1+ beg) (1- end)))))))
 
 
 ;;; OCaml utils

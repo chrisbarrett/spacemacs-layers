@@ -138,16 +138,10 @@ Typing three in a row will format the undefined function correctly."
   (s-matches? (rx bos (* space) "}")
               (buffer-substring (point) (line-end-position))))
 
-(defun scala/between-empty-curly-braces? ()
-  (and (scala/after-open-curly?) (scala/before-close-curly?)))
-
 (defun scala/between-curly-braces-with-content? ()
-  (or (and (scala/after-open-curly?)
-           (s-matches? (rx (+ (not space)) (* space) "}")
-                       (buffer-substring (point) (line-end-position))))
-      (and (scala/before-close-curly?)
-           (s-matches? (rx "{" (* space) (+ (not space)))
-                       (buffer-substring (line-beginning-position) (point))))))
+  (-let [(&plist :beg beg :end end :op op) (sp-get-enclosing-sexp)]
+    (when (equal op "{")
+      (not (s-blank? (s-trim (buffer-substring (1+ beg) (1- end))))))))
 
 (defun scala/split-braced-expression-over-new-lines ()
   "Split the braced expression on the current line over several lines."
@@ -184,7 +178,7 @@ Typing three in a row will format the undefined function correctly."
     (comment-indent-new-line)
     (just-one-space))
 
-   ((scala/between-empty-curly-braces?)
+   ((sp/between-blank-curly-braces?)
     (scala/split-braced-expression-over-new-lines)
     (forward-line)
     (indent-for-tab-command))
