@@ -47,13 +47,6 @@
       (equal (char-after)
              (string-to-char "(")))))
 
-(defun haskell/in-empty-braces? ()
-  "Non-nil if point is between empty square or curly braces."
-  (and (s-matches? (rx (or "{" "[") (* space) eol)
-                   (buffer-substring (line-beginning-position) (point)))
-       (s-matches? (rx bol (? ">") (* space) (or "}" "]"))
-                   (buffer-substring (point) (line-end-position)))))
-
 (defun haskell/smart-minus ()
   "Context-sensitive minus character."
   (interactive)
