@@ -154,7 +154,7 @@ Typing three in a row will format the undefined function correctly."
     (comment-indent-new-line)
     (just-one-space))
 
-   ((sp/inside-curly-braces-no-content?)
+   ((sp/inside-curly-braces-blank-content?)
     (sp/split-braced-expression-over-new-lines (rx ";")))
 
    ((and (scala/after-lambda-arrow?) (sp/inside-curly-braces-with-content? t))

@@ -27,8 +27,4 @@ which require an initialization must be listed explicitly in the list.")
       (setq js2-basic-offset 2)
       ;; Use flycheck for checking.
       (setq js2-mode-show-parse-errors nil)
-      (setq js2-mode-show-strict-warnings nil)
-
-      (define-key js2-mode-map (kbd "RET") 'js/ret)
-      (define-key js2-mode-map (kbd "<backspace>") 'js/backspace)
-      (define-key js2-mode-map (kbd "SPC") 'js/space))))
+      (setq js2-mode-show-strict-warnings nil))))

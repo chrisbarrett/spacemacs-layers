@@ -113,6 +113,14 @@ Insert leading padding unless at start of line or after an open round paren."
 (defun sp/inside-curly-braces-no-content? (&optional same-line?)
   (-let [(&plist :beg beg :end end :op op) (sp-get-enclosing-sexp)]
     (when (equal op "{")
+      (and (s-blank? (buffer-substring (1+ beg) (1- end)))
+           (if same-line?
+               (= (line-number-at-pos beg) (line-number-at-pos end))
+             t)))))
+
+(defun sp/inside-curly-braces-blank-content? (&optional same-line?)
+  (-let [(&plist :beg beg :end end :op op) (sp-get-enclosing-sexp)]
+    (when (equal op "{")
       (and (s-blank? (s-trim (buffer-substring (1+ beg) (1- end))))
            (if same-line?
                (= (line-number-at-pos beg) (line-number-at-pos end))
@@ -146,6 +154,51 @@ STATEMENT-DELIMETER-RX."
     (when (sp/just-after-open-curly?)
       (forward-line)
       (back-to-indentation))))
+
+(defun sp/generic-prog-backspace ()
+  "Delete backwards with context-sensitive formatting."
+  (interactive)
+  (super-smart-ops--run-with-modification-hooks
+   (cond
+    ((sp/inside-curly-braces-no-content?)
+     (call-interactively 'sp-backward-delete-char))
+
+    ((sp/inside-curly-braces-blank-content? t)
+     (delete-horizontal-space))
+
+    ((sp/inside-curly-braces-blank-content?)
+     (just-one-space -1)
+     (save-excursion
+       (insert " ")))
+
+    (t
+     (or (super-smart-ops-delete-last-op)
+         (call-interactively 'sp-backward-delete-char))))))
+
+(defun sp/generic-prog-space ()
+  "Insert a space, performing extra padding inside braced expressions."
+  (interactive)
+  (cond
+   ((sp/inside-curly-braces-no-content?)
+    (delete-horizontal-space)
+    (insert " ")
+    (save-excursion (insert " ")))
+   (t
+    (insert " "))))
+
+(defun sp/generic-prog-ret (&optional arg)
+  "Insert a newline with context-sensitive formatting."
+  (interactive "P")
+  (cond
+   ((or arg (core/in-string-or-comment?))
+    (comment-indent-new-line)
+    (just-one-space))
+
+   ((sp/inside-curly-braces? t)
+    (sp/split-braced-expression-over-new-lines (rx (or ";" ","))))
+
+   (t
+    (call-interactively 'comment-indent-new-line))))
 
 
 ;;; OCaml utils
