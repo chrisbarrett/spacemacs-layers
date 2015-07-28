@@ -154,13 +154,13 @@ Typing three in a row will format the undefined function correctly."
     (comment-indent-new-line)
     (just-one-space))
 
-   ((sp/between-curly-braces-no-content?)
+   ((sp/inside-curly-braces-no-content?)
     (sp/split-braced-expression-over-new-lines (rx ";")))
 
-   ((and (scala/after-lambda-arrow?) (sp/between-curly-braces-with-content? t))
+   ((and (scala/after-lambda-arrow?) (sp/inside-curly-braces-with-content? t))
     (scala/expand-brace-group-for-hanging-lambda))
 
-   ((sp/between-curly-braces-with-content? t)
+   ((sp/inside-curly-braces-with-content? t)
     (delete-horizontal-space)
     (sp/split-braced-expression-over-new-lines (rx ";")))
    (t

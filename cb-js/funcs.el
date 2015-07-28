@@ -47,7 +47,7 @@
     (comment-indent-new-line)
     (just-one-space))
 
-   ((sp/between-curly-braces? t)
+   ((sp/inside-curly-braces? t)
     (sp/split-braced-expression-over-new-lines (rx (or ";" ","))))
 
    (t
