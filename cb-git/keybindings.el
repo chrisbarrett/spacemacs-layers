@@ -20,7 +20,6 @@
 
 (evil-global-set-key 'normal (kbd "g c") 'magit-commit-popup)
 (evil-global-set-key 'normal (kbd "g l") 'magit-log-popup)
-(evil-global-set-key 'normal (kbd "g a") 'git/add-this-file)
 (evil-global-set-key 'normal (kbd "g n") 'diff-hl-next-hunk)
 (evil-global-set-key 'normal (kbd "g p") 'diff-hl-previous-hunk)
 (evil-global-set-key 'normal (kbd "g P") 'magit-push-popup)
@@ -28,4 +27,4 @@
 (with-eval-after-load 'magit
   (define-key magit-mode-map (kbd "C-k") 'magit-copy-as-kill)
   (define-key magit-mode-map (kbd "C-y") 'magit-copy-as-kill)
-  )
+  (define-key magit-status-mode-map (kbd "&") 'git/browse-repo))
