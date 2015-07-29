@@ -10,6 +10,7 @@
 
 (evil-set-initial-state 'git-commit-mode 'insert)
 
+(evil-global-set-key 'normal (kbd "g s") 'magit-status)
 (evil-global-set-key 'normal (kbd "g b b") 'magit-blame)
 (evil-global-set-key 'normal (kbd "g b q") 'magit-blame-quit)
 (evil-global-set-key 'normal (kbd "g b n") 'magit-blame-next-chunk)
