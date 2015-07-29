@@ -1,11 +1,10 @@
 ;;; -*- lexical-binding: t; -*-
 ;;; Code:
 
-(require 's)
-(require 'dash)
-(require 'noflet)
-
 (eval-when-compile
+  (require 's nil t)
+  (require 'dash nil t)
+  (require 'noflet nil t)
   (require 'ensime nil t))
 
 ;;; Smart ops
