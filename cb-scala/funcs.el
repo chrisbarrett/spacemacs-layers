@@ -134,12 +134,19 @@ Typing three in a row will format the undefined function correctly."
   (s-matches? (rx (* space) (or "=>" "⇒") (* space) eos)
               (buffer-substring (line-beginning-position) (point))))
 
-(defun scala/expand-brace-group-for-hanging-lambda ()
-  (sp/split-braced-expression-over-new-lines (rx ";"))
-  (goto-char (plist-get (sp-get-enclosing-sexp) :beg))
-  (spacemacs/scala-join-line)
-  (goto-char (line-end-position))
-  (newline-and-indent))
+(defun scala/blank-up-to-curly? ()
+  (s-matches? (rx bos (* space) "}") (buffer-substring (point) (line-end-position))))
+
+(defun scala/brace-group-starts-with-case-expr? ()
+  (when (sp/inside-curly-braces-with-content?)
+    (-let [(&plist :beg beg :end end) (sp-get-enclosing-sexp)]
+      (s-matches? (rx (* space) "case")
+                  (buffer-substring (1+ beg) (1- end))))))
+
+(defun scala/maybe-swing-down-lambda-body ()
+  (when (search-backward-regexp (rx (or "=>" "⇒")) (line-beginning-position) t)
+    (goto-char (match-end 0))
+    (newline-and-indent)))
 
 (defun scala/ret (&optional arg)
   "Insert a newline with context-sensitive formatting."
@@ -157,15 +164,34 @@ Typing three in a row will format the undefined function correctly."
    ((sp/inside-curly-braces-blank-content?)
     (sp/split-braced-expression-over-new-lines (rx ";")))
 
-   ((and (scala/after-lambda-arrow?) (sp/inside-curly-braces-with-content? t))
-    (scala/expand-brace-group-for-hanging-lambda))
-
-   ((sp/inside-curly-braces-with-content? t)
-    (delete-horizontal-space)
+   ((and (sp/inside-curly-braces-with-content? t)
+         (scala/blank-up-to-curly?)
+         (scala/after-lambda-arrow?))
     (sp/split-braced-expression-over-new-lines (rx ";"))
     (goto-char (line-end-position))
-    (when (scala/after-lambda-arrow?)
-      (just-one-space)))
+    (save-excursion
+      (scala/maybe-swing-down-lambda-body))
+    (newline-and-indent))
+
+   ((and (sp/inside-curly-braces-with-content? t)
+         (scala/brace-group-starts-with-case-expr?))
+    (sp/split-braced-expression-over-new-lines (rx ";"))
+    (cond
+     ((scala/after-lambda-arrow?)
+      (newline-and-indent))
+     (t
+      (goto-char (line-end-position))
+      (scala/maybe-swing-down-lambda-body)))
+
+    (goto-char (line-end-position)))
+
+   ((sp/inside-curly-braces-with-content? t)
+    (sp/split-braced-expression-over-new-lines (rx ";"))
+    (goto-char (line-end-position))
+    (save-excursion
+      (scala/maybe-swing-down-lambda-body)
+      (goto-char (plist-get (sp-get-enclosing-sexp) :beg))
+      (spacemacs/scala-join-line)))
 
    (t
     (call-interactively 'comment-indent-new-line))))
