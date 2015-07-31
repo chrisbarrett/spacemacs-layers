@@ -34,12 +34,12 @@ which require an initialization must be listed explicitly in the list.")
 
       (define-key scala-mode-map (kbd "M-RET") 'scala/meta-ret)
       (define-key scala-mode-map (kbd "C-c C-e") 'scala/insert-extends)
-      (evil-define-key 'insert scala-mode-map (kbd "<return>") 'scala/ret)
 
       ;; HACK: set some scala key bindings in a hook to prevent them mysteriously
       ;; leaking into other major modes.
 
       (defun scala/set-normal-state-local-keybindings ()
+        (evil-local-set-key 'insert (kbd "<return>") 'scala/ret)
         (evil-local-set-key 'normal (kbd "RET") 'ensime-inspect-type-at-point))
 
       (add-hook 'scala-mode-hook 'scala/set-normal-state-local-keybindings)
