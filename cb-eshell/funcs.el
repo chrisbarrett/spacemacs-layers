@@ -99,11 +99,11 @@ With prefix argument ARG, always create a new shell."
     (concat
      (cond
       ((null cb-eshell--last-prompt)
-       (concat (cb-eshell--render-header plist) "\n"))
+       (concat (cb-eshell--render-header cb-eshell--last-prompt plist) "\n"))
       ((equal plist cb-eshell--last-prompt)
        "\n")
       (t
-       (concat "\n\n" (cb-eshell--render-header plist))))
+       (concat "\n" (cb-eshell--render-header cb-eshell--last-prompt plist))))
 
      (let ((colour (if last-command-success? solarized-hl-cyan solarized-hl-red)))
        (concat
@@ -112,7 +112,7 @@ With prefix argument ARG, always create a new shell."
 
      " ")))
 
-(defun cb-eshell--render-header (plist)
+(defun cb-eshell--render-header (prev-plist plist)
   (-let* (((&plist
             :directory dir
             :git
@@ -127,22 +127,14 @@ With prefix argument ARG, always create a new shell."
              :untracked? git-untracked?
              :modified? git-modified?)
             ) plist)
-
-          (current-directory
-           (if git-hash
-               (let* ((parent (f-slash (f-abbrev (f-parent git-root))))
-                      (subdirs (f-relative dir parent)))
-                 (concat
-                  (propertize parent 'face font-lock-comment-face)
-                  (cb-eshell--propertize-dir subdirs)))
-
-             (cb-eshell--propertize-dir (f-abbrev dir))))
+          (at-proj-root? (equal git-root dir))
+          (git-status-changed? (not (equal (plist-get prev-plist :git) (plist-get plist :git))))
 
           (sections
            (concat
             ;; Display project info when at project root.
-            (when (equal git-root dir)
-              (-when-let (parts (-non-nil
+            (-when-let* ((_ at-proj-root?)
+                         (parts (-non-nil
                                  (list
                                   (when git-hash
                                     (concat (propertize "vc:" 'face font-lock-comment-face)
@@ -156,15 +148,13 @@ With prefix argument ARG, always create a new shell."
                                     (concat
                                      (propertize "type:[" 'face font-lock-comment-face)
                                      (propertize (s-join " " types) 'face 'default)
-                                     (propertize "]" 'face font-lock-comment-face)
-                                     ))
-                                  )))
-                (cb-eshell--prompt-section
-                 (propertize "project " 'face font-lock-comment-face)
-                 (s-join " " parts))))
+                                     (propertize "]" 'face font-lock-comment-face)))))))
+              (cb-eshell--prompt-section
+               (propertize "project " 'face font-lock-comment-face)
+               (s-join " " parts)))
 
             ;; Git branch info and status.
-            (when git-root
+            (when (and git-hash (or at-proj-root? git-status-changed?))
               (cb-eshell--prompt-section
                (if git-branch
                    (concat
@@ -190,10 +180,31 @@ With prefix argument ARG, always create a new shell."
                  (concat
                   (propertize " state:[" 'face font-lock-comment-face)
                   (s-join " " (-non-nil statuses))
-                  (propertize "]" 'face font-lock-comment-face))))))))
+                  (propertize "]" 'face font-lock-comment-face)))))))
+
+          (current-directory
+           (if git-hash
+               (let* ((parent (f-slash (f-abbrev (f-parent git-root))))
+                      (subdirs (f-relative dir parent)))
+                 (concat
+                  (propertize parent 'face font-lock-comment-face)
+                  (cb-eshell--propertize-dir subdirs)))
+
+             (cb-eshell--propertize-dir (f-abbrev dir)))))
     (concat
-     current-directory
+     (-when-let* ((_ (or at-proj-root? git-status-changed?))
+                  (_ git-root)
+                  (proj-name (f-filename git-root)))
+       (concat (propertize "@ " 'face font-lock-comment-face)
+               (propertize proj-name 'face `(:foreground ,solarized-hl-cyan))))
      sections
+
+     (let ((empty-sections? (and sections (s-blank? sections))))
+       (cond
+        (empty-sections? "")
+        (sections "\n\n")
+        (t "")))
+     current-directory
      "\n")))
 
 (defun cb-eshell--propertize-dir (dir)
@@ -208,7 +219,7 @@ With prefix argument ARG, always create a new shell."
 
 (defun cb-eshell--prompt-section (&rest components)
   (concat "\n"
-          (propertize " - " 'face font-lock-comment-face)
+          (propertize "- " 'face font-lock-comment-face)
           (s-join "" components)))
 
 (defun cb-eshell--project-lang (project-root)
@@ -258,9 +269,13 @@ With prefix argument ARG, always create a new shell."
         "sbt")
 
       (let ((sbt-plugins (f-join project-root "project/plugins.sbt")))
-        (when (and (f-exists? sbt-plugins)
-                   (s-contains? "com.typesafe.play" (f-read-text sbt-plugins 'utf-8)))
-          "play"))
+        (-when-let* ((str (and (f-exists? sbt-plugins)
+                               (f-read-text sbt-plugins 'utf-8)))
+                     ((_ version)
+                      (s-match (rx "com.typesafe.play" (*? nonl)
+                                   (group (+ (any digit "."))))
+                               str)))
+          (concat "play-" version)))
 
       (when (--any? (s-matches? (rx "/init.el" eos) it) files)
         "emacs.d")))))
