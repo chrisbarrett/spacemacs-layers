@@ -84,7 +84,6 @@
               (tags priority-down category-keep)
               (search category-keep)))
       (setq org-agenda-span 'week)
-      (setq org-agenda-start-on-weekday 1)
       (setq org-agenda-text-search-extra-files '(agenda-archives))
       (setq org-agenda-use-time-grid nil)
 
@@ -167,7 +166,6 @@
 
                 ((org-agenda-tag-filter-preset '("-ignore"))
                  (org-agenda-span 'fortnight)
-                 (org-agenda-start-on-weekday nil)
                  (org-agenda-dim-blocked-tasks nil)
                  (org-agenda-clockreport-mode t)
                  (org-agenda-show-log t)
