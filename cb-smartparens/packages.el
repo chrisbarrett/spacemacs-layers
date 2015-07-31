@@ -40,8 +40,11 @@ which require an initialization must be listed explicitly in the list.")
 
       ;; Keybindings
 
+      (evil-global-set-key 'insert (kbd "DEL") 'sp-backward-delete-char)
+
       (evil-define-key 'insert prog-mode-map
         (kbd "<backspace>") 'sp/generic-prog-backspace
+        (kbd "DEL") 'sp/generic-prog-backspace
         (kbd "SPC") 'sp/generic-prog-space
         (kbd "RET") 'sp/generic-prog-ret)
 
@@ -52,7 +55,6 @@ which require an initialization must be listed explicitly in the list.")
       (sp-pair "`" "`"   :bind "M-`")
 
       (define-key sp-keymap (kbd "C-k") 'sp/kill-blank-lines)
-      (define-key sp-keymap (kbd "DEL") 'sp-backward-delete-char)
 
       (spacemacs/declare-prefix "," "smartparens")
 
