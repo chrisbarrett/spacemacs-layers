@@ -188,8 +188,7 @@
   ;;; C
 
   (sp-with-modes '(c-mode cc-mode c++-mode)
-    (sp-local-pair "{" "}" :post-handlers '(:add sp/c-format-after-brace
-                                                 sp/external-and-external-padding))
+    (sp-local-pair "{" "}" :post-handlers '(:add sp/external-padding))
     (sp-local-pair "(" ")" :post-handlers '(:add sp/c-format-after-paren)))
 
   )

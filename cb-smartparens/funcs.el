@@ -273,28 +273,6 @@ STATEMENT-DELIMETER-RX."
 
 ;;; C utils
 
-(defun sp/c-format-after-brace (_id action context)
-  "Apply formatting after a brace insertion."
-  (when (and (equal action 'insert)
-             (equal context 'code)
-             (save-excursion
-               ;; Search backward for flow control keywords.
-               (search-backward "{")
-               (or (thing-at-point-looking-at
-                    (rx symbol-start (or "else" "do")))
-                   (progn
-                     (sp-previous-sexp)
-                     (thing-at-point-looking-at
-                      (rx symbol-start (or "if" "for" "while")))))))
-    ;; Insert a space for padding.
-    (save-excursion
-      (search-backward "{")
-      (just-one-space))
-    ;; Put braces on new line.
-    (newline)
-    (save-excursion (newline-and-indent))
-    (c-indent-line)))
-
 (defun sp/c-format-after-paren (_id action context)
   "Insert a space after flow control keywords."
   (when (and (equal action 'insert)

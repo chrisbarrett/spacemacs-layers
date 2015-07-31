@@ -1,0 +1,7 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: auto
+# key: a
+# binding: direct-keybinding
+# condition: (yas/bol?)
+# --
+auto ${1:name} = $0;

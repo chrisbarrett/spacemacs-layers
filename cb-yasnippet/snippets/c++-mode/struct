@@ -1,0 +1,9 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: struct
+# key: st
+# binding: direct-keybinding
+# condition: (yas/bol?)
+# --
+struct ${1:Typename} {
+  $0
+};

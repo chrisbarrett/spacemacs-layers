@@ -26,8 +26,17 @@
      org
      emacs-lisp
      restclient
-     (shell :variables shell-default-shell 'eshell shell-protect-eshell-prompt nil)
      syntax-checking
+     (shell
+      :variables
+      shell-default-shell 'eshell
+      shell-protect-eshell-prompt nil
+      )
+     (c-c++
+      :variables
+      c-c++-default-mode-for-headers 'c++-mode
+      c-c++-enable-clang-support t
+      )
      cb-core
      cb-sunrise-commander
      cb-autoinsert
@@ -59,6 +68,7 @@
      cb-crontab
      cb-js
      cb-mu4e
+     cb-cpp
      )
    ;; List of additional packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these
