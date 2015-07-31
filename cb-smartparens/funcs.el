@@ -101,8 +101,14 @@ Insert leading padding unless at start of line or after an open round paren."
                    (buffer-substring (line-beginning-position) (point)))))
 
 (defun sp/inside-curly-braces? (&optional same-line?)
-  (-let [(&plist :beg beg :end end :op op) (sp-get-enclosing-sexp)]
-    (when (equal op "{")
+  (sp/inside-sexp? "{" t))
+
+(defun sp/inside-square-braces? (&optional same-line?)
+  (sp/inside-sexp? "[" t))
+
+(defun sp/inside-sexp? (expected-op &optional same-line?)
+  (-let [(&plist :beg beg :end end :op actual-op) (sp-get-enclosing-sexp)]
+    (when (equal expected-op actual-op)
       (if same-line?
           (= (line-number-at-pos beg) (line-number-at-pos end))
         t))))
@@ -129,15 +135,15 @@ Insert leading padding unless at start of line or after an open round paren."
 (defun sp/inside-curly-braces-with-content? (&optional same-line?)
   (and (sp/inside-curly-braces? same-line?) (not (sp/inside-curly-braces-no-content? same-line?))))
 
-(defun sp/just-after-open-curly? ()
-  (s-matches? (rx "{" (* space) eos) (buffer-substring (line-beginning-position) (point))))
+(defun sp/just-after-open-op? (op)
+  (s-matches? (rx-to-string `(and ,op (* space) eos)) (buffer-substring (line-beginning-position) (point))))
 
 (defun sp/split-braced-expression-over-new-lines (&optional statement-delimiter-rx)
   "Split the braced expression on the current line over several lines.
 
 Optionally split the internal lines according to the given regexp
 STATEMENT-DELIMETER-RX."
-  (-let [(&plist :beg beg :end end) (sp-get-enclosing-sexp)]
+  (-let [(&plist :beg beg :end end :op op) (sp-get-enclosing-sexp)]
     (save-excursion
       (goto-char (1- end))
       (newline-and-indent)
@@ -151,7 +157,7 @@ STATEMENT-DELIMETER-RX."
     ;; If point was after the opening brace before splitting, it will not have
     ;; moved to the next line. Correct this by moving forward to indentation on
     ;; the next line.
-    (when (sp/just-after-open-curly?)
+    (when (sp/just-after-open-op? op)
       (forward-line)
       (back-to-indentation))))
 
@@ -194,7 +200,8 @@ STATEMENT-DELIMETER-RX."
     (comment-indent-new-line)
     (just-one-space))
 
-   ((sp/inside-curly-braces? t)
+   ((or (sp/inside-curly-braces? t)
+        (sp/inside-square-braces? t))
     (sp/split-braced-expression-over-new-lines (rx (or ";" ","))))
 
    (t
