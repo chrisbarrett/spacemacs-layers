@@ -26,7 +26,7 @@
      org
      emacs-lisp
      restclient
-     (shell :variables shell-default-shell 'eshell)
+     (shell :variables shell-default-shell 'eshell shell-protect-eshell-prompt nil)
      syntax-checking
      cb-core
      cb-sunrise-commander
@@ -48,7 +48,7 @@
      ;; cb-rust
      cb-idris
      cb-agda
-     ;; cb-coffeescript
+     cb-coffeescript
      cb-sql
      ;; cb-shell
      cb-eshell
@@ -66,7 +66,7 @@
    ;; configuration in `dotspacemacs/config'.
    dotspacemacs-additional-packages '(muttrc-mode yaml-mode)
    ;; A list of packages and/or extensions that will not be install and loaded.
-   dotspacemacs-excluded-packages '(rainbow-delimiters clean-aindent-mode)
+   dotspacemacs-excluded-packages '(rainbow-delimiters clean-aindent-mode eshell-prompt-extras)
    ;; If non-nil spacemacs will delete any orphan packages, i.e. packages that
    ;; are declared in a layer which is not a member of
    ;; the list `dotspacemacs-configuration-layers'
