@@ -1,0 +1,7 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: enum class
+# key: ec
+# binding: direct-keybinding
+# condition: (yas/bol?)
+# --
+enum class ${1:Name} { $0 };
