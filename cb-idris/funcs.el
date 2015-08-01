@@ -4,11 +4,11 @@
   (interactive)
   (cond
    ((and (char-before) (equal (char-to-string (char-before)) " "))
-    (super-smart-ops-insert ":"))
+    (super-smart-ops-insert ":" t t))
    ((and (char-after) (equal (char-to-string (char-after)) ")"))
     (insert ":"))
    (t
-    (super-smart-ops-insert ":"))))
+    (super-smart-ops-insert ":" t t))))
 
 (defun idris/smart-comma ()
   (interactive)
@@ -18,7 +18,7 @@
     (insert ", ")
     (idris-indentation-indent-line))
    (t
-    (core/comma-then-space))))
+    (super-smart-ops-insert "," nil t))))
 
 (defun idris/in-empty-square-braces? ()
   (save-excursion
@@ -38,7 +38,7 @@
     (message "Inserting idiom brackets"))
 
    (t
-    (super-smart-ops-insert "|"))))
+    (super-smart-ops-insert "|" t t))))
 
 (defun idris/looking-at-module-or-constructor? ()
   (-when-let ([fst] (thing-at-point 'symbol))
@@ -53,7 +53,7 @@
    ((thing-at-point-looking-at (rx (or "(" "{" "[") (* space)))
     (insert "."))
    (t
-    (super-smart-ops-insert "."))))
+    (super-smart-ops-insert "." t t))))
 
 (defun idris/smart-question-mark ()
   "Insert a ? char as an operator, unless point is after an = sign."
@@ -63,7 +63,7 @@
     (just-one-space)
     (insert "?"))
    (t
-    (super-smart-ops-insert "?"))))
+    (super-smart-ops-insert "?" t t))))
 
 (defun idris/after-subexpr-opening? ()
   (s-matches? (rx (or "{" "[" "{-" "[|") (* space) eol)

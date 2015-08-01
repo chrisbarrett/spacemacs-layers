@@ -446,28 +446,6 @@ Edit from START to END using MODE."
     (shrink-window-if-larger-than-buffer)))
 
 
-;;; Super smart ops
-
-(defun core/insert-smart-op-no-leading-space (op)
-  "Insert OP without any preceding padding."
-  (super-smart-ops-insert op)
-  (save-excursion
-    (search-backward op)
-    (unless (s-matches? (rx bol (* space) eol)
-                        (buffer-substring (line-beginning-position) (point)))
-      (delete-horizontal-space))))
-
-(defun core/comma-then-space ()
-  "Insert a comma smart op, removing any preceding padding."
-  (interactive)
-  (core/insert-smart-op-no-leading-space ","))
-
-(defun core/semicolon-then-space ()
-  "Insert a colon, with context-sensitive formatting."
-  (interactive)
-  (core/insert-smart-op-no-leading-space ";"))
-
-
 ;;; Registers
 
 (defun core/make-fn-key-frame-register-command (fn-key)

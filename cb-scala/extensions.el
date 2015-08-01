@@ -24,22 +24,20 @@
     (progn
       (super-smart-ops-configure-for-mode 'scala-mode
         :custom
-        '(("=" . scala/equals)
-          (":" . scala/colon)
+        `((":" . ,(super-smart-ops-make-smart-op ":" nil t))
           ("?" . scala/qmark)
           ("+" . scala/plus)
           ("-" . scala/minus)
           ("/" . scala/slash)
-          ("," . core/comma-then-space)))
+          ("," . ,(super-smart-ops-make-smart-op "," nil t))))
 
       (super-smart-ops-configure-for-mode 'ensime-inf-mode
         :custom
-        '(("=" . scala/equals)
-          (":" . scala/repl-colon)
+        `((":" . scala/repl-colon)
           ("?" . scala/qmark)
           ("+" . scala/plus)
           ("-" . scala/minus)
-          ("," . core/comma-then-space))))))
+          ("," . ,(super-smart-ops-make-smart-op "," nil t)))))))
 
 (defun cb-scala/init-scala-errors ()
   (use-package scala-errors))

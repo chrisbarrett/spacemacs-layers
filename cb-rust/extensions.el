@@ -18,5 +18,6 @@
     :config
     (super-smart-ops-configure-for-mode 'rust-mode
       :rem '("!" "~" "&")
-      :custom '((":" . rust/smart-colon)
-                ("," . core/comma-then-space)))))
+      :custom
+      `((":" . rust/smart-colon)
+        ("," . ,(super-smart-ops-make-smart-op "," nil t))))))

@@ -19,5 +19,5 @@
     (super-smart-ops-configure-for-mode 'csharp-mode
       :add '("?")
       :custom
-      '(("," . core/comma-then-space)
-        (";" . core/semicolon-then-space)))))
+      `(("," . ,(super-smart-ops-make-smart-op "," nil t))
+        (";" . ,(super-smart-ops-make-smart-op ";" nil t))))))

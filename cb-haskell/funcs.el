@@ -60,7 +60,7 @@
     (save-excursion
       (insert " -")))
    (t
-    (super-smart-ops-insert "-"))))
+    (super-smart-ops-insert "-" t t))))
 
 (defun haskell/smart-hash ()
   "Context-sensitive hash character."
@@ -114,7 +114,7 @@
     (insert "@"))
 
    (t
-    (super-smart-ops-insert "@"))))
+    (super-smart-ops-insert "@" t t))))
 
 (defun haskell/smart-pipe ()
   "Insert a pipe operator. Add padding, unless we're inside a list."
@@ -128,7 +128,7 @@
     (just-one-space)
     (insert "|"))
    (t
-    (super-smart-ops-insert "|"))))
+    (super-smart-ops-insert "|" t t))))
 
 (defun haskell/looking-at-module-or-constructor? ()
   (-when-let (sym (thing-at-point 'symbol))
@@ -160,7 +160,7 @@
     (insert "."))
 
    (t
-    (super-smart-ops-insert "."))))
+    (super-smart-ops-insert "."t t))))
 
 (defun haskell/smart-colon ()
   "Insert a colon, with context-sensitive formatting."
@@ -180,7 +180,7 @@
     (insert ":"))
 
    (t
-    (super-smart-ops-insert ":"))))
+    (super-smart-ops-insert ":" t t))))
 
 (defun haskell/backspace ()
   "Delete backwards with context-sensitive formatting."
@@ -216,7 +216,7 @@
      (just-one-space))
 
     (t
-     (core/comma-then-space)))))
+     (super-smart-ops-insert "," nil t)))))
 
 (defun haskell/ghci-line-beginning-position ()
   "Narrow to the current line, excluding the ghci prompt."
@@ -238,7 +238,7 @@
                       (line-end-position))
     (if (s-blank? (buffer-substring (line-beginning-position) (point)))
         (insert ":")
-      (super-smart-ops-insert ":"))))
+      (super-smart-ops-insert ":" t t))))
 
 (defun haskell/ghci-smart-comma ()
   "Insert a comma with padding."

@@ -13,7 +13,7 @@
          (save-excursion
            (insert "|")))
         (t
-         (super-smart-ops-insert "|"))))
+         (super-smart-ops-insert "|" t t))))
 
 (defun coq/smart-colon ()
   "Insert a colon with context-sensitive formatting."
@@ -24,7 +24,7 @@
     (delete-horizontal-space)
     (insert ":"))
    (t
-    (super-smart-ops-insert ":"))))
+    (super-smart-ops-insert ":" t t))))
 
 
 ;;; Smart M-RET

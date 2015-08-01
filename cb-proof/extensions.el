@@ -100,7 +100,7 @@
       (super-smart-ops-configure-for-mode 'coq-mode
         :add '("$" "?" "^" "~" "\\")
         :custom
-        '(("|" . coq/smart-pipe)
+        `(("|" . coq/smart-pipe)
           (":" . coq/smart-colon)
           ("!" . self-insert-command)
-          ("," . core/comma-then-space))))))
+          ("," . ,(super-smart-ops-make-smart-op "," nil t)))))))

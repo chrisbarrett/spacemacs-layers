@@ -26,26 +26,26 @@
       (super-smart-ops-configure-for-mode 'haskell-mode
         :add '("$" "=" "~" "^")
         :custom
-        '(("." . haskell/smart-dot)
+        `(("." . haskell/smart-dot)
           ("," . haskell/smart-comma)
           ("|" . haskell/smart-pipe)
           ("#" . haskell/smart-hash)
           ("@" . haskell/smart-at)
           ("-" . haskell/smart-minus)
           (":" . haskell/smart-colon)
-          (";" . core/semicolon-then-space)))
+          (";" . ,(super-smart-ops-make-smart-op ";" nil t))))
 
       (super-smart-ops-configure-for-mode 'haskell-interactive-mode
         :add '("$" "=" "~" "^")
         :custom
-        '(("." . haskell/smart-dot)
+        `(("." . haskell/smart-dot)
           ("-" . haskell/smart-minus)
           ("#" . haskell/smart-hash)
           ("@" . haskell/smart-at)
           ("|" . haskell/smart-pipe)
           (":" . haskell/ghci-smart-colon)
           ("," . haskell/ghci-smart-comma)
-          (";" . core/semicolon-then-space))))))
+          (";" . ,(super-smart-ops-make-smart-op ";" nil t)))))))
 
 (defun cb-haskell/init-haskell-parser ()
   (use-package haskell-parser

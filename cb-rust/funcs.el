@@ -4,7 +4,7 @@
   "Insert a colon as a smart operator.
 Collapse spaces if this is a double-colon."
   (interactive "*")
-  (super-smart-ops-insert ":")
+  (super-smart-ops-insert ":" t t)
   (save-excursion
     (when (search-backward-regexp (rx (* space) ":" (* space) ":" (* space))
                                   nil t)

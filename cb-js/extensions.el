@@ -18,13 +18,8 @@
     (setq js-indent-level 2)))
 
 (defun cb-js/init-super-smart-ops ()
-
-  (defun js/smart-colon ()
-    (interactive)
-    (core/insert-smart-op-no-leading-space ":"))
-
   (use-package super-smart-ops
     :config
     (super-smart-ops-configure-for-mode 'js-mode
       :custom
-      '((":" . js/smart-colon)))))
+      `((":" . ,(super-smart-ops-make-smart-op ":" nil t))))))

@@ -2,12 +2,10 @@
 ;;; Commentary:
 ;;; Code:
 
-(defconst cb-groovy-pre-extensions
-  '(super-smart-ops)
+(defconst cb-groovy-pre-extensions '()
   "List of all extensions to load before the packages.")
 
-(defconst cb-groovy-post-extensions
-  '()
+(defconst cb-groovy-post-extensions '(super-smart-ops)
   "List of all extensions to load after the packages.")
 
 (eval-when-compile
@@ -19,10 +17,10 @@
     (progn
       (super-smart-ops-configure-for-mode 'groovy-mode
         :custom
-        '((":" . groovy/colon)
-          ("," . core/comma-then-space)))
+        `((":" . ,(super-smart-ops-make-smart-op ":" nil t))
+          ("," . ,(super-smart-ops-make-smart-op "," nil t))))
 
       (super-smart-ops-configure-for-mode 'inferior-groovy-mode
         :custom
-        '((":" . groovy/colon)
-          ("," . core/comma-then-space))))))
+        `((":" . ,(super-smart-ops-make-smart-op ":" nil t))
+          ("," . ,(super-smart-ops-make-smart-op "," nil t)))))))

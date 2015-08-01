@@ -9,20 +9,12 @@
 
 ;;; Smart ops
 
-(defun scala/equals ()
-  (interactive)
-  (super-smart-ops-insert "="))
-
-(defun scala/colon ()
-  (interactive)
-  (core/insert-smart-op-no-leading-space ":"))
-
 (defun scala/repl-colon ()
   (interactive)
   (if (s-matches? (rx bol (* space) "scala>" (* space))
                   (buffer-substring (line-beginning-position) (point)))
       (insert ":")
-    (core/insert-smart-op-no-leading-space ":")))
+    (super-smart-ops-insert ":" nil t)))
 
 (defun scala/insert-variance-op (op)
   "Insert a variance operator.
@@ -38,7 +30,7 @@ Pad in normal expressions. Do not insert padding in variance annotations."
     (insert op))
    ;; Otherwise leading and trailing padding.
    (t
-    (super-smart-ops-insert op))))
+    (super-smart-ops-insert op t t))))
 
 (defun scala/minus ()
   (interactive "*")
@@ -56,7 +48,7 @@ Typing three in a row will insert a ScalaDoc."
       (atomic-change-group
         (delete-region (line-beginning-position) (line-end-position))
         (scala/insert-scaladoc))
-    (super-smart-ops-insert "/")))
+    (super-smart-ops-insert "/" t t)))
 
 (defun scala/qmark ()
   "Insert a question mark as a smart operator.
@@ -70,7 +62,7 @@ Typing three in a row will format the undefined function correctly."
           (search-backward "=")
           (goto-char (match-end 0))
           (just-one-space)))
-    (super-smart-ops-insert "?")))
+    (super-smart-ops-insert "?" t t)))
 
 (defun scala/insert-scaladoc ()
   "Insert the skeleton of a ScalaDoc at point."

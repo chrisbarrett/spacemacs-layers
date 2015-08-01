@@ -67,5 +67,6 @@
   (use-package super-smart-ops
     :config
     (super-smart-ops-configure-for-mode 'c++-mode
-      :custom '((">" . cb-cpp/>))
+      :custom '((">" . cb-cpp/>)
+                ("&" . cb-cpp/&))
       :rem '(":"))))
