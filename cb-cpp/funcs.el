@@ -5,17 +5,34 @@
 (defun cb-cpp/> ()
   "Insert a '>' and perform context-sensitive formatting."
   (interactive "*")
-  (super-smart-ops-insert ">" nil nil)
-  (let ((empty-template-rx
-         (rx (+ (not space)) (* space) "<" (* space) ">" (* space) eos))
-        (line-to-point (buffer-substring (line-beginning-position) (point))
-                       ))
-    (when (s-matches? empty-template-rx line-to-point)
-      (super-smart-ops-delete-last-op)
+  (let ((empty-template-rx (rx (+ (not space)) (* space) "<" (* space) eos))
+        (pointer-access-rx (rx (+ (not space)) (* space) "-" (* space) eos))
+        (line-to-point (buffer-substring (line-beginning-position) (point))))
+    (cond
+     ((s-matches? empty-template-rx line-to-point)
       (super-smart-ops-delete-last-op)
       (super-smart-ops-insert "<" nil nil)
       (save-excursion
-        (super-smart-ops-insert ">" nil nil)))))
+        (super-smart-ops-insert ">" nil nil)))
+
+     ((s-matches? pointer-access-rx line-to-point)
+      (super-smart-ops-delete-last-op)
+      (insert "->"))
+
+     (t
+      (super-smart-ops-insert ">" t t)))))
+
+(defun cb-cpp/: ()
+  "Insert a '&' and perform context-sensitive formatting."
+  (interactive "*")
+  (let ((existing-colon-rx (rx ":" (* space) eos))
+        (line-to-point (buffer-substring (line-beginning-position) (point))))
+    (cond
+     ((s-matches? existing-colon-rx line-to-point)
+      (super-smart-ops-delete-last-op)
+      (insert "::"))
+     (t
+      (super-smart-ops-insert ":" nil t)))))
 
 (defun cb-cpp/& ()
   "Insert a '&' and perform context-sensitive formatting."
@@ -36,3 +53,20 @@
     (super-smart-ops-insert op t t))
    (t
     (super-smart-ops-insert op nil t))))
+
+(defun cb-cpp/M-RET ()
+  (interactive "*")
+  (goto-char (line-end-position))
+  (delete-horizontal-space)
+  (unless (equal ?\; (char-before))
+    (insert ";"))
+  (newline-and-indent)
+  (evil-insert-state))
+
+(defun cb-cpp/C-RET ()
+  (interactive "*")
+  (goto-char (line-end-position))
+  (delete-horizontal-space)
+  (unless (equal ?\; (char-before))
+    (insert ";"))
+  (evil-insert-state))

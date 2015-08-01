@@ -34,6 +34,9 @@
         (kbd "<backspace>") 'sp/generic-prog-backspace
         (kbd "SPC") 'sp/generic-prog-space)
 
+      (define-key c++-mode-map (kbd "M-RET") 'cb-cpp/M-RET)
+      (define-key c++-mode-map (kbd "C-<return>") 'cb-cpp/C-RET)
+
       ;; Aggressive indent is a little too aggressive for C++.
 
       (with-eval-after-load 'aggressive-indent
@@ -70,5 +73,5 @@
       :custom '((">" . cb-cpp/>)
                 ("&" . cb-cpp/&)
                 ("*" . cb-cpp/*)
-                )
-      :rem '(":"))))
+                (":" . cb-cpp/:)
+                ))))
