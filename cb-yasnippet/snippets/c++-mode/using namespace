@@ -1,7 +1,5 @@
-    # -*- mode: snippet; require-final-newline: nil -*-
-    # name: using namespace
-    # key: un
-    # binding: direct-keybinding
-    # condition: (yas/bol?)
-    # --
-    using namespace $0;
+# key: un
+# name: using namespace
+# condition: (yas/bol?)
+# --
+using namespace $0;

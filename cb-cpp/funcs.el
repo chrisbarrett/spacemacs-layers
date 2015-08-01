@@ -18,14 +18,21 @@
         (super-smart-ops-insert ">" nil nil)))))
 
 (defun cb-cpp/& ()
-  "Insert a '>' and perform context-sensitive formatting."
+  "Insert a '&' and perform context-sensitive formatting."
   (interactive "*")
+  (cb-cpp/insert-ptr-like-op "&"))
+
+(defun cb-cpp/* ()
+  "Insert a '*' and perform context-sensitive formatting."
+  (interactive "*")
+  (cb-cpp/insert-ptr-like-op "*"))
+
+(defun cb-cpp/insert-ptr-like-op (op)
   (cond
-   ((s-matches? (rx (not space) (* space) "&" (* space) eos)
+   ((s-matches? (rx-to-string `(and (not space) (* space) ,op (* space) eos))
                 (buffer-substring (line-beginning-position) (point)))
-    (save-excursion
-      (super-smart-ops-delete-last-op)
-      (super-smart-ops-insert "&" t t)
-      (super-smart-ops-insert "&" t t)))
+    (super-smart-ops-delete-last-op)
+    (super-smart-ops-insert op t t)
+    (super-smart-ops-insert op t t))
    (t
-    (super-smart-ops-insert "&" nil t))))
+    (super-smart-ops-insert op nil t))))

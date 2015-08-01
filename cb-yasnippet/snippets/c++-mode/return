@@ -1,7 +1,5 @@
-    # -*- mode: snippet; require-final-newline: nil -*-
-    # name: return
-    # key: r
-    # binding: direct-keybinding
-    # condition: (yas/bol?)
-    # --
-    return $0;
+# key: r
+# name: return
+# condition: (yas/bol?)
+# --
+return $0;
