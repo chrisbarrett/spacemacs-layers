@@ -42,6 +42,63 @@
       (add-to-list 'ido-ignore-files "\\.swp")
       (add-to-list 'ido-ignore-files "\\.DS_Store"))))
 
+(defconst cb-core/ignored-files-regexps
+  '("\\.elc$"
+    "\\.pyc$"
+    "TAGS"
+    "\\.gz$"
+    "flycheck_"
+    "\\.DS_Store"
+    "\\.swp"
+    "#$"
+    "^/?sudo"
+    "\\.bbdb"
+    "\\.newsrc"
+    "/gnus$"
+    "/gnus.eld$"
+    "\\.ido\\.last"
+    "\\.org-clock-save\\.el$"))
+
+(defconst cb-core/ignored-dirs
+  '(".cabal-sandbox"
+    ".idea"
+    "dist"
+    "target"
+    "obj"
+    "build"
+    "log"
+    "logs"
+    "tmp"
+    "temp"
+
+    ".cache"
+    "var/folders"
+    "Mail"
+
+    ;; VC
+    ".git"
+    ".hg"
+    ".fslckout"
+    ".bzr"
+    "_darcs"
+    ".tox"
+    ".svn"
+
+    ;; Emacs
+    ".cask"
+    "elpa"
+    "snippets"
+    ".emacs.d/url"
+    "Emacs.app"
+
+    ;; Scala
+    "project/target"
+    "project/project"
+    ".ensime_cache"))
+
+(defun cb-core/regexp-quoted-ignored-dirs ()
+  (--map (format "/%s/" (regexp-quote it)) cb-core/ignored-dirs))
+
 (defun cb-core/init-recentf ()
   (use-package recentf
     :config
@@ -52,32 +109,9 @@
       (setq recentf-keep '(file-remote-p file-readable-p))
 
       (setq recentf-exclude
-            (append recentf-exclude
-                    '("\\.elc$"
-                      "\\.pyc$"
-                      "TAGS"
-                      "\\.gz$"
-                      "#$"
-                      "/elpa/"
-                      "/log/"
-                      "/logs/"
-                      "/tmp/"
-                      "/temp/"
-                      "/target/"
-                      "/snippets/"
-                      ".emacs.d/url/"
-                      "/\\.git/"
-                      "/Emacs.app/"
-                      "/var/folders/"
-                      "^/?sudo"
-                      "\\.bbdb"
-                      "/\\.cache/"
-                      "\\.newsrc"
-                      "/gnus$"
-                      "/Mail/"
-                      "/gnus.eld$"
-                      "\\.ido\\.last"
-                      "\\.org-clock-save\\.el$")))
+            (-distinct (-concat recentf-exclude
+                                (cb-core/regexp-quoted-ignored-dirs)
+                                cb-core/ignored-files-regexps)))
 
       (defadvice recentf-cleanup (around hide-messages activate)
         "Do not message when cleaning up recentf list."

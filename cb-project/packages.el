@@ -19,37 +19,11 @@ which require an initialization must be listed explicitly in the list.")
 
 (eval-when-compile
   (require 'use-package nil t)
+  (require 'dash nil t)
   (require 's nil t))
 
-(defconst cb-project/ignore-list
-  (-map 'regexp-quote
-        '(".cask"
-          ".cabal-sandbox"
-          "dist"
-          ".idea"
-
-          ".eunit"
-          ".git"
-          ".hg"
-          ".fslckout"
-          ".bzr"
-          "_darcs"
-          ".tox"
-          ".svn"
-          "elpa"
-          "snippets"
-          "build"
-
-          ;; Scala
-          ".sbtserver"
-          "target"
-          "project/target"
-          "project/project"
-          ".ensime_cache"
-          )))
-
 (with-eval-after-load 'recentf
-  (setq recentf-exclude (-union recentf-exclude cb-project/ignore-list)))
+  (setq recentf-exclude (-union recentf-exclude (cb-core/regexp-quoted-ignored-dirs))))
 
 (defun cb-project/init-projectile ()
   (use-package projectile
@@ -68,7 +42,7 @@ which require an initialization must be listed explicitly in the list.")
       (setq projectile-switch-project-action (lambda ()
                                                (projectile-invalidate-cache nil)
                                                (call-interactively 'magit-status)))
-      (setq projectile-globally-ignored-directories cb-project/ignore-list)
+      (setq projectile-globally-ignored-directories cb-core/ignored-dirs)
 
       (defadvice projectile-invalidate-cache (before recentf-cleanup activate)
         (recentf-cleanup))
@@ -95,7 +69,7 @@ which require an initialization must be listed explicitly in the list.")
   (use-package ag
     :defer t
     :config
-    (setq ag-ignore-list (-union ag-ignore-list cb-project/ignore-list))))
+    (setq ag-ignore-list (-union ag-ignore-list (cb-core/regexp-quoted-ignored-dirs)))))
 
 (defun cb-project/init-helm-ag ()
   (use-package helm-ag
