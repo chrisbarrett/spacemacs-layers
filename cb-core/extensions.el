@@ -28,7 +28,10 @@
   (push it load-path))
 
 (defun cb-core/init-super-smart-ops ()
-  (use-package super-smart-ops))
+  (use-package super-smart-ops
+    :config
+    (evil-define-key 'insert prog-mode-map
+      (kbd ",") 'core/generic-comma-then-space)))
 
 (defun cb-core/init-ido ()
   (use-package ido
