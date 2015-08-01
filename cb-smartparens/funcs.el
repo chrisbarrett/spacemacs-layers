@@ -149,10 +149,19 @@ STATEMENT-DELIMETER-RX."
       (newline-and-indent)
       (goto-char (1+ beg))
       (newline-and-indent)
-      (let ((start-depth (sp/depth)))
+      (let ((changed? nil)
+            (start-depth (sp/depth)))
         (while (search-forward-regexp statement-delimiter-rx (line-end-position) t)
           (when (equal start-depth (sp/depth))
-            (insert "\n")))))
+            (unless (core/in-string-or-comment?)
+              (setq changed? t)
+              (insert "\n")
+              (indent-according-to-mode))))
+
+        ;; Remove extra blank line from replacement.
+        (when changed?
+          (join-line)
+          (delete-horizontal-space))))
 
     ;; If point was after the opening brace before splitting, it will not have
     ;; moved to the next line. Correct this by moving forward to indentation on
