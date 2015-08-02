@@ -49,11 +49,13 @@
         (insert "::")
         (cb-cpp/show-company-popup))
 
-       (t
+       ((s-matches? (rx bol (* space) (or "public" "private" "protected"))
+                    (current-line))
         (super-smart-ops-insert ":" nil t)
-        (when (s-matches? (rx bol (* space) (or "public" "private" "protected"))
-                          (current-line))
-          (indent-for-tab-command)))))))
+        (indent-for-tab-command))
+
+       (t
+        (super-smart-ops-insert ":" t t))))))
 
 (defun cb-cpp/& ()
   "Insert a '&' and perform context-sensitive formatting."
