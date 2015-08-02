@@ -14,6 +14,7 @@
   '(
     ido
     recentf
+    eldoc
     )
   "List of all extensions to load after the packages.")
 
@@ -132,3 +133,9 @@
   (use-package hl-line
     :config
     (global-hl-line-mode -1)))
+
+(defun cb-core/init-eldoc ()
+  (use-package eldoc
+    :defer t
+    :config
+    (setq eldoc-idle-delay 0.1)))
