@@ -3,7 +3,13 @@
 ;;; Code:
 
 (defconst cb-cpp-packages
-  '(irony company-irony company-irony-c-headers irony-eldoc flycheck-irony)
+  '(irony
+    company-irony
+    company-irony-c-headers
+    irony-eldoc
+    flycheck-irony
+    google-c-style
+    )
   "List of all packages to install and/or initialize. Built-in packages
 which require an initialization must be listed explicitly in the list.")
 
@@ -57,3 +63,9 @@ which require an initialization must be listed explicitly in the list.")
     :config
     (with-eval-after-load 'company
       (add-to-list 'company-backends '(company-irony-c-headers)))))
+
+(defun cb-cpp/init-google-c-style ()
+  (use-package google-c-style
+    :commands google-set-c-style
+    :init
+    (add-hook 'c-mode-common-hook 'google-set-c-style)))
