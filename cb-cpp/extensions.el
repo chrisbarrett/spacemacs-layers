@@ -74,7 +74,8 @@
     :config
     (super-smart-ops-configure-for-mode 'c++-mode
       :custom
-      '((">" . cb-cpp/>)
+      `((">" . cb-cpp/>)
         ("&" . cb-cpp/&)
         ("*" . cb-cpp/*)
+        (";" . ,(super-smart-ops-make-smart-op ";" nil t))
         (":" . cb-cpp/:)))))

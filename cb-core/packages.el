@@ -21,6 +21,7 @@
     ag
     wgrep-ag
     alert
+    helm-gtags
     )
   "List of all packages to install and/or initialize. Built-in packages
 which require an initialization must be listed explicitly in the list.")
@@ -210,3 +211,31 @@ which require an initialization must be listed explicitly in the list.")
   (use-package alert
     :config
     (setq alert-default-style 'message)))
+
+(defun cb-core/init-helm-gtags ()
+  (use-package helm-gtags
+    :defer t
+    :diminish helm-gtags-mode
+    :commands helm-gtags-mode
+    :config
+    (progn
+      (setq helm-gtags-ignore-case t)
+      (setq helm-gtags-auto-update t)
+      (setq helm-gtags-use-input-at-cursor t)
+      (setq helm-gtags-pulse-at-cursor t)
+      (setq helm-gtags-prefix-key "\C-cg")
+      (setq helm-gtags-suggested-key-mapping t)
+
+      (with-eval-after-load 'pulse
+        (core/remap-face 'pulse-highlight-face 'core/bg-flash)
+        (core/remap-face 'pulse-highlight-start-face 'core/bg-flash))
+
+      (dolist (state '(normal insert))
+        (evil-define-key state helm-gtags-mode-map
+          (kbd "M-.") 'helm-gtags-dwim
+          (kbd "M-,") 'helm-gtags-pop-stack))
+
+      (define-key helm-gtags-mode-map (kbd "M-.") 'helm-gtags-dwim)
+      (define-key helm-gtags-mode-map (kbd "M-,") 'helm-gtags-pop-stack))))
+
+;;; End
