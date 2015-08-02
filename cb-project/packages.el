@@ -33,7 +33,10 @@ which require an initialization must be listed explicitly in the list.")
      ("s-d" . projectile-find-dir)
      ("s-l" . projectile-switch-project))
     :init
-    (evil-leader/set-key "pa" 'projectile-ag)
+    (evil-leader/set-key
+      "pa" 'projectile-ag
+      "pg" 'projectile-find-other-file
+      "pG" 'projectile-find-other-file-other-window)
     :config
     (progn
       ;;; Vars
