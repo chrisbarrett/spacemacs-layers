@@ -265,7 +265,8 @@ If this buffer is a member of `core/kill-buffer-ignored-list', bury it rather th
     (save-excursion
       (goto-char (point-min))
       (while (not (eobp))
-        (indent-for-tab-command)
+        (unless (s-blank? (current-line))
+          (indent-for-tab-command))
         (forward-line)))))
 
 (defvar core/indent-commands-alist
