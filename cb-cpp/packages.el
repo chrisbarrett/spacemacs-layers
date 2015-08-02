@@ -3,7 +3,7 @@
 ;;; Code:
 
 (defconst cb-cpp-packages
-  '(irony company-irony irony-eldoc flycheck-irony)
+  '(irony company-irony company-irony-c-headers irony-eldoc flycheck-irony)
   "List of all packages to install and/or initialize. Built-in packages
 which require an initialization must be listed explicitly in the list.")
 
@@ -51,3 +51,9 @@ which require an initialization must be listed explicitly in the list.")
     :config
     (with-eval-after-load 'flycheck
       (add-hook 'flycheck-mode-hook 'flycheck-irony-setup))))
+
+(defun cb-cpp/init-company-irony-c-headers ()
+  (use-package company-irony-c-headers
+    :config
+    (with-eval-after-load 'company
+      (add-to-list 'company-backends '(company-irony-c-headers)))))
