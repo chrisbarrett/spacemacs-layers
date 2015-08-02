@@ -76,21 +76,7 @@ which require an initialization must be listed explicitly in the list.")
   (use-package ggtags
     :commands ggtags-mode
     :init
-    (add-hook 'c++-mode-hook 'ggtags-mode)
-    :config
-    (progn
-      (evil-leader/set-key-for-mode 'c++-mode
-        "mtr" 'ggtags-find-reference
-        "mts" 'ggtags-find-other-symbol
-        "mth" 'ggtags-view-tag-history
-        "mtf" 'ggtags-find-file
-        "mtc" 'ggtags-create-tags
-        "mtu" 'ggtags-update-tags)
-
-      (defun cb-cpp/configure-tags ()
-        (add-hook 'after-save-hook 'ggtags-update-tags nil t))
-
-      (add-hook 'c++-mode-hook 'cb-cpp/configure-tags))))
+    (add-hook 'c++-mode-hook 'ggtags-mode)))
 
 (defun cb-cpp/init-helm-gtags ()
   (use-package helm-gtags
