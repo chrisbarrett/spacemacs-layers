@@ -6,6 +6,15 @@
   (require 's nil t)
   (require 'dash nil t))
 
+(defun cb-cpp/show-company-popup ()
+  (when (and (boundp 'company-mode) company-mode)
+    (company-manual-begin)))
+
+(defun cb-cpp/dot ()
+  (interactive "*")
+  (super-smart-ops-insert "." nil nil)
+  (cb-cpp/show-company-popup))
+
 (defun cb-cpp/> ()
   "Insert a '>' and perform context-sensitive formatting."
   (interactive "*")
@@ -21,7 +30,8 @@
 
      ((s-matches? pointer-access-rx line-to-point)
       (super-smart-ops-delete-last-op)
-      (insert "->"))
+      (insert "->")
+      (cb-cpp/show-company-popup))
 
      (t
       (super-smart-ops-insert ">" t t)))))
@@ -36,7 +46,9 @@
       (cond
        ((s-matches? existing-colon-rx line-to-point)
         (super-smart-ops-delete-last-op)
-        (insert "::"))
+        (insert "::")
+        (cb-cpp/show-company-popup))
+
        (t
         (super-smart-ops-insert ":" nil t)
         (when (s-matches? (rx bol (* space) (or "public" "private" "protected"))
