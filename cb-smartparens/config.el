@@ -187,8 +187,12 @@
 
   ;;; C
 
-  (sp-with-modes '(c-mode cc-mode c++-mode)
+  (sp-with-modes '(c-mode cc-mode)
     (sp-local-pair "{" "}" :post-handlers '(:add sp/external-padding))
     (sp-local-pair "(" ")" :post-handlers '(:add sp/c-format-after-paren)))
+
+  (sp-with-modes 'c++-mode
+    (sp-local-pair "{" "}" :post-handlers '(:rem sp/external-padding))
+    )
 
   )
