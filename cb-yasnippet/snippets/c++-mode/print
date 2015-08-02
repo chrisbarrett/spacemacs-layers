@@ -1,6 +1,5 @@
 # key: p
 # name: print
 # condition: (yas/bol?)
-# expand-env: ((std (unless (s-matches? "using +namespace +std" (buffer-string)) "std::")))
 # --
-`std`cout << "$0" << `std`endl;
+`(cb-cpp/resolve "std::cout")` << "$0" << `(cb-cpp/resolve "std::endl")`;

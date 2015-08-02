@@ -2,6 +2,10 @@
 ;;; Commentary:
 ;;; Code:
 
+(eval-when-compile
+  (require 's nil t)
+  (require 'dash nil t))
+
 (defun cb-cpp/> ()
   "Insert a '>' and perform context-sensitive formatting."
   (interactive "*")
@@ -70,3 +74,16 @@
   (unless (equal ?\; (char-before))
     (insert ";"))
   (evil-insert-state))
+
+(defun cb-cpp/resolve (qualified-name)
+  "Return QUALIFIED-NAME for use in snippets.
+
+If that identifier's namespace has been imported, use the name
+without qualification."
+  (-let [(ns unqualified) (s-split "::" qualified-name)]
+    (if (s-matches? (rx-to-string `(or (and bol (* space)
+                                            "using" (+ space) "namespace" (+ space) ,ns (* space) ";")
+                                       (and "using" (+ space) ,qualified-name (* space) ";")))
+                    (buffer-string))
+        unqualified
+      qualified-name)))
