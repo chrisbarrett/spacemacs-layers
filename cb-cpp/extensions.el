@@ -49,8 +49,11 @@
 
       ;; Font-locking
 
-      (font-lock-add-keywords 'c++-mode `((";" 0 font-lock-comment-face t)))
-      (font-lock-add-keywords 'c++-mode `(("\\_<constexpr\\_>" 0 font-lock-keyword-face t)))
+      (font-lock-add-keywords
+       'c++-mode
+       `((";" 0 font-lock-comment-face t)
+         ("\\_<constexpr\\_>" 0 font-lock-keyword-face t)
+         ("\\_<noexcept\\_>" 0 font-lock-keyword-face t)))
 
       ;; Flyspell
 
