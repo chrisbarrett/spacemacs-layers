@@ -1,0 +1,10 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: try...catch
+# key: try
+# binding: direct-keybinding
+# condition: (yas/bol?)
+# --
+try {
+  $0
+}
+catch (${1:type}) {  }

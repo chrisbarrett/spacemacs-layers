@@ -1,9 +1,5 @@
-# -*- mode: snippet; require-final-newline: nil -*-
-# name: if
 # key: i
-# binding: direct-keybinding
+# name: if
 # condition: (yas/bol?)
 # --
-if (${1:/* pred */}) {
-  $0
-}
+if ($1) { $0 }
