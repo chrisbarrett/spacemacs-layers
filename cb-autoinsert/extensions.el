@@ -40,6 +40,13 @@
                _
                "\n")
 
+              (("\\.\\([Hh]\\|hh\\|hpp\\)\\'" . "C / C++ header")
+               (upcase
+                (concat (f-filename (f-no-ext (buffer-file-name)))
+                        "_"
+                        (f-ext buffer-file-name)))
+               "#ifndef " str n "#define " str "\n\n" _ "\n\n#endif")
+
               ((idris-mode . "Idris Src File")
                nil
                "module " (cb-autoinsert/idris-module) "\n"
