@@ -36,6 +36,10 @@
      (t
       (super-smart-ops-insert ">" t t)))))
 
+(defun cb-cpp/semicolon ()
+  (interactive "*")
+  (super-smart-ops-insert ";" nil t))
+
 (defun cb-cpp/: ()
   "Insert a '&' and perform context-sensitive formatting."
   (interactive "*")

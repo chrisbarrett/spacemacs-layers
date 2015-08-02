@@ -36,6 +36,8 @@
 
       (define-key c++-mode-map (kbd "M-RET") 'cb-cpp/M-RET)
       (define-key c++-mode-map (kbd "C-<return>") 'cb-cpp/C-RET)
+      (define-key c++-mode-map (kbd ";") 'cb-cpp/semicolon)
+
 
       ;; Aggressive indent is a little too aggressive for C++.
 
@@ -77,5 +79,4 @@
       `((">" . cb-cpp/>)
         ("&" . cb-cpp/&)
         ("*" . cb-cpp/*)
-        (";" . ,(super-smart-ops-make-smart-op ";" nil t))
         (":" . cb-cpp/:)))))
