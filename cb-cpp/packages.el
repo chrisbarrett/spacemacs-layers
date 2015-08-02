@@ -9,6 +9,8 @@
     irony-eldoc
     flycheck-irony
     google-c-style
+    ggtags
+    helm-gtags
     )
   "List of all packages to install and/or initialize. Built-in packages
 which require an initialization must be listed explicitly in the list.")
@@ -69,3 +71,50 @@ which require an initialization must be listed explicitly in the list.")
     :commands google-set-c-style
     :init
     (add-hook 'c-mode-common-hook 'google-set-c-style)))
+
+(defun cb-cpp/init-ggtags ()
+  (use-package ggtags
+    :commands ggtags-mode
+    :init
+    (add-hook 'c++-mode-hook 'ggtags-mode)
+    :config
+    (progn
+      (evil-leader/set-key-for-mode 'c++-mode
+        "mtr" 'ggtags-find-reference
+        "mts" 'ggtags-find-other-symbol
+        "mth" 'ggtags-view-tag-history
+        "mtf" 'ggtags-find-file
+        "mtc" 'ggtags-create-tags
+        "mtu" 'ggtags-update-tags)
+
+      (defun cb-cpp/configure-tags ()
+        (add-hook 'after-save-hook 'ggtags-update-tags nil t))
+
+      (add-hook 'c++-mode-hook 'cb-cpp/configure-tags))))
+
+(defun cb-cpp/init-helm-gtags ()
+  (use-package helm-gtags
+    :commands helm-gtags-mode
+    :init
+    (add-hook 'c++-mode-hook 'helm-gtags-mode)
+    :config
+    (progn
+      (setq helm-gtags-ignore-case t)
+      (setq helm-gtags-auto-update t)
+      (setq helm-gtags-use-input-at-cursor t)
+      (setq helm-gtags-pulse-at-cursor t)
+      (setq helm-gtags-prefix-key "\C-cg")
+      (setq helm-gtags-suggested-key-mapping t)
+
+      (with-eval-after-load 'pulse
+        (core/remap-face 'pulse-highlight-face 'core/bg-flash)
+        (core/remap-face 'pulse-highlight-start-face 'core/bg-flash))
+
+      (dolist (state '(normal insert))
+        (evil-define-key state helm-gtags-mode-map
+          (kbd "M-.") 'helm-gtags-dwim
+          (kbd "M-,") 'helm-gtags-pop-stack))
+
+      (define-key helm-gtags-mode-map (kbd "M-.") 'helm-gtags-dwim)
+      (define-key helm-gtags-mode-map (kbd "M-,") 'helm-gtags-pop-stack)
+      )))
