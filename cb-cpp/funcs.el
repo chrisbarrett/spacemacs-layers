@@ -29,14 +29,19 @@
 (defun cb-cpp/: ()
   "Insert a '&' and perform context-sensitive formatting."
   (interactive "*")
-  (let ((existing-colon-rx (rx ":" (* space) eos))
-        (line-to-point (buffer-substring (line-beginning-position) (point))))
-    (cond
-     ((s-matches? existing-colon-rx line-to-point)
-      (super-smart-ops-delete-last-op)
-      (insert "::"))
-     (t
-      (super-smart-ops-insert ":" nil t)))))
+  (if (core/in-string-or-comment?)
+      (insert ":")
+    (let ((existing-colon-rx (rx ":" (* space) eos))
+          (line-to-point (buffer-substring (line-beginning-position) (point))))
+      (cond
+       ((s-matches? existing-colon-rx line-to-point)
+        (super-smart-ops-delete-last-op)
+        (insert "::"))
+       (t
+        (super-smart-ops-insert ":" nil t)
+        (when (s-matches? (rx bol (* space) (or "public" "private" "protected"))
+                          (current-line))
+          (indent-for-tab-command)))))))
 
 (defun cb-cpp/& ()
   "Insert a '&' and perform context-sensitive formatting."
@@ -60,12 +65,35 @@
 
 (defun cb-cpp/M-RET ()
   (interactive "*")
+  (cond
+   ((s-matches? (rx bol (* space) "using" space) (current-line))
+    (cb-cpp/semicolon-then-newline)
+    (yas-expand-snippet "using $0;")
+    (message "Inserted using directive."))
+
+   ((s-matches? (rx bol (* space) "#include" (+ space) "<") (current-line))
+    (goto-char (line-end-position))
+    (newline-and-indent)
+    (yas-expand-snippet "#include <$0>")
+    (message "Inserted library include."))
+
+   ((s-matches? (rx bol (* space) "#include" (+ space) "\"") (current-line))
+    (goto-char (line-end-position))
+    (newline-and-indent)
+    (yas-expand-snippet "#include \"$0\"")
+    (message "Inserted header include."))
+
+   (t
+    (cb-cpp/semicolon-then-newline)))
+
+  (evil-insert-state))
+
+(defun cb-cpp/semicolon-then-newline ()
   (goto-char (line-end-position))
   (delete-horizontal-space)
   (unless (equal ?\; (char-before))
     (insert ";"))
-  (newline-and-indent)
-  (evil-insert-state))
+  (newline-and-indent))
 
 (defun cb-cpp/C-RET ()
   (interactive "*")
