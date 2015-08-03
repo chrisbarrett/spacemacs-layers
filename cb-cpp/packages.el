@@ -70,7 +70,9 @@ which require an initialization must be listed explicitly in the list.")
   (use-package google-c-style
     :commands google-set-c-style
     :init
-    (add-hook 'c-mode-common-hook 'google-set-c-style)))
+    (progn
+      (setq-default clang-format-style "Google")
+      (add-hook 'c-mode-common-hook 'google-set-c-style))))
 
 (defun cb-cpp/init-ggtags ()
   (use-package ggtags
