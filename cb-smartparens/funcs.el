@@ -181,8 +181,7 @@ STATEMENT-DELIMETER-RX."
        (insert " ")))
 
     (t
-     (or (super-smart-ops-delete-last-op)
-         (call-interactively 'sp-backward-delete-char))))))
+     (smart-ops-backspace)))))
 
 (defun sp/generic-prog-space ()
   "Insert a space, performing extra padding inside braced expressions."

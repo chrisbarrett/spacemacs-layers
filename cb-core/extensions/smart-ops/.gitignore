@@ -1,0 +1,11 @@
+# Generated files
+*.elc
+*-pkg.el
+*.tar
+TAGS
+doc/smart-ops.texi
+doc/smart-ops.info
+
+# Packages
+.cask
+elpa

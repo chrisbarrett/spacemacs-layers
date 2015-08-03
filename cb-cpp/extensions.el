@@ -10,11 +10,12 @@
 ;;
 ;;; License: GPLv3
 
-(defconst cb-cpp-pre-extensions '(cc-mode))
+(defconst cb-cpp-pre-extensions '(cc-mode smart-ops))
 
-(defconst cb-cpp-post-extensions '(super-smart-ops))
+(defconst cb-cpp-post-extensions '())
 
 (eval-when-compile
+  (require 'dash nil t)
   (require 'use-package nil t))
 
 (defun cb-cpp/init-cc-mode ()
@@ -36,8 +37,6 @@
 
       (define-key c++-mode-map (kbd "M-RET") 'cb-cpp/M-RET)
       (define-key c++-mode-map (kbd "C-<return>") 'cb-cpp/C-RET)
-      (define-key c++-mode-map (kbd ";") 'cb-cpp/semicolon)
-
 
       ;; Aggressive indent is a little too aggressive for C++.
 
@@ -71,12 +70,67 @@
 
       )))
 
-(defun cb-cpp/init-super-smart-ops ()
-  (use-package super-smart-ops
+(defun cb-cpp/init-smart-ops ()
+  (use-package smart-ops
     :config
-    (super-smart-ops-configure-for-mode 'c++-mode
-      :custom
-      `((">" . cb-cpp/>)
-        ("&" . cb-cpp/&)
-        ("*" . cb-cpp/*)
-        (":" . cb-cpp/:)))))
+    (progn
+      (defun cb-cpp/after-operator-keyword? (&rest _)
+        (thing-at-point-looking-at (rx bow "operator" eow (* space) (? (or "-" "/" "*" "+" "=")))))
+
+      (defun cb-cpp/company-popup (&rest _)
+        (when (and (boundp 'company-mode) company-mode)
+          (company-manual-begin)))
+
+      (defconst cb-cpp/overloadable-ops
+        '("+" "-" "/" "%" "^" "|" "~" "!" "=" "<<" ">>" "==" "!=" "&&" "||"
+          "+=" "-=" "/=" "%=" "^=" "&" "|=" "*=" "<<=" ">>="))
+
+      (apply 'define-smart-ops-for-mode 'c++-mode
+
+             (smart-op "."
+                       :pad-before? nil :pad-after? nil
+                       :action 'cb-cpp/company-popup)
+
+             (smart-op "::"
+                       :pad-before? nil :pad-after nil
+                       :action 'cb-cpp/company-popup)
+
+             (smart-op "->"
+                       :pad-before? nil :pad-after nil
+                       :action 'cb-cpp/company-popup)
+
+             (smart-op "->*"
+                       :pad-before? nil :pad-after nil
+                       :action 'cb-cpp/company-popup)
+
+             (smart-op ";" :pad-before? nil :pad-after t)
+             (smart-op ":" :pad-before? nil :pad-after t)
+
+             (smart-op "&"
+                       :pad-before? nil :pad-after t
+                       :pad-unless 'cb-cpp/after-operator-keyword?)
+
+             (smart-op "*"
+                       :pad-before? nil :pad-after t
+                       :pad-unless 'cb-cpp/after-operator-keyword?)
+
+             (smart-op "<>"
+                       :pad-before? nil :pad-after nil
+                       :action (lambda (&rest _) (search-backward ">")))
+
+             (smart-op ","
+                       :pad-before? nil :pad-after t
+                       :pad-unless 'cb-cpp/after-operator-keyword?)
+
+             (smart-op "--"
+                       :pad-before? nil :pad-after nil
+                       :pad-unless 'cb-cpp/after-operator-keyword?)
+
+             (smart-op "++"
+                       :pad-before? nil :pad-after nil
+                       :pad-unless 'cb-cpp/after-operator-keyword?)
+
+             (--map (smart-op it
+                              :pad-before? t :pad-after? t
+                              :pad-unless 'cb-cpp/after-operator-keyword?)
+                    cb-cpp/overloadable-ops)))))

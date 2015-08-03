@@ -6,6 +6,7 @@
   '(
     iedit
     super-smart-ops
+    smart-ops
     hl-line
     )
   "List of all extensions to load before the packages.")
@@ -139,3 +140,11 @@
     :defer t
     :config
     (setq eldoc-idle-delay 0.1)))
+
+(defun cb-core/init-smart-ops ()
+  (use-package smart-ops
+    :diminish smart-ops-mode
+    :config
+    (progn
+      (smart-ops-global-mode)
+      (evil-define-key 'insert smart-ops-mode-map (kbd "<backspace>") nil))))
