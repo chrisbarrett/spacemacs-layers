@@ -113,8 +113,8 @@ Insert leading padding unless at start of line or after an open round paren."
           (= (line-number-at-pos beg) (line-number-at-pos end))
         t))))
 
-(defun sp/depth ()
-  (nth 0 (syntax-ppss)))
+(defun sp/beg ()
+  (plist-get (sp-get-enclosing-sexp ) :beg))
 
 (defun sp/inside-curly-braces-no-content? (&optional same-line?)
   (-let [(&plist :beg beg :end end :op op) (sp-get-enclosing-sexp)]
@@ -149,19 +149,13 @@ STATEMENT-DELIMETER-RX."
       (newline-and-indent)
       (goto-char (1+ beg))
       (newline-and-indent)
-      (let ((changed? nil)
-            (start-depth (sp/depth)))
-        (while (search-forward-regexp statement-delimiter-rx (line-end-position) t)
-          (when (equal start-depth (sp/depth))
+      (let ((beg (sp/beg)))
+        (while (and (search-forward-regexp statement-delimiter-rx nil t)
+                    (<= beg (sp/beg)))
+          (when (equal beg (sp/beg))
             (unless (core/in-string-or-comment?)
-              (setq changed? t)
               (insert "\n")
-              (indent-according-to-mode))))
-
-        ;; Remove extra blank line from replacement.
-        (when changed?
-          (join-line)
-          (delete-horizontal-space))))
+              (indent-according-to-mode))))))
 
     ;; If point was after the opening brace before splitting, it will not have
     ;; moved to the next line. Correct this by moving forward to indentation on
