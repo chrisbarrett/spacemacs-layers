@@ -15,7 +15,10 @@
 (defconst cb-cpp-post-extensions '())
 
 (eval-when-compile
+  (require 'evil nil t)
+  (require 'thingatpt nil t)
   (require 'dash nil t)
+  (require 's nil t)
   (require 'use-package nil t))
 
 (defun cb-cpp/init-cc-mode ()
@@ -75,62 +78,31 @@
     :config
     (progn
       (defun cb-cpp/after-operator-keyword? (&rest _)
-        (thing-at-point-looking-at (rx bow "operator" eow (* space) (? (or "-" "/" "*" "+" "=")))))
+        (save-excursion
+          (goto-char (smart-ops--maybe-beginning-of-op (smart-ops--rules-for-current-mode)))
+          (thing-at-point-looking-at (rx bow "operator" eow (* space)))))
 
-      (defun cb-cpp/company-popup (&rest _)
-        (when (and (boundp 'company-mode) company-mode)
-          (company-manual-begin)))
+      (define-smart-ops-for-mode 'c++-mode
+        (smart-ops
+         "+" "-" "/" "%" "^" "|" "~" "!" "=" "<<" ">>" "==" "!=" "&&" "||"
+         "+=" "-=" "/=" "%=" "^=" "|=" "*=" "<<=" ">>="
+         :pad-unless 'cb-cpp/after-operator-keyword?)
 
-      (defconst cb-cpp/overloadable-ops
-        '("+" "-" "/" "%" "^" "|" "~" "!" "=" "<<" ">>" "==" "!=" "&&" "||"
-          "+=" "-=" "/=" "%=" "^=" "&" "|=" "*=" "<<=" ">>="))
+        (smart-ops "," :pad-before nil :pad-unless 'cb-cpp/after-operator-keyword?)
+        (smart-ops "&" "*"
+                   :pad-before nil
+                   :pad-unless 'cb-cpp/after-operator-keyword?)
 
-      (apply 'define-smart-ops-for-mode 'c++-mode
+        (smart-ops ":" ";" :pad-before nil)
+        (smart-ops "--" "++" :pad-before nil :pad-after nil)
 
-             (smart-op "."
-                       :pad-before? nil :pad-after? nil
-                       :action 'cb-cpp/company-popup)
+        (smart-ops "." "::" "->" "->*"
+                   :pad-before nil :pad-after nil
+                   :action 'company-manual-begin)
 
-             (smart-op "::"
-                       :pad-before? nil :pad-after nil
-                       :action 'cb-cpp/company-popup)
+        ;; Position point inside template braces.
+        (smart-op "<>"
+                  :pad-before nil :pad-after nil
+                  :action (lambda (&rest _) (search-backward ">")))))))
 
-             (smart-op "->"
-                       :pad-before? nil :pad-after nil
-                       :action 'cb-cpp/company-popup)
-
-             (smart-op "->*"
-                       :pad-before? nil :pad-after nil
-                       :action 'cb-cpp/company-popup)
-
-             (smart-op ";" :pad-before? nil :pad-after t)
-             (smart-op ":" :pad-before? nil :pad-after t)
-
-             (smart-op "&"
-                       :pad-before? nil :pad-after t
-                       :pad-unless 'cb-cpp/after-operator-keyword?)
-
-             (smart-op "*"
-                       :pad-before? nil :pad-after t
-                       :pad-unless 'cb-cpp/after-operator-keyword?)
-
-             (smart-op "<>"
-                       :pad-before? nil :pad-after nil
-                       :action (lambda (&rest _) (search-backward ">")))
-
-             (smart-op ","
-                       :pad-before? nil :pad-after t
-                       :pad-unless 'cb-cpp/after-operator-keyword?)
-
-             (smart-op "--"
-                       :pad-before? nil :pad-after nil
-                       :pad-unless 'cb-cpp/after-operator-keyword?)
-
-             (smart-op "++"
-                       :pad-before? nil :pad-after nil
-                       :pad-unless 'cb-cpp/after-operator-keyword?)
-
-             (--map (smart-op it
-                              :pad-before? t :pad-after? t
-                              :pad-unless 'cb-cpp/after-operator-keyword?)
-                    cb-cpp/overloadable-ops)))))
+;;; extensions.el ends here
