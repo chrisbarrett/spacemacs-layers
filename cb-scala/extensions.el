@@ -4,7 +4,7 @@
 
 (defconst cb-scala-pre-extensions
   '(
-    super-smart-ops
+    smart-ops
     scala-errors
     scala-pretty-sbt
     scala-yasnippet
@@ -18,26 +18,51 @@
 (eval-when-compile
   (require 'use-package nil t))
 
-(defun cb-scala/init-super-smart-ops ()
-  (use-package super-smart-ops
+(defun cb-scala/init-smart-ops ()
+  (use-package smart-ops
     :config
     (progn
-      (super-smart-ops-configure-for-mode 'scala-mode
-        :custom
-        `((":" . ,(super-smart-ops-make-smart-op ":" nil t))
-          ("?" . scala/qmark)
-          ("+" . scala/plus)
-          ("-" . scala/minus)
-          ("/" . scala/slash)
-          ("," . ,(super-smart-ops-make-smart-op "," nil t))))
 
-      (super-smart-ops-configure-for-mode 'ensime-inf-mode
-        :custom
-        `((":" . scala/repl-colon)
-          ("?" . scala/qmark)
-          ("+" . scala/plus)
-          ("-" . scala/minus)
-          ("," . ,(super-smart-ops-make-smart-op "," nil t)))))))
+      (defun scala/replace-slashes-with-doc ()
+        (interactive "*")
+        (atomic-change-group
+          (delete-region (line-beginning-position) (line-end-position))
+          (scala/insert-scaladoc)))
+
+      (defun scala/insert-scaladoc ()
+        "Insert the skeleton of a ScalaDoc at point."
+        (interactive "*")
+        (indent-for-tab-command) (insert "/**")
+        (core/open-line-below-current-indentation) (insert " * ")
+        (save-excursion
+          (core/open-line-below-current-indentation) (insert "*/")))
+
+      (define-smart-ops-for-mode 'scala-mode
+        (smart-ops "???" "?" "=" "==" "+" "-" "@" "*" "/" "<" ">" "|" "$" "&" "%" "!" "~")
+        (smart-ops ":" "," :pad-before nil)
+        (smart-op "///" :action 'scala/replace-slashes-with-doc)
+
+        ;; Reformat '=???' as '= ???'
+        (smart-op "=???"
+                  :action
+                  (lambda (&rest _)
+                    (save-excursion
+                      (skip-chars-backward "? ")
+                      (just-one-space)))))
+
+      (defun cb-scala/at-repl-prompt? ()
+        (s-matches? (rx bol (* space) "scala>" (* space))
+                    (buffer-substring (line-beginning-position) (point))))
+
+      (define-smart-ops-for-mode 'ensime-inf-mode
+        (smart-ops "???" "?" "=" "==" "+" "-" "@" "*" "/" "<" ">" "|" "$" "&" "%" "!" "~")
+        (smart-op "," :pad-before nil)
+        (smart-op ":"
+                  :pad-before nil
+                  :pad-after-unless
+                  (lambda (_)
+                    (forward-char -1)
+                    (cb-scala/at-repl-prompt?)))))))
 
 (defun cb-scala/init-scala-errors ()
   (use-package scala-errors))
