@@ -7,18 +7,19 @@
   "List of all extensions to load before the packages.")
 
 (defconst cb-agda-post-extensions
-  '(super-smart-ops
+  '(smart-ops
     aggressive-indent)
   "List of all extensions to load after the packages.")
 
 (eval-when-compile
   (require 'use-package nil t))
 
-(defun cb-agda/init-super-smart-ops ()
-  (use-package super-smart-ops
+(defun cb-agda/init-smart-ops ()
+  (use-package smart-ops
     :config
-    (super-smart-ops-configure-for-mode 'agda2-mode
-      :add '("$"))))
+    (define-smart-ops-for-mode 'agda2-mode
+      (smart-ops-default-ops)
+      (smart-op "$"))))
 
 (defun cb-agda/init-aggressive-indent ()
   (use-package aggressive-indent

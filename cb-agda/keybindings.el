@@ -21,10 +21,6 @@
     ",x" 'agda2-restart
     )
 
-  (evil-define-key 'insert agda2-mode-map
-    (kbd "SPC") 'agda/smart-space
-    (kbd "<backspace>") 'agda/backspace)
-
   (define-key agda2-mode-map (kbd "M-RET") 'agda/meta-ret)
   (define-key agda2-mode-map (kbd "M-N") 'agda2-next-goal)
   (define-key agda2-mode-map (kbd "M-P") 'agda2-previous-goal)
