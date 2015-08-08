@@ -151,8 +151,6 @@ which require an initialization must be listed explicitly in the list.")
       (require 'shm-reformat)
       (setq shm-auto-insert-skeletons nil)
 
-      (add-hook 'haskell-mode-hook 'haskell/init-shm-smart-ops-compat)
-
       (core/remap-face 'shm-current-face 'core/bg-hl-ok)
       (core/remap-face 'shm-quarantine-face 'core/bg-hl-red)
 

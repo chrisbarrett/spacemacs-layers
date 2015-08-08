@@ -10,42 +10,88 @@
 
 (defconst cb-haskell-post-extensions
   '(
-    super-smart-ops
+    smart-ops
     liquid-types
     )
   "List of all extensions to load after the packages.")
 
 (eval-when-compile
   (require 'use-package nil t)
-  (require 'super-smart-ops nil t))
+  (require 'smart-ops nil t))
 
-(defun cb-haskell/init-super-smart-ops ()
-  (use-package super-smart-ops
+(defun cb-haskell/init-smart-ops ()
+  (use-package smart-ops
     :config
     (progn
-      (super-smart-ops-configure-for-mode 'haskell-mode
-        :add '("$" "=" "~" "^")
-        :custom
-        `(("." . haskell/smart-dot)
-          ("," . haskell/smart-comma)
-          ("|" . haskell/smart-pipe)
-          ("#" . haskell/smart-hash)
-          ("@" . haskell/smart-at)
-          ("-" . haskell/smart-minus)
-          (":" . haskell/smart-colon)
-          (";" . ,(super-smart-ops-make-smart-op ";" nil t))))
+      (defun cb-haskell/reformat-comment-at-point ()
+        (-when-let ((&plist :beg beg :end end :op op) (sp-get-enclosing-sexp)
+                    (_ (equal op "{"))
+                    (_ (s-matches? (rx "{" (* "-" space) "}")
+                                   (buffer-substring beg end))))
+          (goto-char beg)
+          (delete-region beg end)
+          (insert "{- ") (save-excursion (insert " -}"))))
 
-      (super-smart-ops-configure-for-mode 'haskell-interactive-mode
-        :add '("$" "=" "~" "^")
-        :custom
-        `(("." . haskell/smart-dot)
-          ("-" . haskell/smart-minus)
-          ("#" . haskell/smart-hash)
-          ("@" . haskell/smart-at)
-          ("|" . haskell/smart-pipe)
-          (":" . haskell/ghci-smart-colon)
-          ("," . haskell/ghci-smart-comma)
-          (";" . ,(super-smart-ops-make-smart-op ";" nil t)))))))
+      (defun cb-haskell/reformat-pragma-at-point ()
+        (-when-let ((&plist :beg beg :end end :op op) (sp-get-enclosing-sexp)
+                    (_ (equal op "{"))
+                    (_ (s-matches? (rx "{" (* "-" "#" space) "}")
+                                   (buffer-substring beg end))))
+          (goto-char beg)
+          (delete-region beg end)
+          (insert "{-# ") (save-excursion (insert " #-}"))))
+
+      (defun cb-haskell/reformat-refinement-type-at-point ()
+        (-when-let ((&plist :beg beg :end end :op op) (sp-get-enclosing-sexp)
+                    (_ (equal op "{"))
+                    (_ (s-matches? (rx "{" (* "-" "@" space) "}")
+                                   (buffer-substring beg end))))
+          (goto-char beg)
+          (delete-region beg end)
+          (insert "{-@ ") (save-excursion (insert " @-}"))))
+
+      (defun haskell/dot-accessing-module-or-constructor? ()
+        (save-excursion
+          (forward-char -1)
+          (-when-let (sym (thing-at-point 'symbol))
+            (s-uppercase? (substring sym 0 1)))))
+      (defun cb-haskell/indent-if-in-exports ()
+        (when (ignore-errors (s-matches? "ExportSpec" (elt (shm-current-node) 0)))
+          (haskell-indentation-indent-line)))
+
+      (defconst cb-haskell/smart-ops
+        (list
+         (smart-ops "$" "=" "~" "^" ":" "..")
+         (smart-op "."
+                   :pad-unless
+                   (lambda (pt)
+                     (or
+                      (haskell/dot-accessing-module-or-constructor?)
+                      (equal (char-after) (string-to-char "}"))
+                      (funcall (smart-ops-after-match? (rx digit)) pt))))
+         (smart-op ";"
+                   :pad-before nil :pad-after t)
+         (smart-ops ","
+                    :pad-before nil :pad-after t
+                    :action
+                    'cb-haskell/indent-if-in-exports)
+         (smart-op "-"
+                   :action 'cb-haskell/reformat-comment-at-point)
+         (smart-op "#"
+                   :pad-before nil :pad-after nil
+                   :action 'cb-haskell/reformat-pragma-at-point)
+         (smart-op "@"
+                   :pad-unless
+                   (lambda (pt)
+                     (s-matches? "=" (buffer-substring (point) (line-end-position))))
+                   :action 'cb-haskell/reformat-refinement-type-at-point)
+         (smart-ops-default-ops)))
+
+      (apply 'define-smart-ops-for-mode 'haskell-mode cb-haskell/smart-ops)
+
+      (apply 'define-smart-ops-for-mode 'haskell-interactive-mode
+             (smart-op ":" :pad-unless (lambda (_) (haskell-interactive-at-prompt)))
+             cb-haskell/smart-ops))))
 
 (defun cb-haskell/init-haskell-parser ()
   (use-package haskell-parser
@@ -66,7 +112,7 @@
           (flycheck-add-next-checker 'haskell-ghc 'haskell-hlint)
           ;; (flycheck-add-next-checker 'haskell-hlint 'haskell-liquid)
           ;;(flycheck-select-checker 'haskell-liquid)
-          (liquid-tip-init 'ascii)))
+          ))
 
       (add-hook 'haskell-mode-hook 'cb-haskell/maybe-init-liquid-haskell)
       (add-hook 'literate-haskell-mode-hook 'cb-haskell/maybe-init-liquid-haskell))))

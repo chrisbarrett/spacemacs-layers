@@ -3,7 +3,6 @@
 (require 's)
 (require 'ert)
 (require 'haskell-parser nil t)
-(require 'super-smart-ops nil t)
 
 (defun haskell/after-subexpr-opening? ()
   (s-matches? (rx (or "{" "[" "{-" "{-#" "(#") (* space) eol)
@@ -19,10 +18,10 @@
   (cond
    ((and (haskell/after-subexpr-opening?) (haskell/before-subexp-closing?))
     (delete-horizontal-space)
-    (call-interactively 'shm/space)
-    (save-excursion (call-interactively 'shm/space)))
+    (insert " ")
+    (save-excursion (insert " ")))
    (t
-    (call-interactively 'shm/space))))
+    (sp/generic-prog-space))))
 
 (defun haskell/interactive-smart-space ()
   (interactive)
@@ -36,220 +35,24 @@
    (t
     (insert " "))))
 
-
-;;; Define smart operators.
-
-(defun haskell/inside-parens? ()
-  "Non-nil if point is inside a parenthesised expression."
-  (save-excursion
-    (ignore-errors
-      (backward-up-list)
-      (equal (char-after)
-             (string-to-char "(")))))
-
-(defun haskell/smart-minus ()
-  "Context-sensitive minus character."
-  (interactive)
-  (cond
-   ((and (s-matches? (rx "{" (* space) eol)
-                     (buffer-substring (line-beginning-position) (point)))
-         (s-matches? (rx bol (? ">") (* space) "}")
-                     (buffer-substring (point) (line-end-position))))
-    (delete-horizontal-space)
-    (insert "- ")
-    (save-excursion
-      (insert " -")))
-   (t
-    (super-smart-ops-insert "-" t t))))
-
-(defun haskell/smart-hash ()
-  "Context-sensitive hash character."
-  (interactive)
-  (cond
-   ((equal "#" (char-to-string (char-before)))
-    (let ((col (current-indentation)))
-      (save-restriction
-        (narrow-to-region (line-beginning-position) (point))
-        (delete-char -1)
-        (just-one-space)
-        (indent-to col)
-        (insert "{-# "))
-      (save-excursion
-        (insert " #-}")
-        (unless (eolp)
-          (just-one-space)))))
-
-   ((and (s-matches? (rx (or "{-" "(") (* space) eol)
-                     (buffer-substring (line-beginning-position) (point)))
-         (s-matches? (rx bol (? ">") (* space) (or "-}" ")"))
-                     (buffer-substring (point) (line-end-position))))
-    (delete-horizontal-space)
-    (insert "# ")
-    (save-excursion
-      (insert " #")))
-   (t
-    (insert "#"))))
-
-(defun haskell/smart-at ()
-  "Context-sensitive at (@) character."
-  (interactive)
-  (cond
-   ((s-matches? (rx bol (? ">") (* space) "@" (* space) eol) (current-line))
-    (delete-region (line-beginning-position) (line-end-position))
-    (insert "{-@ ")
-    (save-excursion
-      (insert " @-}")))
-
-   ((and (s-matches? (rx "{-" "(" (* space) eol)
-                     (buffer-substring (line-beginning-position) (point)))
-         (s-matches? (rx bol (? ">") (* space) "-}")
-                     (buffer-substring (point) (line-end-position))))
-    (delete-horizontal-space)
-    (insert "@ ")
-    (save-excursion
-      (insert " @")))
-
-   ((s-matches? "=" (buffer-substring (point) (line-end-position)))
-    (delete-horizontal-space)
-    (insert "@"))
-
-   (t
-    (super-smart-ops-insert "@" t t))))
-
-(defun haskell/smart-pipe ()
-  "Insert a pipe operator. Add padding, unless we're inside a list."
-  (interactive)
-  (cond
-   ((s-matches? (rx "[" (* (any "|" alnum)) eol)
-                (buffer-substring (line-beginning-position) (point)))
-    (insert "|"))
-   ((s-matches? (rx "--" (* space) eol)
-                (buffer-substring (line-beginning-position) (point)))
-    (just-one-space)
-    (insert "|"))
-   (t
-    (super-smart-ops-insert "|" t t))))
-
-(defun haskell/looking-at-module-or-constructor? ()
-  (-when-let (sym (thing-at-point 'symbol))
-    (s-uppercase? (substring sym 0 1))))
-
-(defun haskell/smart-dot ()
-  "Insert a period. Add padding, unless this line is an import statement."
-  (interactive)
-  (cond
-   ((thing-at-point-looking-at (rx digit (* space) "."))
-    (save-excursion
-      (search-backward ".")
-      (just-one-space))
-    (insert ". "))
-
-   ((thing-at-point-looking-at (rx digit))
-    (insert "."))
-
-   ((haskell/looking-at-module-or-constructor?)
-    (insert "."))
-
-   ((thing-at-point-looking-at (rx (or "(" "{" "[") (* space)))
-    (insert "."))
-
-   ((equal (char-after) (string-to-char "}"))
-    (insert "."))
-
-   ((thing-at-point-looking-at (rx "^"))
-    (insert "."))
-
-   (t
-    (super-smart-ops-insert "."t t))))
-
-(defun haskell/smart-colon ()
-  "Insert a colon, with context-sensitive formatting."
-  (interactive)
-  (cond
-   ((and (haskell/inside-parens?)
-         (s-matches? (rx ":" (* space) eol)
-                     (buffer-substring (line-beginning-position) (point))))
-    (save-restriction
-      (narrow-to-region (line-beginning-position) (point))
-      (save-excursion
-        (search-backward-regexp (rx (* space) ":" (* space)))
-        (delete-region (point) (point-max)))
-      (insert " :: ")))
-
-   ((haskell/inside-parens?)
-    (insert ":"))
-
-   (t
-    (super-smart-ops-insert ":" t t))))
-
 (defun haskell/backspace ()
   "Delete backwards with context-sensitive formatting."
   (interactive)
-  (super-smart-ops--run-with-modification-hooks
-   (cond
-    ((and (haskell/after-subexpr-opening?)
-          (haskell/before-subexp-closing?)
-          (thing-at-point-looking-at (rx (+ space))))
-     (delete-horizontal-space))
+  (cond
+   ((and (haskell/after-subexpr-opening?)
+         (haskell/before-subexp-closing?)
+         (thing-at-point-looking-at (rx (+ space))))
+    (delete-horizontal-space))
 
-    ((and (s-matches? (rx (or "{-#" "{-" "(#") eol)
-                      (buffer-substring (line-beginning-position) (point)))
-          (s-matches? (rx bol (? ">") (or "#-}" "-}" "#)"))
-                      (buffer-substring (point) (line-end-position))))
-     (atomic-change-group
-       (delete-char 1)
-       (delete-char -1)))
+   ((and (s-matches? (rx (or "{-#" "{-@" "{-" "(#") eol)
+                     (buffer-substring (line-beginning-position) (point)))
+         (s-matches? (rx bol (? ">") (or "@-}" "#-}" "-}" "#)"))
+                     (buffer-substring (point) (line-end-position))))
+    (delete-char 1)
+    (delete-char -1))
 
-    (t
-     (or (super-smart-ops-delete-last-op)
-         (call-interactively 'sp-backward-delete-char))))))
-
-(defun haskell/smart-comma ()
-  "Insert a comma, with context-sensitive formatting."
-  (interactive)
-  (super-smart-ops--run-with-modification-hooks
-   (cond
-    ((ignore-errors (s-matches? "ExportSpec" (elt (shm-current-node) 0)))
-     (delete-horizontal-space)
-     (insert ",")
-     (haskell-indentation-indent-line)
-     (just-one-space))
-
-    (t
-     (super-smart-ops-insert "," nil t)))))
-
-(defun haskell/ghci-line-beginning-position ()
-  "Narrow to the current line, excluding the ghci prompt."
-  (save-excursion
-    (cond ((haskell-interactive-at-prompt)
-           (goto-char (line-beginning-position))
-           (or (search-forward-regexp (s-trim-left haskell-interactive-prompt)
-                                      (line-end-position)
-                                      t)
-               (line-beginning-position)))
-          (t
-           (line-beginning-position)))))
-
-(defun haskell/ghci-smart-colon ()
-  "Insert a smart operator, unless point is immediately after the GHCI prompt."
-  (interactive)
-  (save-restriction
-    (narrow-to-region (haskell/ghci-line-beginning-position)
-                      (line-end-position))
-    (if (s-blank? (buffer-substring (line-beginning-position) (point)))
-        (insert ":")
-      (super-smart-ops-insert ":" t t))))
-
-(defun haskell/ghci-smart-comma ()
-  "Insert a comma with padding."
-  (interactive)
-  (save-restriction
-    (narrow-to-region (haskell/ghci-line-beginning-position)
-                      (point))
-    (unless (s-blank? (current-line))
-      (delete-horizontal-space))
-
-    (insert ", ")))
+   (t
+    (sp/generic-prog-backspace))))
 
 
 ;;; Formatting
@@ -575,30 +378,6 @@
              (typesig (buffer-substring-no-properties start end)))
 
         (haskell-parser-parse-typesig typesig)))))
-
-
-;;; SHM smart op integration
-
-(defun haskell/shm-handle-deletions (n)
-  (when (and (boundp 'structured-haskell-mode) structured-haskell-mode)
-    (save-excursion
-      (shm-appropriate-adjustment-point 'backward)
-      (shm-adjust-dependents (point) (- n)))
-    (shm/init t)))
-
-(defun haskell/shm-handle-insertions (n)
-  (when (and (boundp 'structured-haskell-mode) structured-haskell-mode)
-    (save-excursion
-      (shm-appropriate-adjustment-point 'forward)
-      (shm-adjust-dependents (point) n))
-    (shm/init t)))
-
-(defun haskell/init-shm-smart-ops-compat ()
-  "Bind shm commands to smart operator insertions and deletions."
-  (add-hook 'super-smart-ops-text-inserted-functions
-            'haskell/shm-handle-insertions nil t)
-  (add-hook 'super-smart-ops-text-removed-functions
-            'haskell/shm-handle-deletions nil t))
 
 
 ;;; Options insertion
