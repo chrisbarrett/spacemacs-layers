@@ -6,7 +6,7 @@
   '(js))
 
 (defconst cb-js-post-extensions
-  '(super-smart-ops))
+  '(smart-ops))
 
 (eval-when-compile
   (require 'use-package nil t))
@@ -17,9 +17,14 @@
     :config
     (setq js-indent-level 2)))
 
-(defun cb-js/init-super-smart-ops ()
-  (use-package super-smart-ops
+(defun cb-js/init-smart-ops ()
+  (use-package smart-ops
     :config
-    (super-smart-ops-configure-for-mode 'js-mode
-      :custom
-      `((":" . ,(super-smart-ops-make-smart-op ":" nil t))))))
+    (progn
+      (define-smart-ops-for-mode 'js-mode
+        (smart-ops ";" ":" "," :pad-before nil)
+        (smart-ops-default-ops))
+
+      (define-smart-ops-for-mode 'js2-mode
+        (smart-ops ";" ":" "," :pad-before nil)
+        (smart-ops-default-ops)))))
