@@ -3,7 +3,7 @@
 ;;; Code:
 
 (defconst cb-rust-pre-extensions
-  '(super-smart-ops)
+  '(smart-ops)
   "List of all extensions to load before the packages.")
 
 (defconst cb-rust-post-extensions
@@ -13,11 +13,20 @@
 (eval-when-compile
   (require 'use-package nil t))
 
-(defun cb-rust/init-super-smart-ops ()
-  (use-package super-smart-ops
+(defun cb-rust/init-smart-ops ()
+  (use-package smart-ops
     :config
-    (super-smart-ops-configure-for-mode 'rust-mode
-      :rem '("!" "~" "&")
-      :custom
-      `((":" . rust/smart-colon)
-        ("," . ,(super-smart-ops-make-smart-op "," nil t))))))
+    (progn
+      (define-smart-ops-for-mode 'rust-mode
+        (smart-ops "~" "&" ":" :pad-before nil)
+
+        (smart-ops "." "::"
+                   :pad-before nil :pad-after nil
+                   :action 'company-manual-begin)
+
+        ;; Position point inside template braces.
+        (smart-op "<>"
+                  :pad-before nil :pad-after nil
+                  :action (lambda (&rest _) (search-backward ">")))
+
+        (smart-ops-default-ops)))))
