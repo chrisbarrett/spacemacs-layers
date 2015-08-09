@@ -249,12 +249,6 @@ If this buffer is a member of `core/kill-buffer-ignored-list', bury it rather th
   (interactive)
   (user-error "Type <C-c k k> to exit Emacs"))
 
-(defun core/generic-comma-then-space ()
-  (interactive "*")
-  (if (apply 'derived-mode-p core/lisp-modes)
-      (super-smart-ops-insert "," t nil)
-    (super-smart-ops-insert "," nil t)))
-
 
 ;;; Indentation
 
