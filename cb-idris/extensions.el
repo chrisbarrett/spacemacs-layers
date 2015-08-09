@@ -3,7 +3,7 @@
 ;;; Code:
 
 (defconst cb-idris-pre-extensions
-  '(super-smart-ops)
+  '(smart-ops)
   "List of all extensions to load before the packages.")
 
 (defconst cb-idris-post-extensions
@@ -11,26 +11,23 @@
   "List of all extensions to load after the packages.")
 
 (eval-when-compile
+  (require 'dash nil t)
   (require 'use-package nil t))
 
-(defun cb-idris/init-super-smart-ops ()
-  (use-package super-smart-ops
+(defun cb-idris/init-smart-ops ()
+  (use-package smart-ops
     :config
     (progn
-      (super-smart-ops-configure-for-mode 'idris-mode
-        :add '("$")
-        :custom
-        '(("?" . idris/smart-question-mark)
-          ("|" . idris/smart-pipe)
-          ("." . idris/smart-dot)
-          ("," . idris/smart-comma)
-          (":" . idris/smart-colon)))
+      (defun idris/looking-at-module-or-constructor? (&rest _)
+        (-when-let ([fst] (thing-at-point 'symbol))
+          (s-uppercase? fst)))
 
-      (super-smart-ops-configure-for-mode 'idris-repl-mode
-        :add '("$")
-        :custom
-        '(("?" . idris/smart-question-mark)
-          ("|" . idris/smart-pipe)
-          ("." . idris/smart-dot)
-          ("," . idris/smart-comma)
-          (":" . idris/smart-colon))))))
+      (define-smart-ops-for-mode 'idris-mode
+        (smart-ops "?" "$" "|" ":")
+        (smart-ops "." :pad-unless 'idris/looking-at-module-or-constructor?)
+        (smart-ops-default-ops))
+
+      (define-smart-ops-for-mode 'idris-repl-mode
+        (smart-ops "?" "$" "|" ":")
+        (smart-ops "." :pad-unless 'idris/looking-at-module-or-constructor?)
+        (smart-ops-default-ops)))))
