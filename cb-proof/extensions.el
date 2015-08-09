@@ -7,7 +7,7 @@
     proof-site
     coq
     proof-script
-    super-smart-ops
+    smart-ops
     )
   "List of all extensions to load before the packages.")
 
@@ -93,14 +93,22 @@
     (progn
       (define-key proof-mode-map (kbd "C-<return>") nil))))
 
-(defun cb-proof/init-super-smart-ops ()
-  (use-package super-smart-ops
+(defun cb-proof/init-smart-ops ()
+  (use-package smart-ops
     :config
     (progn
-      (super-smart-ops-configure-for-mode 'coq-mode
-        :add '("$" "?" "^" "~" "\\")
-        :custom
-        `(("|" . coq/smart-pipe)
-          (":" . coq/smart-colon)
-          ("!" . self-insert-command)
-          ("," . ,(super-smart-ops-make-smart-op "," nil t)))))))
+      (define-smart-ops-for-mode 'coq-mode
+        (smart-ops ":"
+                   :pad-before-unless
+                   (smart-ops-after-match? (rx bow "eqn" (* space) eos)))
+        (smart-ops "|"
+                   :action
+                   (lambda ()
+                     (when (sp/inside-square-braces?)
+                       (delete-horizontal-space)
+                       (insert " ")
+                       (save-excursion
+                         (insert " |")))))
+
+        (smart-ops "?" "^" "~" "\\")
+        (smart-ops-default-ops)))))

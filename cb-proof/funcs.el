@@ -3,30 +3,6 @@
   (setq-local compile-command (concat "coqc " (buffer-name))))
 
 
-;;; Smart operators
-
-(defun coq/smart-pipe ()
-  "Insert either the pipe chars in an array literal or a smart pipe."
-  (interactive)
-  (cond ((thing-at-point-looking-at (rx "[]"))
-         (insert "|")
-         (save-excursion
-           (insert "|")))
-        (t
-         (super-smart-ops-insert "|" t t))))
-
-(defun coq/smart-colon ()
-  "Insert a colon with context-sensitive formatting."
-  (interactive)
-  (cond
-   ((s-matches? (rx bow "eqn" (* space) eol)
-                (buffer-substring (line-beginning-position) (point)))
-    (delete-horizontal-space)
-    (insert ":"))
-   (t
-    (super-smart-ops-insert ":" t t))))
-
-
 ;;; Smart M-RET
 
 (defun coq/case-start-col ()
