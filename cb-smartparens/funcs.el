@@ -180,10 +180,31 @@ STATEMENT-DELIMETER-RX."
       (forward-line)
       (back-to-indentation))))
 
+(defun sp/inside-empty-angle-braces-no-content? ()
+  (and (equal (char-before) ?<)
+       (equal (char-after) ?>)))
+
+(defun sp/inside-empty-angle-braces-empty-content? ()
+  (let ((before?
+         (save-excursion
+           (skip-chars-backward " \t")
+           (equal (char-before) ?<)))
+        (after?
+         (save-excursion
+           (skip-chars-forward " \t")
+           (equal (char-after) ?>))))
+    (and before? after?)))
+
 (defun sp/generic-prog-backspace ()
   "Delete backwards with context-sensitive formatting."
   (interactive)
   (cond
+   ((sp/inside-empty-angle-braces-no-content?)
+    (delete-char 1)
+    (delete-char -1))
+   ((sp/inside-empty-angle-braces-empty-content?)
+    (delete-horizontal-space))
+
    ((or (sp/inside-curly-braces-no-content?)
         (sp/inside-square-braces-no-content?))
     (call-interactively 'sp-backward-delete-char))
