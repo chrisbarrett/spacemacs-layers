@@ -2,6 +2,6 @@
 
 __DESCRIPTION__
 
-See [Apiary][] for API reference.
+See [apidoc][] for API reference.
 
-[Apiary]: http://docs.moviomediaapi.apiary.io/reference
+[apidoc]: http://apidoc.me/moviomedia/__(s-chop-suffix "-svc" (s-chop-prefix "mm-" skeletor-project-name))__/latest

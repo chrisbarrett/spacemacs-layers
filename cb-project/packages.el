@@ -95,6 +95,8 @@ which require an initialization must be listed explicitly in the list.")
       (defconst cb-project/scala-movio-playlib-version "1.1.0")
       (defconst cb-project/scala-version "2.11.7")
       (defconst cb-project/scalatest-version "2.2.4")
+      (defvar cb-project/scala-movio-endpoint-test-prefix)
+
 
       (skeletor-define-template "movio-scala-play-project"
         :title "Scala Play Project (Movio)"
@@ -113,8 +115,18 @@ which require an initialization must be listed explicitly in the list.")
           ("__MOVIO-ARTIFACTORY-REPO-URL__". movio-artifactory-repo-url)
 
           ("__DESCRIPTION__" . (lambda () (read-string "Description: ")))
-          ("__ENDPOINT-PATH__" . (lambda () (concat "/" (read-string "Endpoint path: /"))))
+          ("__ENDPOINT-PATH__" .
+           (lambda ()
+             (let ((path (concat "/" (read-string "Endpoint path: /"))))
+               (setq cb-project/scala-movio-endpoint-test-prefix path)
+               path)))
           ("__ENDPOINT-VERB__" . (lambda () (read-string "HTTP verb: " "GET")))
+          ("__ENDPOINT-TEST-PREFIX__" .
+           (lambda ()
+             (let ((default
+                     (concat (s-join "" (-map 's-capitalize (s-split "/" cb-project/scala-movio-endpoint-test-prefix t)))
+                             "Endpoint")))
+               (read-string "Endpoint test class prefix: " default))))
           ("__ENDPOINT-HANDLER__" . (lambda () (s-lower-camel-case (read-string "Handler method name: "))))
           ("__CONTROLLER-NAME__" . (lambda () (s-upper-camel-case (s-chop-suffix ".scala" (read-string "Controller class name: "))))))
 
