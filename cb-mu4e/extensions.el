@@ -30,6 +30,7 @@
 
 (defun cb-mu4e/init-mu4e ()
   (use-package mu4e
+    :defer 5
     :load-path "/usr/local/share/emacs/site-lisp/mu4e/"
     :init
     (evil-leader/set-key "am" 'mu4e)
@@ -129,7 +130,10 @@
       (defun cb-mu4e-flow-text ()
         (use-hard-newlines t 'guess))
 
-      (add-hook 'mu4e-compose-mode-hook 'cb-mu4e-flow-text))))
+      (add-hook 'mu4e-compose-mode-hook 'cb-mu4e-flow-text)
+
+      ;; Update in background soon after starting.
+      (run-with-timer 5 nil 'mu4e-update-mail-and-index t))))
 
 (defun cb-mu4e/init-mu4e-multi ()
   (use-package mu4e-multi
