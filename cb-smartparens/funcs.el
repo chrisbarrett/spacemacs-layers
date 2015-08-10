@@ -116,50 +116,50 @@ Insert leading padding unless at start of line or after an open round paren."
 (defun sp/beg ()
   (plist-get (sp-get-enclosing-sexp ) :beg))
 
-(defun sp/inside-curly-braces-no-content? (&optional same-line?)
-  (-let [(&plist :beg beg :end end :op op) (sp-get-enclosing-sexp)]
+(defun sp/inside-curly-braces-no-content? (&optional same-line? sexp)
+  (-let [(&plist :beg beg :end end :op op) (or sexp (sp-get-enclosing-sexp))]
     (when (equal op "{")
       (and (s-blank? (buffer-substring (1+ beg) (1- end)))
            (if same-line?
                (= (line-number-at-pos beg) (line-number-at-pos end))
              t)))))
 
-(defun sp/inside-square-braces-no-content? (&optional same-line?)
-  (-let [(&plist :beg beg :end end :op op) (sp-get-enclosing-sexp)]
+(defun sp/inside-square-braces-no-content? (&optional same-line? sexp)
+  (-let [(&plist :beg beg :end end :op op) (or sexp (sp-get-enclosing-sexp))]
     (when (equal op "[")
       (and (s-blank? (buffer-substring (1+ beg) (1- end)))
            (if same-line?
                (= (line-number-at-pos beg) (line-number-at-pos end))
              t)))))
 
-(defun sp/inside-curly-braces-blank-content? (&optional same-line?)
-  (-let [(&plist :beg beg :end end :op op) (sp-get-enclosing-sexp)]
+(defun sp/inside-curly-braces-blank-content? (&optional same-line? sexp)
+  (-let [(&plist :beg beg :end end :op op) (or sexp (sp-get-enclosing-sexp))]
     (when (equal op "{")
       (and (s-blank? (s-trim (buffer-substring (1+ beg) (1- end))))
            (if same-line?
                (= (line-number-at-pos beg) (line-number-at-pos end))
              t)))))
 
-(defun sp/inside-square-braces-blank-content? (&optional same-line?)
-  (-let [(&plist :beg beg :end end :op op) (sp-get-enclosing-sexp)]
+(defun sp/inside-square-braces-blank-content? (&optional same-line? sexp)
+  (-let [(&plist :beg beg :end end :op op) (or sexp (sp-get-enclosing-sexp))]
     (when (equal op "[")
       (and (s-blank? (s-trim (buffer-substring (1+ beg) (1- end))))
            (if same-line?
                (= (line-number-at-pos beg) (line-number-at-pos end))
              t)))))
 
-(defun sp/inside-curly-braces-with-content? (&optional same-line?)
-  (and (sp/inside-curly-braces? same-line?) (not (sp/inside-curly-braces-no-content? same-line?))))
+(defun sp/inside-curly-braces-with-content? (&optional same-line? sexp)
+  (and (sp/inside-curly-braces? same-line?) (not (sp/inside-curly-braces-no-content? same-line? sexp))))
 
 (defun sp/just-after-open-op? (op)
   (s-matches? (rx-to-string `(and ,op (* space) eos)) (buffer-substring (line-beginning-position) (point))))
 
-(defun sp/split-braced-expression-over-new-lines (&optional statement-delimiter-rx)
+(defun sp/split-braced-expression-over-new-lines (&optional statement-delimiter-rx sexp)
   "Split the braced expression on the current line over several lines.
 
 Optionally split the internal lines according to the given regexp
 STATEMENT-DELIMETER-RX."
-  (-let [(&plist :beg beg :end end :op op) (sp-get-enclosing-sexp)]
+  (-let [(&plist :beg beg :end end :op op) (or sexp (sp-get-enclosing-sexp))]
     (save-excursion
       (goto-char (1- end))
       (newline-and-indent)
@@ -198,41 +198,43 @@ STATEMENT-DELIMETER-RX."
 (defun sp/generic-prog-backspace ()
   "Delete backwards with context-sensitive formatting."
   (interactive)
-  (cond
-   ((sp/inside-empty-angle-braces-no-content?)
-    (delete-char 1)
-    (delete-char -1))
-   ((sp/inside-empty-angle-braces-empty-content?)
-    (delete-horizontal-space))
+  (let ((sexp (sp-get-enclosing-sexp)))
+    (cond
+     ((sp/inside-empty-angle-braces-no-content?)
+      (delete-char 1)
+      (delete-char -1))
+     ((sp/inside-empty-angle-braces-empty-content?)
+      (delete-horizontal-space))
 
-   ((or (sp/inside-curly-braces-no-content?)
-        (sp/inside-square-braces-no-content?))
-    (call-interactively 'sp-backward-delete-char))
+     ((or (sp/inside-curly-braces-no-content? nil sexp)
+          (sp/inside-square-braces-no-content? nil sexp))
+      (call-interactively 'sp-backward-delete-char))
 
-   ((or (sp/inside-curly-braces-blank-content? t)
-        (sp/inside-square-braces-blank-content? t))
-    (delete-horizontal-space))
+     ((or (sp/inside-curly-braces-blank-content? t sexp)
+          (sp/inside-square-braces-blank-content? t sexp))
+      (delete-horizontal-space))
 
-   ((or (sp/inside-curly-braces-blank-content?)
-        (sp/inside-square-braces-blank-content?))
-    (just-one-space -1)
-    (save-excursion
-      (insert " ")))
+     ((or (sp/inside-curly-braces-blank-content? nil sexp)
+          (sp/inside-square-braces-blank-content? nil sexp))
+      (just-one-space -1)
+      (save-excursion
+        (insert " ")))
 
-   (t
-    (smart-ops-backspace))))
+     (t
+      (smart-ops-backspace)))))
 
 (defun sp/generic-prog-space ()
   "Insert a space, performing extra padding inside braced expressions."
   (interactive)
-  (cond
-   ((or (sp/inside-curly-braces-no-content?)
-        (sp/inside-square-braces-no-content?))
-    (delete-horizontal-space)
-    (insert " ")
-    (save-excursion (insert " ")))
-   (t
-    (insert " "))))
+  (let ((sexp (sp-get-enclosing-sexp)))
+    (cond
+     ((or (sp/inside-curly-braces-no-content? nil sexp)
+          (sp/inside-square-braces-no-content? nil sexp))
+      (delete-horizontal-space)
+      (insert " ")
+      (save-excursion (insert " ")))
+     (t
+      (insert " ")))))
 
 (defun sp/generic-prog-ret (&optional arg)
   "Insert a newline with context-sensitive formatting."
