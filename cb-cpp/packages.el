@@ -78,7 +78,9 @@ which require an initialization must be listed explicitly in the list.")
   (use-package ggtags
     :commands ggtags-mode
     :init
-    (add-hook 'c++-mode-hook 'ggtags-mode)))
+    (add-hook 'c++-mode-hook 'ggtags-mode)
+    :config
+    (set-face-underline 'ggtags-highlight nil)))
 
 (defun cb-cpp/init-helm-gtags ()
   (use-package helm-gtags

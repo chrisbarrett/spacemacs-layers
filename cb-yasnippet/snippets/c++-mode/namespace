@@ -1,8 +1,9 @@
-# -*- mode: snippet; require-final-newline: nil -*-
-# name: namespace
 # key: ns
+# name: namespace
 # condition: (yas/bol?)
 # --
 namespace ${1:Name} {
-  $0
+
+$0
+
 }

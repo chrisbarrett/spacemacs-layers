@@ -84,16 +84,24 @@
 
       (define-smart-ops-for-mode 'c++-mode
         (smart-ops
-         "+" "-" "/" "%" "^" "|" "~" "!" "=" "<<" ">>" "==" "!=" "&&" "||"
+         "+" "-" "/" "%" "^" "|" "!" "=" "<<" ">>" "==" "!=" "&&" "||"
          "+=" "-=" "/=" "%=" "^=" "|=" "*=" "<<=" ">>="
          :pad-unless 'cb-cpp/after-operator-keyword?)
+
+        ;; Pointer in template
+        (smart-ops "*>" :pad-before nil :pad-after nil)
+
+        (smart-ops ":"
+                   :pad-unless
+                   (-orfn 'cb-cpp/after-operator-keyword?
+                          (smart-ops-after-match? (rx (or "public" "private" "protected")))))
 
         (smart-ops "," :pad-before nil :pad-unless 'cb-cpp/after-operator-keyword?)
         (smart-ops "&" "*"
                    :pad-before nil
                    :pad-unless 'cb-cpp/after-operator-keyword?)
 
-        (smart-ops ":" ";" :pad-before nil)
+        (smart-ops ";" :pad-before nil)
         (smart-ops "--" "++" :pad-before nil :pad-after nil)
 
         (smart-ops "." "::" "->" "->*"

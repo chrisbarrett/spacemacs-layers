@@ -1,0 +1,7 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: delete
+# key: d
+# binding: direct-keybinding
+# condition: (yas/bol?)
+# --
+delete $0;

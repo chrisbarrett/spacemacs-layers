@@ -1,0 +1,9 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: destructor impl
+# key: ds
+# binding: direct-keybinding
+# condition: (yas/bol?)
+# --
+${1:class}::~$1() {
+  $0;
+}

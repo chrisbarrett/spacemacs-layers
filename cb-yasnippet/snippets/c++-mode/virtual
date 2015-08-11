@@ -1,0 +1,7 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: virtual
+# key: v
+# condition: (yas/bol?)
+# binding: direct-keybinding
+# --
+virtual ${1:T} ${2:fname}(${3:/* args... */}) = 0;
