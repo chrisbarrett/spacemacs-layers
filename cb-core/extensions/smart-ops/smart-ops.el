@@ -168,86 +168,88 @@ matched pairs Set to nil to disable this behaviour."
   (not (-contains? (--map (plist-get it :op) rules) op)))
 
 (defun smart-ops--apply-padding-rules (rules)
-  (atomic-change-group
-    (save-restriction
+  (save-restriction
+    (narrow-to-region (line-beginning-position) (line-end-position))
+    (atomic-change-group
+      (save-restriction
 
-      (when (s-matches? (rx (* space) ";")
-                        (buffer-substring (point) (line-end-position)))
-        (narrow-to-region (line-beginning-position) (point)))
+        (when (s-matches? (rx (* space) ";")
+                          (buffer-substring (point) (line-end-position)))
+          (narrow-to-region (line-beginning-position) (point)))
 
-      (-if-let* ((_ (smart-ops--logged "In code?"
-                      (not (smart-ops--inside-string-or-comment?))))
-                 (_ (smart-ops--logged "char-before is an op character:"
-                      (-contains? (smart-ops--op-characters rules) (char-before))))
-                 (_ (smart-ops--logged "deleting space?"
-                      (unless (s-blank? (s-trim (buffer-substring (line-beginning-position) (point)))) (delete-horizontal-space) t)))
-                 (indent (save-excursion (back-to-indentation) (point)))
-                 (beg (smart-ops--logged "beg:"
-                        (max indent (smart-ops--maybe-beginning-of-op rules))))
-                 (end (smart-ops--logged "end:"
-                        (smart-ops--maybe-end-of-op rules))))
-          (progn
-            (-let* (((rule &as &plist :op op :action action)
-                     (smart-ops--logged "rule:"
-                       (smart-ops--maybe-rule-for-op-at-pt rules)))
-                    (op (smart-ops--logged "op:" (or op (smart-ops--op-at-pt rules))))
-                    (pre-pad?
-                     (save-excursion
-                       (goto-char (smart-ops--maybe-beginning-of-op rules))
-                       (smart-ops--log-debug "\nPre-pad")
-                       (cond
-                        ((smart-ops--logged "  - empty line before pt?"
-                           (smart-ops--line-empty-up-to-point?))
-                         nil)
-                        ((smart-ops--logged "  - at operator section?"
-                           (smart-ops--at-operator-section?))
-                         nil)
-                        ((smart-ops--logged "  - apply pre-padding?"
-                           (smart-ops--apply-pre-padding? rule beg))
-                         t)
-                        ((smart-ops--logged "  - unknown op?"
-                           (smart-ops--unknown-smart-op? op rules))
-                         t))))
-                    (post-pad?
-                     (progn
-                       (smart-ops--log-debug "\nPost-pad")
-                       (cond ((smart-ops--logged "  - apply rules?"
-                                (smart-ops--apply-post-padding? rule end))
-                              t)
-                             ((smart-ops--logged "  - unknown op?"
-                                (smart-ops--unknown-smart-op? op rules))
-                              t))))
+        (-if-let* ((_ (smart-ops--logged "In code?"
+                        (not (smart-ops--inside-string-or-comment?))))
+                   (_ (smart-ops--logged "char-before is an op character:"
+                        (-contains? (smart-ops--op-characters rules) (char-before))))
+                   (_ (smart-ops--logged "deleting space?"
+                        (unless (s-blank? (s-trim (buffer-substring (line-beginning-position) (point)))) (delete-horizontal-space) t)))
+                   (indent (save-excursion (back-to-indentation) (point)))
+                   (beg (smart-ops--logged "beg:"
+                          (max indent (smart-ops--maybe-beginning-of-op rules))))
+                   (end (smart-ops--logged "end:"
+                          (smart-ops--maybe-end-of-op rules))))
+            (progn
+              (-let* (((rule &as &plist :op op :action action)
+                       (smart-ops--logged "rule:"
+                         (smart-ops--maybe-rule-for-op-at-pt rules)))
+                      (op (smart-ops--logged "op:" (or op (smart-ops--op-at-pt rules))))
+                      (pre-pad?
+                       (save-excursion
+                         (goto-char (smart-ops--maybe-beginning-of-op rules))
+                         (smart-ops--log-debug "\nPre-pad")
+                         (cond
+                          ((smart-ops--logged "  - empty line before pt?"
+                             (smart-ops--line-empty-up-to-point?))
+                           nil)
+                          ((smart-ops--logged "  - at operator section?"
+                             (smart-ops--at-operator-section?))
+                           nil)
+                          ((smart-ops--logged "  - apply pre-padding?"
+                             (smart-ops--apply-pre-padding? rule beg))
+                           t)
+                          ((smart-ops--logged "  - unknown op?"
+                             (smart-ops--unknown-smart-op? op rules))
+                           t))))
+                      (post-pad?
+                       (progn
+                         (smart-ops--log-debug "\nPost-pad")
+                         (cond ((smart-ops--logged "  - apply rules?"
+                                  (smart-ops--apply-post-padding? rule end))
+                                t)
+                               ((smart-ops--logged "  - unknown op?"
+                                  (smart-ops--unknown-smart-op? op rules))
+                                t))))
 
-                    ;; The part of the op inserted after point, so that point can
-                    ;; be restored correctly.
-                    (op-component-after-pt
-                     (let ((str (buffer-substring (point) end)))
-                       (smart-ops--log-debug "\nOp substring after point: \"%s\"" str)
-                       str)))
+                      ;; The part of the op inserted after point, so that point can
+                      ;; be restored correctly.
+                      (op-component-after-pt
+                       (let ((str (buffer-substring (point) end)))
+                         (smart-ops--log-debug "\nOp substring after point: \"%s\"" str)
+                         str)))
 
-              (smart-ops--log-debug "\nDeleting extent: %s" (buffer-substring beg end))
-              (delete-region beg end)
-              (when (smart-ops--logged "\nInsert pre-pad:" pre-pad?)
-                (smart-ops--log-debug "  - inserting pre-pad...")
-                (insert " ")
-                (smart-ops--log-debug "  - done"))
-              (when (smart-ops--logged "\nInsert op:" op)
-                (smart-ops--log-debug "  - inserting op..." op)
-                (insert op)
-                (smart-ops--log-debug "  - done"))
-              (when (smart-ops--logged "\nInsert post pad:" post-pad?)
-                (smart-ops--log-debug "  - inserting post-pad...")
-                (insert " ")
-                (smart-ops--log-debug "  - done"))
-              (search-backward op-component-after-pt)
-              (when action
-                (smart-ops--log-debug "\nCalling action...")
-                (funcall action)
-                (smart-ops--log-debug "  done"))
+                (smart-ops--log-debug "\nDeleting extent: %s" (buffer-substring beg end))
+                (delete-region beg end)
+                (when (smart-ops--logged "\nInsert pre-pad:" pre-pad?)
+                  (smart-ops--log-debug "  - inserting pre-pad...")
+                  (insert " ")
+                  (smart-ops--log-debug "  - done"))
+                (when (smart-ops--logged "\nInsert op:" op)
+                  (smart-ops--log-debug "  - inserting op..." op)
+                  (insert op)
+                  (smart-ops--log-debug "  - done"))
+                (when (smart-ops--logged "\nInsert post pad:" post-pad?)
+                  (smart-ops--log-debug "  - inserting post-pad...")
+                  (insert " ")
+                  (smart-ops--log-debug "  - done"))
+                (search-backward op-component-after-pt)
+                (when action
+                  (smart-ops--log-debug "\nCalling action...")
+                  (funcall action)
+                  (smart-ops--log-debug "  done"))
 
-              (smart-ops--log-debug "\nInserted op.\n------")))
+                (smart-ops--log-debug "\nInserted op.\n------")))
 
-        (smart-ops--log-debug "Not at an operator\n------")))))
+          (smart-ops--log-debug "Not at an operator\n------"))))))
 
 (defmacro smart-ops--logged (note &rest forms)
   (declare (indent 1))
