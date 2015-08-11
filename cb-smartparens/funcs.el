@@ -317,12 +317,12 @@ STATEMENT-DELIMETER-RX."
 
 ;;; C utils
 
-(defun sp/c-format-after-open-curly (_id action context)
+(defun sp/c++-format-after-open-curly (_id action context)
   "Insert a space after flow control keywords."
   (when (and (equal action 'insert)
              (equal context 'code)
              (thing-at-point-looking-at
-              (rx (or "else" "}" ")") (* space) "{")))
+              (rx (or "}" ")" "else" "const" "override") (* space) "{")))
     (save-excursion
       (search-backward "{")
       (just-one-space))

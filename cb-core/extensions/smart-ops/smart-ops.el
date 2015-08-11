@@ -241,7 +241,8 @@ matched pairs Set to nil to disable this behaviour."
                   (smart-ops--log-debug "  - inserting post-pad...")
                   (insert " ")
                   (smart-ops--log-debug "  - done"))
-                (search-backward op-component-after-pt)
+                (smart-ops--logged "Moving back to point:"
+                  (search-backward op-component-after-pt nil t))
                 (when action
                   (smart-ops--log-debug "\nCalling action...")
                   (funcall action)

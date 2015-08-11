@@ -192,7 +192,7 @@
     (sp-local-pair "(" ")" :post-handlers '(:add sp/c-format-after-paren)))
 
   (sp-with-modes 'c++-mode
-    (sp-local-pair "{" "}" :post-handlers '(sp/c-format-after-open-curly))
+    (sp-local-pair "{" "}" :post-handlers '(sp/c++-format-after-open-curly))
     (sp-local-pair "(" ")" :post-handlers '(:add sp/c-format-after-paren))
     )
 

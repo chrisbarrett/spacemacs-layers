@@ -85,11 +85,14 @@
       (define-smart-ops-for-mode 'c++-mode
         (smart-ops
          "+" "-" "/" "%" "^" "|" "!" "=" "<<" ">>" "==" "!=" "&&" "||"
-         "+=" "-=" "/=" "%=" "^=" "|=" "*=" "<<=" ">>="
+         "+=" "-=" "/=" "%=" "^=" "|=" "*=" "<<=" ">>=" "?"
          :pad-unless 'cb-cpp/after-operator-keyword?)
 
-        ;; Pointer in template
-        (smart-ops "*>" :pad-before nil :pad-after nil)
+        ;; Pointers and templates
+        (smart-ops "*>" "*>&" ">&" :pad-before nil :pad-after nil
+                   :action
+                   (lambda ()
+                     (skip-chars-forward "*>&")))
 
         (smart-ops ":"
                    :pad-unless
@@ -98,13 +101,16 @@
 
         (smart-ops "," :pad-before nil :pad-unless 'cb-cpp/after-operator-keyword?)
         (smart-ops "&" "*"
-                   :pad-before nil
+                   :pad-before-if
+                   (smart-ops-after-match? (rx bow "return" eow (* space) eos))
+                   :pad-after-unless
+                   (smart-ops-after-match? (rx bow "return" eow (* space) (? (or "&" "*")) eos))
                    :pad-unless 'cb-cpp/after-operator-keyword?)
 
         (smart-ops ";" :pad-before nil)
         (smart-ops "--" "++" :pad-before nil :pad-after nil)
 
-        (smart-ops "." "::" "->" "->*"
+        (smart-ops "." "::" "->" "->*" ">::"
                    :pad-before nil :pad-after nil
                    :action 'company-manual-begin)
 
