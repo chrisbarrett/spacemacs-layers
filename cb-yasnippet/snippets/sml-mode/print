@@ -1,0 +1,7 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: print
+# key: p
+# binding: direct-keybinding
+# condition: (yas/bol?)
+# --
+print ${1:"${2:msg}"}

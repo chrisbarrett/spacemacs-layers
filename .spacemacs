@@ -54,6 +54,7 @@
      cb-proof
      cb-haskell
      cb-scala
+     cb-sml
      ;; cb-csharp
      ;; cb-rust
      ;; cb-idris

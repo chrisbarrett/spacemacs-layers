@@ -1,0 +1,7 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: exception
+# key: ex
+# binding: direct-keybinding
+# condition: (yas/bol?)
+# --
+exception $0

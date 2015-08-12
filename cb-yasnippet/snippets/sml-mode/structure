@@ -1,0 +1,7 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: structure (decl)
+# key: st
+# condition: (yas/bol?)
+# binding: direct-keybinding
+# --
+structure ${1:name} : ${2:type}

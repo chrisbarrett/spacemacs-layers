@@ -1,0 +1,8 @@
+# key: st
+# name: structure (impl)
+# condition: (yas/bol?)
+# expand-env: ((yas-indent-line 'fixed) (yas-wrap-around-region 't))
+# --
+structure ${1:Name} :> ${2:sig} = struct
+    $0
+end

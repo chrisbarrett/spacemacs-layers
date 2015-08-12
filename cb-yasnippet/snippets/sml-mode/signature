@@ -1,0 +1,7 @@
+# key: sig
+# name: signature
+# condition: (yas/bol?)
+# --
+signature ${1:NAME$(upcase yas/text)} = sig
+  $0
+end

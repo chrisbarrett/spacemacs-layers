@@ -49,7 +49,7 @@
 
   ;;; OCaml
 
-  (sp-with-modes '(tuareg-mode utop-mode)
+  (sp-with-modes '(tuareg-mode utop-mode sml-mode inferior-sml-mode)
     (sp-local-pair "\"" "\"" :post-handlers '(:add sp/ml-just-one-space))
     (sp-local-pair "{" "}"   :post-handlers '(:add sp/ml-just-one-space))
     (sp-local-pair "[" "]"   :post-handlers '(:add sp/ml-just-one-space))

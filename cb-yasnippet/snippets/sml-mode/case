@@ -1,0 +1,6 @@
+# key: c
+# name: case
+# condition: (yas/bol?)
+# --
+case ${1:expr}
+of ${2:binder} => $0

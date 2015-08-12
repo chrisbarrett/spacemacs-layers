@@ -1,0 +1,7 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: open
+# key: o
+# binding: direct-keybinding
+# condition: (yas/bol?)
+# --
+open $0

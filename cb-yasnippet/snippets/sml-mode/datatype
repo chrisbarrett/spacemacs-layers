@@ -1,0 +1,6 @@
+# key: d
+# name: datatype
+# condition: (yas/bol?)
+# --
+datatype ${1:name}
+  = $0

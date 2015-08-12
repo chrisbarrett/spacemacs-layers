@@ -1,0 +1,7 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: fun
+# key: f
+# binding: direct-keybinding
+# condition: (yas/bol?)
+# --
+fun ${1:header} = $0

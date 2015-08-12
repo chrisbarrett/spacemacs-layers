@@ -28,6 +28,7 @@ which require an initialization must be listed explicitly in the list.")
           (((background dark))  :foreground "#505070"))))
 
       (add-to-list 'paren-face-modes 'haskell-mode)
+      (add-to-list 'paren-face-modes 'sml-mode)
       (add-to-list 'paren-face-modes 'extempore-mode)
       (add-to-list 'paren-face-modes 'haskell-interactive-mode)
       (add-to-list 'paren-face-modes 'idris-mode)

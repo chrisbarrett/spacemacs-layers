@@ -1,0 +1,5 @@
+# key: r
+# name: raise
+# condition: (cb-sml/at-start-of-expr-for-snippet? 1)
+# --
+raise $0

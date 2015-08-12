@@ -1,0 +1,7 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: structure (alias)
+# key: st
+# binding: direct-keybinding
+# condition: (yas/bol?)
+# --
+structure ${1:alias} = ${2:definition}
