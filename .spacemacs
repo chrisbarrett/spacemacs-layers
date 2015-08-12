@@ -54,17 +54,17 @@
      cb-proof
      cb-haskell
      cb-scala
-     cb-csharp
+     ;; cb-csharp
      ;; cb-rust
-     cb-idris
-     cb-agda
+     ;; cb-idris
+     ;; cb-agda
      cb-coffeescript
      cb-sql
      ;; cb-shell
      cb-eshell
      cb-elfeed
      cb-calc
-     cb-extempore
+     ;; cb-extempore
      cb-groovy
      cb-crontab
      cb-js
