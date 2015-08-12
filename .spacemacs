@@ -224,18 +224,46 @@ before layers configuration."
   (load (concat user-layers-directory "cb-core/funcs.el"))
   (load (concat user-layers-directory "cb-core/config.el")))
 
-(defun core/install-package (pkg)
-  (cond
-   ((require 'paradox nil t)
-    (paradox-require pkg))
-   ((package-installed-p pkg)
-    (require pkg))
-   (t
-    (package-install pkg)
-    (require pkg)))
 
-  (eval-after-load 'paradox
-    `(paradox-require ',pkg)))
+(defun core/mk-package-dir-regexp (pkg)
+  (rx-to-string `(and ,(symbol-name pkg)
+                      "-" (repeat 8 digit) "." (repeat 3 4 digit) (? "/"))))
+
+(defvar core/package-installation-attempts 2)
+
+(defun core/install-package (pkg &optional attempts cur)
+  (cond
+   ((null attempts)
+    (core/install-package pkg core/package-installation-attempts 1))
+   ((< attempts cur)
+    (error "Unable to install %s after %s attempt(s)" pkg attempts))
+   (t
+    (if (equal 1 cur)
+        (message "--> Installing package %s..." pkg)
+      (message "--> Installing package %s... (attempt %s/%s)" pkg cur attempts))
+    (condition-case err
+        (cond
+         ((require 'paradox nil t)
+          (paradox-require pkg))
+         ((package-installed-p pkg)
+          (require pkg))
+         (t
+          (package-install pkg)
+          (require pkg)))
+      (error
+       (let ((archives (concat package-user-dir "/archives")))
+         (when (file-directory-p archives)
+           (message "--> Cleaning package archives...")
+           (delete-directory archives t)))
+
+       (dolist (entry (directory-files package-user-dir t))
+         (when (string-match-p (core/mk-package-dir-regexp pkg) (file-name-nondirectory entry))
+           (message "--> Deleting existing package at %s..." entry)
+           (delete-directory entry t)))
+
+       (package-refresh-contents)
+       (package-initialize)
+       (core/install-package pkg attempts (1+ cur)))))))
 
 (defun dotspacemacs/config ()
   "Configuration function.
