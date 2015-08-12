@@ -34,7 +34,11 @@
       (setq eshell-prompt-function 'cb-eshell--prompt)
 
       ;; See ./funcs.el for definition.
-      (setq eshell-prompt-regexp (rx bol (* space) "λ" (or ">" "#") " "))
+      (setq eshell-prompt-regexp (rx bol (or
+                                          ;; default
+                                          (and (* space) "λ" (or ">" "#") " ")
+                                          ;; boot2docker
+                                          (and "@" (+ nonl) ":" (+ nonl) "$" space))))
 
       (evil-set-initial-state 'eshell-mode 'insert)
 
