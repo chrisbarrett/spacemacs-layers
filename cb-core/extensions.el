@@ -102,7 +102,7 @@
     :config
     (progn
       (setq recentf-save-file (concat spacemacs-cache-directory "recentf"))
-      (setq recentf-max-saved-items 50)
+      (setq recentf-max-saved-items 500)
       (setq recentf-max-menu-items 10)
       (setq recentf-keep '(file-remote-p file-readable-p))
 
