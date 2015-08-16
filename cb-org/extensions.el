@@ -566,6 +566,10 @@ exported file's name. The PDF will be created at DEST."
                "* %?\n%^t"
                :clock-keep t)
 
+              ("D" "Diary (work)" entry
+               (file+datetree org-work-file)
+               "* %?\n%^t"
+               :clock-keep t)
 
               ("h" "Habit" entry
                (file+olp org-default-notes-file "Habits/Recurring")
