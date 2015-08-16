@@ -28,6 +28,7 @@
                                 (smart-ops-default-ops)))))
 
         (define-smart-ops-for-mode 'sml-mode ops)
+        (define-smart-ops-for-mode 'lazy-sml-mode ops)
         (define-smart-ops-for-mode 'inferior-sml-mode ops))
 
       (add-hook 'inferior-sml-mode-hook 'smart-ops-mode))))

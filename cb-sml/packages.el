@@ -21,9 +21,19 @@
   (use-package sml-mode
     :mode ("\\.\\(sml\\|sig\\)\\'" . sml-mode)
     :commands (run-sml sml-mode)
+    :init
+    (progn
+      (define-derived-mode lazy-sml-mode sml-mode "SML[lazy]")
+      (add-to-list 'auto-mode-alist '("\\.lml\\'" . lazy-sml-mode)))
     :config
     (progn
       (setq sml-indent-level 2)
       (add-to-list 'aggressive-indent-excluded-modes 'sml-mode)
       (define-key inferior-sml-mode-map (kbd "M-RET") 'cb-sml/inf-sml-m-ret)
-      (define-key sml-mode-map (kbd "M-RET") 'cb-sml/m-ret))))
+      (define-key sml-mode-map (kbd "M-RET") 'cb-sml/m-ret)
+
+      (font-lock-add-keywords
+       'lazy-sml-mode
+       `((,(rx bol (* space) "fun" (+ space) (group "lazy") (+ space) (group (+ word)) eow)
+          (1 font-lock-type-def-face)
+          (2 font-lock-function-name-face)))))))
