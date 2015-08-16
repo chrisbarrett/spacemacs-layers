@@ -531,7 +531,9 @@ exported file's name. The PDF will be created at DEST."
 
       (defun cb-org/read-url-for-capture ()
         "Return a capture template string for a URL org-capture."
-        (let* ((url (core/read-string-with-default "URL" (cb-org/last-url-kill)))
+        (let* ((url (core/read-string-with-default "URL" (or
+                                                          (thing-at-point-url-at-point)
+                                                          (cb-org/last-url-kill))))
                (title (cb-org/parse-html-title (cb-org/url-retrieve-html url))))
           (format "* [[%s][%s]]" url (or title url))))
 
