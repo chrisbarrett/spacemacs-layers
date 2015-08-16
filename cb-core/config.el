@@ -253,7 +253,12 @@ Work around spacemacs' aggressive manipulation of `face-remapping-alist'."
                                 ("Asia/Tokyo" "Tokyo")
                                 ("Australia/Sydney" "Sydney")))
 
-;; Apply font-lock to buffer after reloading Spacemacs.
-
 (defadvice dotspacemacs/sync-configuration-layers (after font-lock-fontify activate)
+  "Apply font-lock to buffer after reloading Spacemacs."
   (font-lock-fontify-buffer))
+
+(defadvice spacemacs/cycle-spacemacs-theme (after font-lock-fontify-all activate)
+  "Reapply font lock for all buffers."
+  (--each (buffer-list) (with-current-buffer it
+                          (when font-lock-mode
+                            (font-lock-fontify-buffer)))))
