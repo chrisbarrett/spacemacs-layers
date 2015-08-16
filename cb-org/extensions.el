@@ -67,6 +67,7 @@
         (and (equal tag "hold") (concat "-" tag)))
 
       (setq org-agenda-include-diary t)
+      (setq org-agenda-start-on-weekday nil)
       (setq org-agenda-auto-exclude-function 'cb-org/exclude-tasks-on-hold)
       (setq org-agenda-diary-file (f-join org-directory "diary.org"))
       (setq org-agenda-hide-tags-regexp (rx (or "noexport" "someday")))
@@ -83,7 +84,6 @@
               (todo priority-down category-keep scheduled-up)
               (tags priority-down category-keep)
               (search category-keep)))
-      (setq org-agenda-span 'week)
       (setq org-agenda-text-search-extra-files '(agenda-archives))
       (setq org-agenda-use-time-grid nil)
 
