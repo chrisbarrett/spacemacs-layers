@@ -30,7 +30,7 @@
 (flycheck-def-option-var flycheck-sml-nj-executable "sml" sml-nj
   "Command to use to run SML/NJ.")
 
-(flycheck-def-option-var flycheck-sml-nj-args '("-Cparser.lazy-keyword=true") sml-nj
+(flycheck-def-option-var flycheck-sml-nj-args nil sml-nj
   "Run options for SML/NJ.")
 
 (defun flycheck-sml--run ()

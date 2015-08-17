@@ -14,7 +14,8 @@
 
 (defconst cb-sml-post-extensions
   '(smart-ops
-    flycheck-sml))
+    flycheck-sml
+    lazy-sml-mode))
 
 (eval-when-compile
   (require 'use-package nil t))
@@ -37,3 +38,7 @@
 
 (defun cb-sml/init-flycheck-sml ()
   (use-package flycheck-sml))
+
+(defun cb-sml/init-lazy-sml-mode ()
+  (use-package lazy-sml-mode
+    :mode ("\\.lml\\'" . lazy-sml-mode)))
