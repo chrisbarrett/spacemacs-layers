@@ -130,6 +130,14 @@
   (comint-send-input)
   (evil-insert-state))
 
+(defun cb-sml/ret ()
+  (interactive)
+  (let ((col (current-indentation)))
+    (sp/generic-prog-ret)
+    (when (s-blank? (s-trim (current-line)))
+      (delete-horizontal-space)
+      (indent-to col))))
+
 ;; snippet utils
 
 (defun cb-sml/at-start-of-expr-for-snippet? (snippet-trigger-length)

@@ -29,8 +29,26 @@
       (add-to-list 'aggressive-indent-excluded-modes 'sml-mode)
       (define-key inferior-sml-mode-map (kbd "M-RET") 'cb-sml/inf-sml-m-ret)
       (define-key sml-mode-map (kbd "M-RET") 'cb-sml/m-ret)
+      (define-key sml-mode-map (kbd "<return>") 'cb-sml/ret)
 
       (defadvice sml-prog-proc-switch-to (after append-buffer activate)
         (goto-char (point-max))
         (when (thing-at-point-looking-at sml-prompt-regexp)
-          (evil-insert-state))))))
+          (evil-insert-state)))
+
+      ;; Advice to work around super-aggressive SML indentation.
+
+      (defadvice evil-open-below (around sml-indent activate)
+        (let ((col (current-indentation)))
+          ad-do-it
+          (when (and (derived-mode-p 'sml-mode) (s-blank? (s-trim (current-line))))
+            (delete-horizontal-space)
+            (indent-to col))))
+
+      (defadvice evil-open-above (around sml-indent activate)
+        (let ((col (current-indentation)))
+          ad-do-it
+          (when (and (derived-mode-p 'sml-mode) (s-blank? (s-trim (current-line))))
+            (delete-horizontal-space)
+            (indent-to col))))
+      )))
