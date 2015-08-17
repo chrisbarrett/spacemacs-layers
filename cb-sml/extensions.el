@@ -12,7 +12,9 @@
 
 (defconst cb-sml-pre-extensions '())
 
-(defconst cb-sml-post-extensions '(smart-ops))
+(defconst cb-sml-post-extensions
+  '(smart-ops
+    flycheck-sml))
 
 (eval-when-compile
   (require 'use-package nil t))
@@ -32,3 +34,6 @@
         (define-smart-ops-for-mode 'inferior-sml-mode ops))
 
       (add-hook 'inferior-sml-mode-hook 'smart-ops-mode))))
+
+(defun cb-sml/init-flycheck-sml ()
+  (use-package flycheck-sml))
