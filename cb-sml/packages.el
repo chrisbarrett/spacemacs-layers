@@ -44,4 +44,9 @@
 
       (add-to-list 'aggressive-indent-excluded-modes 'sml-mode)
       (define-key inferior-sml-mode-map (kbd "M-RET") 'cb-sml/inf-sml-m-ret)
-      (define-key sml-mode-map (kbd "M-RET") 'cb-sml/m-ret))))
+      (define-key sml-mode-map (kbd "M-RET") 'cb-sml/m-ret)
+
+      (defadvice sml-prog-proc-switch-to (after append-buffer activate)
+        (goto-char (point-max))
+        (when (thing-at-point-looking-at sml-prompt-regexp)
+          (evil-insert-state))))))
