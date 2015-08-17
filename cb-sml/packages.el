@@ -36,6 +36,13 @@
         (when (thing-at-point-looking-at sml-prompt-regexp)
           (evil-insert-state)))
 
+      ;; Use font locking to display pretty arrows.
+
+      (font-lock-add-keywords
+       'sml-mode
+       `(,(core/font-lock-replace-match (rx space (group "->") space) 1 "→")
+         ,(core/font-lock-replace-match (rx space (group "=>") space) 1 "⇒")))
+
       ;; Advice to work around super-aggressive SML indentation.
 
       (defadvice evil-open-below (around sml-indent activate)
