@@ -7,6 +7,7 @@
     iedit
     smart-ops
     hl-line
+    case
     )
   "List of all extensions to load before the packages.")
 
@@ -141,3 +142,6 @@
     (progn
       (smart-ops-global-mode)
       (evil-define-key 'insert smart-ops-mode-map (kbd "<backspace>") nil))))
+
+(defun cb-core/init-case ()
+  (use-package case))
