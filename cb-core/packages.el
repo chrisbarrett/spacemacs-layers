@@ -22,6 +22,7 @@
     wgrep-ag
     alert
     helm-gtags
+    world-time-mode
     )
   "List of all packages to install and/or initialize. Built-in packages
 which require an initialization must be listed explicitly in the list.")
@@ -237,5 +238,22 @@ which require an initialization must be listed explicitly in the list.")
 
       (define-key helm-gtags-mode-map (kbd "M-.") 'helm-gtags-dwim)
       (define-key helm-gtags-mode-map (kbd "M-,") 'helm-gtags-pop-stack))))
+
+(defun cb-core/init-world-time-mode ()
+  (use-package world-time-mode
+    :commands world-time-list
+    :init
+    (evil-leader/set-key "at" 'world-time-list)
+    :config
+    (progn
+      (setq display-time-world-list '(("Pacific/Auckland" "NZT")
+                                      ("UTC" "UTC")
+                                      ("Europe/Berlin" "Germany")
+                                      ("America/Los_Angeles" "Los Angeles")
+                                      ("America/New_York" "New York")
+                                      ("Australia/Sydney" "Sydney")))
+
+      (evil-define-key 'normal world-time-table-mode-map (kbd "q") 'quit-window)
+      (add-hook 'world-time-table-mode-hook 'hl-line-mode))))
 
 ;;; End
