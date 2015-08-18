@@ -1,0 +1,10 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: functor (transparent)
+# key: functor
+# binding: direct-keybinding
+# expand-env: ((yas-indent-line 'fixed) (yas-wrap-around-region 't))
+# condition: (yas/bol?)
+# --
+functor ${1:Name} (${2:decls}) : ${3:SIG$(s-upcase yas/text)} = struct
+  $0
+end
