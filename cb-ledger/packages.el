@@ -24,19 +24,32 @@ which require an initialization must be listed explicitly in the list.")
       (setq ledger-post-account-alignment-column 2)
       (setq ledger-post-use-completion-engine :ido)
       (setq ledger-fontify-xact-state-overrides nil)
+
+      (defconst cb-ledger/pay-day-of-month 13)
+
+      (defun cb-ledger/last-payday-at (date)
+        (-let* (((s minute hour day month year) (decode-time date))
+                (pay-day-of-month cb-ledger/pay-day-of-month)
+                (before-pay-day? (< day pay-day-of-month))
+                ((pay-month pay-year)
+                 (cond
+                  ((and (= 1 month) before-pay-day?)
+                   (list 12 (1- year)))
+                  (before-pay-day?
+                   (list (1- month) year))
+                  (t
+                   (list month year)))))
+          (encode-time s minute hour pay-day-of-month pay-month pay-year)))
+
       (setq ledger-reports
-            (-let* (((month day year) (calendar-current-date))
-                    (pay-day-of-month 13)
-                    (before-pay-day (< day pay-day-of-month))
-                    ((pay-month pay-year)
-                     (cond
-                      ((and (= 1 month) before-pay-day)
-                       (list 12 (1- year)))
-                      (before-pay-day
-                       (list (1- month) year))
-                      (t
-                       (list month year))))
-                    (last-payday (format "%s-%02d-%s" pay-year pay-month pay-day-of-month)))
+            (let* ((prev-payday-time (cb-ledger/last-payday-at (current-time)))
+                   (time-before-last-payday (time-subtract prev-payday-time (days-to-time 1)))
+                   (second-prev-payday-time (cb-ledger/last-payday-at time-before-last-payday))
+
+                   (prev-payday (format-time-string "%Y-%m-%d" prev-payday-time))
+                   (day-before-last-payday (format-time-string "%Y-%m-%d" time-before-last-payday))
+                   (second-prev-payday (format-time-string "%Y-%m-%d" second-prev-payday-time))
+                   (last-pay-period-expr (format "from %s to %s" second-prev-payday day-before-last-payday)))
 
               `(("assets" "ledger -f %(ledger-file) bal assets")
                 ("balance" "ledger -f %(ledger-file) bal")
@@ -48,10 +61,17 @@ which require an initialization must be listed explicitly in the list.")
                 ("this week" "ledger -f %(ledger-file) -p 'this week' -r reg 'checking' --invert")
                 ("this month" "ledger -f %(ledger-file) -p 'this month' -r reg 'checking' --invert")
                 ("reg since payday"
-                 ,(concat "ledger -f %(ledger-file) -b '" last-payday
+                 ,(concat "ledger -f %(ledger-file) -b '" prev-payday
                           "' -r reg 'checking' --invert"))
                 ("bal since payday"
-                 ,(concat "ledger -f %(ledger-file) -b '" last-payday
+                 ,(concat "ledger -f %(ledger-file) -b '" prev-payday
+                          "' -r bal 'checking' --invert"))
+
+                ("reg last pay period"
+                 ,(concat "ledger -f %(ledger-file) -p '" last-pay-period-expr
+                          "' -r reg 'checking' --invert"))
+                ("bal last pay period"
+                 ,(concat "ledger -f %(ledger-file) -p '" last-pay-period-expr
                           "' -r bal 'checking' --invert")))))
 
       (setq ledger-report-format-specifiers
