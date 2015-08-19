@@ -56,6 +56,7 @@ which require an initialization must be listed explicitly in the list.")
 
       (add-hook 'haskell-mode-hook 'cb-haskell/set-local-hooks)
       (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
+      (add-hook 'haskell-mode-hook 'haskell-decl-scan-mode)
 
       (with-eval-after-load 'haskell
         (diminish 'interactive-haskell-mode " λ"))
