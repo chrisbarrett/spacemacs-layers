@@ -38,6 +38,13 @@ which require an initialization must be listed explicitly in the list.")
       (setq haskell-process-show-debug-tips)
       (setq haskell-stylish-on-save t)
 
+      (setq haskell-import-mapping
+            '(("Data.Map" . "import qualified Data.Map as M\nimport Data.Map (Map)")
+              ("Data.Vector" . "import qualified Data.Vector as V\nimport Data.Vector (Vector)")
+              ("Data.Text" . "import qualified Data.Text as T\nimport Data.Text (Text, pack, unpack)")))
+
+      (setq haskell-language-extensions
+            '("-XUnicodeSyntax" "-XLambdaCase"))
 
       (with-eval-after-load 'flycheck
         (add-hook 'haskell-interactive-mode-hook (lambda () (flycheck-mode -1))))
