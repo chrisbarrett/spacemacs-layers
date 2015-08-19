@@ -38,9 +38,6 @@ which require an initialization must be listed explicitly in the list.")
       (setq haskell-process-show-debug-tips)
       (setq haskell-stylish-on-save t)
 
-      (with-eval-after-load 'yasnippet
-        (setq yas-snippet-dirs
-              (--reject (s-matches? "/haskell-mode" it) yas-snippet-dirs)))
 
       (with-eval-after-load 'flycheck
         (add-hook 'haskell-interactive-mode-hook (lambda () (flycheck-mode -1))))
