@@ -1,5 +1,5 @@
 {
-  "name": "__PROJECT-NAME__",
+  "name": "__APIDOC-PROJECT-NAME__",
   "base_url": "http://research.movio.co/api/2",
   "description": "__DESCRIPTION__",
   "info": {

@@ -26,7 +26,7 @@ fork in Test := true
 
 releaseSettings
 ReleaseKeys.versionBump := sbtrelease.Version.Bump.Minor
-ReleaseKeys.tagName := s"${version.value}"
+ReleaseKeys.tagName := version.value.toString
 
 publishTo <<= version { (v: String) ⇒
   val repo = "__MOVIO-ARTIFACTORY-URL__"
