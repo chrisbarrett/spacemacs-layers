@@ -26,15 +26,15 @@ which require an initialization must be listed explicitly in the list.")
     (progn
       ;; Set up snippet directories.
       (push (f-join user-layers-directory "cb-yasnippet/snippets") yas-snippet-dirs)
-      (setq yas-snippet-dirs (--reject (or
-                                        ;; Why is this even symbol even in there? Jeez.
-                                        (equal 'yas-installed-snippets-dir it)
-                                        ;; Don't use snippets from packages.
-                                        (s-matches? "/elpa/" it)
-                                        ;; Ensure all paths exist or yasnippet will fail to load.
-                                        (not (f-dir? it)))
+      (setq yas-snippet-dirs (-uniq (--reject (or
+                                               ;; Why is this symbol even in there? Jeez.
+                                               (equal 'yas-installed-snippets-dir it)
+                                               ;; Don't use snippets from packages.
+                                               (s-matches? "/elpa/" it)
+                                               ;; Ensure all paths exist or yasnippet will fail to load.
+                                               (not (f-dir? it)))
 
-                                       yas-snippet-dirs))
+                                              yas-snippet-dirs)))
 
       (setq yas-prompt-functions '(yas-ido-prompt))
       (setq yas-wrap-around-region t)
