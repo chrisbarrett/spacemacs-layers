@@ -16,6 +16,7 @@
     ido
     recentf
     eldoc
+    locate-key-binding
     )
   "List of all extensions to load after the packages.")
 
@@ -145,3 +146,7 @@
 
 (defun cb-core/init-case ()
   (use-package case))
+
+(defun cb-core/init-locate-key-binding ()
+  (use-package locate-key-binding
+    :commands (locate-key-binding)))
