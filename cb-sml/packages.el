@@ -30,6 +30,7 @@
       (define-key inferior-sml-mode-map (kbd "M-RET") 'cb-sml/inf-sml-m-ret)
       (define-key sml-mode-map (kbd "M-RET") 'cb-sml/m-ret)
       (define-key sml-mode-map (kbd "<return>") 'cb-sml/ret)
+      (define-key sml-mode-map (kbd "M-SPC") nil)
 
       (defadvice sml-prog-proc-switch-to (after append-buffer activate)
         (goto-char (point-max))
