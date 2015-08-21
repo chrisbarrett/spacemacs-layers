@@ -8,11 +8,10 @@ resolvers ++= Seq(
 )
 
 libraryDependencies ++= Seq(
-  // "joda-time" % "joda-time" % "2.4",
-  // "org.joda" % "joda-convert" % "1.7",
-  // "org.elasticsearch" % "elasticsearch" % "1.4.2",
-  // "com.sksamuel.elastic4s" %% "elastic4s" % "1.4.7"
-  "org.scalatest" %% "scalatest" % __SCALATEST-VERSION__ % Test
+  // "joda-time" % "joda-time" % "__JODA-TIME-VERSION__",
+  // "org.joda" % "joda-convert" % "__JODA-CONVERT-VERSION__",
+  // "com.sksamuel.elastic4s" %% "elastic4s" % "__ELASTIC4S-VERSION__",
+  "org.scalatest" %% "scalatest" % "__SCALATEST-VERSION__" % Test
 )
 
 scalacOptions ++= Seq(

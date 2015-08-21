@@ -83,20 +83,29 @@ which require an initialization must be listed explicitly in the list.")
 (defun cb-project/init-skeletor ()
   (use-package skeletor
     :commands (skeletor-create-project skeletor-create-project-at)
+    :init
+    (eval-and-compile
+      (defconst cb-project/scala-artifact-versions
+        '(("__SCALA-VERSION__"          . "2.11.7")
+          ("__SBT-VERSION__"            . "0.13.8")
+
+          ("__ELASTIC4S-VERSION__"      . "1.4.12")
+          ("__JODA-CONVERT-VERSION__"   . "1.7")
+          ("__JODA-TIME-VERSION__"      . "2.4")
+          ("__MACWIRE-VERSION__"        . "1.0.5")
+          ("__PLAY-VERSION__"           . "2.3.9")
+          ("__PLAYLIB-VERSION__"        . "1.1.0")
+          ("__SBT-RELEASE-VERSION__"    . "0.8.5")
+          ("__SCALATEST-PLUS-VERSION__" . "1.1.0")
+          ("__SCALATEST-VERSION__"      . "2.2.4")
+          )))
     :config
     (progn
       (setq skeletor-show-project-command 'magit-status)
       (setq skeletor-scala-use-ensime t)
       (setq skeletor-user-directory (f-join user-layers-directory "cb-project/project-skeletons"))
 
-      (defconst cb-project/scala-sbt-version "0.13.8")
-      (defconst cb-project/scala-sbt-release-version "0.8.5")
-      (defconst cb-project/scala-play-version "2.3.9")
-      (defconst cb-project/scala-movio-playlib-version "1.1.0")
-      (defconst cb-project/scala-version "2.11.7")
-      (defconst cb-project/scalatest-version "2.2.4")
       (defvar cb-project/scala-movio-endpoint-test-prefix)
-
 
       (skeletor-define-template "movio-scala-play-project"
         :title "Scala Play Project (Movio)"
@@ -106,11 +115,7 @@ which require an initialization must be listed explicitly in the list.")
           ("sbt" . "http://www.scala-sbt.org"))
 
         :substitutions
-        '(("__SCALA-VERSION__" . cb-project/scala-version)
-          ("__SBT-VERSION__" . cb-project/scala-sbt-version)
-          ("__PLAY-VERSION__" . cb-project/scala-play-version)
-          ("__PLAYLIB-VERSION__". cb-project/scala-movio-playlib-version)
-          ("__SBT-RELEASE-VERSION__". cb-project/scala-sbt-release-version)
+        `(,@cb-project/scala-artifact-versions
           ("__MOVIO-ARTIFACTORY-URL__". movio-artifactory-url)
           ("__MOVIO-ARTIFACTORY-REPO-URL__". movio-artifactory-repo-url)
 
@@ -146,10 +151,7 @@ which require an initialization must be listed explicitly in the list.")
           ("sbt" . "http://www.scala-sbt.org"))
 
         :substitutions
-        '(("__SCALA-VERSION__" . cb-project/scala-version)
-          ("__SBT-VERSION__" . cb-project/scala-sbt-version)
-          ("__SBT-RELEASE-VERSION__". cb-project/scala-sbt-release-version)
-          ("__SCALATEST-VERSION__". cb-project/scalatest-version)
+        `(,@cb-project/scala-artifact-versions
           ("__MOVIO-ARTIFACTORY-URL__". movio-artifactory-url)
           ("__MOVIO-ARTIFACTORY-REPO-URL__". movio-artifactory-repo-url)
 

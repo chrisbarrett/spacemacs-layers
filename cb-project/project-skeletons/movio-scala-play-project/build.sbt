@@ -11,10 +11,11 @@ resolvers ++= Seq(
 
 libraryDependencies ++= Seq(
   "mm" %% "playlib" % "__PLAYLIB-VERSION__",
-  "com.softwaremill.macwire" %% "macros" % "1.0.5",
-  // "org.elasticsearch" % "elasticsearch" % "1.4.2",
-  // "com.sksamuel.elastic4s" %% "elastic4s" % "1.4.7",
-  "org.scalatestplus" %% "play" % "1.1.0" % Test
+  "com.softwaremill.macwire" %% "macros" % "__MACWIRE-VERSION__",
+  // "joda-time" % "joda-time" % "__JODA-TIME-VERSION__",
+  // "org.joda" % "joda-convert" % "__JODA-CONVERT-VERSION__",
+  // "com.sksamuel.elastic4s" %% "elastic4s" % "__ELASTIC4S-VERSION__",
+  "org.scalatestplus" %% "play" % "__SCALATESTPLUS-VERSION__" % Test
 )
 
 scalacOptions ++= Seq(
