@@ -100,14 +100,14 @@ Insert leading padding unless at start of line or after an open round paren."
        (s-matches? (rx (not (any "\\")) "\"" eol)
                    (buffer-substring (line-beginning-position) (point)))))
 
-(defun sp/inside-curly-braces? (&optional same-line?)
-  (sp/inside-sexp? "{" t))
+(defun sp/inside-curly-braces? (&optional same-line? sexp)
+  (sp/inside-sexp? "{" t sexp))
 
-(defun sp/inside-square-braces? (&optional same-line?)
-  (sp/inside-sexp? "[" t))
+(defun sp/inside-square-braces? (&optional same-line? sexp)
+  (sp/inside-sexp? "[" t sexp))
 
-(defun sp/inside-sexp? (expected-op &optional same-line?)
-  (-let [(&plist :beg beg :end end :op actual-op) (sp-get-enclosing-sexp)]
+(defun sp/inside-sexp? (expected-op &optional same-line? sexp)
+  (-let [(&plist :beg beg :end end :op actual-op) (or sexp (sp-get-enclosing-sexp))]
     (when (equal expected-op actual-op)
       (if same-line?
           (= (line-number-at-pos beg) (line-number-at-pos end))
@@ -195,46 +195,64 @@ STATEMENT-DELIMETER-RX."
            (equal (char-after) ?>))))
     (and before? after?)))
 
+(defmacro sp/print-eval-time (desc &rest body)
+  "Print the time taken to evaluate a number of forms.
+
+DESC is a label to print.
+
+BODY is any number of forms to be evaluated."
+  (declare (indent 1))
+  (let ((start-time (cl-gensym "print-eval-time/start-time-"))
+        (result (cl-gensym "print-eval-time/result-"))
+        (elapsed (cl-gensym "print-eval-time/elapsed-")))
+    `(let* ((,start-time (current-time))
+            (,result (progn ,@body))
+            (,elapsed (time-subtract (current-time) ,start-time)))
+       (message "%s...(%s)" ,desc (format-time-string "%Hh, %Mm, %Ss, %3Nms" ,elapsed))
+       ,result)))
+
 (defun sp/generic-prog-backspace ()
   "Delete backwards with context-sensitive formatting."
   (interactive)
-  (let ((sexp (sp-get-enclosing-sexp)))
-    (cond
-     ((sp/inside-empty-angle-braces-no-content?)
-      (delete-char 1)
-      (delete-char -1))
-     ((sp/inside-empty-angle-braces-empty-content?)
-      (delete-horizontal-space))
+  (-if-let (sexp (sp-get-enclosing-sexp))
+      (cond
+       ((sp/inside-empty-angle-braces-no-content?)
+        (delete-char 1)
+        (delete-char -1))
+       ((sp/inside-empty-angle-braces-empty-content?)
+        (delete-horizontal-space))
 
-     ((or (sp/inside-curly-braces-no-content? nil sexp)
-          (sp/inside-square-braces-no-content? nil sexp))
-      (call-interactively 'sp-backward-delete-char))
+       ((or (sp/inside-curly-braces-no-content? nil sexp)
+            (sp/inside-square-braces-no-content? nil sexp))
+        (call-interactively 'sp-backward-delete-char))
 
-     ((or (sp/inside-curly-braces-blank-content? t sexp)
-          (sp/inside-square-braces-blank-content? t sexp))
-      (delete-horizontal-space))
+       ((or (sp/inside-curly-braces-blank-content? t sexp)
+            (sp/inside-square-braces-blank-content? t sexp))
+        (delete-horizontal-space))
 
-     ((or (sp/inside-curly-braces-blank-content? nil sexp)
-          (sp/inside-square-braces-blank-content? nil sexp))
-      (just-one-space -1)
-      (save-excursion
-        (insert " ")))
+       ((or (sp/inside-curly-braces-blank-content? nil sexp)
+            (sp/inside-square-braces-blank-content? nil sexp))
+        (just-one-space -1)
+        (save-excursion
+          (insert " ")))
 
-     (t
-      (smart-ops-backspace)))))
+       (t
+        (smart-ops-backspace)))
+    (smart-ops-backspace)))
 
 (defun sp/generic-prog-space ()
   "Insert a space, performing extra padding inside braced expressions."
   (interactive)
-  (let ((sexp (sp-get-enclosing-sexp)))
-    (cond
-     ((or (sp/inside-curly-braces-no-content? nil sexp)
-          (sp/inside-square-braces-no-content? nil sexp))
-      (delete-horizontal-space)
-      (insert " ")
-      (save-excursion (insert " ")))
-     (t
-      (insert " ")))))
+  (-if-let (sexp (sp-get-enclosing-sexp))
+      (cond
+       ((or (sp/inside-curly-braces-no-content? nil sexp)
+            (sp/inside-square-braces-no-content? nil sexp))
+        (delete-horizontal-space)
+        (insert " ")
+        (save-excursion (insert " ")))
+       (t
+        (insert " ")))
+    (insert " ")))
 
 (defun sp/generic-prog-ret (&optional arg)
   "Insert a newline with context-sensitive formatting."
@@ -244,8 +262,9 @@ STATEMENT-DELIMETER-RX."
     (comment-indent-new-line)
     (just-one-space))
 
-   ((or (sp/inside-curly-braces? t)
-        (sp/inside-square-braces? t))
+   ((-when-let (sexp (sp-get-enclosing-sexp))
+      (or (sp/inside-curly-braces? t sexp)
+          (sp/inside-square-braces? t sexp)))
     (sp/split-braced-expression-over-new-lines (rx (or ";" ","))))
 
    (t
