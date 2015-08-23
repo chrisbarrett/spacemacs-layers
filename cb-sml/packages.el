@@ -29,6 +29,7 @@
       (add-to-list 'aggressive-indent-excluded-modes 'sml-mode)
       (define-key inferior-sml-mode-map (kbd "M-RET") 'cb-sml/inf-sml-m-ret)
       (define-key sml-mode-map (kbd "M-RET") 'cb-sml/m-ret)
+      (define-key sml-mode-map (kbd "S-TAB") 'sml-back-to-outer-indent)
       (define-key sml-mode-map (kbd "<return>") 'cb-sml/ret)
       (define-key sml-mode-map (kbd "M-SPC") nil)
 
