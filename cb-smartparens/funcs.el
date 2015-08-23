@@ -283,7 +283,7 @@ BODY is any number of forms to be evaluated."
     ;; 2. this form begins a new line.
     ;; 3. this form is preceded by a `?`, as in a let binding.
     ;; 4. this form is preceded by a `:`, as in a keyword argument
-    ;; 4. this form is preceded by a `.`, as in an array index expression
+    ;; 5. this form is preceded by a `.`, as in an array index expression
     (save-excursion
       (search-backward id)
       (unless (s-matches?
