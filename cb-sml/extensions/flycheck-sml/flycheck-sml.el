@@ -47,7 +47,7 @@
   (-when-let ((_input file line col msg)
               (s-match (flycheck-rx-to-string
                         '(and
-                          line-start (file-name) ":" line "."  column (? "-" line "." column)
+                          line-start (file-name) ":" line "."  column (? "-" (+ digit) "." (+ digit))
                           (one-or-more space) (message (* anything))))
                        str))
     (list :file file
