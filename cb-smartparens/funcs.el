@@ -255,10 +255,14 @@ BODY is any number of forms to be evaluated."
     (insert " ")))
 
 (defun sp/generic-prog-ret (&optional arg)
-  "Insert a newline with context-sensitive formatting."
+  "Insert a newline with context-sensitive formatting.
+
+With prefix arg ARG, just insert a newline and indent."
   (interactive "P")
   (cond
-   ((or arg (core/in-string-or-comment?))
+   (arg
+    (newline-and-indent))
+   ((core/in-string-or-comment?)
     (comment-indent-new-line)
     (just-one-space))
 
