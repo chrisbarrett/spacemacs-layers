@@ -166,7 +166,7 @@ which require an initialization must be listed explicitly in the list.")
             (goto-char (point-min))
             (while (search-forward-regexp ":PROPERTIES:" nil t)
               (save-excursion
-                (org-remove-empty-drawer-at "PROPERTIES" (match-beginning 0)))))))
+                (org-remove-empty-drawer-at (match-beginning 0)))))))
 
       (defun cb-org/mark-next-parent-tasks-todo ()
         "Visit each parent task and change state to TODO."

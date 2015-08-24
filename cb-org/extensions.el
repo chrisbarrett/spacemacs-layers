@@ -370,7 +370,7 @@ Switch projects and subprojects from NEXT back to TODO."
         "Remove empty clock drawers at point."
         (save-excursion
           (beginning-of-line 0)
-          (org-remove-empty-drawer-at "LOGBOOK" (point))))
+          (org-remove-empty-drawer-at (point))))
 
       (add-hook 'org-clock-out-hook 'cb-org/remove-empty-clock-drawers t))))
 
