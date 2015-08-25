@@ -60,38 +60,41 @@
           (haskell-indentation-indent-line)))
 
       (defconst cb-haskell/smart-ops
-        (list
-         (smart-ops "$" "=" "~" "^" ":" "..")
-         (smart-op "."
-                   :pad-unless
-                   (lambda (pt)
-                     (or
-                      (haskell/dot-accessing-module-or-constructor?)
-                      (equal (char-after) (string-to-char "}"))
-                      (funcall (smart-ops-after-match? (rx digit)) pt))))
-         (smart-op ";"
-                   :pad-before nil :pad-after t)
-         (smart-ops ","
-                    :pad-before nil :pad-after t
-                    :action
-                    'cb-haskell/indent-if-in-exports)
-         (smart-op "-"
-                   :action 'cb-haskell/reformat-comment-at-point)
-         (smart-op "#"
-                   :pad-before nil :pad-after nil
-                   :action 'cb-haskell/reformat-pragma-at-point)
-         (smart-op "@"
-                   :pad-unless
-                   (lambda (pt)
-                     (s-matches? "=" (buffer-substring (point) (line-end-position))))
-                   :action 'cb-haskell/reformat-refinement-type-at-point)
-         (smart-ops-default-ops)))
+        (-flatten-n 1
+                    (list
+                     (smart-ops "->" "=>")
+                     (smart-ops "$" "=" "~" "^" ":" "..")
+                     (smart-op "."
+                               :pad-unless
+                               (lambda (pt)
+                                 (or
+                                  (haskell/dot-accessing-module-or-constructor?)
+                                  (equal (char-after) (string-to-char "}"))
+                                  (funcall (smart-ops-after-match? (rx digit)) pt))))
+                     (smart-op ";"
+                               :pad-before nil :pad-after t)
+                     (smart-ops ","
+                                :pad-before nil :pad-after t
+                                :action
+                                'cb-haskell/indent-if-in-exports)
+                     (smart-op "-"
+                               :action 'cb-haskell/reformat-comment-at-point)
+                     (smart-op "#"
+                               :pad-before nil :pad-after nil
+                               :action 'cb-haskell/reformat-pragma-at-point)
+                     (smart-op "@"
+                               :pad-unless
+                               (lambda (pt)
+                                 (s-matches? "=" (buffer-substring (point) (line-end-position))))
+                               :action 'cb-haskell/reformat-refinement-type-at-point)
+                     (smart-ops-default-ops))))
 
-      (apply 'define-smart-ops-for-mode 'haskell-mode cb-haskell/smart-ops)
+      (define-smart-ops-for-mode 'haskell-mode
+        cb-haskell/smart-ops)
 
-      (apply 'define-smart-ops-for-mode 'haskell-interactive-mode
-             (smart-op ":" :pad-unless (lambda (_) (haskell-interactive-at-prompt)))
-             cb-haskell/smart-ops))))
+      (define-smart-ops-for-mode 'haskell-interactive-mode
+        (smart-op ":" :pad-unless (lambda (_) (haskell-interactive-at-prompt)))
+        cb-haskell/smart-ops))))
 
 (defun cb-haskell/init-haskell-parser ()
   (use-package haskell-parser
@@ -103,6 +106,7 @@
 (defun cb-haskell/init-liquid-types ()
   (use-package liquid-types
     :defer t
+    :disabled t
     :init
     (progn
       (defun cb-haskell/maybe-init-liquid-haskell ()

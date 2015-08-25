@@ -15,7 +15,7 @@
    dotspacemacs-configuration-layers
    '(auto-completion
      latex
-     haskell
+     ;haskell
      osx
      git
      version-control

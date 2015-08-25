@@ -1,8 +1,3 @@
-(setq haskell-enable-ghci-ng-support t)
-(setq haskell-enable-hindent-style "gibiansky")
-(setq haskell-enable-shm-support t)
-
-
 ;;; Font locking
 
 (defun haskell/apply-font-locking ()
@@ -36,9 +31,7 @@
        1 "λ"))))
 
 (add-hook 'haskell-mode-hook 'haskell/apply-font-locking)
-(add-hook 'haskell-c-mode-hook 'haskell/apply-font-locking)
 (add-hook 'haskell-interactive-mode-hook 'haskell/apply-font-locking)
-
 
 (custom-set-faces
  `(haskell-interactive-face-compile-error ((t (:foreground nil)))))

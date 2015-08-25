@@ -26,7 +26,11 @@ which require an initialization must be listed explicitly in the list.")
     :defer t
     :init
     (progn
-      (add-hook 'haskell-mode-hook 'interactive-haskell-mode)
+      (defun cb-haskell/maybe-haskell-interactive-mode ()
+        (unless (bound-and-true-p org-src-mode)
+          (interactive-haskell-mode)))
+
+      (add-hook 'haskell-mode-hook 'cb-haskell/maybe-haskell-interactive-mode)
       (add-to-list 'completion-ignored-extensions ".hi"))
     :config
     (progn
@@ -35,8 +39,14 @@ which require an initialization must be listed explicitly in the list.")
       (setq haskell-interactive-mode-scroll-to-bottom t)
       (setq haskell-interactive-popup-errors t)
       (setq haskell-interactive-prompt "\nλ> ")
-      (setq haskell-process-show-debug-tips)
+      (setq haskell-process-show-debug-tips nil)
       (setq haskell-stylish-on-save t)
+
+      (setq haskell-process-path-ghci
+            (let ((ghci-ng (f-join user-home-directory ".local/bin/ghci-ng")))
+              (if (f-executable? ghci-ng)
+                  ghci-ng
+                (executable-find "ghci"))))
 
       (setq haskell-import-mapping
             '(("Data.Map" . "import qualified Data.Map as M\nimport Data.Map (Map)")
@@ -53,10 +63,24 @@ which require an initialization must be listed explicitly in the list.")
        '(haskell-operator-face
          ((t :italic nil))))
 
+      (defun cb-haskell/show-indentation-guides ()
+        (when (and (boundp 'haskell-indentation-mode) haskell-indentation-mode)
+          (haskell-indentation-enable-show-indentations)))
+
+      (defun cb-haskell/hide-indentation-guides ()
+        (when (and (boundp 'haskell-indentation-mode) haskell-indentation-mode)
+          (haskell-indentation-disable-show-indentations)))
+
+      ;; Show indentation guides for haskell-indentation only in insert state.
+      (add-hook 'evil-normal-state-entry-hook 'cb-haskell/hide-indentation-guides)
+      (add-hook 'evil-insert-state-entry-hook 'cb-haskell/show-indentation-guides)
+      (add-hook 'evil-insert-state-exit-hook  'cb-haskell/hide-indentation-guides)
+
       (defun cb-haskell/set-local-hooks ()
         (add-hook 'before-save-hook 'haskell/rewrite-symbols-in-buffer nil t)
         (add-hook 'evil-insert-state-exit-hook 'haskell/rewrite-symbols-in-buffer nil t))
 
+      (add-hook 'haskell-mode-hook 'haskell-indentation-mode)
       (add-hook 'haskell-mode-hook 'cb-haskell/set-local-hooks)
       (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
       (add-hook 'haskell-mode-hook 'haskell-decl-scan-mode)
@@ -118,41 +142,21 @@ which require an initialization must be listed explicitly in the list.")
         (evil-define-key 'normal interactive-haskell-mode-map (kbd ",t") 'haskell-mode-show-type-at))
 
       (with-eval-after-load 'haskell-cabal-mode
-        (define-key haskell-cabal-mode-map (kbd "C-c C-k") 'haskell-interactive-mode-clear))
-
-      ))
-
-  (use-package haskell-indentation
-    :diminish haskell-indentation-mode
-    :commands turn-on-haskell-indentation
-    :init
-    (add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
-    :config
-    (progn
-
-      (defun cb-haskell/show-indentation-guides ()
-        (when (and (boundp 'haskell-indentation-mode) haskell-indentation-mode)
-          (haskell-indentation-enable-show-indentations)))
-
-      (defun cb-haskell/hide-indentation-guides ()
-        (when (and (boundp 'haskell-indentation-mode) haskell-indentation-mode)
-          (haskell-indentation-disable-show-indentations)))
-
-      ;; Show indentation guides for haskell-indentation only in insert state.
-      (add-hook 'evil-normal-state-entry-hook 'cb-haskell/hide-indentation-guides)
-      (add-hook 'evil-insert-state-entry-hook 'cb-haskell/show-indentation-guides)
-      (add-hook 'evil-insert-state-exit-hook  'cb-haskell/hide-indentation-guides))))
+        (define-key haskell-cabal-mode-map (kbd "C-c C-k") 'haskell-interactive-mode-clear)))))
 
 (defun cb-haskell/init-shm ()
   (use-package shm
     :commands structured-haskell-mode
     :init
     (progn
+      ;; Disable shm key bindings - I only want SHM for
+      (defconst shm-repl-map (make-sparse-keymap))
+      (defconst shm-map (make-sparse-keymap))
+
       (add-hook 'haskell-mode-hook 'structured-haskell-mode)
       (add-hook 'ghc-core-mode-hook (lambda () (structured-haskell-mode -1))))
     :config
     (progn
-      (require 'shm-reformat)
       (setq shm-auto-insert-skeletons nil)
 
       (core/remap-face 'shm-current-face 'core/bg-hl-ok)
@@ -160,23 +164,8 @@ which require an initialization must be listed explicitly in the list.")
 
       (evil-define-key 'normal shm-map "J" 'haskell/join-line)
       (evil-define-key 'insert shm-map (kbd "<return>") 'haskell/ret)
-      (evil-define-key 'normal shm-map (kbd "M-RET") nil)
-
       (define-key shm-map (kbd "C-<return>") 'shm/newline-indent)
-      (define-key shm-map (kbd "<return>") nil)
-      (define-key shm-map (kbd "SPC") 'haskell/smart-space)
-
-      ;; undefine commands that interfere with smart ops, etc.
-      (define-key shm-map (kbd "C-c C-s") nil)
-      (define-key shm-map (kbd ")") nil)
-      (define-key shm-map (kbd ",") nil)
-      (define-key shm-map (kbd ":") nil)
-      (define-key shm-map (kbd "#") nil)
-      (define-key shm-map (kbd "-") nil)
-      (define-key shm-map (kbd "DEL") nil)
-      (define-key shm-map (kbd "C-<backspace>") nil)
-      (define-key shm-map (kbd "<backtab>") nil)
-      (define-key shm-map (kbd "TAB") nil))))
+      (define-key shm-map (kbd "SPC") 'haskell/smart-space))))
 
 (defun cb-haskell/init-hindent ()
   (use-package hindent
