@@ -43,6 +43,7 @@
      cb-autoinsert
      cb-flycheck
      cb-org
+     cb-org-reveal
      cb-elisp
      cb-cosmetic
      cb-spelling

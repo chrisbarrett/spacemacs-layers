@@ -16,3 +16,9 @@
 [submodule "cb-sunrise-commander/extensions/sunrise-commander"]
 	path = cb-sunrise-commander/extensions/sunrise-commander
 	url = https://github.com/escherdragon/sunrise-commander.git
+[submodule "org-reveal/assets/reveal.js"]
+	path = org-reveal/assets/reveal.js
+	url = https://github.com/hakimel/reveal.js.git
+[submodule "cb-org-reveal/submodules/reveal.js"]
+	path = cb-org-reveal/submodules/reveal.js
+	url = https://github.com/hakimel/reveal.js.git
