@@ -36,7 +36,7 @@
       (defun cb-sml/set-local-bindings ()
         (evil-local-set-key 'normal ",ct" 'flycheck-buffer))
 
-      (add-hook 'sml-mode-hook 'cb-sml/set-lotal-bindings)
+      (add-hook 'sml-mode-hook 'cb-sml/set-local-bindings)
 
       (defadvice sml-prog-proc-switch-to (after append-buffer activate)
         (goto-char (point-max))
