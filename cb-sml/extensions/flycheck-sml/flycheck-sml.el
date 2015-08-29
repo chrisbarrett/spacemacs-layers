@@ -96,7 +96,9 @@
   "Source checker using SML/NJ."
   :start #'flycheck-sml--process-start
   :interrupt #'flycheck-sml--process-interrupt
-  :predicate (lambda () (derived-mode-p 'sml-mode))
+  :predicate (lambda ()
+               (and (derived-mode-p 'sml-mode)
+                    (not (derived-mode-p 'sml-lex-mode))))
   :error-filter
   (lambda (errors)
     (-> errors
