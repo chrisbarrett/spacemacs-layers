@@ -114,13 +114,17 @@ matched pairs Set to nil to disable this behaviour."
 
 (defun smart-ops--maybe-beginning-of-op (rules)
   (save-excursion
-    (skip-chars-backward (concat " " (smart-ops--op-characters rules)) (line-beginning-position))
-    (point)))
+    (let ((cs (cons (string-to-char " ") (smart-ops--op-characters rules))))
+      (while (and (not (bolp)) (-contains? cs (char-before)))
+        (forward-char -1))
+      (point))))
 
 (defun smart-ops--maybe-end-of-op (rules)
   (save-excursion
-    (skip-chars-forward (concat " " (smart-ops--op-characters rules)) (line-end-position))
-    (point)))
+    (let ((cs (cons (string-to-char " ") (smart-ops--op-characters rules))))
+      (while (and (not (eolp)) (-contains? cs (char-after)))
+        (forward-char 1))
+      (point))))
 
 (defun smart-ops--op-at-pt (rules)
   (-when-let* ((beg (smart-ops--maybe-beginning-of-op rules))
