@@ -121,7 +121,7 @@
 
       (defun cb-org/toplevel-files ()
         (f-files org-directory (lambda (f)
-                                 (and (s-matches? (rx (or "work" "diary")) (f-filename f))
+                                 (and (s-matches? (rx (or "notes" "work" "diary")) (f-filename f))
                                       (cb-org/org-file? f)))))
 
       (defun cb-org/work-files ()
@@ -147,7 +147,8 @@
                  (tags-todo "media|study/NEXT"
                             ((org-agenda-overriding-header "Media & Study"))))
                 ((org-agenda-tag-filter-preset
-                  '("-work_habit" "-ignore"))))
+                  '("-work_habit" "-ignore"))
+                 (org-agenda-files (cb-org/toplevel-files))))
 
                ("w" "Agenda and work actions"
                 ((tags-todo "-study+assignee=\"\"+TODO={NEXT}|assignee=\"chrisb\"+TODO={NEXT}"
