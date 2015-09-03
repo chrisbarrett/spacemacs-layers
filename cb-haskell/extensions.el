@@ -106,11 +106,12 @@
 (defun cb-haskell/init-liquid-types ()
   (use-package liquid-types
     :defer t
-    :disabled t
     :init
     (progn
+      (defvar cb-haskell/use-liquid-haskell? nil)
+
       (defun cb-haskell/maybe-init-liquid-haskell ()
-        (when (executable-find "liquid")
+        (when (and cb-haskell/use-liquid-haskell? (executable-find "liquid"))
           (require 'flycheck-liquid)
           (require 'liquid-tip)
           (flycheck-add-next-checker 'haskell-ghc 'haskell-hlint)
