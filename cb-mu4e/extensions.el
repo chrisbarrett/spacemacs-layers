@@ -56,6 +56,7 @@
 
       ;; Set variables
 
+      (setq mu4e-confirm-quit nil)
       (setq mu4e-use-fancy-chars t)
       (setq mu4e-headers-attach-mark (purecopy '("a" . "📎")))
       (setq mu4e-headers-unread-mark (purecopy '("u" . "●")))
