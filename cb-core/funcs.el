@@ -157,7 +157,7 @@ If this buffer is a member of `core/kill-buffer-ignored-list', bury it rather th
 
     (recentf-cleanup)
     (when (projectile-project-p)
-      (projectile-invalidate-cache))))
+      (projectile-invalidate-cache nil))))
 
 (defun core/delete-file-and-buffer (filename buffer)
   "Delete a file and its associated buffer."
@@ -169,7 +169,7 @@ If this buffer is a member of `core/kill-buffer-ignored-list', bury it rather th
   (ignore-errors (kill-buffer buffer))
   (recentf-cleanup)
   (when (projectile-project-p)
-    (projectile-invalidate-cache))
+    (projectile-invalidate-cache nil))
   (message "File '%s' successfully removed" (f-short filename)))
 
 (defun core/toggle-window-split ()
