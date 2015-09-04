@@ -22,8 +22,10 @@
 
       (->> (f-no-ext (buffer-file-name))
            (s-chop-prefix root)
+           (s-chop-prefix "app/")
+           (s-chop-prefix "src/")
+           (s-chop-prefix "test/")
            f-split
-           (-drop 1)
            (--map (let ((x (substring it 0 1))
                         (xs (substring it 1)))
                     (concat (s-upcase x) xs)))
