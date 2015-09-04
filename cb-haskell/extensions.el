@@ -76,12 +76,12 @@
                      (smart-ops ","
                                 :pad-before nil :pad-after t
                                 :action
-                                'cb-haskell/indent-if-in-exports)
+                                #'cb-haskell/indent-if-in-exports)
                      (smart-op "-"
-                               :action 'cb-haskell/reformat-comment-at-point)
+                               :action #'cb-haskell/reformat-comment-at-point)
                      (smart-op "#"
                                :pad-before nil :pad-after nil
-                               :action 'cb-haskell/reformat-pragma-at-point)
+                               :action #'cb-haskell/reformat-pragma-at-point)
                      (smart-op "@"
                                :pad-unless
                                (lambda (pt)
@@ -100,8 +100,8 @@
   (use-package haskell-parser
     :defer t
     :init
-    (eval-after-load 'haskell-mode
-      '(require 'haskell-parser))))
+    (with-eval-after-load 'haskell-mode
+      (require 'haskell-parser))))
 
 (defun cb-haskell/init-liquid-types ()
   (use-package liquid-types
@@ -119,5 +119,5 @@
           ;;(flycheck-select-checker 'haskell-liquid)
           ))
 
-      (add-hook 'haskell-mode-hook 'cb-haskell/maybe-init-liquid-haskell)
-      (add-hook 'literate-haskell-mode-hook 'cb-haskell/maybe-init-liquid-haskell))))
+      (add-hook 'haskell-mode-hook #'cb-haskell/maybe-init-liquid-haskell)
+      (add-hook 'literate-haskell-mode-hook #'cb-haskell/maybe-init-liquid-haskell))))
