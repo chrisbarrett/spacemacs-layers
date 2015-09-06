@@ -35,6 +35,7 @@ which require an initialization must be listed explicitly in the list.")
     :config
     (progn
       (setq haskell-process-suggest-haskell-docs-imports t)
+      (setq haskell-process-type 'stack-ghci)
       (setq haskell-process-use-presentation-mode t)
       (setq haskell-interactive-mode-scroll-to-bottom t)
       (setq haskell-interactive-popup-errors t)
@@ -121,9 +122,6 @@ which require an initialization must be listed explicitly in the list.")
       (define-key haskell-mode-map (kbd "C-c C-k")       'haskell-interactive-mode-clear)
       (define-key haskell-mode-map (kbd "<backspace>")   'haskell/backspace)
       (define-key haskell-mode-map (kbd "C-c i") 'shm-reformat-decl)
-
-      (define-key haskell-mode-map (kbd "#") 'haskell/smart-hash)
-
 
       (with-eval-after-load 'haskell-presentation-mode
         (evil-define-key 'normal haskell-presentation-mode-map (kbd "q") 'quit-window))

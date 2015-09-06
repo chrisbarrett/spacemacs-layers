@@ -24,28 +24,29 @@
     :config
     (progn
       (defun cb-haskell/reformat-comment-at-point ()
-        (-when-let ((&plist :beg beg :end end :op op) (sp-get-enclosing-sexp)
-                    (_ (equal op "{"))
-                    (_ (s-matches? (rx "{" (* "-" space) "}")
-                                   (buffer-substring beg end))))
+        (-when-let* (((&plist :beg beg :end end :op op) (sp-get-enclosing-sexp))
+                     (_ (equal op "{"))
+                     (_ (s-matches? (rx bos "{" (* (any "-" space)) "}" eos)
+                                    (buffer-substring beg end))))
+          (message "%s" (sp-get-enclosing-sexp))
           (goto-char beg)
           (delete-region beg end)
           (insert "{- ") (save-excursion (insert " -}"))))
 
       (defun cb-haskell/reformat-pragma-at-point ()
-        (-when-let ((&plist :beg beg :end end :op op) (sp-get-enclosing-sexp)
-                    (_ (equal op "{"))
-                    (_ (s-matches? (rx "{" (* "-" "#" space) "}")
-                                   (buffer-substring beg end))))
+        (-when-let* (((&plist :beg beg :end end :op op) (sp-get-enclosing-sexp))
+                     (_ (equal op "{"))
+                     (_ (s-matches? (rx bos "{" (* (any "-" space "#")) "}" eos)
+                                    (buffer-substring beg end))))
           (goto-char beg)
           (delete-region beg end)
           (insert "{-# ") (save-excursion (insert " #-}"))))
 
       (defun cb-haskell/reformat-refinement-type-at-point ()
-        (-when-let ((&plist :beg beg :end end :op op) (sp-get-enclosing-sexp)
-                    (_ (equal op "{"))
-                    (_ (s-matches? (rx "{" (* "-" "@" space) "}")
-                                   (buffer-substring beg end))))
+        (-when-let* (((&plist :beg beg :end end :op op) (sp-get-enclosing-sexp))
+                     (_ (equal op "{"))
+                     (_ (s-matches? (rx bos "{" (* (any "-" "@" space)) "}" eos)
+                                    (buffer-substring beg end))))
           (goto-char beg)
           (delete-region beg end)
           (insert "{-@ ") (save-excursion (insert " @-}"))))
@@ -63,7 +64,7 @@
         (-flatten-n 1
                     (list
                      (smart-ops "->" "=>")
-                     (smart-ops "$" "=" "~" "^" ":" "..")
+                     (smart-ops "$" "=" "~" "^" ":" ".." "?")
                      (smart-op "."
                                :pad-unless
                                (lambda (pt)
