@@ -18,9 +18,9 @@
                                             ))
                                     1 "·")
 
-     ,(core/font-lock-replace-match (rx space (group "->") space) 1 "→")
-     ,(core/font-lock-replace-match (rx space (group "=>") space) 1 "⇒")
-     ,(core/font-lock-replace-match (rx space (group "::") space) 1 "∷")
+     ,(core/font-lock-replace-match (rx space (group "->") (or space eol)) 1 "→")
+     ,(core/font-lock-replace-match (rx space (group "=>") (or space eol)) 1 "⇒")
+     ,(core/font-lock-replace-match (rx space (group "::") (or space eol)) 1 "∷")
 
      ;; Lambda forms
      ,(core/font-lock-replace-match
