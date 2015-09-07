@@ -15,7 +15,7 @@
    dotspacemacs-configuration-layers
    '(auto-completion
      latex
-     ;haskell
+     ;; haskell
      osx
      git
      version-control
@@ -38,6 +38,7 @@
       c-c++-default-mode-for-headers 'c++-mode
       c-c++-enable-clang-support t
       )
+     clojure
      cb-core
      cb-sunrise-commander
      cb-autoinsert
