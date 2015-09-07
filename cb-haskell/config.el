@@ -18,6 +18,7 @@
                                             ))
                                     1 "·")
 
+     ,(core/font-lock-replace-match (rx space (group "<-") (or space eol)) 1 "←")
      ,(core/font-lock-replace-match (rx space (group "->") (or space eol)) 1 "→")
      ,(core/font-lock-replace-match (rx space (group "=>") (or space eol)) 1 "⇒")
      ,(core/font-lock-replace-match (rx space (group "::") (or space eol)) 1 "∷")
