@@ -66,6 +66,9 @@
                      (smart-ops "->" "=>")
                      (smart-ops "$" "=" "~" "^" ":" ".." "?")
                      (smart-op "."
+                               :pad-before-unless
+                               (lambda (pt)
+                                 (s-matches? "forall" (buffer-substring (line-beginning-position) (point))))
                                :pad-unless
                                (lambda (pt)
                                  (or
