@@ -319,17 +319,70 @@
 
 (autoload 'sbt:find-root "sbt-mode")
 
-(defun sbt (dir)
-  (interactive (list (read-directory-name "Project root: " (sbt:find-root) nil t)))
+(defun scala/sbt-for-dir (dir)
   (noflet ((sbt:find-root (&rest args) dir))
     (let ((buf (save-window-excursion (sbt-start))))
       (pop-to-buffer buf))))
+
+(defun sbt (dir)
+  (interactive (list (read-directory-name "Project root: " (sbt:find-root) nil t)))
+  (scala/sbt-for-dir dir))
 
 (defun scala/sbt-send-ret ()
   (interactive)
   (process-send-string (get-buffer-process (current-buffer)) "\n")
   (goto-char (point-max))
   (evil-insert-state))
+
+(defun scala-sbt/bring (&optional new)
+  "Display an sbt buffer, creating a new one if needed.
+With prefix argument ARG, always create a new shell."
+  (interactive "P")
+  (cond
+   (new
+    (scala-sbt--new))
+   ((derived-mode-p 'sbt-mode)
+    (scala-sbt--hide))
+   ((scala-sbt--buffer)
+    (scala-sbt--show))
+   (t
+    (scala-sbt--new))))
+
+(defun scala-sbt--hide ()
+  (let ((reg (scala-sbt--mk-register-name)))
+    (if (get-register reg)
+        (or (ignore-errors (jump-to-register reg t) t)
+            (bury-buffer))
+      (bury-buffer)
+      (when (< 1 (length (window-list)))
+        (delete-window)))))
+
+(defun scala-sbt--new ()
+  (window-configuration-to-register (scala-sbt--mk-register-name))
+  (save-window-excursion
+    (-if-let (root (projectile-project-p))
+        (scala/sbt-for-dir root)
+      (call-interactively 'sbt)))
+  (scala-sbt--show))
+
+(defun scala-sbt--show ()
+  (window-configuration-to-register (scala-sbt--mk-register-name))
+  (pop-to-buffer (scala-sbt--buffer)))
+
+(defun scala-sbt--buffer ()
+  (let ((current-frame (scala-sbt--current-frame)))
+    (--first (with-current-buffer it
+               (and (derived-mode-p 'sbt-mode)
+                    (s-matches? "eshell" (buffer-name it))
+                    (equal current-frame (window-frame (get-buffer-window it)))))
+             (buffer-list))))
+
+(defun scala-sbt--current-frame ()
+  (window-frame (get-buffer-window (current-buffer))))
+
+(defun scala-sbt--mk-register-name ()
+  (-let [(&alist 'window-id id) (frame-parameters (scala-sbt--current-frame))]
+    (intern (format "scala-sbt-%s" id))))
 
 
 ;;; Ensime utils

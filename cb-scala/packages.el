@@ -124,6 +124,8 @@ See `ensime-goto-test-config-defaults' for possible template values.")
 (defun cb-scala/init-sbt-mode ()
   (use-package sbt-mode
     :defer t
+    :init
+    (bind-key "<S-f1>" 'scala-sbt/bring)
     :config
     (progn
       (setq sbt:prompt-regexp
