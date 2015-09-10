@@ -37,32 +37,46 @@
         (save-excursion
           (core/open-line-below-current-indentation) (insert "*/")))
 
-      (define-smart-ops-for-mode 'scala-mode
-        (smart-ops "???" "?" "=" "==" "+" "-" "@" "*" "/" "<" ">" "|" "$" "&" "%" "!" "~")
-        (smart-ops ":" "," :pad-before nil)
-        (smart-op "///" :action 'scala/replace-slashes-with-doc)
-
-        ;; Reformat '=???' as '= ???'
-        (smart-op "=???"
-                  :action
-                  (lambda (&rest _)
-                    (save-excursion
-                      (skip-chars-backward "? ")
-                      (just-one-space)))))
-
       (defun cb-scala/at-repl-prompt? ()
         (s-matches? (rx bol (* space) "scala>" (* space))
                     (buffer-substring (line-beginning-position) (point))))
 
+      (defconst cb-scala/common-ops
+        (-flatten-n 1
+                    (list
+                     (smart-ops "???" "?" "=" "==" "+" "-" "@" "*" "/" "<" ">" "|" "$" "&" "%" "!" "~")
+                     (smart-ops ":" "," :pad-before nil)
+
+                     ;; Reformat ':_*' as ': _*'
+                     (smart-ops ":_*"
+                                :pad-before nil
+                                :pad-after nil
+                                :action
+                                (lambda (&rest _)
+                                  (save-excursion
+                                    (search-backward "_")
+                                    (just-one-space))))
+
+                     ;; Reformat '=???' as '= ???'
+                     (smart-op "=???"
+                               :action
+                               (lambda (&rest _)
+                                 (save-excursion
+                                   (skip-chars-backward "? ")
+                                   (just-one-space)))))))
+
+      (define-smart-ops-for-mode 'scala-mode
+        (smart-op "///" :action 'scala/replace-slashes-with-doc)
+        cb-scala/common-ops)
+
       (define-smart-ops-for-mode 'ensime-inf-mode
-        (smart-ops "???" "?" "=" "==" "+" "-" "@" "*" "/" "<" ">" "|" "$" "&" "%" "!" "~")
-        (smart-op "," :pad-before nil)
         (smart-op ":"
                   :pad-before nil
                   :pad-after-unless
                   (lambda (_)
                     (forward-char -1)
-                    (cb-scala/at-repl-prompt?)))))))
+                    (cb-scala/at-repl-prompt?)))
+        cb-scala/common-ops))))
 
 (defun cb-scala/init-scala-errors ()
   (use-package scala-errors))
