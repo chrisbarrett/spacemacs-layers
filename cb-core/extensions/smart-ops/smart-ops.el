@@ -110,7 +110,9 @@ matched pairs Set to nil to disable this behaviour."
   (nth 8 (syntax-ppss)))
 
 (defun smart-ops--op-characters (rules)
-  (-uniq (--mapcat (string-to-list (plist-get it :op)) rules)))
+  (let ((excluded (-map 'string-to-char '(" ")))
+        (op-chars (-uniq (--mapcat (string-to-list (plist-get it :op)) rules))))
+    (-difference op-chars excluded)))
 
 (defun smart-ops--maybe-beginning-of-op (rules)
   (save-excursion
