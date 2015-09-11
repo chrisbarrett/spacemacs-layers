@@ -108,8 +108,8 @@
             (f-ext? path "org_archive")))
 
       (defun cb-org/all-org-files ()
-        (-union (cons org-default-notes-file (cb-org/toplevel-files))
-                (cb-org/work-files)))
+        (-uniq (-union (cons org-default-notes-file (cb-org/toplevel-files))
+                       (cb-org/work-files))))
 
       (defun cb-org/jira-files ()
         (when (boundp 'org-jira-working-dir)
