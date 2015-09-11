@@ -34,8 +34,11 @@ which require an initialization must be listed explicitly in the list.")
       (add-to-list 'completion-ignored-extensions ".hi"))
     :config
     (progn
-      (setq haskell-process-suggest-haskell-docs-imports t)
+      ;; HACK: Currently hangs on cabal file suggestions.
+      (setq haskell-process-suggest-add-package nil)
+
       (setq haskell-process-type 'stack-ghci)
+      (setq haskell-process-suggest-haskell-docs-imports t)
       (setq haskell-process-use-presentation-mode t)
       (setq haskell-interactive-mode-scroll-to-bottom t)
       (setq haskell-interactive-popup-errors t)
