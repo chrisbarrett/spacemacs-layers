@@ -278,20 +278,20 @@
     :defer t
     :config
     (progn
-      (org-babel-do-load-languages
-       'org-babel-load-languages
-       '((python . t)
-         (C . t)
-         (ditaa . t)
-         (sh . t)
-         (calc . t)
-         (scala . t)
-         (sqlite . t)
-         (emacs-lisp . t)
-         (gnuplot . t)
-         (ruby . t)
-         (clojure . t)
-         (haskell . t)))
+      ;; (org-babel-do-load-languages
+      ;;  'org-babel-load-languages
+      ;;  '((python . t)
+      ;;    (C . t)
+      ;;    (ditaa . t)
+      ;;    (sh . t)
+      ;;    (calc . t)
+      ;;    (scala . t)
+      ;;    (sqlite . t)
+      ;;    (emacs-lisp . t)
+      ;;    (gnuplot . t)
+      ;;    (ruby . t)
+      ;;    (clojure . t)
+      ;;    (haskell . t)))
 
       (setq org-src-fontify-natively t)
 
