@@ -59,7 +59,7 @@
      cb-sml
      ;; cb-csharp
      ;; cb-rust
-     ;; cb-idris
+     cb-idris
      ;; cb-agda
      cb-coffeescript
      cb-sql
@@ -72,7 +72,7 @@
      cb-crontab
      cb-js
      cb-mu4e
-     cb-cpp
+     ;; cb-cpp
      )
    ;; List of additional packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these
