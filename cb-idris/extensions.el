@@ -18,16 +18,17 @@
   (use-package smart-ops
     :config
     (progn
-      (defun idris/looking-at-module-or-constructor? (&rest _)
+      (defun cb-idris/looking-at-module-or-constructor? (&rest _)
         (-when-let ([fst] (thing-at-point 'symbol))
           (s-uppercase? fst)))
 
-      (define-smart-ops-for-mode 'idris-mode
-        (smart-ops "?" "$" "|" ":")
-        (smart-ops "." :pad-unless 'idris/looking-at-module-or-constructor?)
-        (smart-ops-default-ops))
+      (defconst cb-idris/smart-ops
+        (-flatten-n 1
+                    (list
+                     (smart-ops "?" :pad-after nil)
+                     (smart-ops "$" "|" ":")
+                     (smart-ops "." :pad-unless 'cb-idris/looking-at-module-or-constructor?)
+                     (smart-ops-default-ops))))
 
-      (define-smart-ops-for-mode 'idris-repl-mode
-        (smart-ops "?" "$" "|" ":")
-        (smart-ops "." :pad-unless 'idris/looking-at-module-or-constructor?)
-        (smart-ops-default-ops)))))
+      (define-smart-ops-for-mode 'idris-mode cb-idris/smart-ops)
+      (define-smart-ops-for-mode 'idris-repl-mode cb-idris/smart-ops))))

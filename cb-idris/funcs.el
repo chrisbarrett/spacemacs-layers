@@ -1,3 +1,8 @@
+(eval-when-compile
+  (require 's nil t)
+  (require 'dash nil t)
+  )
+
 (defun idris/after-subexpr-opening? ()
   (s-matches? (rx (or "{" "[" "{-" "[|") (* space) eol)
               (buffer-substring (line-beginning-position) (point))))
@@ -93,15 +98,15 @@
     (let ((lines (s-split "\n" dd)))
       (or (equal 1 (length lines))
           (->> (-drop 1 lines)
-            (-all? (~ s-matches? (rx bol (or space "|")))))))))
+               (--all? (s-matches? (rx bol (or space "|")) it)))))))
 
 (defun idris/function-name-at-pt ()
   "Return the name of the function at point."
   (save-excursion
-    (search-backward-regexp (rx bol (* space) (group (+ (not (any space ":"))))))
-    (let ((s (s-trim (match-string-no-properties 1))))
-      (unless (or (-contains? idris-keywords s)
-                  (s-blank? s))
+    (back-to-indentation)
+    (-when-let (s (thing-at-point 'symbol))
+      (when (s-matches? (rx-to-string `(and ,s (* space) ":"))
+                        (buffer-string))
         s))))
 
 (defun idris/ret ()
