@@ -95,6 +95,8 @@ which require an initialization must be listed explicitly in the list.")
       (put 'haskell-mode 'evil-shift-width 2)
       (add-hook 'haskell-mode-hook 'haskell/configure-flyspell)
 
+      (evil-define-key 'insert haskell-mode-map (kbd "<backspace>") 'haskell/backspace)
+      (evil-define-key 'normal haskell-mode-map (kbd "<backspace>") nil)
 
       (evil-define-key 'normal haskell-mode-map (kbd "SPC i i") 'haskell/insert-import)
       (evil-define-key 'normal haskell-mode-map (kbd "SPC i q") 'haskell/insert-qualified-import)

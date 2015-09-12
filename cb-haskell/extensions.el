@@ -28,7 +28,6 @@
                      (_ (equal op "{"))
                      (_ (s-matches? (rx bos "{" (* (any "-" space)) "}" eos)
                                     (buffer-substring beg end))))
-          (message "%s" (sp-get-enclosing-sexp))
           (goto-char beg)
           (delete-region beg end)
           (insert "{- ") (save-excursion (insert " -}"))))
