@@ -1,7 +1,6 @@
 # -*- mode: snippet; require-final-newline: nil -*-
-# name: where
-# key: wh
+# name: putStrLn
+# key: p
 # binding: direct-keybinding
 # --
-where
-  $0
+putStrLn $0

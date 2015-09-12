@@ -1,7 +1,6 @@
 # -*- mode: snippet; require-final-newline: nil -*-
-# name: where
-# key: wh
+# name: lambda
+# key: \
 # binding: direct-keybinding
 # --
-where
-  $0
+\\${1:x} => $0
