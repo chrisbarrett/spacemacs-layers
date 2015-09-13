@@ -1,0 +1,6 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: LANGUAGE pragma
+# key: lang
+# binding: direct-keybinding
+# --
+{-# LANGUAGE $0 #-}
