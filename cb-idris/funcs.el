@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t; -*-
 (eval-when-compile
   (require 's nil t)
   (require 'dash nil t)
@@ -12,15 +13,15 @@
               (buffer-substring (point) (line-end-position))))
 
 (defun idris/smart-space ()
+  "Insert a space, with context-sensitive padding."
   (interactive)
   (cond
    ((and (idris/after-subexpr-opening?) (idris/before-subexp-closing?))
     (delete-horizontal-space)
-    (insert "  ")
-    (forward-char -1)
-    )
+    (insert " ")
+    (save-excursion (insert " ")))
    (t
-    (insert " "))))
+    (sp/generic-prog-space))))
 
 
 ;;; Commands
@@ -32,31 +33,24 @@
       (pop-to-buffer buf)
     (error "No idris buffers")))
 
-(defun idris/just-one-space (id action ctx)
-  "Pad parens with spaces."
-  (when (and (equal 'insert action)
-             (sp-in-code-p id action ctx))
-    ;; Insert a leading space, unless
-    ;; 1. this is a quoted form
-    ;; 2. this is the first position of another list
-    ;; 3. this form begins a new line.
-    (save-excursion
-      (search-backward id)
-      (unless (s-matches?
-               (rx (or (group bol (* space))
-                       (any "," "`" "@" "(" "[" "{")) eol)
-               (buffer-substring (line-beginning-position) (point)))
-        (just-one-space)))
-    ;; Insert space after separator, unless
-    ;; 1. this form is at the end of another list.
-    ;; 2. this form is at the end of the line.
-    (save-excursion
-      (search-forward (sp-get-pair id :close))
-      (unless (s-matches? (rx (or (any ")" "]" "}")
-                                  eol))
-                          (buffer-substring (point) (1+ (point))))
-        (just-one-space)))))
+(defun idris/backspace ()
+  "Delete backwards with context-sensitive formatting."
+  (interactive)
+  (cond
+   ((and (idris/after-subexpr-opening?)
+         (idris/before-subexp-closing?)
+         (thing-at-point-looking-at (rx (+ space))))
+    (delete-horizontal-space))
 
+   ((and (s-matches? (rx "{-" eol)
+                     (buffer-substring (line-beginning-position) (point)))
+         (s-matches? (rx bol "-}")
+                     (buffer-substring (point) (line-end-position))))
+    (delete-char 1)
+    (delete-char -1))
+
+   (t
+    (sp/generic-prog-backspace))))
 
 ;;; Smart M-RET
 
@@ -128,7 +122,7 @@
       (newline))
 
      (t
-      (idris-newline-and-indent)))))
+      (sp/generic-prog-ret)))))
 
 (defun idris/meta-ret ()
   "Create a newline and perform a context-sensitive continuation.

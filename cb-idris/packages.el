@@ -46,7 +46,17 @@ which require an initialization must be listed explicitly in the list.")
                    '(idris-mode
                      ((("^ *record\\>" . font-lock-keyword-face)))))
 
+      (evil-set-initial-state 'idris-prover-script-mode 'insert)
+
       ;; Key bindings
+
+      (define-key idris-mode-map (kbd "C-c C-z") 'idris-switch-to-output-buffer)
+      (define-key idris-mode-map (kbd "M-RET") 'idris/meta-ret)
+
+      (evil-define-key 'insert idris-mode-map
+        (kbd "RET") 'idris/ret
+        (kbd "SPC") 'idris/smart-space
+        (kbd "<backspace>") 'idris/backspace)
 
       (evil-leader/set-key-for-mode 'idris-mode
         "mr" 'idris-load-file
@@ -57,6 +67,9 @@ which require an initialization must be listed explicitly in the list.")
         "mm" 'idris-add-missing
         "mp" 'idris-proof-search
         "mh" 'idris-docs-at-point)
+
+      (with-eval-after-load 'idris-repl
+        (define-key idris-repl-mode-map (kbd "C-c C-z") 'idris/switch-to-src))
 
       (evil-define-key 'normal idris-info-mode-map (kbd "q") 'quit-window)
       (evil-define-key 'normal idris-hole-list-mode-map (kbd "q") 'quit-window)
