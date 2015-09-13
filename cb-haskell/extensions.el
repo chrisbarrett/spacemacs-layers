@@ -55,6 +55,7 @@
           (forward-char -1)
           (-when-let (sym (thing-at-point 'symbol))
             (s-uppercase? (substring sym 0 1)))))
+
       (defun cb-haskell/indent-if-in-exports ()
         (when (ignore-errors (s-matches? "ExportSpec" (elt (shm-current-node) 0)))
           (haskell-indentation-indent-line)))

@@ -5,11 +5,11 @@
 (require 'haskell-parser nil t)
 
 (defun haskell/after-subexpr-opening? ()
-  (s-matches? (rx (or "{" "[" "{-" "{-#" "(#") (* space) eol)
+  (s-matches? (rx (or "{" "[" "{-" "{-#" "(#" "{-@") (* space) eol)
               (buffer-substring (line-beginning-position) (point))))
 
 (defun haskell/before-subexp-closing? ()
-  (s-matches? (rx bol (? ">") (* space) (or "}" "]" "-}" "#-}" "#)"))
+  (s-matches? (rx bol (? ">") (* space) (or "}" "]" "-}" "#-}" "@-}" "#)"))
               (buffer-substring (point) (line-end-position))))
 
 (defun haskell/smart-space ()
