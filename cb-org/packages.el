@@ -221,6 +221,7 @@ Do not change habits, scheduled items or repeating todos."
 
 (defun cb-org/init-org-jira ()
   (use-package org-jira
+    :disabled t
     :commands (org-jira-mode)
     :init
     (progn
@@ -310,9 +311,7 @@ Do not change habits, scheduled items or repeating todos."
 
 (defun cb-org/init-org-gcal ()
   (use-package org-gcal
-    :init
-    (defconst cb-org/gcal-directory
-      (f-join org-directory "gcal"))
+    :disabled t
     :config
     (progn
       (setq org-gcal-dir (f-slash (f-join spacemacs-cache-directory "org-gcal/")))
