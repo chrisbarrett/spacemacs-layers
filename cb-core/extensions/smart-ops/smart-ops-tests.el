@@ -519,6 +519,19 @@
           (:op "+" :pad-after t :pad-before t))
   results in "foo + |;")
 
+
+(define-smart-ops-insertion-test no-special-action-when-bypassed-1
+  starting with "foo|bar"
+  inserting "+"
+  rules `((:op "+" :bypass? t))
+  results in "foo+|bar")
+
+(define-smart-ops-insertion-test no-special-action-when-bypassed-2
+  starting with "foo| bar"
+  inserting "+"
+  rules `((:op "+" :bypass? t))
+  results in "foo+| bar")
+
 
 
 ;; Deletion tests
@@ -576,7 +589,8 @@
 ;; Utilities
 
 (ert-deftest parameter-validation--sets-expected-defaults ()
-  (let* ((defaults (list :pad-before t
+  (let* ((defaults (list :bypass? nil
+                         :pad-before t
                          :pad-after t
                          :action #'ignore
                          :pad-before-if smart-ops--true-fn
@@ -593,7 +607,8 @@
 
 (ert-deftest parameter-validation--does-not-override-supplied-values-1 ()
   (let* ((input
-          (list :pad-before t
+          (list :bypass? nil
+                :pad-before t
                 :pad-after t
                 :pad-if 'identity
                 :pad-unless 'identity
@@ -609,7 +624,8 @@
 
 (ert-deftest parameter-validation--does-not-override-supplied-values-2 ()
   (let* ((input
-          (list :pad-before nil
+          (list :bypass? t
+                :pad-before nil
                 :pad-after nil
                 :pad-if 'identity
                 :pad-unless 'identity

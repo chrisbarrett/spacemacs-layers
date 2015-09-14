@@ -187,8 +187,11 @@ matched pairs Set to nil to disable this behaviour."
                         (not (smart-ops--inside-string-or-comment?))))
                    (_ (smart-ops--logged "char-before is an op character:"
                         (-contains? (smart-ops--op-characters rules) (char-before))))
+                   (_ (smart-ops--logged "not bypassed?"
+                        (not (plist-get (smart-ops--maybe-rule-for-op-at-pt rules) :bypass?))))
                    (_ (smart-ops--logged "deleting space?"
-                        (unless (s-blank? (s-trim (buffer-substring (line-beginning-position) (point)))) (delete-horizontal-space) t)))
+                        (unless (s-blank? (s-trim (buffer-substring (line-beginning-position) (point))))
+                          (delete-horizontal-space) t)))
                    (indent (save-excursion (back-to-indentation) (point)))
                    (beg (smart-ops--logged "beg:"
                           (max indent (smart-ops--maybe-beginning-of-op rules))))
@@ -326,6 +329,7 @@ See `smart-op' for a description of valid SETTINGS."
 
 (defsubst smart-ops--apply-defaults-for-absent-keys (plist)
   (->> (copy-sequence plist)
+       (smart-ops--plist-put-if-absent :bypass? nil)
        (smart-ops--plist-put-if-absent :action #'ignore)
        (smart-ops--plist-put-if-absent :pad-before  t)
        (smart-ops--plist-put-if-absent :pad-after   t)
@@ -342,6 +346,8 @@ See `smart-op' for a description of valid SETTINGS."
 
 OP is a string representing the operator. The remaining arguments are
 keyword-value pairs specifying the behaviour of the generated command:
+
+:bypass? (default nil)     Whether to completely ignore special treatment.
 
 :pad-before (default t)    Specifies whether to insert padding before the
                            operator.
