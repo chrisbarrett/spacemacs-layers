@@ -65,4 +65,16 @@
           (when (and (derived-mode-p 'sml-mode) (s-blank? (s-trim (current-line))))
             (delete-horizontal-space)
             (indent-to col))))
+
+
+      ;; Hack SMIE indentation so that structures are indented.
+
+      (defun cb-sml/smie-rules (orig kind token)
+        (pcase (cons kind token)
+          (`(:after . "struct") 2)
+          (_ (funcall orig kind token))))
+
+      (add-hook 'sml-mode-hook
+                (lambda ()
+                  (add-function :around (symbol-function 'sml-smie-rules) #'cb-sml/smie-rules)))
       )))
