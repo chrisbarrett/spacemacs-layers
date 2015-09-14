@@ -1,4 +1,4 @@
-;;; extensions.el --- cb-scala Layer extensions File for Spacemacs
+;;; extensions.el --- cb-scala Layer extensions File for Spacemacs  -*- lexical-binding: t; -*-
 ;;; Commentary:
 ;;; Code:
 
@@ -47,6 +47,21 @@
                      (smart-ops "???" "?" "=" "==" "+" "-" "@" "*" "/" "<" ">" "|" "$" "&" "%" "!" "~")
                      (smart-ops ":" "," :pad-before nil)
 
+                     ;; Inserting this op means you're probably editing a
+                     ;; function return type. Pad internally and move point
+                     ;; inside.
+                     (let ((inserting-type? (smart-ops-before-match? (rx bos (* space) "="))))
+                       (smart-ops ":="
+                                  :action
+                                  (lambda (&rest _)
+                                    (when (funcall inserting-type? (point))
+                                      (just-one-space)
+                                      (save-excursion
+                                        (insert " ")
+                                        (search-backward ":")
+                                        (delete-horizontal-space))))))
+
+
                      ;; Reformat ':_*' as ': _*'
                      (smart-ops ":_*"
                                 :pad-before nil
@@ -56,6 +71,11 @@
                                   (save-excursion
                                     (search-backward "_")
                                     (just-one-space))))
+                     ;; Prevent above smart op from breaking underscores in
+                     ;; symbols.
+                     (smart-ops "_" :bypass? t)
+                     (smart-ops "__" :bypass? t)
+                     (smart-ops "___" :bypass? t)
 
                      ;; Reformat '=???' as '= ???'
                      (smart-op "=???"
