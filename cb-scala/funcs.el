@@ -373,7 +373,7 @@ With prefix argument ARG, always create a new shell."
   (let ((current-frame (scala-sbt--current-frame)))
     (--first (with-current-buffer it
                (and (derived-mode-p 'sbt-mode)
-                    (s-matches? "eshell" (buffer-name it))
+                    (s-matches? "sbt" (buffer-name it))
                     (equal current-frame (window-frame (get-buffer-window it)))))
              (buffer-list))))
 
