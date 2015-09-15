@@ -165,10 +165,10 @@
                  (org-agenda-tag-filter-preset '("-ignore" "-gtd"))
                  (org-stuck-projects
                   '("+@work-hold-ignore+TODO={PROJECT}/-DONE" ("NEXT") nil "SCHEDULED:\\|\\<IGNORE\\>"))
-                 (org-agenda-span 'fortnight)
+                 (org-agenda-span 'week)
                  (org-agenda-dim-blocked-tasks nil)
                  (org-agenda-clockreport-mode t)
-                 (org-agenda-show-log t)
+                 (org-agenda-start-on-weekday 1)
                  (org-deadline-warning-days 0)
                  (org-agenda-todo-ignore-deadlines 14)
                  (org-agenda-todo-ignore-scheduled 'all)
