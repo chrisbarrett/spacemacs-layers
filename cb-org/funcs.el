@@ -177,3 +177,67 @@ are between the current date (DATE) and Easter Sunday."
           (goto-char (marker-position mark))
           (org-narrow-to-subtree)
           (org-content))))))
+
+;; HACK: override `org-clocktable-steps' to customise clocktable appearance.
+(with-eval-after-load 'org-clock
+
+  (defun org-clocktable-steps (params)
+    "Step through the range to make a number of clock tables."
+    (let* ((p1 (copy-sequence params))
+           (ts (plist-get p1 :tstart))
+           (te (plist-get p1 :tend))
+           (ws (plist-get p1 :wstart))
+           (ms (plist-get p1 :mstart))
+           (step0 (plist-get p1 :step))
+           (step (cdr (assoc step0 '((day . 86400) (week . 604800)))))
+           (stepskip0 (plist-get p1 :stepskip0))
+           (block (plist-get p1 :block))
+           cc range-text step-time tsb)
+      (when block
+        (setq cc (org-clock-special-range block nil t ws ms)
+              ts (car cc) te (nth 1 cc) range-text (nth 2 cc)))
+      (cond
+       ((numberp ts)
+        ;; If ts is a number, it's an absolute day number from org-agenda.
+        (-let [(month day year) (calendar-gregorian-from-absolute ts)]
+          (setq ts (org-float-time (encode-time 0 0 0 day month year)))))
+       (ts
+        (setq ts (org-float-time
+                  (apply 'encode-time (org-parse-time-string ts))))))
+      (cond
+       ((numberp te)
+        ;; Likewise for te.
+        (-let [(month day year) (calendar-gregorian-from-absolute te)]
+          (setq te (org-float-time (encode-time 0 0 0 day month year)))))
+       (te
+        (setq te (org-float-time
+                  (apply 'encode-time (org-parse-time-string te))))))
+      (setq tsb
+            (if (eq step0 'week)
+                (- ts (* 86400 (- (nth 6 (decode-time (seconds-to-time ts))) ws)))
+              ts))
+      (setq p1 (plist-put p1 :header ""))
+      (setq p1 (plist-put p1 :step nil))
+      (setq p1 (plist-put p1 :block nil))
+      (while (< tsb te)
+        (or (bolp) (insert "\n"))
+        (setq p1 (plist-put p1 :tstart (format-time-string
+                                        (org-time-stamp-format nil t)
+                                        (seconds-to-time (max tsb ts)))))
+        (setq p1 (plist-put p1 :tend (format-time-string
+                                      (org-time-stamp-format nil t)
+                                      (seconds-to-time (min te (setq tsb (+ tsb step)))))))
+        (insert "\n\n" (if (eq step0 'day) "Daily report: "
+                         "Weekly report starting on: ")
+                (plist-get p1 :tstart) "\n")
+        (setq step-time (org-dblock-write:clocktable p1))
+        (re-search-forward "^[ \t]*#\\+END:")
+        (when (and (equal step-time 0) stepskip0)
+          ;; Remove the empty table
+          (delete-region (point-at-bol)
+                         (save-excursion
+                           (re-search-backward "^\\(Daily\\|Weekly\\) report"
+                                               nil t)
+                           (point))))
+        (end-of-line 0))))
+  )

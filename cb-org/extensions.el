@@ -88,14 +88,11 @@
       (setq org-agenda-use-time-grid nil)
 
       (setq org-agenda-clockreport-parameter-plist
-            (list :link t
-                  :maxlevel 5
-                  :indent nil
-                  :narrow 40
-                  :tcolumns 1
-                  :stepskip0 t
-                  :fileskip0 t
-                  :step 'week))
+            (list
+             :compact t
+             :maxlevel 5
+             :fileskip0 t
+             :step 'week))
 
       (setq org-time-clocksum-format
             (list :hours "%d" :require-hours t
