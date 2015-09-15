@@ -320,7 +320,7 @@
 (autoload 'sbt:find-root "sbt-mode")
 
 (defun scala/sbt-for-dir (dir)
-  (noflet ((sbt:find-root (&rest args) dir))
+  (noflet ((sbt:find-root (&rest args) (f-abbrev dir)))
     (let ((buf (save-window-excursion (sbt-start))))
       (pop-to-buffer buf))))
 
