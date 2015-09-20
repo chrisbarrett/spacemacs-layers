@@ -33,6 +33,8 @@
               (format "https://bitbucket.org/%s/src/%s" filepath branch))
              (`"github.com"
               (format "https://github.com/%s/tree/%s" filepath branch))
+             (`"gogs.movio.co"
+              (format "https://gogs.movio.co/%s/src/%s" (s-chop-prefix "/" filepath) branch))
              (host
               (error "Don't know how to browse URL for host: %s" host)))))
     (browse-url url)))
