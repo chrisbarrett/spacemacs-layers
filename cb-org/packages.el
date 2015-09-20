@@ -124,6 +124,19 @@ which require an initialization must be listed explicitly in the list.")
               ("OPEN" . font-lock-comment-face)
               ("WAITING" . ,solarized-hl-magenta)))
 
+      ;; Override themes which set weird headline properties.
+
+      (let ((class '((class color) (min-colors 89))))
+        (custom-set-faces
+         `(org-level-1 ((,class (:background nil :overline nil :height 1.0))))
+         `(org-level-2 ((,class (:background nil :height 1.0))))
+         `(org-level-3 ((,class (:background nil :height 1.0))))
+         `(org-level-4 ((,class (:background nil :height 1.0))))
+         `(org-level-5 ((,class (:background nil :height 1.0))))
+         `(org-level-6 ((,class (:background nil :height 1.0))))
+         `(org-level-7 ((,class (:background nil :height 1.0))))
+         `(org-level-8 ((,class (:background nil :height 1.0))))))
+
       ;; Advice
 
       (defadvice org-add-log-note (before exit-minibuffer activate)
