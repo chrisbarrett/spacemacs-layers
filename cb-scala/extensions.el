@@ -71,7 +71,14 @@
                                   (save-excursion
                                     (search-backward "_")
                                     (just-one-space))))
-                     ;; Prevent above smart op from breaking underscores in
+                     (smart-ops "_=>"
+                                :action
+                                (lambda (&rest _)
+                                  (save-excursion
+                                    (search-backward "=")
+                                    (just-one-space))))
+
+                     ;; Prevent above smart ops from breaking underscores in
                      ;; symbols.
                      (smart-ops "_" :bypass? t)
                      (smart-ops "__" :bypass? t)
