@@ -277,6 +277,9 @@ layers configuration."
     (load custom-file))
   (require 'personal-config nil t)
 
+  ;; Disable bookmarks.
+  (setq bookmark-save-flag nil)
+
   ;; Disable debugging now that my configuration has loaded.
   (setq debug-on-error nil)
   (setq debug-on-quit nil))
