@@ -38,8 +38,9 @@
 (evil-leader/set-key "ot" 'cb-org/todo-list)
 (evil-leader/set-key "ov" 'cb-org/tags-list)
 
-(define-key org-agenda-mode-map (kbd "C-f") 'evil-scroll-page-down)
-(define-key org-agenda-mode-map (kbd "C-b") 'evil-scroll-page-up)
+(with-eval-after-load 'org-agenda
+  (define-key org-agenda-mode-map (kbd "C-f") 'evil-scroll-page-down)
+  (define-key org-agenda-mode-map (kbd "C-b") 'evil-scroll-page-up))
 
 (evil-leader/set-key "oh" 'helm-org-agenda-files-headings)
 (evil-leader/set-key-for-mode 'org-mode "mP" 'org-plot/gnuplot)
