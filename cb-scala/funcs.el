@@ -64,50 +64,51 @@
 (defun scala/ret (&optional arg)
   "Insert a newline with context-sensitive formatting."
   (interactive "P")
-  (cond
-   ((scala/at-scaladoc?)
-    (goto-char (line-end-position))
-    (core/open-line-below-current-indentation)
-    (insert "* "))
-
-   ((or arg (core/in-string-or-comment?))
-    (comment-indent-new-line)
-    (just-one-space))
-
-   ((sp/inside-curly-braces-blank-content?)
-    (sp/split-braced-expression-over-new-lines (rx ";")))
-
-   ((and (sp/inside-curly-braces-with-content? t)
-         (scala/blank-up-to-curly?)
-         (scala/after-lambda-arrow?))
-    (sp/split-braced-expression-over-new-lines (rx ";"))
-    (goto-char (line-end-position))
-    (save-excursion
-      (scala/maybe-swing-down-lambda-body))
-    (newline-and-indent))
-
-   ((and (sp/inside-curly-braces-with-content? t)
-         (scala/brace-group-starts-with-case-expr?))
-    (sp/split-braced-expression-over-new-lines (rx ";"))
+  (let ((sexp (sp-get-enclosing-sexp)))
     (cond
-     ((scala/after-lambda-arrow?)
-      (newline-and-indent))
-     (t
+     ((scala/at-scaladoc?)
       (goto-char (line-end-position))
-      (scala/maybe-swing-down-lambda-body)))
+      (core/open-line-below-current-indentation)
+      (insert "* "))
 
-    (goto-char (line-end-position)))
+     ((or arg (core/in-string-or-comment?))
+      (comment-indent-new-line)
+      (just-one-space))
 
-   ((sp/inside-curly-braces-with-content? t)
-    (sp/split-braced-expression-over-new-lines (rx ";"))
-    (goto-char (line-end-position))
-    (save-excursion
-      (scala/maybe-swing-down-lambda-body)
-      (goto-char (plist-get (sp-get-enclosing-sexp) :beg))
-      (spacemacs/scala-join-line)))
+     ((sp/inside-curly-braces-blank-content? nil sexp)
+      (sp/split-braced-expression-over-new-lines (rx ";") sexp))
 
-   (t
-    (call-interactively 'comment-indent-new-line))))
+     ((and (sp/inside-curly-braces-with-content? t sexp)
+           (scala/blank-up-to-curly?)
+           (scala/after-lambda-arrow?))
+      (sp/split-braced-expression-over-new-lines (rx ";") sexp)
+      (goto-char (line-end-position))
+      (save-excursion
+        (scala/maybe-swing-down-lambda-body))
+      (newline-and-indent))
+
+     ((and (sp/inside-curly-braces-with-content? t sexp)
+           (scala/brace-group-starts-with-case-expr?))
+      (sp/split-braced-expression-over-new-lines (rx ";") sexp)
+      (cond
+       ((scala/after-lambda-arrow?)
+        (newline-and-indent))
+       (t
+        (goto-char (line-end-position))
+        (scala/maybe-swing-down-lambda-body)))
+
+      (goto-char (line-end-position)))
+
+     ;; ((sp/inside-curly-braces-with-content? t)
+     ;;  (sp/split-braced-expression-over-new-lines (rx ";"))
+     ;;  (goto-char (line-end-position))
+     ;;  (save-excursion
+     ;;    (scala/maybe-swing-down-lambda-body)
+     ;;    (goto-char (plist-get (sp-get-enclosing-sexp) :beg))
+     ;;    (spacemacs/scala-join-line)))
+
+     (t
+      (sp/generic-prog-ret)))))
 
 (defun scala/at-scaladoc? ()
   (s-matches? (rx bol (* space) (? "/") (+ "*")) (current-line)))
