@@ -4,8 +4,6 @@
 
 (defconst cb-groovy-packages '(groovy-mode))
 
-(defconst cb-groovy-excluded-packages '())
-
 (eval-when-compile
   (require 'use-package nil t))
 
@@ -16,3 +14,10 @@
     :config
     (progn
       (setq groovy-home "/usr/local/"))))
+
+(defun cb-groovy/post-init-smart-ops ()
+  (define-smart-ops-for-mode 'groovy-mode
+    (smart-ops ":" "," :pad-before nil))
+
+  (define-smart-ops-for-mode 'inferior-groovy-mode
+    (smart-ops ":" "," :pad-before nil)))
