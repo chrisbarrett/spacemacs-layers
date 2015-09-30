@@ -1,45 +1,34 @@
-;;; extensions.el --- cb-proof Layer extensions File for Spacemacs
+;;; extensions.el --- cb-proof Layer packages File for Spacemacs
 ;;; Commentary:
 ;;; Code:
 
-(defconst cb-proof-pre-extensions
-  '(
-    proof-site
-    coq
-    proof-script
-    smart-ops
-    )
-  "List of all extensions to load before the packages.")
-
-(defconst cb-proof-post-extensions
-  '()
-  "List of all extensions to load after the packages.")
+(defconst cb-proof-packages
+  '((proof-site :location local)
+    (coq :location local)
+    (proof-script :location local)
+    smart-ops))
 
 (eval-when-compile
-  (require 'use-package nil t))
+  (require 'use-package nil t)
+  (require 'f nil t))
+
+(add-to-list 'load-path (f-join user-layers-directory "cb-proof/extensions/proofgeneral/generic"))
 
 (defun cb-proof/init-proof-site ()
-  (use-package proof-site
-    :defer t
-    :init
-    (progn
-      (add-to-list 'load-path
-                   (f-join user-layers-directory "cb-proof/extensions/proofgeneral/generic"))
-      (require 'proof-site))
-    :config
-    (progn
-      (setq proof-splash-enable nil)
-      (custom-set-faces
-       '(proof-eager-annotation-face
-         ((t (:inherit default :background nil :underline "darkgoldenrod"))))
-       '(proof-error-face
-         ((t (:background nil)))))
+  (require 'proof-site)
 
-      (core/remap-face 'proof-queue-face 'core/bg-flash)
-      (core/remap-face 'proof-locked-face 'core/bg-hl-ok)
-      (core/remap-face 'proof-warning-face 'flycheck-warning)
-      (core/remap-face 'proof-script-sticky-error-face 'flycheck-error)
-      (core/remap-face 'proof-script-highlight-error-face 'flycheck-error))))
+  (setq proof-splash-enable nil)
+  (custom-set-faces
+   '(proof-eager-annotation-face
+     ((t (:inherit default :background nil :underline "darkgoldenrod"))))
+   '(proof-error-face
+     ((t (:background nil)))))
+
+  (core/remap-face 'proof-queue-face 'core/bg-flash)
+  (core/remap-face 'proof-locked-face 'core/bg-hl-ok)
+  (core/remap-face 'proof-warning-face 'flycheck-warning)
+  (core/remap-face 'proof-script-sticky-error-face 'flycheck-error)
+  (core/remap-face 'proof-script-highlight-error-face 'flycheck-error))
 
 (defun cb-proof/init-coq ()
   (use-package coq
@@ -93,22 +82,19 @@
     (progn
       (define-key proof-mode-map (kbd "C-<return>") nil))))
 
-(defun cb-proof/init-smart-ops ()
-  (use-package smart-ops
-    :config
-    (progn
-      (define-smart-ops-for-mode 'coq-mode
-        (smart-ops ":"
-                   :pad-before-unless
-                   (smart-ops-after-match? (rx bow "eqn" (* space) eos)))
-        (smart-ops "|"
-                   :action
-                   (lambda ()
-                     (when (sp/inside-square-braces?)
-                       (delete-horizontal-space)
-                       (insert " ")
-                       (save-excursion
-                         (insert " |")))))
+(defun cb-proof/post-init-smart-ops ()
+  (define-smart-ops-for-mode 'coq-mode
+    (smart-ops ":"
+               :pad-before-unless
+               (smart-ops-after-match? (rx bow "eqn" (* space) eos)))
+    (smart-ops "|"
+               :action
+               (lambda ()
+                 (when (sp/inside-square-braces?)
+                   (delete-horizontal-space)
+                   (insert " ")
+                   (save-excursion
+                     (insert " |")))))
 
-        (smart-ops "?" "^" "~" "\\")
-        (smart-ops-default-ops)))))
+    (smart-ops "?" "^" "~" "\\")
+    (smart-ops-default-ops)))
