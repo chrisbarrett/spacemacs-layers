@@ -21,7 +21,10 @@ values."
    dotspacemacs-configuration-layers
    '(auto-completion
      latex
-     ;; haskell
+     (haskell
+      :variables
+      haskell-enable-ghc-mod-support t
+      haskell-enable-hindent-style "gibiansky")
      osx
      git
      version-control
