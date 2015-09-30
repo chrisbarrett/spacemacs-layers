@@ -2,204 +2,221 @@
 ;;; Commentary:
 ;;; Code:
 
+(eval-when-compile
+  (require 'use-package nil t)
+  (use-package s :ensure t)
+  (use-package dash :ensure t)
+  (use-package f :ensure t)
+  (use-package noflet :ensure t))
+
 (defconst cb-core-packages
-  '(
-    dash
-    dash-functional
-    s
-    f
-    noflet
+  '(dash-functional
     diminish
+    company
+    company-quickhelp
     evil
     evil-surround
-    company
-    autorevert
+    auto-revert
     hideshow
     helm
     aggressive-indent
-    company-quickhelp
     ag
     wgrep-ag
     alert
     helm-gtags
     world-time-mode
-    )
-  "List of all packages to install and/or initialize. Built-in packages
-which require an initialization must be listed explicitly in the list.")
+    iedit
+    hl-line
+    eldoc
+    recentf
 
-(defconst cb-core-excluded-packages '()
-  "List of packages to exclude.")
+    (locate-key-binding :location local)
+    (smart-ops :location local)
+    (case :location local)))
 
-(eval-when-compile
-  (require 'use-package nil t)
-  (require 's nil t)
-  (require 'dash nil t)
-  (require 'f nil t)
-  )
+(defconst cb-core/ignored-files-regexps
+  '("\\.elc$"
+    "\\.pyc$"
+    "TAGS"
+    "\\.gz$"
+    "flycheck_"
+    "\\.DS_Store"
+    "\\.swp"
+    "#$"
+    "^/?sudo"
+    "\\.bbdb"
+    "\\.newsrc"
+    "/gnus$"
+    "/gnus.eld$"
+    "\\.ido\\.last"
+    "\\.org-clock-save\\.el$"))
 
-(defun cb-core/init-s ()
-  (use-package s
-    :config (require 's)))
+(defconst cb-core/ignored-dirs
+  '(".cabal-sandbox"
+    ".idea"
+    "dist"
+    "target"
+    "obj"
+    "build"
+    "log"
+    "logs"
+    "tmp"
+    "temp"
 
-(defun cb-core/init-noflet ()
-  (use-package noflet
-    :config (require 'noflet)))
+    ".cache"
+    "var/folders"
+    "Mail"
 
-(defun cb-core/init-dash ()
-  (use-package dash
-    :config (require 'dash)))
+    ;; VC
+    ".git"
+    ".hg"
+    ".fslckout"
+    ".bzr"
+    "_darcs"
+    ".tox"
+    ".svn"
+
+    ;; Emacs
+    ".cask"
+    "elpa"
+    "snippets"
+    ".emacs.d/url"
+    "Emacs.app"
+
+    ;; Scala
+    "project/target"
+    "project/project"
+    ".ensime_cache"))
 
 (defun cb-core/init-dash-functional ()
   (use-package dash-functional
     :config (require 'dash-functional)))
 
-(defun cb-core/init-f ()
-  (use-package f
-    :config (require 'f)))
+(defun cb-core/post-init-diminish ()
+  (diminish 'auto-fill-function " ≣"))
 
-(defun cb-core/init-diminish ()
-  (use-package diminish
-    :config
-    (progn
-      (require 'diminish)
-      (diminish 'auto-fill-function " ≣"))))
+(defun cb-core/post-init-company ()
+  (setq-default company-minimum-prefix-length 3))
 
-(defun cb-core/init-company ()
-  (use-package company
-    :config
-    (setq-default company-minimum-prefix-length 3)))
+(defun cb-core/post-init-evil ()
+  (setq evil-want-visual-char-semi-exclusive t)
+  (setq evil-shift-width 2)
+  (setq evil-symbol-word-search 'symbol)
 
-(defun cb-core/init-evil ()
-  (use-package evil
-    :init nil
-    :config
-    (progn
-      (setq evil-want-visual-char-semi-exclusive t)
-      (setq evil-shift-width 2)
-      (setq evil-symbol-word-search 'symbol)
+  ;; Make window management work for all modes
 
-      ;; Make window management work for all modes
+  (bind-keys*
+   :prefix "C-w"
+   :prefix-map evil/window-emu
+   ("C-w" . evil-window-prev)
+   ("C-s" . split-window-vertically)
+   ("C-v" . split-window-horizontally)
+   ("C-o" . delete-other-windows)
+   ("C-c" . delete-window)
+   ("w" . evil-window-prev)
+   ("s" . split-window-vertically)
+   ("v" . split-window-horizontally)
+   ("o" . delete-other-windows)
+   ("c" . delete-window)))
 
-      (bind-keys*
-       :prefix "C-w"
-       :prefix-map evil/window-emu
-       ("C-w" . evil-window-prev)
-       ("C-s" . split-window-vertically)
-       ("C-v" . split-window-horizontally)
-       ("C-o" . delete-other-windows)
-       ("C-c" . delete-window)
-       ("w" . evil-window-prev)
-       ("s" . split-window-vertically)
-       ("v" . split-window-horizontally)
-       ("o" . delete-other-windows)
-       ("c" . delete-window)))))
+(defun cb-core/post-init-evil-surround ()
+  (setq-default evil-surround-pairs-alist
+                '((?\( . ("(" . ")"))
+                  (?\[ . ("[" . "]"))
+                  (?\{ . ("{" . "}"))
 
-(defun cb-core/init-evil-surround ()
-  (use-package evil-surround
-    :config
-    (progn
-      (setq-default evil-surround-pairs-alist
-                    '((?\( . ("(" . ")"))
-                      (?\[ . ("[" . "]"))
-                      (?\{ . ("{" . "}"))
+                  (?\) . ("(" . ")"))
+                  (?\] . ("[" . "]"))
+                  (?\} . ("{" . "}"))
 
-                      (?\) . ("(" . ")"))
-                      (?\] . ("[" . "]"))
-                      (?\} . ("{" . "}"))
+                  (?# . ("#{" . "}"))
+                  (?b . ("(" . ")"))
+                  (?B . ("{" . "}"))
+                  (?> . ("<" . ">"))
+                  (?t . surround-read-tag)
+                  (?< . surround-read-tag)
+                  (?f . surround-function)))
 
-                      (?# . ("#{" . "}"))
-                      (?b . ("(" . ")"))
-                      (?B . ("{" . "}"))
-                      (?> . ("<" . ">"))
-                      (?t . surround-read-tag)
-                      (?< . surround-read-tag)
-                      (?f . surround-function)))
+  ;; Elisp pairs
 
-      (add-hook 'emacs-lisp-mode-hook 'core/config-elisp-surround-pairs))))
+  (defun core/config-elisp-surround-pairs ()
+    (make-local-variable 'evil-surround-pairs-alist)
+    (push '(?\` . ("`" . "'")) evil-surround-pairs-alist))
 
-(defun cb-core/init-autorevert ()
-  (use-package autorevert
-    :diminish auto-revert-mode))
+  (add-hook 'emacs-lisp-mode-hook 'core/config-elisp-surround-pairs))
 
-(defun cb-core/init-hideshow ()
-  (use-package hideshow
-    :diminish hs-minor-mode))
+(defun cb-core/post-init-autorevert ()
+  (diminish 'auto-revert-mode))
 
-(defun cb-core/init-helm ()
-  (use-package helm
-    :config
-    (progn
-      (helm-autoresize-mode +1)
-      (setq helm-buffers-fuzzy-matching t)
-      (setq helm-recentf-fuzzy-match t)
-      (setq helm-imenu-fuzzy-match t)
+(defun cb-core/post-init-hideshow ()
+  (diminish 'hs-minor-mode))
 
-      (setq helm-locate-command
-            (pcase system-type
-              (`gnu/linux "locate -i -r %s")
-              (`berkeley-unix "locate -i %s")
-              (`windows-nt "es %s")
-              (`darwin "mdfind -name %s %s | egrep -v '/Library/(Caches|Mail)/'")
-              (t "locate %s")))
+(defun cb-core/post-init-helm ()
+  (helm-autoresize-mode +1)
+  (setq helm-buffers-fuzzy-matching t)
+  (setq helm-recentf-fuzzy-match t)
+  (setq helm-imenu-fuzzy-match t)
 
-      (custom-set-faces
-       `(helm-locate-finish
-         ((t (:foreground ,solarized-hl-cyan))))
-       '(helm-selection
-         ((((background light)) :background "gray90" :foreground "black" :underline nil)
-          (((background dark))  :background "black"  :foreground "white" :underline nil))))
+  (setq helm-locate-command
+        (pcase system-type
+          (`gnu/linux "locate -i -r %s")
+          (`berkeley-unix "locate -i %s")
+          (`windows-nt "es %s")
+          (`darwin "mdfind -name %s %s | egrep -v '/Library/(Caches|Mail)/'")
+          (t "locate %s")))
 
-      ;; Helm command to display HTTP status codes.
+  (custom-set-faces
+   `(helm-locate-finish
+     ((t (:foreground ,solarized-hl-cyan))))
+   '(helm-selection
+     ((((background light)) :background "gray90" :foreground "black" :underline nil)
+      (((background dark))  :background "black"  :foreground "white" :underline nil))))
 
-      (defvar helm-httpstatus-source
-        '((name . "HTTP STATUS")
-          (candidates . (("100 Continue") ("101 Switching Protocols")
-                         ("102 Processing") ("200 OK")
-                         ("201 Created") ("202 Accepted")
-                         ("203 Non-Authoritative Information") ("204 No Content")
-                         ("205 Reset Content") ("206 Partial Content")
-                         ("207 Multi-Status") ("208 Already Reported")
-                         ("300 Multiple Choices") ("301 Moved Permanently")
-                         ("302 Found") ("303 See Other")
-                         ("304 Not Modified") ("305 Use Proxy")
-                         ("307 Temporary Redirect") ("400 Bad Request")
-                         ("401 Unauthorized") ("402 Payment Required")
-                         ("403 Forbidden") ("404 Not Found")
-                         ("405 Method Not Allowed") ("406 Not Acceptable")
-                         ("407 Proxy Authentication Required") ("408 Request Timeout")
-                         ("409 Conflict") ("410 Gone")
-                         ("411 Length Required") ("412 Precondition Failed")
-                         ("413 Request Entity Too Large")
-                         ("414 Request-URI Too Large")
-                         ("415 Unsupported Media Type")
-                         ("416 Request Range Not Satisfiable")
-                         ("417 Expectation Failed") ("418 I'm a teapot")
-                         ("422 Unprocessable Entity") ("423 Locked")
-                         ("424 Failed Dependency") ("425 No code")
-                         ("426 Upgrade Required") ("428 Precondition Required")
-                         ("429 Too Many Requests")
-                         ("431 Request Header Fields Too Large")
-                         ("449 Retry with") ("500 Internal Server Error")
-                         ("501 Not Implemented") ("502 Bad Gateway")
-                         ("503 Service Unavailable") ("504 Gateway Timeout")
-                         ("505 HTTP Version Not Supported")
-                         ("506 Variant Also Negotiates")
-                         ("507 Insufficient Storage") ("509 Bandwidth Limit Exceeded")
-                         ("510 Not Extended")
-                         ("511 Network Authentication Required")))
-          (action . message)))
+  (defun helm-httpstatus ()
+    "Helm command to display HTTP status codes."
+    (interactive)
+    (let ((source '((name . "HTTP STATUS")
+                    (candidates . (("100 Continue") ("101 Switching Protocols")
+                                   ("102 Processing") ("200 OK")
+                                   ("201 Created") ("202 Accepted")
+                                   ("203 Non-Authoritative Information") ("204 No Content")
+                                   ("205 Reset Content") ("206 Partial Content")
+                                   ("207 Multi-Status") ("208 Already Reported")
+                                   ("300 Multiple Choices") ("301 Moved Permanently")
+                                   ("302 Found") ("303 See Other")
+                                   ("304 Not Modified") ("305 Use Proxy")
+                                   ("307 Temporary Redirect") ("400 Bad Request")
+                                   ("401 Unauthorized") ("402 Payment Required")
+                                   ("403 Forbidden") ("404 Not Found")
+                                   ("405 Method Not Allowed") ("406 Not Acceptable")
+                                   ("407 Proxy Authentication Required") ("408 Request Timeout")
+                                   ("409 Conflict") ("410 Gone")
+                                   ("411 Length Required") ("412 Precondition Failed")
+                                   ("413 Request Entity Too Large")
+                                   ("414 Request-URI Too Large")
+                                   ("415 Unsupported Media Type")
+                                   ("416 Request Range Not Satisfiable")
+                                   ("417 Expectation Failed") ("418 I'm a teapot")
+                                   ("422 Unprocessable Entity") ("423 Locked")
+                                   ("424 Failed Dependency") ("425 No code")
+                                   ("426 Upgrade Required") ("428 Precondition Required")
+                                   ("429 Too Many Requests")
+                                   ("431 Request Header Fields Too Large")
+                                   ("449 Retry with") ("500 Internal Server Error")
+                                   ("501 Not Implemented") ("502 Bad Gateway")
+                                   ("503 Service Unavailable") ("504 Gateway Timeout")
+                                   ("505 HTTP Version Not Supported")
+                                   ("506 Variant Also Negotiates")
+                                   ("507 Insufficient Storage") ("509 Bandwidth Limit Exceeded")
+                                   ("510 Not Extended")
+                                   ("511 Network Authentication Required")))
+                    (action . message))))
+      (helm-other-buffer (list source) "*helm httpstatus*"))))
 
-      (defun helm-httpstatus ()
-        (interactive)
-        (helm-other-buffer '(helm-httpstatus-source) "*helm httpstatus*")))))
-
-(defun cb-core/init-aggressive-indent ()
-  (use-package aggressive-indent
-    :config
-    (progn
-      (add-to-list 'aggressive-indent-excluded-modes 'haskell-interactive-mode)
-      (add-to-list 'aggressive-indent-excluded-modes 'restclient-mode)
-      (global-aggressive-indent-mode))))
+(defun cb-core/post-init-aggressive-indent ()
+  (with-eval-after-load 'aggressive-indent
+    (add-to-list 'aggressive-indent-excluded-modes 'restclient-mode))
+  (global-aggressive-indent-mode))
 
 (defun cb-core/init-ag ()
   (use-package ag :commands ag))
@@ -213,31 +230,26 @@ which require an initialization must be listed explicitly in the list.")
     :config
     (setq alert-default-style 'message)))
 
-(defun cb-core/init-helm-gtags ()
-  (use-package helm-gtags
-    :defer t
-    :diminish helm-gtags-mode
-    :commands helm-gtags-mode
-    :config
-    (progn
-      (setq helm-gtags-ignore-case t)
-      (setq helm-gtags-auto-update t)
-      (setq helm-gtags-use-input-at-cursor t)
-      (setq helm-gtags-pulse-at-cursor t)
-      (setq helm-gtags-prefix-key "\C-cg")
-      (setq helm-gtags-suggested-key-mapping t)
+(defun cb-core/post-init-helm-gtags ()
+  (setq helm-gtags-ignore-case t)
+  (setq helm-gtags-auto-update t)
+  (setq helm-gtags-use-input-at-cursor t)
+  (setq helm-gtags-pulse-at-cursor t)
+  (setq helm-gtags-prefix-key "\C-cg")
+  (setq helm-gtags-suggested-key-mapping t)
 
-      (with-eval-after-load 'pulse
-        (core/remap-face 'pulse-highlight-face 'core/bg-flash)
-        (core/remap-face 'pulse-highlight-start-face 'core/bg-flash))
+  (with-eval-after-load 'pulse
+    (core/remap-face 'pulse-highlight-face 'core/bg-flash)
+    (core/remap-face 'pulse-highlight-start-face 'core/bg-flash))
 
-      (dolist (state '(normal insert))
-        (evil-define-key state helm-gtags-mode-map
-          (kbd "M-.") 'helm-gtags-dwim
-          (kbd "M-,") 'helm-gtags-pop-stack))
+  (with-eval-after-load 'helm-gtags
+    (dolist (state '(normal insert))
+      (evil-define-key state helm-gtags-mode-map
+        (kbd "M-.") 'helm-gtags-dwim
+        (kbd "M-,") 'helm-gtags-pop-stack))
 
-      (define-key helm-gtags-mode-map (kbd "M-.") 'helm-gtags-dwim)
-      (define-key helm-gtags-mode-map (kbd "M-,") 'helm-gtags-pop-stack))))
+    (define-key helm-gtags-mode-map (kbd "M-.") 'helm-gtags-dwim)
+    (define-key helm-gtags-mode-map (kbd "M-,") 'helm-gtags-pop-stack)))
 
 (defun cb-core/init-world-time-mode ()
   (use-package world-time-mode
@@ -255,5 +267,60 @@ which require an initialization must be listed explicitly in the list.")
 
       (evil-define-key 'normal world-time-table-mode-map (kbd "q") 'quit-window)
       (add-hook 'world-time-table-mode-hook 'hl-line-mode))))
+
+(defun cb-core/init-smart-ops ()
+  (use-package smart-ops
+    :diminish smart-ops-mode
+    :config
+    (progn
+      (smart-ops-global-mode)
+      (evil-define-key 'insert smart-ops-mode-map (kbd "<backspace>") nil))))
+
+(defun cb-core/post-init-iedit ()
+  (custom-set-faces
+   `(iedit-occurrence ((t (:background ,solarized-hl-orange :foreground "white"))))))
+
+(defun cb-core/post-hl-line ()
+  (global-hl-line-mode -1))
+
+(defun cb-core/post-init-eldoc ()
+  (setq eldoc-idle-delay 0.1))
+
+(defun cb-core/init-case ()
+  (use-package case))
+
+(defun cb-core/init-locate-key-binding ()
+  (use-package locate-key-binding
+    :commands (locate-key-binding)))
+
+(defun cb-core/regexp-quoted-ignored-dirs ()
+  (--map (format "/%s/" (regexp-quote it)) cb-core/ignored-dirs))
+
+(defun cb-core/post-init-recentf ()
+  (setq recentf-save-file (concat spacemacs-cache-directory "recentf"))
+  (setq recentf-max-saved-items 500)
+  (setq recentf-max-menu-items 10)
+  (setq recentf-keep '(file-remote-p file-readable-p))
+
+  (defadvice recentf-cleanup (around hide-messages activate)
+    "Do not message when cleaning up recentf list."
+    (noflet ((message (&rest args))) ad-do-it))
+
+  (with-eval-after-load 'recentf
+    (setq recentf-exclude
+          (-distinct (-concat recentf-exclude
+                              (cb-core/regexp-quoted-ignored-dirs)
+                              cb-core/ignored-files-regexps)))
+    (recentf-cleanup)))
+
+(defun cb-core/post-init-ido ()
+  (setq ido-use-filename-at-point 'guess)
+  (add-to-list 'ido-ignore-buffers "\\*helm.*")
+  (add-to-list 'ido-ignore-buffers "\\*Minibuf.*")
+  (add-to-list 'ido-ignore-files (rx bos "Icon" control))
+  (add-to-list 'ido-ignore-files "flycheck_")
+  (add-to-list 'ido-ignore-files "\\.swp")
+  (add-to-list 'ido-ignore-files "\\.DS_Store"))
+
 
 ;;; End

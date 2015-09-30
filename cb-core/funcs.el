@@ -300,14 +300,6 @@ With prefix argument ARG, justify text."
     (delete-horizontal-space)))
 
 
-;;; Elisp
-
-(defun core/config-elisp-surround-pairs ()
-  "Configure backtick pair for Elisp docstrings."
-  (make-local-variable 'evil-surround-pairs-alist)
-  (push '(?\` . ("`" . "'")) evil-surround-pairs-alist))
-
-
 ;;; Compilation
 
 (defun core/ansi-colourise-compilation ()
