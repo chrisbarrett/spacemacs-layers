@@ -3,12 +3,7 @@
 ;;; Code:
 
 (defconst cb-coffeescript-packages
-  '(coffee-mode)
-  "List of all packages to install and/or initialize. Built-in packages
-which require an initialization must be listed explicitly in the list.")
-
-(defconst cb-coffeescript-excluded-packages '()
-  "List of packages to exclude.")
+  '(coffee-mode))
 
 (eval-when-compile
   (require 'use-package nil t))
