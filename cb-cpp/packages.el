@@ -2,8 +2,17 @@
 ;;; Commentary:
 ;;; Code:
 
+(eval-when-compile
+  (require 'evil nil t)
+  (require 'thingatpt nil t)
+  (require 'dash nil t)
+  (require 'f nil t)
+  (require 's nil t)
+  (require 'use-package nil t))
+
 (defconst cb-cpp-packages
   '(irony
+    aggressive-indent
     company-irony
     company-irony-c-headers
     irony-eldoc
@@ -11,15 +20,9 @@
     google-c-style
     ggtags
     helm-gtags
-    )
-  "List of all packages to install and/or initialize. Built-in packages
-which require an initialization must be listed explicitly in the list.")
-
-(defconst cb-cpp-excluded-packages '()
-  "List of packages to exclude.")
-
-(eval-when-compile
-  (require 'use-package nil t))
+    cc-mode
+    flyspell
+    smart-ops))
 
 (defun cb-cpp/init-irony ()
   (use-package irony
@@ -74,14 +77,98 @@ which require an initialization must be listed explicitly in the list.")
       (setq-default clang-format-style "Google")
       (add-hook 'c-mode-common-hook 'google-set-c-style))))
 
-(defun cb-cpp/init-ggtags ()
-  (use-package ggtags
-    :commands ggtags-mode
-    :init
-    (add-hook 'c++-mode-hook 'ggtags-mode)
-    :config
-    (set-face-underline 'ggtags-highlight nil)))
+(defun cb-cpp/post-init-ggtags ()
+  (add-hook 'c++-mode-hook 'ggtags-mode)
+  (set-face-underline 'ggtags-highlight nil))
 
-(defun cb-cpp/init-helm-gtags ()
-  (use-package helm-gtags
-    :init (add-hook 'c++-mode-hook 'helm-gtags-mode)))
+(defun cb-cpp/post-init-helm-gtags ()
+  (add-hook 'c++-mode-hook 'helm-gtags-mode))
+
+(defun cb-cpp/post-init-aggressive-indent ()
+  ;; Aggressive indent is a little too aggressive for C++.
+  (with-eval-after-load 'aggressive-indent
+    (add-to-list 'aggressive-indent-excluded-modes 'c++-mode)))
+
+(defun cb-cpp/post-init-cc-mode ()
+  ;; HACK: The c-style way of setting up derived maps dynamically deeply
+  ;; sucks. Just clobber that shit.
+  (defconst c++-mode-map
+    (let ((map (make-sparse-keymap)))
+      (define-key map "#"        'c-electric-pound)
+      (define-key map "\C-c\C-e" 'c-macro-expand)
+      (define-key map (kbd "M-RET") 'cb-cpp/M-RET)
+      (define-key map (kbd "C-<return>") 'cb-cpp/C-RET)
+      map))
+
+  (evil-define-key 'insert c++-mode-map
+    (kbd "<backspace>") 'sp/generic-prog-backspace
+    (kbd "SPC") 'sp/generic-prog-space)
+
+  (defun cb-cpp/set-local-hooks ()
+    (add-hook 'before-save-hook 'core/indent-buffer nil t))
+
+  (add-hook 'c++-mode-hook 'cb-cpp/set-local-hooks)
+
+  ;; Font-locking
+
+  (font-lock-add-keywords
+   'c++-mode
+   `((";" 0 font-lock-comment-face t)
+     ("\\_<constexpr\\_>" 0 font-lock-keyword-face t)
+     ("\\_<noexcept\\_>" 0 font-lock-keyword-face t))))
+
+(defun cb-cpp/post-init-flyspell ()
+  (defun cb-cpp/flyspell-verify ()
+    "Do not spellcheck imports."
+    (and (flyspell-generic-progmode-verify)
+         (not (s-matches? (rx bol (* space) "#") (current-line)))))
+
+  (defun cb-cpp/configure-flyspell ()
+    (setq-local flyspell-generic-check-word-predicate 'cb-cpp/flyspell-verify))
+
+  (add-hook 'c++-mode-hook 'cb-cpp/configure-flyspell))
+
+(defun cb-cpp/post-init-smart-ops ()
+  (defun cb-cpp/after-operator-keyword? (&rest _)
+    (save-excursion
+      (goto-char (smart-ops--maybe-beginning-of-op (smart-ops--rules-for-current-mode)))
+      (thing-at-point-looking-at (rx bow "operator" eow (* space)))))
+
+  (define-smart-ops-for-mode 'c++-mode
+    (smart-ops
+     "+" "-" "/" "%" "^" "|" "!" "=" "<<" ">>" "==" "!=" "&&" "||"
+     "+=" "-=" "/=" "%=" "^=" "|=" "*=" "<<=" ">>=" "?"
+     :pad-unless 'cb-cpp/after-operator-keyword?)
+
+    ;; Pointers and templates
+    (smart-ops "*>" "*>&" ">&" :pad-before nil :pad-after nil
+               :action
+               (lambda ()
+                 (skip-chars-forward "*>&")))
+
+    (smart-ops ":"
+               :pad-unless
+               (-orfn 'cb-cpp/after-operator-keyword?
+                      (smart-ops-after-match? (rx (or "public" "private" "protected")))))
+
+    (smart-ops "," :pad-before nil :pad-unless 'cb-cpp/after-operator-keyword?)
+    (smart-ops "&" "*"
+               :pad-before-if
+               (smart-ops-after-match? (rx bow "return" eow (* space) eos))
+               :pad-after-unless
+               (smart-ops-after-match? (rx bow "return" eow (* space) (? (or "&" "*")) eos))
+               :pad-unless 'cb-cpp/after-operator-keyword?)
+
+    (smart-ops ";" :pad-before nil)
+    (smart-ops "--" "++" :pad-before nil :pad-after nil)
+
+    (smart-ops "." "::" "->" "->*" ">::"
+               :pad-before nil :pad-after nil
+               :action 'company-manual-begin)
+
+    ;; Position point inside template braces.
+    (smart-op "<>"
+              :pad-before nil :pad-after nil
+              :action (lambda (&rest _) (search-backward ">")))))
+
+;;; packages.el ends here
