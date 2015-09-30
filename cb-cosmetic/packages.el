@@ -2,19 +2,13 @@
 ;;; Commentary:
 ;;; Code:
 
-(defconst cb-cosmetic-packages
-  '(
-    paren-face
-    whitespace
-    )
-  "List of all packages to install and/or initialize. Built-in packages
-which require an initialization must be listed explicitly in the list.")
-
-(defconst cb-cosmetic-excluded-packages '()
-  "List of packages to exclude.")
-
 (eval-when-compile
   (require 'use-package nil t))
+
+(defconst cb-cosmetic-packages
+  '(paren-face
+    whitespace
+    (lambda-mode :location local)))
 
 (defun cb-cosmetic/init-paren-face ()
   (use-package paren-face
@@ -35,16 +29,26 @@ which require an initialization must be listed explicitly in the list.")
       (add-to-list 'paren-face-modes 'agda2-mode)
       (add-to-list 'paren-face-modes 'coq-mode))))
 
-(defun cb-cosmetic/init-whitespace ()
-  (use-package whitespace
-    :diminish whitespace-mode
-    :config
-    (progn
-      ;; HACK: override Spacemacs setting
-      (remove-hook 'prog-mode-hook (lambda () (setq show-trailing-whitespace 1)))
+(defun cb-cosmetic/post-init-whitespace ()
+  ;; HACK: override Spacemacs setting
+  (remove-hook 'prog-mode-hook (lambda () (setq show-trailing-whitespace 1)))
 
-      (defadvice whitespace-turn-on (around ignore-errors activate)
-        "Ignore void-function errors when starting whitespace mode."
-        (condition-case _
-            ad-do-it
-          (void-function))))))
+  (defadvice whitespace-turn-on (around ignore-errors activate)
+    "Ignore void-function errors when starting whitespace mode."
+    (condition-case _
+        ad-do-it
+      (void-function))))
+
+(defun cb-cosmetic/init-lambda-mode ()
+  (use-package lambda-mode
+    :commands lambda-mode
+    :diminish lambda-mode
+    :init
+    (progn
+      (defvar lambda-symbol (string (make-char 'greek-iso8859-7 107)))
+      (add-hook 'scheme-mode-hook        'lambda-mode)
+      (add-hook 'extempore-mode-hook     'lambda-mode)
+      (add-hook 'inferior-lisp-mode-hook 'lambda-mode)
+      (add-hook 'lisp-mode-hook          'lambda-mode)
+      (add-hook 'emacs-lisp-mode-hook    'lambda-mode)
+      (add-hook 'python-mode-hook        'lambda-mode))))
