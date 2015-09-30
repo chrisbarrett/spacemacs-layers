@@ -2,30 +2,25 @@
 ;;; Commentary:
 ;;; Code:
 
-(defconst cb-project-packages
-  '(
-    projectile
-    skeletor
-    helm-projectile
-    neotree
-    ag
-    helm-ag
-    )
-  "List of all packages to install and/or initialize. Built-in packages
-which require an initialization must be listed explicitly in the list.")
-
-(defconst cb-project-excluded-packages '()
-  "List of packages to exclude.")
-
 (eval-when-compile
   (require 'use-package nil t)
   (require 'dash nil t)
   (require 's nil t))
 
-(with-eval-after-load 'recentf
-  (setq recentf-exclude (-union recentf-exclude (cb-core/regexp-quoted-ignored-dirs))))
+(defconst cb-project-packages
+  '(skeletor
+    projectile
+    recentf
+    helm-projectile
+    ag
+    helm-ag
+    neotree))
 
-(defun cb-project/init-projectile ()
+(defun cb-project/post-init-recentf ()
+  (with-eval-after-load 'recentf
+    (setq recentf-exclude (-union recentf-exclude (cb-core/regexp-quoted-ignored-dirs)))))
+
+(defun cb-project/post-init-projectile ()
   (use-package projectile
     :bind
     (("s-f" . projectile-find-file)
@@ -63,22 +58,17 @@ which require an initialization must be listed explicitly in the list.")
       (defadvice projectile-replace (around save-window-excursion activate)
         (save-window-excursion ad-do-it)))))
 
-(defun cb-project/init-helm-projectile ()
+(defun cb-project/post-init-helm-projectile ()
   (use-package helm-projectile
     :bind
     (("s-t" . helm-projectile))))
 
-(defun cb-project/init-ag ()
-  (use-package ag
-    :defer t
-    :config
+(defun cb-project/post-init-ag ()
+  (with-eval-after-load 'ag
     (setq ag-ignore-list (-union ag-ignore-list (cb-core/regexp-quoted-ignored-dirs)))))
 
-(defun cb-project/init-helm-ag ()
-  (use-package helm-ag
-    :defer t
-    :config
-    (setq helm-ag-insert-at-point 'symbol)))
+(defun cb-project/post-init-helm-ag ()
+  (setq helm-ag-insert-at-point 'symbol))
 
 (defun cb-project/init-skeletor ()
   (use-package skeletor
@@ -163,10 +153,8 @@ which require an initialization must be listed explicitly in the list.")
             (skeletor--log-info "Configuring SBT and ENSIME. This may take a while...")
             (sbt-gen-ensime dir)))))))
 
-(use-package neotree
-  :defer t
-  :config
-  (progn
+(defun cb-project/post-init-neotree ()
+  (with-eval-after-load 'neotree
     (core/remap-face 'neo-dir-link-face 'default)
     (set-face-foreground neo-file-link-face solarized-hl-orange)
     (set-face-foreground neo-root-dir-face solarized-hl-blue)))
