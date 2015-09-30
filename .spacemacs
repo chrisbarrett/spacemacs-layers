@@ -36,6 +36,7 @@ values."
      emacs-lisp
      restclient
      syntax-checking
+     sml
      (shell
       :variables
       shell-default-shell 'eshell
