@@ -2,17 +2,29 @@
 ;;; Commentary:
 ;;; Code:
 
-(defconst cb-extempore-packages
-  '(osc)
-  "List of all packages to install and/or initialize. Built-in packages
-which require an initialization must be listed explicitly in the list.")
-
-(defconst cb-extempore-excluded-packages '()
-  "List of packages to exclude.")
-
 (eval-when-compile
   (require 'use-package nil t))
+
+(defconst cb-extempore-packages
+  '(osc
+    (extempore :location local)))
 
 (defun cb-extempore/init-osc ()
   (use-package osc
     :defer t))
+
+(defun cb-extempore/init-extempore ()
+  (use-package extempore
+    :mode (("\\.xtm\\'" . extempore-mode))
+    :commands (extempore-mode extempore-repl)
+    :config
+    (progn
+      (setq extempore-keydef (kbd "C-c C-c"))
+      (setq extempore-tab-completion nil)
+      (setq user-extempore-directory "/usr/local/Cellar/extempore/0.59")
+      (core/remap-face 'extempore-blink-face 'core/bg-hl-ok)
+      (core/remap-face 'extempore-sb-blink-face 'core/bg-hl-ok)
+
+      (define-key extempore-mode-map (kbd "C-c C-.") 'extempore-stop)
+      (define-key extempore-mode-map (kbd "C-c C-b") 'extempore-send-buffer-or-region)
+      (define-key extempore-mode-map (kbd "C-c C-f") 'extempore-send-buffer-or-region))))
