@@ -1,17 +1,12 @@
-;;; extensions.el --- cb-calc Layer extensions File for Spacemacs
+;;; extensions.el --- cb-calc Layer packages File for Spacemacs
 ;;; Commentary:
 ;;; Code:
 
-(defconst cb-calc-pre-extensions
-  '(calc)
-  "List of all extensions to load before the packages.")
-
-(defconst cb-calc-post-extensions
-  '()
-  "List of all extensions to load after the packages.")
-
 (eval-when-compile
   (require 'use-package nil t))
+
+(defconst cb-calc-packages
+  '(calc))
 
 (defun cb-calc/init-calc ()
   (use-package calc
