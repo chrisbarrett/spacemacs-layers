@@ -1,17 +1,12 @@
-;;; extensions.el --- cb-autoinsert Layer extensions File for Spacemacs
+;;; extensions.el --- cb-autoinsert Layer packages File for Spacemacs
 ;;; Commentary:
 ;;; Code:
 
-(defconst cb-autoinsert-pre-extensions
-  '(autoinsert)
-  "List of all extensions to load before the packages.")
-
-(defconst cb-autoinsert-post-extensions
-  '()
-  "List of all extensions to load after the packages.")
-
 (eval-when-compile
   (require 'use-package nil t))
+
+(defconst cb-autoinsert-packages
+  '(autoinsert))
 
 (defconst cb-autoinsert/elisp-gnu-license "
 \;; This program is free software; you can redistribute it and/or modify
