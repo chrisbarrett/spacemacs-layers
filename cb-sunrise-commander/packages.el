@@ -1,15 +1,12 @@
-;;; extensions.el --- cb-sunrise-commander Layer extensions File for Spacemacs
+;;; packages.el --- cb-sunrise-commander Layer packages File for Spacemacs
 ;;; Commentary:
 ;;; Code:
 
-(defconst cb-sunrise-commander-pre-extensions
-  '(sunrise-commander))
-
-(defconst cb-sunrise-commander-post-extensions
-  '())
-
 (eval-when-compile
   (require 'use-package nil t))
+
+(defconst cb-sunrise-commander-packages
+  '((sunrise-commander :location local)))
 
 (defun cb-sunrise-commander/init-sunrise-commander ()
   (use-package sunrise-commander
