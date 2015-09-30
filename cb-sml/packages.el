@@ -10,15 +10,22 @@
 ;;
 ;;; License: GPLv3
 
-(defconst cb-sml-packages '(sml-mode))
-
-(defconst cb-sml-excluded-packages '())
-
 (eval-when-compile
   (require 'flycheck nil t)
   (require 'use-package nil t))
 
-(defun cb-sml/init-sml-mode ()
+(defconst cb-sml-packages
+  '(sml-mode
+    smart-ops
+    aggressive-indent
+    (flycheck-sml :location local)
+    (lazy-sml-mode :location local)))
+
+(defun cb-sml/post-init-aggressive-indent ()
+  (with-eval-after-load 'aggressive-indent
+    (add-to-list 'aggressive-indent-excluded-modes 'sml-mode)))
+
+(defun cb-sml/post-init-sml-mode ()
   (use-package sml-mode
     :mode ("\\.\\(sml\\|sig\\)\\'" . sml-mode)
     :commands (run-sml sml-mode)
@@ -26,7 +33,6 @@
     (progn
       (setq sml-indent-level 2)
 
-      (add-to-list 'aggressive-indent-excluded-modes 'sml-mode)
       (define-key inferior-sml-mode-map (kbd "M-RET") 'cb-sml/inf-sml-m-ret)
       (define-key sml-mode-map (kbd "M-RET") 'cb-sml/m-ret)
       (define-key sml-mode-map (kbd "S-TAB") 'sml-back-to-outer-indent)
@@ -76,5 +82,22 @@
 
       (add-hook 'sml-mode-hook
                 (lambda ()
-                  (add-function :around (symbol-function 'sml-smie-rules) #'cb-sml/smie-rules)))
-      )))
+                  (add-function :around (symbol-function 'sml-smie-rules) #'cb-sml/smie-rules))))))
+
+(defun cb-sml/post-init-smart-ops ()
+  (let ((ops (-flatten-n 1 (list
+                            (smart-ops "," ";" :pad-before nil)
+                            (smart-ops "*" "^" "@")
+                            (smart-ops-default-ops)))))
+    (define-smart-ops-for-mode 'sml-mode ops)
+    (define-smart-ops-for-mode 'lazy-sml-mode ops)
+    (define-smart-ops-for-mode 'inferior-sml-mode ops))
+
+  (add-hook 'inferior-sml-mode-hook 'smart-ops-mode))
+
+(defun cb-sml/init-flycheck-sml ()
+  (use-package flycheck-sml))
+
+(defun cb-sml/init-lazy-sml-mode ()
+  (use-package lazy-sml-mode
+    :mode ("\\.lml\\'" . lazy-sml-mode)))
