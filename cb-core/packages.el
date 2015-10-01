@@ -52,8 +52,7 @@
     "\\.org-clock-save\\.el$"))
 
 (defconst cb-core/ignored-dirs
-  '(".cabal-sandbox"
-    ".idea"
+  '(".idea"
     "dist"
     "target"
     "obj"
@@ -82,6 +81,10 @@
     "snippets"
     ".emacs.d/url"
     "Emacs.app"
+
+    ;; Haskell
+    ".cabal-sandbox"
+    ".stack-work"
 
     ;; Scala
     "project/target"
