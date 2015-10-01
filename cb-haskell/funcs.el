@@ -63,12 +63,58 @@
   (haskell-mode-stylish-buffer)
   (haskell/rewrite-symbols-in-buffer))
 
-(defun haskell/ret ()
-  "Insert a newline, possibly continuing a comment."
-  (interactive "*")
-  (if (s-matches? (rx bol (? ">") (* space) "--") (current-line))
-      (insert "\n-- ")
-    (shm/simple-indent-newline-same-col)))
+(defun haskell/ret (&optional arg)
+  "Insert a newline with context-sensitive formatting.
+
+With prefix arg ARG, just insert a newline and indent."
+  (interactive "P")
+  (let ((sexp (sp-get-enclosing-sexp)))
+    (cond
+     (arg
+      (newline-and-indent))
+
+     ((s-matches? (rx bol (? ">") (* space) "--") (current-line))
+      (insert "\n-- "))
+
+     ((or (sp/inside-curly-braces? t sexp)
+          (sp/inside-square-braces? t sexp))
+      (haskell/split-braced-expression-over-new-lines))
+
+     ((and (or (sp/inside-curly-braces? nil sexp)
+               (sp/inside-square-braces? nil sexp))
+           (thing-at-point-looking-at (rx (or "[" "{") (* space))))
+      (goto-char (1+ (sp/beg sexp)))
+      (newline-and-indent)
+      (insert "  "))
+
+     (t
+      (call-interactively 'sp/generic-prog-ret)))))
+
+(defun haskell/split-braced-expression-over-new-lines (sexp)
+  "Split the braced expression on the current line over several lines."
+  (-let [(&plist :beg beg :end end :op op) sexp]
+    (save-excursion
+      (goto-char (1- end))
+      (newline-and-indent)
+      (goto-char (1+ beg))
+      (just-one-space)
+      (let ((beg (sp/beg)))
+        (while (and (search-forward-regexp (rx ",") nil t)
+                    (<= beg (sp/beg)))
+          (when (equal beg (sp/beg))
+            (unless (core/in-string-or-comment?)
+              (forward-char -1)
+              (insert "\n")
+              (indent-according-to-mode)
+              (search-forward ",")
+              (just-one-space))))))
+
+    ;; If point was after the opening brace before splitting, it will not have
+    ;; moved to the next line. Correct this by moving forward to indentation on
+    ;; the next line.
+    (when (sp/just-after-open-op? op)
+      (forward-line)
+      (back-to-indentation))))
 
 (defun haskell/use-unicode-symbols? ()
   (-contains? (haskell/language-pragmas-in-file) "UnicodeSyntax"))

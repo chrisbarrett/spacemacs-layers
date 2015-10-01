@@ -104,6 +104,8 @@
     (evil-define-key 'insert haskell-mode-map (kbd "M-RET") 'haskell/meta-ret)
     (define-key haskell-mode-map (kbd "M-RET") 'haskell/meta-ret)
 
+    (evil-define-key 'insert haskell-mode-map (kbd "<return>") 'haskell/ret)
+
     (evil-define-key 'normal haskell-mode-map (kbd "<backtab>") 'haskell-indentation-indent-backwards)
     (evil-define-key 'normal haskell-mode-map (kbd "TAB") 'haskell-indentation-indent-line)
     (define-key haskell-mode-map (kbd "<backtab>") 'haskell-indentation-indent-backwards)
