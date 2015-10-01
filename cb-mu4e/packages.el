@@ -48,7 +48,7 @@
 
 (defun cb-mu4e/init-mu4e ()
   (use-package mu4e
-    :defer 5
+    :defer 10
     :load-path "/usr/local/share/emacs/site-lisp/mu4e/"
     :init
     (evil-leader/set-key "am" 'mu4e)
