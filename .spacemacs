@@ -23,7 +23,7 @@ values."
      latex
      (haskell
       :variables
-      haskell-enable-ghc-mod-support t
+      haskell-enable-ghc-mod-support nil
       haskell-enable-hindent-style "gibiansky")
      osx
      git
