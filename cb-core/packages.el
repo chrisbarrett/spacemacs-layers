@@ -280,7 +280,7 @@
   (custom-set-faces
    `(iedit-occurrence ((t (:background ,solarized-hl-orange :foreground "white"))))))
 
-(defun cb-core/post-hl-line ()
+(defun cb-core/post-init-hl-line ()
   (global-hl-line-mode -1))
 
 (defun cb-core/post-init-eldoc ()
