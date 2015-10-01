@@ -168,7 +168,7 @@ With prefix argument ARG, always create a new shell."
                   (propertize git-tag 'face 'magit-tag)))
 
                (propertize " sha:" 'face font-lock-comment-face)
-               (propertize (substring git-hash 0 6) 'face 'default)
+               (propertize (substring git-hash 0 (min (length git-hash) 6)) 'face 'default)
 
                (-when-let (statuses
                            (-non-nil (list
