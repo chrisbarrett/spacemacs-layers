@@ -15,6 +15,7 @@
     ghc
     smartparens
     flycheck
+    smart-ops
 
     (haskell-snippets :excluded t)))
 

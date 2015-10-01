@@ -2,7 +2,9 @@
 ;;; Commentary:
 ;;; Code:
 
-(defconst cb-groovy-packages '(groovy-mode))
+(defconst cb-groovy-packages
+  '(groovy-mode
+    smart-ops))
 
 (eval-when-compile
   (require 'use-package nil t))
