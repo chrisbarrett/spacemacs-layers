@@ -135,6 +135,12 @@
     (message "New alternative"))
 
    ;; Insert new applicative case
+   ((s-matches? (rx bol (? ">") (* space) "<$>") (current-line))
+    (haskell/newline-indent-to-same-col)
+    (insert "<*> ")
+    (message "New applicative"))
+
+   ;; Insert new applicative case
    ((s-matches? (rx bol (? ">") (* space) "<*>") (current-line))
     (haskell/newline-indent-to-same-col)
     (insert "<*> ")
