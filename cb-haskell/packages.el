@@ -17,6 +17,7 @@
     flycheck
     smart-ops
 
+    (haskell-parser :location local)
     (haskell-snippets :excluded t)))
 
 (defun cb-haskell/post-init-flycheck ()
