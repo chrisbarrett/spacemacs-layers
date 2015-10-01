@@ -113,8 +113,8 @@ Insert leading padding unless at start of line or after an open round paren."
           (= (line-number-at-pos beg) (line-number-at-pos end))
         t))))
 
-(defun sp/beg ()
-  (plist-get (sp-get-enclosing-sexp ) :beg))
+(defun sp/beg (&optional sexp)
+  (plist-get (or sexp (sp-get-enclosing-sexp )) :beg))
 
 (defun sp/inside-curly-braces-no-content? (&optional same-line? sexp)
   (-let [(&plist :beg beg :end end :op op) (or sexp (sp-get-enclosing-sexp))]
