@@ -14,7 +14,7 @@
 
 (global-set-key (kbd "<f5>") 'compile)
 
-(bind-key (kbd "C-<backspace>") 'core/kill-this-buffer)
+(bind-key* (kbd "C-<backspace>") 'core/kill-this-buffer)
 (bind-key (kbd "C-c k b") 'core/clean-buffers)
 
 (when (fboundp 'cycle-spacing)
