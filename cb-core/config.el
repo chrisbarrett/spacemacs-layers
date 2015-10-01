@@ -68,7 +68,10 @@
 (defvar solarized-hl-cyan      "#2aa198")
 (defvar solarized-hl-green     "#859900")
 
+;;; Customise spacemacs face.
+
 (custom-set-faces
+ '(font-lock-comment-face ((t (:background nil :foreground "#93a1a1"))))
  '(font-lock-variable-name-face ((t (:italic t))))
  '(font-lock-keyword-face ((t (:bold nil)))))
 
