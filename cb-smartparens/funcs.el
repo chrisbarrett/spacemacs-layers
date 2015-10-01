@@ -101,10 +101,10 @@ Insert leading padding unless at start of line or after an open round paren."
                    (buffer-substring (line-beginning-position) (point)))))
 
 (defun sp/inside-curly-braces? (&optional same-line? sexp)
-  (sp/inside-sexp? "{" t sexp))
+  (sp/inside-sexp? "{" same-line? sexp))
 
 (defun sp/inside-square-braces? (&optional same-line? sexp)
-  (sp/inside-sexp? "[" t sexp))
+  (sp/inside-sexp? "[" same-line? sexp))
 
 (defun sp/inside-sexp? (expected-op &optional same-line? sexp)
   (-let [(&plist :beg beg :end end :op actual-op) (or sexp (sp-get-enclosing-sexp))]
