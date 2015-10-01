@@ -31,7 +31,7 @@ If NO-PROPERTIES is non-nil, return the region without text properties."
              (region-beginning)
              (region-end))))
 
-(cl-defun current-line (&optional (move-n-lines 0))
+(cl-defun line-content-relative (move-n-lines)
   "Return the line at point, or another line relative to this line.
 MOVE-N-LINES is an integer that will return a line forward if
 positive or backward if negative."
