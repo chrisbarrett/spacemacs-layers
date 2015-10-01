@@ -150,13 +150,17 @@ With prefix arg ARG, just insert a newline and indent."
   (yas-exit-all-snippets)
   (cond
    ;; Append new record field
-   ((haskell/at-record-decl-data-header?)
-    (back-to-indentation)
-    (shm/reparse)
-    (shm/goto-parent-end)
-    (search-backward-regexp (rx (or "," "{")))
-    (haskell/insert-record-field)
-    (message "New field"))
+   ((and (haskell/at-record-decl-data-header?)
+         (or (s-matches? (rx "{" (* space) eol) (current-line))
+             (s-matches? (rx bol (* space) "{") (line-content-relative +1))))
+    (search-forward "{")
+    (-let [(&plist :end end) (sp-get-enclosing-sexp)]
+      (goto-char (1- end))
+      (when (sp/inside-curly-braces? t)
+        (newline))
+      (forward-line -1)
+      (haskell/insert-record-field)
+      (message "New field")))
 
    ;; Insert new case below the current type decl.
    ((s-matches? (rx bol (? ">") (* space) "data" (+ space)) (current-line))
@@ -197,6 +201,13 @@ With prefix arg ARG, just insert a newline and indent."
     (haskell/newline-indent-to-same-col)
     (insert "import ")
     (message "New import"))
+
+   ;; Insert new record field
+   ((and (haskell/in-data-decl?)
+         (or (s-matches? (rx bol (? ">") (* space) (or "{") (* space)) (current-line))
+             (s-matches? (rx "{" (* space) eol) (line-content-relative -1))))
+    (haskell/insert-record-field)
+    (message "New field"))
 
    ;; New function case.
    ((haskell/at-decl-for-function? (haskell/first-ident-on-line))
@@ -382,14 +393,15 @@ With prefix arg ARG, just insert a newline and indent."
 
 (defun haskell/insert-record-field ()
   (let ((underscore-prefix-style?
-         (s-matches? (rx bol (? ">") (* space) (or "{" ",") (* space) "_") (current-line)))
+         (s-matches? (rx bol (? ">") (* space) (? (or "{" ",")) (* space) "_") (current-line)))
 
-        (inserting-first-field? (haskell/at-record-with-no-fields?))
+        (inserting-first-field? (sp/inside-curly-braces-blank-content?))
 
         (brace-or-comma-column
          (save-excursion
            (goto-char (line-beginning-position))
-           (cond ((search-forward-regexp (rx (or "," "{")) nil t)
+           (cond ((and (search-forward-regexp (rx (or "," "{")) nil t)
+                       (sp/inside-curly-braces?))
                   (forward-char -1)
                   (current-column))
                  (t 2)))))
@@ -405,16 +417,6 @@ With prefix arg ARG, just insert a newline and indent."
              (if inserting-first-field? "" ", ")
              (if underscore-prefix-style? "_" "")
              (haskell/fmt-::)))))
-
-(defun haskell/at-record-with-no-fields? ()
-  (save-excursion
-    (search-backward-regexp (rx bol (? ">") (* space) "data"))
-    (let ((limit (save-excursion (forward-line) (line-end-position))))
-      (when (search-forward-regexp (rx "{" (not (any "-"))) limit t)
-        (-if-let* (((&plist :op op :beg beg :end end) (sp-get-enclosing-sexp))
-                   (region (ignore-errors (buffer-substring (1+ beg) (1- end)))))
-            (not (s-matches? (rx graphic) region))
-          t)))))
 
 (defun haskell/fmt-::     () (if (haskell/use-unicode-symbols?) "∷" "::"))
 (defun haskell/fmt-rarrow () (if (haskell/use-unicode-symbols?) "→" "->"))
