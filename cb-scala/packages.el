@@ -129,7 +129,7 @@ See `ensime-goto-test-config-defaults' for possible template values.")
     (aggressive-indent-mode -1)
     (show-smartparens-mode -1)
     (show-paren-mode -1)
-    (local-set-key (kbd "C-l") 'comint-clear-buffer)
+    (local-set-key (kbd "C-l") 'spacemacs/comint-clear-buffer)
     (local-set-key (kbd "C-c RET") 'scala/sbt-send-ret))
 
   (add-hook 'sbt-mode-hook 'cb-scala/set-up-sbt-mode))
