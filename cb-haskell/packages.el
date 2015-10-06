@@ -77,8 +77,8 @@
   (add-hook 'evil-insert-state-exit-hook  'cb-haskell/hide-indentation-guides)
 
   (defun cb-haskell/set-local-hooks ()
-    (add-hook 'before-save-hook 'haskell/rewrite-symbols-in-buffer nil t)
-    (add-hook 'evil-insert-state-exit-hook 'haskell/rewrite-symbols-in-buffer nil t))
+    (add-hook 'before-save-hook 'haskell/unicode-buffer nil t)
+    (add-hook 'evil-insert-state-exit-hook 'haskell/unicode-buffer nil t))
 
   (add-hook 'haskell-mode-hook 'haskell-indentation-mode)
   (add-hook 'haskell-mode-hook 'cb-haskell/set-local-hooks)

@@ -61,7 +61,7 @@
   (interactive "*")
   (hindent/reformat-decl)
   (haskell-mode-stylish-buffer)
-  (haskell/rewrite-symbols-in-buffer))
+  (haskell/unicode-buffer))
 
 (defun haskell/ret (&optional arg)
   "Insert a newline with context-sensitive formatting.
@@ -119,8 +119,9 @@ With prefix arg ARG, just insert a newline and indent."
 (defun haskell/use-unicode-symbols? ()
   (-contains? (haskell/language-pragmas-in-file) "UnicodeSyntax"))
 
-(defun haskell/rewrite-symbols-in-buffer ()
-  (when (haskell/use-unicode-symbols?)
+(defun haskell/unicode-buffer (&optional force)
+  (interactive "P")
+  (when (or force (haskell/use-unicode-symbols?))
     (--each '(("->" "→")
               ("=>" "⇒")
               ("<-" "←")
