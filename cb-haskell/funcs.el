@@ -78,7 +78,7 @@ With prefix arg ARG, just insert a newline and indent."
 
      ((or (sp/inside-curly-braces? t sexp)
           (sp/inside-square-braces? t sexp))
-      (haskell/split-braced-expression-over-new-lines))
+      (haskell/split-braced-expression-over-new-lines sexp))
 
      ((and (or (sp/inside-curly-braces? nil sexp)
                (sp/inside-square-braces? nil sexp))
