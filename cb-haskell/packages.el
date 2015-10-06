@@ -27,6 +27,7 @@
 (defun cb-haskell/post-init-haskell-mode ()
   ;; HACK: Currently hangs on cabal file suggestions.
   (setq haskell-process-suggest-add-package nil)
+  (setq haskell-hoogle-command "hoogle")
 
   (setq haskell-process-type 'stack-ghci)
   (setq haskell-process-suggest-haskell-docs-imports t)
