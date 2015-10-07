@@ -16,6 +16,7 @@
     smartparens
     flycheck
     smart-ops
+    aggressive-indent
 
     (haskell-parser :location local)
     (haskell-snippets :excluded t)))
@@ -315,6 +316,10 @@
 (defun cb-haskell/init-haskell-parser ()
   (with-eval-after-load 'haskell-mode
     (require 'haskell-parser)))
+
+(defun cb-haskell/post-init-aggressive-indent ()
+  (with-eval-after-load 'aggressive-indent
+    (add-to-list 'aggressive-indent-excluded-modes 'haskell-interactive-mode)))
 
 (defun cb-haskell/init-liquid-types ()
   (use-package liquid-types
