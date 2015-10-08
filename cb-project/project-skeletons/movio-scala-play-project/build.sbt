@@ -44,7 +44,7 @@ lazy val service = project.in(file("service"))
       "org.scalatestplus" %% "play" % "__SCALATESTPLUS-VERSION__" % Test
     ),
     javaOptions in Test += "-Dconfig.file=test/resources/application.conf",
-    javaOptions in Test += "-Dlogger.file=test/resources/logger.xml",
+    javaOptions in Test += "-Dlogger.file=test/resources/logback.xml",
 
     routesGenerator := play.routes.compiler.InjectedRoutesGenerator
   )
