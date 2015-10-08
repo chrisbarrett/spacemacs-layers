@@ -76,18 +76,19 @@
     :init
     (eval-and-compile
       (defconst cb-project/scala-artifact-versions
-        '(("__SCALA-VERSION__"          . "2.11.7")
-          ("__SBT-VERSION__"            . "0.13.8")
+        '(("__SCALA-VERSION__"         . "2.11.7")
+          ("__SBT-VERSION__"           . "0.13.8")
 
-          ("__ELASTIC4S-VERSION__"      . "1.4.12")
-          ("__JODA-CONVERT-VERSION__"   . "1.7")
-          ("__JODA-TIME-VERSION__"      . "2.4")
-          ("__MACWIRE-VERSION__"        . "1.0.5")
-          ("__PLAY-VERSION__"           . "2.3.9")
-          ("__PLAYLIB-VERSION__"        . "1.1.0")
-          ("__SBT-RELEASE-VERSION__"    . "0.8.5")
-          ("__SCALATEST-PLUS-VERSION__" . "1.1.0")
-          ("__SCALATEST-VERSION__"      . "2.2.4")
+          ("__ESDOMAINLIB-VERSION__"   . "6.0.0")
+          ("__ELASTIC4S-VERSION__"     . "1.4.12")
+          ("__JODA-CONVERT-VERSION__"  . "1.7")
+          ("__JODA-TIME-VERSION__"     . "2.4")
+          ("__MACWIRE-VERSION__"       . "1.0.5")
+          ("__PLAY-VERSION__"          . "2.4.3")
+          ("__PLAYLIB-VERSION__"       . "3.0.0")
+          ("__SBT-RELEASE-VERSION__"   . "0.8.5")
+          ("__SCALATESTPLUS-VERSION__" . "1.4.0-M4")
+          ("__SCALATEST-VERSION__"     . "2.2.4")
           )))
     :config
     (progn
@@ -106,25 +107,13 @@
 
         :substitutions
         `(,@cb-project/scala-artifact-versions
-          ("__MOVIO-ARTIFACTORY-URL__". movio-artifactory-url)
-          ("__MOVIO-ARTIFACTORY-REPO-URL__". movio-artifactory-repo-url)
+          ("__MOVIO-ARTIFACTORY-URL__" . movio-artifactory-url)
+          ("__MOVIO-ARTIFACTORY-REPO-URL__" . movio-artifactory-repo-url)
 
-          ("__DESCRIPTION__" . (lambda () (read-string "Description: ")))
-          ("__ENDPOINT-PATH__" .
-           (lambda ()
-             (let ((path (concat "/" (read-string "Endpoint path: /"))))
-               (setq cb-project/scala-movio-endpoint-test-prefix path)
-               path)))
-          ("__ENDPOINT-VERB__" . (lambda () (read-string "HTTP verb: " "GET")))
-          ("__ENDPOINT-TEST-PREFIX__" .
-           (lambda ()
-             (let ((default
-                     (concat (s-join "" (-map 's-capitalize (s-split "/" cb-project/scala-movio-endpoint-test-prefix t)))
-                             "Endpoint")))
-               (read-string "Endpoint test class prefix: " default))))
-          ("__APIDOC-PROJECT-NAME__" .(lambda () (s-chop-suffix "-svc" (s-chop-prefix "mm-" skeletor-project-name))))
-          ("__ENDPOINT-HANDLER__" . (lambda () (s-lower-camel-case (read-string "Handler method name: "))))
-          ("__CONTROLLER-NAME__" . (lambda () (s-upper-camel-case (s-chop-suffix ".scala" (read-string "Controller class name: "))))))
+          ("__APIDOC-PROJECT-NAME__" .
+           (lambda () (read-string "Apidoc project name: " (s-chop-suffix "-svc" (s-chop-prefix "mm-" skeletor-project-name)))))
+
+          ("__DESCRIPTION__" . (lambda () (read-string "Description: "))))
 
         :after-creation
         (lambda (dir)

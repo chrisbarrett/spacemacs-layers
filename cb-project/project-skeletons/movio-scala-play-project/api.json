@@ -12,7 +12,23 @@
     }
   },
 
-  "models": {},
+  "models": {
+    "error": {
+      "description": "An error message from the API.",
+      "fields": [
+        {
+          "name": "status",
+          "type": "string",
+          "description": "A description of the HTTP error code."
+        },
+        {
+          "name": "message",
+          "type": "string",
+          "description": "A description of the error that occurred."
+        }
+      ]
+    }
+  },
 
   "unions": {},
 
