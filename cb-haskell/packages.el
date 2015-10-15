@@ -1,4 +1,4 @@
-;;; packages.el --- cb-haskell Layer packages File for Spacemacs
+;;; packages.el --- cb-haskell Layer packages File for Spacemacs  -*- lexical-binding: t; -*-
 ;;; Commentary:
 ;;; Code:
 
@@ -54,6 +54,32 @@
         '("-XUnicodeSyntax" "-XLambdaCase"))
 
   (add-to-list 'completion-ignored-extensions ".hi")
+
+  ;; Use Stack to generate core, so that packages are known.
+
+  (defun cb-haskell/ghc-core-create-core-with-stack ()
+    "Compile and load the current buffer as tidy core, using Stack."
+    (interactive)
+    (save-buffer)
+    (let* ((core-buffer (generate-new-buffer "ghc-core"))
+           (neh (lambda () (kill-buffer core-buffer))))
+      (add-hook 'next-error-hook neh)
+      (apply #'call-process "stack" nil core-buffer nil
+             "ghc" "--" "-ddump-simpl" "-c" (buffer-file-name) ghc-core-program-args)
+      (display-buffer core-buffer)
+      (with-current-buffer core-buffer
+        (ghc-core-mode))
+      (remove-hook 'next-error-hook neh)))
+
+  (defun cb-haskell/core-dwim ()
+    "Generate a core buffer, using Stack if there's a stack.yaml around."
+    (interactive)
+    (if (f-traverse-upwards
+         (lambda (dir)
+           (--any? (s-matches? (rx "stack." (or "yaml" "yml")) it)
+                   (f-files dir))))
+        (cb-haskell/ghc-core-create-core-with-stack)
+      (ghc-core-create-core)))
 
   (defun cb-haskell/maybe-haskell-interactive-mode ()
     (unless (bound-and-true-p org-src-mode)
@@ -188,6 +214,8 @@
       (defadvice ghc-check-syntax (around no-op activate))
 
       (with-eval-after-load 'haskell-mode
+        (evil-leader/set-key-for-mode 'haskell-mode "mC" 'cb-haskell/core-dwim)
+
         (define-key haskell-mode-map (kbd "C-c C-s") 'ghc-case-split)
         (define-key haskell-mode-map (kbd "C-c C-r") 'ghc-refine)
         (define-key haskell-mode-map (kbd "C-c C-a") 'ghc-auto)
