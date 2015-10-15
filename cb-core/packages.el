@@ -217,8 +217,13 @@
       (helm-other-buffer (list source) "*helm httpstatus*"))))
 
 (defun cb-core/post-init-aggressive-indent ()
+
+  (defun cb-core/turn-off-aggressive-indent-mode (&rest ignored)
+    (aggressive-indent-mode -1))
+
   (with-eval-after-load 'aggressive-indent
     (add-to-list 'aggressive-indent-excluded-modes 'restclient-mode))
+
   (global-aggressive-indent-mode))
 
 (defun cb-core/init-ag ()

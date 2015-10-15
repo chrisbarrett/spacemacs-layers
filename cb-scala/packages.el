@@ -46,7 +46,7 @@
 
 (defun cb-scala/post-init-ensime ()
   (add-hook 'scala-mode-hook 'scala/maybe-start-ensime)
-  (add-hook 'ensime-mode-hook (lambda () (aggressive-indent-mode -1)))
+  (add-hook 'ensime-mode-hook 'cb-core/turn-off-aggressive-indent-mode)
 
   (setq ensime-default-scala-version "2.11.7")
   (setq ensime-auto-generate-config t)
@@ -126,7 +126,7 @@ See `ensime-goto-test-config-defaults' for possible template values.")
   (setq sbt:program-name "sbt -Dsbt.log.noformat=true")
 
   (defun cb-scala/set-up-sbt-mode ()
-    (aggressive-indent-mode -1)
+    (cb-core/turn-off-aggressive-indent-mode)
     (show-smartparens-mode -1)
     (show-paren-mode -1)
     (local-set-key (kbd "C-l") 'spacemacs/comint-clear-buffer)
