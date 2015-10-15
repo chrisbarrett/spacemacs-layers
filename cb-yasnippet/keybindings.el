@@ -1,6 +1,5 @@
-(require 'yasnippet)
-
-(bind-key "<backspace>" 'yas/backspace yas-keymap)
+(with-eval-after-load 'yasnippet
+  (bind-key "<backspace>" 'yas/backspace yas-keymap))
 
 (with-eval-after-load 'yasnippet
   (evil-define-key 'insert yas-keymap (kbd "SPC") 'yas/space))
