@@ -57,7 +57,7 @@
 
   ;; Use Stack to generate core, so that packages are known.
 
-  (defun cb-haskell/ghc-core-create-core-with-stack ()
+  (defun cb-haskell/dump-core-with-stack ()
     "Compile and load the current buffer as tidy core, using Stack."
     (interactive)
     (save-buffer)
@@ -71,6 +71,26 @@
         (ghc-core-mode))
       (remove-hook 'next-error-hook neh)))
 
+  (define-derived-mode ghc-stg-mode ghc-core-mode "GHC-STG")
+
+  (defun cb-haskell/dump-stg-with-stack ()
+    "Compile and load the current buffer as STG, using Stack."
+    (interactive)
+    (save-buffer)
+    (let* ((stg-buffer (generate-new-buffer "ghc-stg"))
+           (neh (lambda () (kill-buffer stg-buffer))))
+      (add-hook 'next-error-hook neh)
+      (apply #'call-process "stack" nil stg-buffer nil
+             "ghc" "--" "-ddump-stg" "-c" (buffer-file-name) ghc-core-program-args)
+
+      (remove-hook 'next-error-hook neh)
+
+      (pop-to-buffer stg-buffer)
+      (ghc-stg-mode)
+      (whitespace-cleanup)
+      (goto-char (point-min))
+      (forward-line 1)))
+
   (defun cb-haskell/core-dwim ()
     "Generate a core buffer, using Stack if there's a stack.yaml around."
     (interactive)
@@ -78,8 +98,13 @@
          (lambda (dir)
            (--any? (s-matches? (rx "stack." (or "yaml" "yml")) it)
                    (f-files dir))))
-        (cb-haskell/ghc-core-create-core-with-stack)
-      (ghc-core-create-core)))
+        (cb-haskell/dump-core-with-stack)
+      (ghc-core-create-core))
+
+    (-when-let (buf (--first (s-matches? "ghc-core" (buffer-name it)) (buffer-list)))
+      (pop-to-buffer buf)
+      (goto-char (point-min))
+      (forward-line 2)))
 
   (defun cb-haskell/maybe-haskell-interactive-mode ()
     (unless (bound-and-true-p org-src-mode)
@@ -120,6 +145,9 @@
   (add-hook 'haskell-mode-hook 'haskell/configure-flyspell)
 
   (with-eval-after-load 'haskell-mode
+    (evil-leader/set-key-for-mode 'haskell-mode
+      "mC" 'cb-haskell/core-dwim
+      "mS" 'cb-haskell/dump-stg-with-stack)
 
     (evil-define-key 'insert haskell-mode-map (kbd "<backspace>") 'haskell/backspace)
     (evil-define-key 'normal haskell-mode-map (kbd "<backspace>") nil)
@@ -214,8 +242,6 @@
       (defadvice ghc-check-syntax (around no-op activate))
 
       (with-eval-after-load 'haskell-mode
-        (evil-leader/set-key-for-mode 'haskell-mode "mC" 'cb-haskell/core-dwim)
-
         (define-key haskell-mode-map (kbd "C-c C-s") 'ghc-case-split)
         (define-key haskell-mode-map (kbd "C-c C-r") 'ghc-refine)
         (define-key haskell-mode-map (kbd "C-c C-a") 'ghc-auto)
