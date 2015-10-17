@@ -19,11 +19,24 @@
     aggressive-indent
     llvm-mode
 
+    (ghc-dump :location local)
     (haskell-parser :location local)
     (haskell-snippets :excluded t)))
 
 (defun cb-haskell/init-llvm-mode ()
   (use-package llvm-mode))
+
+(defun cb-haskell/init-ghc-dump ()
+  (use-package ghc-dump
+    :config
+    (evil-leader/set-key-for-mode 'haskell-mode
+      "mD-" 'ghc-dump-opt-cmm
+      "mDd" 'ghc-dump-desugared
+      "mDa" 'ghc-dump-asm
+      "mDc" 'ghc-dump-core
+      "mDl" 'ghc-dump-llvm
+      "mDs" 'ghc-dump-stg
+      "mDt" 'ghc-dump-types)))
 
 (defun cb-haskell/post-init-flycheck ()
   (with-eval-after-load 'flycheck
@@ -58,74 +71,6 @@
         '("-XUnicodeSyntax" "-XLambdaCase"))
 
   (add-to-list 'completion-ignored-extensions ".hi")
-
-  ;; Use Stack to generate core, so that packages are known.
-
-  (defun cb-haskell/dump-command-with-buffer-setup (bufname dump-flag buffer-init-fn )
-    (save-buffer)
-    (let* ((buf (generate-new-buffer bufname))
-           (neh (lambda () (kill-buffer buf)))
-           (ghc-args
-            (-flatten (list dump-flag "-c" (buffer-file-name) ghc-core-program-args))))
-      (add-hook 'next-error-hook neh)
-      (if (cb-haskell/stack-project?)
-          (apply #'call-process "stack" nil buf nil "ghc" "--" ghc-args)
-        (apply #'call-process "ghc" nil buf nil ghc-args))
-
-      (pop-to-buffer buf)
-      (with-current-buffer buf
-        (goto-char (point-min))
-        (funcall buffer-init-fn (current-buffer)))
-      (remove-hook 'next-error-hook neh)))
-
-  (defun cb-haskell/stack-project? ()
-    (f-traverse-upwards
-     (lambda (dir)
-       (--any? (s-matches? (rx "stack." (or "yaml" "yml")) it)
-               (f-files dir)))))
-
-  (defun cb-haskell/dump-core ()
-    (interactive)
-    (cb-haskell/dump-command-with-buffer-setup
-     "ghc-core" "-ddump-simpl"
-     (lambda (buf)
-       (ghc-core-mode))))
-
-  (defun cb-haskell/dump-opt-cmm ()
-    (interactive)
-    (cb-haskell/dump-command-with-buffer-setup
-     "ghc-opt-cmm" "-ddump-opt-cmm"
-     (lambda (buf))))
-
-  (defun cb-haskell/dump-llvm ()
-    (interactive)
-    (cb-haskell/dump-command-with-buffer-setup
-     "ghc-llvm" "-ddump-llvm"
-     (lambda (buf)
-       (llvm-mode))))
-
-  (defun cb-haskell/dump-asm ()
-    (interactive)
-    (cb-haskell/dump-command-with-buffer-setup
-     "ghc-asm" "-ddump-asm"
-     (lambda (buf)
-       (asm-mode))))
-
-  (defun cb-haskell/dump-types ()
-    (interactive)
-    (cb-haskell/dump-command-with-buffer-setup
-     "ghc-types" "-ddump-types"
-     (lambda (buf))))
-
-  (define-derived-mode ghc-stg-mode ghc-core-mode "GHC-STG")
-
-  (defun cb-haskell/dump-stg ()
-    (interactive)
-    (cb-haskell/dump-command-with-buffer-setup
-     "ghc-stg" "-ddump-stg"
-     (lambda (buf)
-       (whitespace-cleanup)
-       (ghc-stg-mode))))
 
   (defun cb-haskell/maybe-haskell-interactive-mode ()
     (unless (bound-and-true-p org-src-mode)
@@ -166,15 +111,6 @@
   (add-hook 'haskell-mode-hook 'haskell/configure-flyspell)
 
   (with-eval-after-load 'haskell-mode
-    (evil-leader/set-key-for-mode 'haskell-mode
-      "mD-" 'cb-haskell/dump-opt-cmm
-      "mDa" 'cb-haskell/dump-asm
-      "mDc" 'cb-haskell/dump-core
-      "mDl" 'cb-haskell/dump-llvm
-      "mDs" 'cb-haskell/dump-stg
-      "mDt" 'cb-haskell/dump-types
-      )
-
     (evil-define-key 'insert haskell-mode-map (kbd "<backspace>") 'haskell/backspace)
     (evil-define-key 'normal haskell-mode-map (kbd "<backspace>") nil)
 
