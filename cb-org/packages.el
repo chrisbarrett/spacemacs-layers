@@ -54,7 +54,6 @@
   (setq org-default-notes-file (f-join org-directory "notes.org"))
   (setq org-M-RET-may-split-line nil)
   (setq org-attach-directory (f-join org-directory "data"))
-  (setq org-blank-before-new-entry nil)
   (setq org-catch-invisible-edits 'smart)
   (setq org-clock-persist-file (f-join org-directory ".org-clock-save"))
   (setq org-completion-use-ido t)
