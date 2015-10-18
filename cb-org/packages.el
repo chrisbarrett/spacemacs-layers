@@ -24,8 +24,15 @@
     ox
     ox-texinfo
 
+    org-present
+
     (org-work :location local)
     (cb-org-latex-preview-retina :location local)))
+
+(defun cb-org/post-init-org-present ()
+  (setq org-present-text-scale 4)
+  (add-hook 'org-present-mode-hook 'spacemacs/toggle-mode-line-on)
+  (add-hook 'org-present-mode-quit-hook 'spacemacs/toggle-mode-line-off))
 
 (defun cb-org/post-init-org ()
   (defconst cb-org/default-stuck-projects
