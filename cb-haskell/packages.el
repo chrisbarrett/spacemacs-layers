@@ -31,10 +31,11 @@
     :config
     (evil-leader/set-key-for-mode 'haskell-mode
       "mD-" 'ghc-dump-opt-cmm
-      "mDd" 'ghc-dump-desugared
       "mDa" 'ghc-dump-asm
       "mDc" 'ghc-dump-core
+      "mDd" 'ghc-dump-desugared
       "mDl" 'ghc-dump-llvm
+      "mDp" 'ghc-dump-splices
       "mDs" 'ghc-dump-stg
       "mDt" 'ghc-dump-types)))
 

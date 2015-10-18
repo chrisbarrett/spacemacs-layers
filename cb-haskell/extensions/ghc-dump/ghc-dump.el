@@ -59,32 +59,40 @@
 ;;;###autoload
 (defun ghc-dump-core ()
   (interactive)
-  (ghc-dump--command-with-buffer-setup "ghc-core" "-ddump-simpl" 'ghc-core-mode))
+  (ghc-dump--command-with-buffer-setup "*ghc-core*" "-ddump-simpl" 'ghc-core-mode))
 
 ;;;###autoload
 (defun ghc-dump-desugared ()
   (interactive)
-  (ghc-dump--command-with-buffer-setup "ghc-desugared" "-ddump-ds" 'ghc-core-mode))
+  (ghc-dump--command-with-buffer-setup "*ghc-desugared*" "-ddump-ds" 'ghc-core-mode))
 
 ;;;###autoload
 (defun ghc-dump-opt-cmm ()
   (interactive)
-  (ghc-dump--command-with-buffer-setup "ghc-opt-cmm" "-ddump-opt-cmm" 'ignore))
+  (ghc-dump--command-with-buffer-setup "*ghc-opt-cmm*" "-ddump-opt-cmm" 'ignore))
 
 ;;;###autoload
 (defun ghc-dump-llvm ()
   (interactive)
-  (ghc-dump--command-with-buffer-setup "ghc-llvm" "-ddump-llvm" 'llvm-mode))
+  (ghc-dump--command-with-buffer-setup "*ghc-llvm*" "-ddump-llvm" 'llvm-mode))
 
 ;;;###autoload
 (defun ghc-dump-asm ()
   (interactive)
-  (ghc-dump--command-with-buffer-setup "ghc-asm" "-ddump-asm" 'asm-mode))
+  (ghc-dump--command-with-buffer-setup "*ghc-asm*" "-ddump-asm" 'asm-mode))
 
 ;;;###autoload
 (defun ghc-dump-types ()
   (interactive)
-  (ghc-dump--command-with-buffer-setup "ghc-types" "-ddump-types" 'ignore))
+  (ghc-dump--command-with-buffer-setup "*ghc-types*" "-ddump-types" 'ignore))
+
+;;;###autoload
+(defun ghc-dump-splices ()
+  (interactive)
+  (ghc-dump--command-with-buffer-setup "*ghc-splices*" "-ddump-splices"
+                                       (lambda ()
+                                         (ghc-core-mode)
+                                         (compilation-minor-mode))))
 
 ;;;###autoload
 (define-derived-mode ghc-stg-mode ghc-core-mode "GHC-STG")
@@ -92,7 +100,7 @@
 ;;;###autoload
 (defun ghc-dump-stg ()
   (interactive)
-  (ghc-dump--command-with-buffer-setup "ghc-stg" "-ddump-stg" 'ghc-stg-mode))
+  (ghc-dump--command-with-buffer-setup "*ghc-stg*" "-ddump-stg" 'ghc-stg-mode))
 
 
 (provide 'ghc-dump)
