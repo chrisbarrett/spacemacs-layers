@@ -31,6 +31,16 @@
 
 (defun cb-org/post-init-org-present ()
   (setq org-present-text-scale 4)
+
+  ;; Disable flyspell during presentations.
+  (defvar-local cb-org/use-flyspell? nil)
+  (defun cb-org/set-use-flyspell () (setq cb-org/use-flyspell? t))
+  (defun cb-org/maybe-reenable-flyspell () (when cb-org/use-flyspell? (flyspell-mode +1)))
+
+  (add-hook 'flyspell-mode-hook 'cb-org/set-use-flyspell)
+  (add-hook 'org-present-mode-hook 'turn-off-flyspell)
+  (add-hook 'org-present-mode-quit-hook 'cb-org/maybe-reenable-flyspell)
+
   (add-hook 'org-present-mode-hook 'spacemacs/toggle-mode-line-on)
   (add-hook 'org-present-mode-quit-hook 'spacemacs/toggle-mode-line-off))
 
@@ -105,20 +115,24 @@
 
   ;; Faces
 
+
   (custom-set-faces
    '(org-hide ((t :background unspecified)))
    '(org-meta-line ((t :italic nil :inherit font-lock-comment-face)))
    '(org-document-info-keyword ((t :foreground unspecified :inherit org-meta-line)))
 
    `(org-block-begin-line
-     ((((background light)) :italic t :foreground ,solarized-hl-cyan)
-      (((background dark))  :italic t :foreground ,solarized-hl-cyan)))
+     ((((background light)) :italic t :foreground ,solarized-hl-cyan :background nil)
+      (((background dark))  :italic t :foreground ,solarized-hl-cyan :background nil)))
    `(org-block-end-line
-     ((((background light)) :italic t :foreground ,solarized-hl-cyan)
-      (((background dark))  :italic t :foreground ,solarized-hl-cyan)))
+     ((((background light)) :italic t :foreground ,solarized-hl-cyan :background nil)
+      (((background dark))  :italic t :foreground ,solarized-hl-cyan :background nil)))
+   '(org-block
+     ((((background light)) :background nil)
+      (((background dark))  :background nil)))
    '(org-block-background
-     ((((background light)) :background "#f8f1dc")
-      (((background dark))  :background "#11303b"))))
+     ((((background light)) :background nil)
+      (((background dark))  :background nil))))
 
   (setq org-todo-keyword-faces
         `(("NEXT" . ,solarized-hl-orange)
