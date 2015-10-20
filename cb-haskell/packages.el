@@ -97,6 +97,9 @@
   (add-hook 'evil-insert-state-exit-hook  'cb-haskell/hide-indentation-guides)
 
   (defun cb-haskell/set-local-hooks ()
+    (setq evil-shift-width 4)
+    (setq tab-width 4)
+    (setq haskell-indent-spaces 4)
     (add-hook 'before-save-hook 'haskell/unicode-buffer nil t)
     (add-hook 'evil-insert-state-exit-hook 'haskell/unicode-buffer nil t))
 
@@ -108,7 +111,6 @@
   (with-eval-after-load 'haskell
     (diminish 'interactive-haskell-mode " λ"))
 
-  (put 'haskell-mode 'evil-shift-width 2)
   (add-hook 'haskell-mode-hook 'haskell/configure-flyspell)
 
   (with-eval-after-load 'haskell-mode
