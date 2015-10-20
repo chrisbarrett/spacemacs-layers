@@ -11,6 +11,6 @@
 
 (defun cb-flycheck/post-init-flycheck ()
   (setq flycheck-display-errors-function 'flycheck-display-error-messages-unless-error-list)
-  (setq flycheck-display-errors-delay 0)
+  (setq flycheck-display-errors-delay 0.5)
   (setq flycheck-check-syntax-automatically '(mode-enabled idle-change save))
   (global-flycheck-mode +1))
