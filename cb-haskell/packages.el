@@ -44,12 +44,15 @@
     (add-hook 'haskell-interactive-mode-hook (lambda () (flycheck-mode -1)))))
 
 (defun cb-haskell/post-init-haskell-mode ()
-  ;; HACK: Currently hangs on cabal file suggestions.
+  ;; HACK: Currently hangs on suggestions.
   (setq haskell-process-suggest-add-package nil)
-  (setq haskell-hoogle-command "hoogle")
+  (setq haskell-process-suggest-language-pragmas nil)
+  (setq haskell-process-suggest-hoogle-imports nil)
+  (setq haskell-process-suggest-hayoo-imports nil)
+  (setq haskell-process-suggest-haskell-docs-imports nil)
+  (setq haskell-process-suggest-hoogle-imports nil)
 
   (setq haskell-process-type 'stack-ghci)
-  (setq haskell-process-suggest-haskell-docs-imports t)
   (setq haskell-process-use-presentation-mode t)
   (setq haskell-interactive-mode-scroll-to-bottom t)
   (setq haskell-interactive-popup-errors t)
