@@ -23,6 +23,14 @@
   errors)
 
 (with-eval-after-load 'flycheck
+  (put 'haskell-stack-ghc
+       'flycheck-error-filter
+       (lambda (errors)
+         (-> errors
+             flycheck-dedent-error-messages
+             cb-flycheck-strip-files-in-messages
+             flycheck-sanitize-errors)))
+
   (put 'haskell-ghc
        'flycheck-error-filter
        (lambda (errors)
@@ -33,15 +41,6 @@
 
 (with-eval-after-load 'flycheck-liquid
   (put 'haskell-liquid
-       'flycheck-error-filter
-       (lambda (errors)
-         (-> errors
-             flycheck-dedent-error-messages
-             cb-flycheck-strip-files-in-messages
-             flycheck-sanitize-errors))))
-
-(with-eval-after-load 'haskell-flycheck
-  (put 'haskell-process
        'flycheck-error-filter
        (lambda (errors)
          (-> errors
