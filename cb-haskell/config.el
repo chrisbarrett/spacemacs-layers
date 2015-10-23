@@ -36,6 +36,11 @@
 (add-hook 'haskell-mode-hook 'haskell/apply-font-locking)
 (add-hook 'haskell-interactive-mode-hook 'haskell/apply-font-locking)
 
+(font-lock-add-keywords
+ 'ghc-stg-mode
+ `(,(core/font-lock-replace-match
+     (rx (group "\\")) 1 (propertize "λ" 'face 'font-lock-keyword-face))))
+
 (custom-set-faces
  `(haskell-interactive-face-compile-error ((t (:foreground nil)))))
 
