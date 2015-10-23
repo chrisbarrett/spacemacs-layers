@@ -122,6 +122,14 @@
    (,(regexp-opt ghc-cmm-types) . font-lock-type-face)
    (,(rx bol "=====" (* nonl)) . font-lock-comment-face)))
 
+(font-lock-add-keywords
+ 'ghc-core-mode
+ `((,(rx bol "=====" (* nonl)) . font-lock-comment-face)))
+
+(font-lock-add-keywords
+ 'ghc-stg-mode
+ `((,(rx bol "=====" (* nonl)) . font-lock-comment-face)))
+
 (with-eval-after-load 'aggressive-indent
   (add-to-list 'aggressive-indent-excluded-modes 'ghc-core-mode)
   (add-to-list 'aggressive-indent-excluded-modes 'ghc-stg-mode)
