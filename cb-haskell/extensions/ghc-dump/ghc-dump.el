@@ -69,7 +69,7 @@
 ;;;###autoload
 (defun ghc-dump-opt-cmm ()
   (interactive)
-  (ghc-dump--command-with-buffer-setup 'ghc-cmm-mode "*ghc-opt-cmm*" "-ddump-opt-cmm"))
+  (ghc-dump--command-with-buffer-setup 'ghc-cmm-mode "*ghc-opt-cmm*" "-ddump-cmm"))
 
 ;;;###autoload
 (defun ghc-dump-llvm ()
