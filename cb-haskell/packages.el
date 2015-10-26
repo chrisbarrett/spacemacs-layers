@@ -75,6 +75,7 @@
         '("-XUnicodeSyntax" "-XLambdaCase"))
 
   (add-to-list 'completion-ignored-extensions ".hi")
+  (add-to-list 'completion-ignored-extensions ".gm")
 
   (defun cb-haskell/maybe-haskell-interactive-mode ()
     (unless (bound-and-true-p org-src-mode)
