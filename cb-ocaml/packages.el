@@ -66,21 +66,27 @@
     (add-to-list 'aggressive-indent-excluded-modes 'utop-mode)))
 
 (defun cb-ocaml/post-init-smart-ops ()
-  (let ((common-ops
-         (-flatten-n 1
-                     (list
-                      (smart-ops "@" "^")
-                      (smart-ops "," ";" :pad-before nil)
-                      (smart-ops "." :pad-before nil :pad-after nil)
-                      (smart-ops "~" :pad-after nil)
-                      (smart-ops ":"
-                                 :pad-unless
-                                 (lambda (pos)
-                                   (save-excursion
-                                     (skip-chars-backward "_:[:alnum:]")
-                                     (equal ?~ (char-before)))))
 
-                      (smart-ops-default-ops)))))
+  (defun cb-ocaml/at-positional-or-optional-argument? ()
+    (save-excursion
+      (skip-chars-backward "_:[:alnum:]")
+      (let ((ch (char-to-string (char-before))))
+        (-contains? '("?" "~") ch))))
+
+  (let ((common-ops
+         (-flatten-n
+          1
+          (list
+           (smart-ops "@" "^")
+           (smart-ops "," ";" :pad-before nil)
+           (smart-ops "." :pad-before nil :pad-after nil)
+           (smart-ops "~" "?" :pad-after nil)
+           (smart-ops ":"
+                      :pad-unless
+                      (lambda (pos)
+                        (cb-ocaml/at-positional-or-optional-argument?)))
+
+           (smart-ops-default-ops)))))
 
     (define-smart-ops-for-mode 'tuareg-mode
       common-ops
@@ -90,6 +96,7 @@
                  :action
                  (lambda (&rest _)
                    (comment-indent-new-line))))
+
     (define-smart-ops-for-mode 'utop-mode
       common-ops
       (smart-ops ";;"
