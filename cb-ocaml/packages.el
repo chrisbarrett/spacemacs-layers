@@ -12,15 +12,30 @@
 
 (defconst cb-ocaml-packages
   '(merlin
+    tuareg
     utop
     flycheck-ocaml
     aggressive-indent
     (smart-ops :location local)))
 
 (eval-when-compile
+  (require 'dash)
+  (require 's)
   (require 'use-package nil t))
 
+(defun cb-ocaml/post-init-tuareg ()
+  (with-eval-after-load 'tuareg
+    (define-key tuareg-mode-map (kbd "M-RET") 'cb-ocaml/m-ret))
+
+  (font-lock-add-keywords
+   'tuareg-mode
+   `(,(core/font-lock-replace-match (rx space (group "->") space) 1 "→"))))
+
 (defun cb-ocaml/post-init-utop ()
+  (with-eval-after-load 'merlin
+    (define-key merlin-mode-map (kbd "C-c C-.") 'merlin-locate)
+    (define-key merlin-mode-map (kbd "C-c C-l") nil))
+
   (with-eval-after-load 'utop
     (define-key utop-minor-mode-map (kbd "C-c C-l") 'utop-eval-buffer)
     (define-key utop-minor-mode-map (kbd "C-c C-z") 'utop)))
@@ -41,15 +56,35 @@
     (add-to-list 'aggressive-indent-excluded-modes 'utop-mode)))
 
 (defun cb-ocaml/post-init-smart-ops ()
-  (let ((ops
+  (let ((common-ops
          (-flatten-n 1
                      (list
+                      (smart-ops "@")
                       (smart-ops "," ";" :pad-before nil)
                       (smart-ops "." :pad-before nil :pad-after nil)
-                      (smart-ops ";;" :pad-before nil :pad-after nil
-                                 :action
-                                 (lambda (&rest _)
-                                   (comment-indent-new-line)))
+                      (smart-ops "~" :pad-after nil)
+                      (smart-ops ":"
+                                 :pad-unless
+                                 (lambda (pos)
+                                   (save-excursion
+                                     (skip-chars-backward "_:[:alnum:]")
+                                     (equal ?~ (char-before)))))
+
                       (smart-ops-default-ops)))))
-    (define-smart-ops-for-mode 'tuareg-mode ops)
-    (define-smart-ops-for-mode 'utop-mode ops)))
+
+    (define-smart-ops-for-mode 'tuareg-mode
+      common-ops
+      (smart-ops ";;"
+                 :pad-before nil
+                 :pad-after nil
+                 :action
+                 (lambda (&rest _)
+                   (comment-indent-new-line))))
+    (define-smart-ops-for-mode 'utop-mode
+      common-ops
+      (smart-ops ";;"
+                 :pad-before nil
+                 :pad-after nil
+                 :action
+                 (lambda (&rest _)
+                   (call-interactively 'utop-eval-input))))))
