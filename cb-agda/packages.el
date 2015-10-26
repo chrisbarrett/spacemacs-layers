@@ -16,7 +16,8 @@
     (smart-op "$")))
 
 (defun cb-agda/post-init-aggressive-indent ()
-  (add-to-list 'aggressive-indent-excluded-modes 'agda2-mode))
+  (with-eval-after-load 'aggressive-indent
+    (add-to-list 'aggressive-indent-excluded-modes 'agda2-mode)))
 
 (defun cb-agda/init-agda-mode ()
   (defun cb-agda/configure-agda-mode-hooks ()
