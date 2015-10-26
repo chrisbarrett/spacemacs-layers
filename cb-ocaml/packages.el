@@ -24,6 +24,10 @@
   (require 'use-package nil t))
 
 (defun cb-ocaml/post-init-tuareg ()
+
+  (setq tuareg-function-indent 2)
+  (setq tuareg-match-indent 0)
+
   (with-eval-after-load 'tuareg
     (core/remap-face 'tuareg-font-lock-governing-face 'font-lock-keyword-face)
     (core/remap-face 'tuareg-font-lock-operator-face 'default)

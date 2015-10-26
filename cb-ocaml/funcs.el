@@ -42,6 +42,9 @@
 (defun cb-ocaml/at-let-binding? ()
   (s-matches? (rx bol (* space) "let" eow) (current-line)))
 
+(defun cb-ocaml/at-val-binding? ()
+  (s-matches? (rx bol (* space) "val" eow) (current-line)))
+
 (defun cb-ocaml/at-import? ()
   (s-matches? (rx bol (* space) "open" eow) (current-line)))
 
@@ -56,8 +59,15 @@
     (newline)
     (insert "open "))
 
-   ((or (cb-ocaml/at-match-header?)
-        (cb-ocaml/at-function-keyword?))
+   ((cb-ocaml/at-function-keyword?)
+    (let ((col (current-indentation)))
+      (goto-char (line-end-position))
+      (newline)
+      (indent-to-column (+ col tuareg-function-indent))
+      (yas-expand-snippet "| ${1:binding} -> $0")
+      (message "Inserted pattern match case.")))
+
+   ((cb-ocaml/at-match-header?)
     (let ((col (current-indentation)))
       (goto-char (line-end-position))
       (newline)
@@ -79,17 +89,17 @@
     (let ((col (current-indentation)))
       (goto-char (line-end-position))
       (newline)
-      (indent-to-column col)
+      (indent-to-column (+ col tuareg-type-indent))
       (insert "| ")
-      (message "Inserted case.")))
+      (message "Inserted sum type case.")))
 
-   ((and (cb-ocaml/at-let-binding?)
+   ((and (cb-ocaml/at-val-binding?)
          (equal "sig" (f-ext (buffer-file-name))))
     (let ((col (current-indentation)))
       (goto-char (line-end-position))
       (newline)
       (indent-to-column col)
-      (yas-expand-snippet "let ${1:name} : ${2:type}")
+      (yas-expand-snippet "val ${1:name} : ${2:type}")
       (message "Inserted val declaration.")))
 
    ((cb-ocaml/at-let-binding?)
@@ -98,7 +108,7 @@
       (newline)
       (indent-to-column col)
       (yas-expand-snippet "let ${1:name} = $0")
-      (message "Inserted val declaration.")))
+      (message "Inserted let binding.")))
 
    (t
     (reindent-then-newline-and-indent)))
