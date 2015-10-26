@@ -35,6 +35,12 @@
                _
                "\n")
 
+              (("\\.ml\\'" . "OCaml Src File")
+               nil
+               "open Core.Std" "\n\n"
+               _
+               "\n")
+
               (("\\.\\([Hh]\\|hh\\|hpp\\)\\'" . "C / C++ header")
                (upcase
                 (concat (f-filename (f-no-ext (buffer-file-name)))
