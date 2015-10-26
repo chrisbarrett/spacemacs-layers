@@ -25,11 +25,17 @@
 
 (defun cb-ocaml/post-init-tuareg ()
   (with-eval-after-load 'tuareg
+    (core/remap-face 'tuareg-font-lock-governing-face 'font-lock-keyword-face)
+    (core/remap-face 'tuareg-font-lock-operator-face 'default)
+
     (define-key tuareg-mode-map (kbd "M-RET") 'cb-ocaml/m-ret))
 
   (font-lock-add-keywords
    'tuareg-mode
-   `(,(core/font-lock-replace-match (rx space (group "->") space) 1 "→"))))
+   `(,(core/font-lock-replace-match (rx space (group "->") space) 1 "→")
+     ("->" . font-lock-keyword-face)
+     (,(rx (or bol space) "|" (or eol space)) . font-lock-keyword-face)
+     )))
 
 (defun cb-ocaml/post-init-utop ()
   (with-eval-after-load 'merlin
