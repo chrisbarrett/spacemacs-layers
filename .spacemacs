@@ -48,6 +48,7 @@ values."
       c-c++-default-mode-for-headers 'c++-mode
       c-c++-enable-clang-support t
       )
+     ocaml
      clojure
      cb-core
      cb-sunrise-commander
@@ -82,6 +83,7 @@ values."
      cb-crontab
      cb-js
      cb-mu4e
+     cb-ocaml
      ;; cb-cpp
      )
    ;; List of additional packages that will be installed without being
