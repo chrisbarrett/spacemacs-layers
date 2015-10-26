@@ -93,7 +93,7 @@ values."
    dotspacemacs-additional-packages '(muttrc-mode yaml-mode)
    ;; A list of packages and/or extensions that will not be install and loaded.
    dotspacemacs-excluded-packages
-   '(rainbow-delimiters clean-aindent-mode eshell-prompt-extras company-quickhelp)
+   '(rainbow-delimiters clean-aindent-mode eshell-prompt-extras)
    ;; If non-nil spacemacs will delete any orphan packages, i.e. packages that
    ;; are declared in a layer which is not a member of
    ;; the list `dotspacemacs-configuration-layers'
