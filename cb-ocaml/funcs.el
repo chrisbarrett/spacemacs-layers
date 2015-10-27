@@ -93,8 +93,7 @@
       (insert "| ")
       (message "Inserted sum type case.")))
 
-   ((and (cb-ocaml/at-val-binding?)
-         (equal "sig" (f-ext (buffer-file-name))))
+   ((cb-ocaml/at-val-binding?)
     (let ((col (current-indentation)))
       (goto-char (line-end-position))
       (newline)
