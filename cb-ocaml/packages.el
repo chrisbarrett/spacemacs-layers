@@ -32,6 +32,9 @@
     (core/remap-face 'tuareg-font-lock-governing-face 'font-lock-keyword-face)
     (core/remap-face 'tuareg-font-lock-operator-face 'default)
 
+    (with-eval-after-load 'projectile
+      (define-key tuareg-mode-map (kbd "C-c C-c") 'projectile-compile-project))
+
     (define-key tuareg-mode-map (kbd "M-RET") 'cb-ocaml/m-ret))
 
   (font-lock-add-keywords
