@@ -5,7 +5,7 @@ name := "__PROJECT-NAME__-parent"
 lazy val commonSettings = Seq(
   organization := "mm",
   scalaVersion := "__SCALA-VERSION__",
-  name in Universal := moduleName.value
+  packageName in Universal := moduleName.value
 
   resolvers ++= Seq(
     "Typesafe repository" at "https://repo.typesafe.com/typesafe/releases/",
