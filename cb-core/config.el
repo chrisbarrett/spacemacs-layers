@@ -258,3 +258,8 @@ Work around spacemacs' aggressive manipulation of `face-remapping-alist'."
   (--each (buffer-list) (with-current-buffer it
                           (when font-lock-mode
                             (font-lock-fontify-buffer)))))
+
+
+;;: Show time in the modeline
+
+(display-time)
