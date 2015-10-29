@@ -85,6 +85,7 @@ values."
      cb-mu4e
      cb-ocaml
      ;; cb-cpp
+     cb-dash-docs
      )
    ;; List of additional packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these
