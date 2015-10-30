@@ -51,28 +51,4 @@
 
   (defadvice yas-prev-field (after goto-field-end activate)
     (yas/maybe-goto-field-end)
-    (evil-insert-state))
-
-  ;; FIX: yasnippet often errors when trying to save existing snippets.
-
-  (defun yas--read-table ()
-    "Ask user for a snippet table, help with some guessing."
-    (let ((modes (-distinct (-snoc (yas--compute-major-mode-and-parents (buffer-file-name))
-                                   (yas//other-buffer-major-mode)))))
-      (intern (completing-read "Choose or enter a mode: " modes))))
-
-  (defun yas-load-snippet-buffer-and-close (table &optional _)
-    "Load the snippet with `yas-load-snippet-buffer', possibly
-  save, then `quit-window' if saved.
-
-If the snippet is new, ask the user whether (and where) to save
-it. If the snippet already has a file, just save it.
-
-Don't use this from a Lisp program, call `yas-load-snippet-buffer'
-and `kill-buffer' instead."
-    (interactive (list (yas--read-table) nil))
-    (yas-load-snippet-buffer table t)
-    (noflet ((whitespace-cleanup (&rest _)))
-      (yas//maybe-write-new-template yas--editing-template)
-      (save-buffer)
-      (quit-window t))))
+    (evil-insert-state)))
