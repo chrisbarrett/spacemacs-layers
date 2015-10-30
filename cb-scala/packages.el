@@ -15,7 +15,8 @@
 
     (scala-errors :location local)
     (scala-pretty-sbt :location local)
-    (scala-yasnippet :location local)))
+    (scala-yasnippet :location local)
+    (ensime-diminished-modeline :location local)))
 
 (defun cb-scala/post-init-scala-mode2 ()
   (use-package scala-mode2
@@ -160,8 +161,9 @@ See `ensime-goto-test-config-defaults' for possible template values.")
       (defconst cb-scala/common-ops
         (-flatten-n 1
                     (list
-                     (smart-ops "???" "?" "=" "==" "+" "-" "@" "*" "/" "<" ">" "|" "$" "&" "%" "!" "~")
+                     (smart-ops "???" "?" "=" "==" "+" "-" "*" "/" "<" ">" "|" "$" "&" "%" "!" "~")
                      (smart-ops ":" "," :pad-before nil)
+                     (smart-ops "@" :pad-after nil)
 
                      ;; Inserting this op means you're probably editing a
                      ;; function return type. Pad internally and move point
@@ -232,3 +234,6 @@ See `ensime-goto-test-config-defaults' for possible template values.")
   (with-eval-after-load 'scala-mode2
     (require 'scala-yasnippet)
     (scala-yasnippet-initialise)))
+
+(defun cb-scala/init-ensime-diminished-modeline ()
+  (use-package ensime-diminished-modeline))
