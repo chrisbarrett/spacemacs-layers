@@ -28,6 +28,7 @@
   (setq yas-prompt-functions '(yas-ido-prompt))
   (setq yas-wrap-around-region t)
   (setq yas-verbosity 0)
+  (setq yas-triggers-in-field nil)
 
   (core/remap-face 'yas-field-highlight-face 'core/bg-hl-template)
 
