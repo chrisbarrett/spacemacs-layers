@@ -2,6 +2,6 @@
 # name: let rec
 # key: lr
 # binding: direct-keybinding
-# condition: (zerop (current-indentation))
+# condition: (yas/bol?)
 # --
 let rec ${1:binding} = $0

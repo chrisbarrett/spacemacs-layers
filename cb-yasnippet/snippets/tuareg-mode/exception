@@ -3,4 +3,4 @@
 # key: ex
 # conditon: (yas/bol?)
 # --
-exception ${1:exid} of ${2:type}
+exception $0

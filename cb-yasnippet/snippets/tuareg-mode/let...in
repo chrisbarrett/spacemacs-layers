@@ -1,6 +1,5 @@
 # key: l
 # name: let...in
-# condition: (plusp (current-indentation))
+# condition: (yas/bol?)
 # --
-let ${1:binding} = ${2:expr} in
-$0
+let ${1:binding} = $0
