@@ -16,10 +16,12 @@
     utop
     flycheck-ocaml
     aggressive-indent
+    (merlin-eldoc :location local)
     (smart-ops :location local)))
 
 (eval-when-compile
   (require 'dash)
+  (require 'f)
   (require 's)
   (require 'use-package nil t))
 
@@ -45,6 +47,19 @@
      )))
 
 (defun cb-ocaml/post-init-utop ()
+
+  (defun cb-ocaml/set-utop-command ()
+    (-when-let* ((ocamlinit ".ocamlinit")
+                 (dir (f-traverse-upwards
+                       (lambda (dir)
+                         (f-files dir (lambda (file)
+                                        (equal (f-filename file) ocamlinit))))))
+                 (file (f-abbrev (f-join dir ocamlinit)))
+                 )
+      (setq-local utop-command (format "utop -emacs -init %s" file))))
+
+  (add-hook 'merlin-mode-hook 'cb-ocaml/set-utop-command)
+
   (with-eval-after-load 'merlin
     (define-key merlin-mode-map (kbd "C-c C-.") 'merlin-locate)
     (define-key merlin-mode-map (kbd "C-c C-l") nil))
@@ -54,6 +69,10 @@
     (define-key utop-minor-mode-map (kbd "C-c C-z") 'utop)))
 
 (defun cb-ocaml/post-init-merlin ()
+  (with-eval-after-load 'merlin
+    (core/remap-face 'merlin-type-face 'core/bg-hl-ok)
+    (evil-define-key 'normal merlin-mode-map (kbd "M-.") 'merlin-locate)
+    (define-key merlin-mode-map (kbd "M-.") 'merlin-locate))
   (with-eval-after-load 'company
     (add-to-list 'company-backends 'merlin-company-backend)))
 
@@ -67,6 +86,10 @@
   (with-eval-after-load 'aggressive-indent
     (add-to-list 'aggressive-indent-excluded-modes 'tuareg-mode)
     (add-to-list 'aggressive-indent-excluded-modes 'utop-mode)))
+
+(defun cb-ocaml/init-merlin-eldoc ()
+  (with-eval-after-load 'merlin
+    (require 'merlin-eldoc)))
 
 (defun cb-ocaml/post-init-smart-ops ()
 
