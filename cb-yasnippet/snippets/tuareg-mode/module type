@@ -1,0 +1,6 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: module type
+# key: mt
+# condition: (yas/bol?)
+# --
+module type $0

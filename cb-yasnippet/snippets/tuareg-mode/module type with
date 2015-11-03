@@ -1,6 +1,0 @@
-# -*- mode: snippet -*-
-# name: module type with
-# key: mtw
-# condition: (yas/bol?)
-# --
-module type ${1:Module} = ${2:Module} with type ${3:t1} = ${4:t2}

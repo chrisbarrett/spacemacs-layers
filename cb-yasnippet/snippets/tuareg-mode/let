@@ -1,5 +1,5 @@
 # key: l
-# name: let...in
+# name: let (top-level)
 # condition: (yas/bol?)
 # --
 let ${1:binding} = $0
