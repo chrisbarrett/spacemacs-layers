@@ -87,8 +87,12 @@ With prefix arg ARG, just insert a newline and indent."
       (newline-and-indent)
       (insert "  "))
 
+     ((or (sp/inside-curly-braces? t sexp)
+          (sp/inside-square-braces? t sexp))
+      (sp/split-braced-expression-over-new-lines (rx (or ";" ","))))
+
      (t
-      (call-interactively 'sp/generic-prog-ret)))))
+      (call-interactively 'haskell-indentation-newline-and-indent)))))
 
 (defun haskell/split-braced-expression-over-new-lines (sexp)
   "Split the braced expression on the current line over several lines."
