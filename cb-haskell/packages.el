@@ -87,19 +87,6 @@
    '(haskell-operator-face
      ((t :italic nil))))
 
-  (defun cb-haskell/show-indentation-guides ()
-    (when (and (boundp 'haskell-indentation-mode) haskell-indentation-mode)
-      (haskell-indentation-enable-show-indentations)))
-
-  (defun cb-haskell/hide-indentation-guides ()
-    (when (and (boundp 'haskell-indentation-mode) haskell-indentation-mode)
-      (haskell-indentation-disable-show-indentations)))
-
-  ;; Show indentation guides for haskell-indentation only in insert state.
-  (add-hook 'evil-normal-state-entry-hook 'cb-haskell/hide-indentation-guides)
-  (add-hook 'evil-insert-state-entry-hook 'cb-haskell/show-indentation-guides)
-  (add-hook 'evil-insert-state-exit-hook  'cb-haskell/hide-indentation-guides)
-
   (defun cb-haskell/set-local-hooks ()
     (setq evil-shift-width 4)
     (setq tab-width 4)
