@@ -1,0 +1,9 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: package object
+# key: po
+# binding: direct-keybinding
+# condition: (yas/bol?)
+# --
+package object ${1:name} {
+  $0
+}

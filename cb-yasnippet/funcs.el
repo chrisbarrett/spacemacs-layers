@@ -238,3 +238,10 @@ Otherwise delete backwards."
 
 (defun yas/haskell-ctor-name (&optional text)
   (car (s-split (rx space) (or text yas-text))))
+
+
+;;; Scala
+
+(defun cb-yas/scala-test-fixture-name ()
+  (or (ignore-errors (s-replace "Tests" "Test" (f-filename (f-no-ext (buffer-file-name)))))
+      "TestFixture"))
