@@ -60,6 +60,9 @@
   (setq haskell-process-show-debug-tips nil)
   (setq haskell-stylish-on-save t)
 
+  (setq haskell-indentation-layout-offset 4)
+  (setq haskell-indent-spaces 4)
+
   (setq haskell-process-path-ghci
         (let ((ghci-ng (f-join user-home-directory ".local/bin/ghci-ng")))
           (if (f-executable? ghci-ng)
@@ -90,7 +93,6 @@
   (defun cb-haskell/set-local-hooks ()
     (setq evil-shift-width 4)
     (setq tab-width 4)
-    (setq haskell-indent-spaces 4)
     (add-hook 'before-save-hook 'haskell/unicode-buffer nil t)
     (add-hook 'evil-insert-state-exit-hook 'haskell/unicode-buffer nil t))
 
