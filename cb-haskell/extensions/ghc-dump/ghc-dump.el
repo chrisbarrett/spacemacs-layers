@@ -3,6 +3,7 @@
 ;; Copyright (C) 2015  Chris Barrett
 
 ;; Author: Chris Barrett <chris.d.barrett@me.com>
+;; Package-Requires: ((s "1.10.0") (f "0.17.2") (dash "2.12.1") (magit-popup "20151031.903") (haskell-mode "13.15") (llvm-mode "20150910.644"))
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
