@@ -120,7 +120,7 @@
   (ghc-dump--command-with-buffer-setup 'ignore "*ghc-types*" args "-ddump-types"))
 
 ;;;###autoload
-(defun ghc-dump-splices (&optinoal args)
+(defun ghc-dump-splices (&optional args)
   "Dump the contents of the current file after Template Haskell expansion."
   (interactive (list (ghc-dump-arguments)))
   (let ((setup (lambda () (ghc-core-mode) (compilation-minor-mode))))
