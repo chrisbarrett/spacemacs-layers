@@ -157,6 +157,8 @@
      `(org-level-7 ((,class (:background nil :height 1.0))))
      `(org-level-8 ((,class (:background nil :height 1.0))))
 
+
+     `(org-agenda-done ((,class (:background nil :height 1.0))))
      `(org-scheduled-today ((,class (:background nil :height 1.0))))
      `(org-scheduled-previously ((,class (:background nil :height 1.0))))
      ))
