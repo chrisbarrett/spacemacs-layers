@@ -29,7 +29,10 @@
 
 (defvar cb-bootstrap/package-installation-attempts 2)
 
-(defun cb-bootstrap/init ()
+(defun cb-bootstrap/user-init ()
+  ;; Show a backtrace if I've stuffed up something in my configuration.
+  (setq debug-on-error t)
+  (setq debug-on-quit t)
 
   ;; The org repo is required for `org-plus-contrib'. This means `package.el'
   ;; must be explicitly (re)initialised.
@@ -56,11 +59,6 @@
   ;; utilities needed by other layers.
   (load (concat user-layers-directory "cb-core/funcs.el"))
   (load (concat user-layers-directory "cb-core/config.el")))
-
-(defun cb-bootstrap/user-init ()
-  ;; Show a backtrace if I've stuffed up something in my configuration.
-  (setq debug-on-error t)
-  (setq debug-on-quit t))
 
 (defun cb-bootstrap/user-config ()
 

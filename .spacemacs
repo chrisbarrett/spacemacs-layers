@@ -234,10 +234,7 @@ values."
    ;; The default package repository used if no explicit repository has been
    ;; specified with an installed package.
    ;; Not used for now. (default nil)
-   dotspacemacs-default-package-repository nil
-   )
-  ;; User initialization goes here
-  (cb-bootstrap/init))
+   dotspacemacs-default-package-repository nil))
 
 (defun dotspacemacs/user-init ()
   "Initialization function for user code.
