@@ -15,6 +15,8 @@
 
      ("∀" . font-lock-keyword-face)
 
+     (,(rx bol (* space) "type" (+ space) "family" eow) . font-lock-keyword-face)
+
      ,(core/font-lock-replace-match (rx (or (and space (group-n 1 ".") space)
                                             (and "(" (group-n 1 ".") ")")
                                             ))
