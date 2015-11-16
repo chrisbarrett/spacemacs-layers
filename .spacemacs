@@ -2,7 +2,9 @@
 ;; This file is loaded by Spacemacs at startup.
 ;; It must be stored in your home directory.
 
-(defconst user-layers-directory "~/.spacemacs-layers/")
+(eval-and-compile
+  (defconst user-layers-directory "~/.spacemacs-layers/")
+  (require 'cb-bootstrap (concat user-layers-directory "cb-bootstrap")))
 
 (defun dotspacemacs/layers ()
   "Configuration Layers declaration.
@@ -235,98 +237,19 @@ values."
    dotspacemacs-default-package-repository nil
    )
   ;; User initialization goes here
-
-  ;; The org repo is required for `org-plus-contrib'. This means `package.el'
-  ;; must be explicitly (re)initialised.
-  (require 'package)
-  (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/"))
-  (unless package-alist (package-refresh-contents))
-  (package-initialize)
-
-  ;; The following packages are required by layers at the top-level, and must be
-  ;; manually installed before Spacemacs loads those layers.
-  (core/install-package 's)
-  (core/install-package 'noflet)
-  (core/install-package 'f)
-  (core/install-package 'let-alist)
-  (core/install-package 'dash)
-  (core/install-package 'dash-functional)
-  (core/install-package 'helm) ;; HACK: needed for Spacemacs
-
-  ;; Some random utilities and editor tools are installed in these dirs.
-  (add-to-list 'exec-path "~/.cabal/bin/")
-  (add-to-list 'exec-path "~/bin/")
-
-  ;; Ensure the `cb-core' layer is loaded before all others. This layer contains
-  ;; utilities needed by other layers.
-  (load (concat user-layers-directory "cb-core/funcs.el"))
-  (load (concat user-layers-directory "cb-core/config.el")))
+  (cb-bootstrap/init))
 
 (defun dotspacemacs/user-init ()
   "Initialization function for user code.
 It is called immediately after `dotspacemacs/init'.  You are free to put any
 user code."
-  ;; Show a backtrace if I've stuffed up something in my configuration.
-  (setq debug-on-error t)
-  (setq debug-on-quit t))
-
-(defun core/mk-package-dir-regexp (pkg)
-  (rx-to-string `(and ,(symbol-name pkg)
-                      "-" (repeat 8 digit) "." (repeat 3 4 digit) (? "/"))))
-
-(defvar core/package-installation-attempts 2)
-
-(defun core/install-package (pkg &optional attempts cur)
-  (cond
-   ((null attempts)
-    (core/install-package pkg core/package-installation-attempts 1))
-   ((< attempts cur)
-    (error "Unable to install %s after %s attempt(s)" pkg attempts))
-   (t
-    (if (equal 1 cur)
-        (message "--> Installing package %s..." pkg)
-      (message "--> Installing package %s... (attempt %s/%s)" pkg cur attempts))
-    (condition-case err
-        (cond
-         ((require 'paradox nil t)
-          (paradox-require pkg))
-         ((package-installed-p pkg)
-          (require pkg))
-         (t
-          (package-install pkg)
-          (require pkg)))
-      (error
-       (let ((archives (concat package-user-dir "/archives")))
-         (when (file-directory-p archives)
-           (message "--> Cleaning package archives...")
-           (delete-directory archives t)))
-
-       (dolist (entry (directory-files package-user-dir t))
-         (when (string-match-p (core/mk-package-dir-regexp pkg) (file-name-nondirectory entry))
-           (message "--> Deleting existing package at %s..." entry)
-           (delete-directory entry t)))
-
-       (package-refresh-contents)
-       (package-initialize)
-       (core/install-package pkg attempts (1+ cur)))))))
+  (cb-bootstrap/user-init))
 
 (defun dotspacemacs/user-config ()
   "Initialization function for user code.
 It is called immediately after `dotspacemacs/init'.  You are free to put any
 user code."
-  (setq custom-file (concat user-emacs-directory "custom.el"))
-  (when (file-exists-p custom-file)
-    (load custom-file))
-
-  (with-demoted-errors "Personal config: %S"
-    (require 'personal-config nil t))
-
-  ;; Disable bookmarks.
-  (setq bookmark-save-flag nil)
-
-  ;; Disable debugging now that my configuration has loaded.
-  (setq debug-on-error nil)
-  (setq debug-on-quit nil))
+  (cb-bootstrap/user-config))
 
 ;; Do not write anything past this comment. This is where Emacs will
 ;; auto-generate custom variable definitions.
