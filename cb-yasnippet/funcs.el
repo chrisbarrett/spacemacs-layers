@@ -167,7 +167,7 @@ TEXT is the content of the docstring."
 
 ;;; Editing commands
 
-(defun yas//reload-all ()
+(defun cb-yas/reload-all ()
   (interactive)
   (yas-recompile-all)
   (yas-reload-all))

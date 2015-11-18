@@ -34,6 +34,17 @@
 
   (add-hook 'snippet-mode-hook (lambda () (setq-local require-final-newline nil)))
 
+  (with-eval-after-load 'yasnippet
+    (yas/reload-all)
+    (bind-key "<backspace>" 'yas/backspace yas-keymap)
+    (evil-define-key 'insert yas-keymap (kbd "SPC") 'yas/space))
+
+  (spacemacs/declare-prefix "Y" "yasnippet")
+  (evil-leader/set-key "Yf" 'yas-visit-snippet-file)
+  (evil-leader/set-key "Yn" 'yas-new-snippet)
+  (evil-leader/set-key "Yy" 'yas-insert-snippet)
+  (evil-leader/set-key "Yr" 'cb-yas/reload-all)
+
   ;; Advise editing commands.
   ;;
   ;; Pressing SPC in an unmodified field will clear it and switch to the next.
