@@ -171,10 +171,10 @@
       (setq mu4e-ml-modeline-indicator "New Mail")
 
       (with-eval-after-load 'spaceline
+        (require 'spaceline-config)
         (spaceline-define-segment mu4e-unread-messages
           "An unread mail indicator using mu4e."
           (powerline-raw mu4e-ml-modeline-indicator)
           :when mu4e-ml--unread-messages?)
 
-        (spaceline-spacemacs-theme '(mu4e-unread-messages)))
-      )))
+        (spaceline-spacemacs-theme '(mu4e-unread-messages))))))
