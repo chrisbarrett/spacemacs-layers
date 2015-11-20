@@ -23,11 +23,31 @@
 
 (require 'merlin)
 (require 's)
+(require 'dash)
+
+(defun merlin-eldoc--type-display (bounds type &optional quiet)
+  "Display the type TYPE of the expression occuring at BOUNDS.
+If QUIET is non nil, then an overlay and the merlin types can be used."
+  (if (not type)
+      (unless quiet (message "<no information>"))
+    (let ((count 0)
+          (pos   0))
+      (merlin--type-display-in-buffer type)
+      (while (and (<= count 8)
+                  (string-match "\n" type pos))
+        (setq pos (match-end 0))
+        (setq count (1+ count)))
+      (with-current-buffer merlin-type-buffer-name
+        (font-lock-fontify-region (point-min) (point-max))
+        (buffer-string)))))
 
 (defun merlin-eldoc/eldoc-function ()
   (merlin-sync-to-point)
   (when (merlin--type-enclosing-query)
-    (-when-let (res (merlin-type-enclosing-go-up))
+    (-when-let (res (noflet ((merlin--type-display
+                              (bounds type &optional quiet)
+                              (merlin-eldoc--type-display bounds type quiet)))
+                      (merlin-type-enclosing-go-up)))
       (s-trim res))))
 
 (defun merlin-eldoc/setup ()
