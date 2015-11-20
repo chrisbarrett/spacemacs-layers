@@ -16,7 +16,8 @@
     (scala-errors :location local)
     (scala-pretty-sbt :location local)
     (scala-yasnippet :location local)
-    (ensime-diminished-modeline :location local)))
+    (ensime-diminished-modeline :location local)
+    ))
 
 (defun cb-scala/post-init-scala-mode2 ()
   (use-package scala-mode2
@@ -233,7 +234,7 @@ See `ensime-goto-test-config-defaults' for possible template values.")
 (defun cb-scala/init-scala-yasnippet ()
   (with-eval-after-load 'scala-mode2
     (require 'scala-yasnippet)
-    (scala-yasnippet-initialise)))
+    (cb-yas/register-snippets-dir (f-join scala-yasnippet--root "snippets"))))
 
 (defun cb-scala/init-ensime-diminished-modeline ()
   (use-package ensime-diminished-modeline))

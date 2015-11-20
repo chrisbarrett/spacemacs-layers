@@ -1,3 +1,3 @@
 # scala-yasnippet
 
-Helper functions for scala snippets.
+A collection of snippets for Scala, as well as helper functions for them.
