@@ -1,0 +1,11 @@
+# Generated files
+*.elc
+*-pkg.el
+*.tar
+TAGS
+doc/mu4e-modeline-unread-messages.texi
+doc/mu4e-modeline-unread-messages.info
+
+# Packages
+.cask
+elpa
