@@ -5,7 +5,8 @@
 (eval-when-compile
   (require 'use-package nil t)
   (require 'dash nil t)
-  (require 'f nil t))
+  (require 'f nil t)
+  (require 'spaceline nil t))
 
 (defconst cb-mu4e-packages
   '(async
@@ -166,4 +167,14 @@
 (defun cb-mu4e/init-mu4e-modeline-unread-messages ()
   (use-package mu4e-modeline-unread-messages
     :config
-    (mu4e-modeline-unread-messages-init)))
+    (progn
+      (setq mu4e-ml-modeline-indicator "New Mail")
+
+      (with-eval-after-load 'spaceline
+        (spaceline-define-segment mu4e-unread-messages
+          "An unread mail indicator using mu4e."
+          (powerline-raw mu4e-ml-modeline-indicator)
+          :when mu4e-ml--unread-messages?)
+
+        (spaceline-spacemacs-theme '(mu4e-unread-messages)))
+      )))
