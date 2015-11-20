@@ -73,8 +73,9 @@
     (core/remap-face 'merlin-type-face 'core/bg-hl-ok)
     (evil-define-key 'normal merlin-mode-map (kbd "M-.") 'merlin-locate)
     (define-key merlin-mode-map (kbd "M-.") 'merlin-locate))
-  (with-eval-after-load 'company
-    (add-to-list 'company-backends 'merlin-company-backend)))
+  (with-eval-after-load 'tuareg
+    (with-eval-after-load 'company
+      (add-to-list 'company-backends 'merlin-company-backend))))
 
 (defun cb-ocaml/init-flycheck-ocaml ()
   (with-eval-after-load 'merlin
