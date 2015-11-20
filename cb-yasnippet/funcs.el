@@ -9,6 +9,26 @@
   (require 'dash-functional nil t)
   (require 'yasnippet nil t))
 
+;;; Snippet dir registration
+
+(defvar cb-yasnippet/yas-dirs nil)
+
+(defun cb-yas/register-snippets-dir (dir)
+  (let ((dirs (cons dir cb-yasnippet/yas-dirs)))
+    (setq cb-yasnippet/yas-dirs (-sort 'string< dirs)))
+  (cb-yas/reload-all))
+
+(defun cb-yas/reload-all ()
+  (setq yas-snippet-dirs cb-yasnippet/yas-dirs)
+  (yas-reload-all))
+
+(defun cb-yas/sync-with-yasnippet ()
+  (unless (equal cb-yasnippet/yas-dirs yas-snippet-dirs)
+    (cb-yas/reload-all)))
+
+
+;;; Config support
+
 (defmacro yas-with-field-restriction (&rest body)
   "Narrow the buffer to the current active field and execute BODY.
 If no field is active, no narrowing will take place."
@@ -167,11 +187,6 @@ TEXT is the content of the docstring."
 
 ;;; Editing commands
 
-(defun cb-yas/reload-all ()
-  (interactive)
-  (yas-recompile-all)
-  (yas-reload-all))
-
 (defun yas/space ()
   "Clear and skip this field if it is unmodified. Otherwise insert a space."
   (interactive "*")
@@ -238,10 +253,3 @@ Otherwise delete backwards."
 
 (defun yas/haskell-ctor-name (&optional text)
   (car (s-split (rx space) (or text yas-text))))
-
-
-;;; Scala
-
-(defun cb-yas/scala-test-fixture-name ()
-  (or (ignore-errors (s-replace "Tests" "Test" (f-filename (f-no-ext (buffer-file-name)))))
-      "TestFixture"))

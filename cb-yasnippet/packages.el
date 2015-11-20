@@ -13,18 +13,12 @@
 (defun cb-yasnippet/post-init-yasnippet ()
   (yas-global-mode +1)
 
+  (cb-yas/register-snippets-dir (f-join user-layers-directory "cb-yasnippet/snippets"))
+
+  (add-hook 'yas-minor-mode-hook 'cb-yas/sync-with-yasnippet)
+
   ;; Set up snippet directories.
-  (setq yas-snippet-dirs (list (f-join user-layers-directory "cb-yasnippet/snippets")))
-  (setq yas-snippet-dirs (-uniq (--reject (or
-                                           ;; Why is this symbol even in there? Jeez.
-                                           (equal 'yas-installed-snippets-dir it)
-                                           ;; Don't use snippets from packages.
-                                           (s-matches? "/elpa/" it)
-                                           ;; Ensure all paths exist or yasnippet will fail to load.
-                                           (not (f-dir? it)))
-
-                                          yas-snippet-dirs)))
-
+  (setq yas-snippet-dirs cb-yasnippet/yas-dirs)
   (setq yas-prompt-functions '(yas-ido-prompt))
   (setq yas-wrap-around-region t)
   (setq yas-verbosity 0)
