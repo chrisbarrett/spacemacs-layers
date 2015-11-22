@@ -2,6 +2,9 @@
 ;;; Commentary:
 ;;; Code:
 
+;;; HACK: work around keymap definition issue.
+(defun bind-map-evil-define-key (&rest _))
+
 (eval-when-compile
   (require 'use-package nil t)
   (use-package s :ensure t)
