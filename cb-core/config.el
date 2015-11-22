@@ -262,4 +262,5 @@ Work around spacemacs' aggressive manipulation of `face-remapping-alist'."
 
 ;;: Show time in the modeline
 
-(display-time)
+(setq display-time-default-load-average nil)
+(display-time-mode +1)
