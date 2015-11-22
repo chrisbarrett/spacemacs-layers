@@ -25,40 +25,49 @@
 
 ;;; Code:
 
-(autoload 'package-installed-p "package")
+(require 'package)
+(autoload 'paradox-require "paradox")
 
-(defvar cb-bootstrap/package-installation-attempts 2)
+(defconst cb-bootstrap-packages
+  '(s
+    noflet
+    f
+    let-alist
+    dash
+    dash-functional
+    )
+  "Packages required for bootstrapping my configuration.")
+
+(defconst cb-bootstrap-additional-exec-path-entries
+  '("~/.cabal/bin/"
+    "~/bin")
+  "Additional paths to add to `exec-path'.  They may contain utilities needed for bootstrap.")
+
+(defconst cb-bootstrap-preload-lisp-files
+  (list
+   (concat user-layers-directory "cb-core/funcs.el")
+   (concat user-layers-directory "cb-core/config.el"))
+  "Aggressively load these packages.  They contain utilities needed in layer definitions.")
+
+(defvar cb-bootstrap/package-installation-attempts 2
+  "Abort package installation after this number of failed attempts.")
 
 (defun cb-bootstrap/user-init ()
   ;; Show a backtrace if I've stuffed up something in my configuration.
   (setq debug-on-error t)
   (setq debug-on-quit t)
 
-  ;; The org repo is required for `org-plus-contrib'. This means `package.el'
-  ;; must be explicitly (re)initialised.
-  (require 'package)
-  (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/"))
   (unless package-alist (package-refresh-contents))
   (package-initialize)
 
-  ;; The following packages are required by layers at the top-level, and must be
-  ;; manually installed before Spacemacs loads those layers.
-  (cb-bootstrap--install-package 's)
-  (cb-bootstrap--install-package 'noflet)
-  (cb-bootstrap--install-package 'f)
-  (cb-bootstrap--install-package 'let-alist)
-  (cb-bootstrap--install-package 'dash)
-  (cb-bootstrap--install-package 'dash-functional)
-  (cb-bootstrap--install-package 'helm) ;; HACK: needed for Spacemacs
+  (dolist (pkg cb-bootstrap-packages)
+    (cb-bootstrap--install-package pkg))
 
-  ;; Some random utilities and editor tools are installed in these dirs.
-  (add-to-list 'exec-path "~/.cabal/bin/")
-  (add-to-list 'exec-path "~/bin/")
+  (dolist (dir cb-bootstrap-additional-exec-path-entries)
+    (add-to-list 'exec-path dir))
 
-  ;; Ensure the `cb-core' layer is loaded before all others. This layer contains
-  ;; utilities needed by other layers.
-  (load (concat user-layers-directory "cb-core/funcs.el"))
-  (load (concat user-layers-directory "cb-core/config.el")))
+  (dolist (el cb-bootstrap-preload-lisp-files)
+    (load el)))
 
 (defun cb-bootstrap/user-config ()
 
