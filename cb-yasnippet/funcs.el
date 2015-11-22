@@ -19,6 +19,7 @@
   (cb-yas/reload-all))
 
 (defun cb-yas/reload-all ()
+  (interactive)
   (setq yas-snippet-dirs cb-yasnippet/yas-dirs)
   (yas-reload-all))
 
