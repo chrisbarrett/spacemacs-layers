@@ -123,6 +123,7 @@
    ("c" . delete-window)))
 
 (defun cb-core/post-init-evil-surround ()
+  (require 'evil-surround)
   (setq-default evil-surround-pairs-alist
                 '((?\( . ("(" . ")"))
                   (?\[ . ("[" . "]"))
@@ -155,6 +156,7 @@
   (diminish 'hs-minor-mode))
 
 (defun cb-core/post-init-helm ()
+  (require 'helm)
   (helm-autoresize-mode +1)
   (setq helm-buffers-fuzzy-matching t)
   (setq helm-recentf-fuzzy-match t)
