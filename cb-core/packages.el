@@ -7,10 +7,10 @@
 
 (eval-when-compile
   (require 'use-package nil t)
-  (use-package s :ensure t)
-  (use-package dash :ensure t)
-  (use-package f :ensure t)
-  (use-package noflet :ensure t))
+  (require 's nil t)
+  (require 'dash nil t)
+  (require 'f nil t)
+  (require 'noflet nil t))
 
 (defconst cb-core-packages
   '(dash-functional
