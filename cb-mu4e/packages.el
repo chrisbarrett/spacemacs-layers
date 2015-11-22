@@ -12,7 +12,7 @@
   '(async
     (mu4e :location local)
     (mu4e-multi :location local)
-    (mu4e-modeline-unread-messages :location local)))
+    (mu4e-unread-messages :location local)))
 
 (defun cb-mu4e/init-async ()
   ;; Send mail asynchronously.
@@ -164,17 +164,10 @@
       ;; configuration (not on GitHub).
       (with-eval-after-load 'personal-config (mu4e-multi-enable)))))
 
-(defun cb-mu4e/init-mu4e-modeline-unread-messages ()
-  (use-package mu4e-modeline-unread-messages
+(defun cb-mu4e/init-mu4e-unread-messages ()
+  (use-package mu4e-unread-messages
     :config
     (progn
-      (setq mu4e-ml-modeline-indicator "New Mail")
-
-      (with-eval-after-load 'spaceline
-        (require 'spaceline-config)
-        (spaceline-define-segment mu4e-unread-messages
-          "An unread mail indicator using mu4e."
-          (powerline-raw mu4e-ml-modeline-indicator)
-          :when mu4e-ml--unread-messages?)
-
-        (spaceline-spacemacs-theme '(mu4e-unread-messages))))))
+      (setq display-time-use-mail-icon t)
+      (setq display-time-mail-function 'mu4e-unread-messages?)
+      (display-time-mode +1))))
