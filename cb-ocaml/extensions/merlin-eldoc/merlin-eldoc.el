@@ -42,13 +42,18 @@ If QUIET is non nil, then an overlay and the merlin types can be used."
         (buffer-string)))))
 
 (defun merlin-eldoc/eldoc-function ()
-  (merlin-sync-to-point)
-  (when (merlin--type-enclosing-query)
-    (-when-let (res (noflet ((merlin--type-display
-                              (bounds type &optional quiet)
-                              (merlin-eldoc--type-display bounds type quiet)))
-                      (merlin-type-enclosing-go-up)))
-      (s-trim res))))
+  (unless (let ((at-open? (rx bol (* space) "open" eow)))
+            (or (core/in-string-or-comment?)
+                (save-excursion
+                  (skip-chars-backward "\n \t")
+                  (s-matches? at-open? (current-line)))))
+    (merlin-sync-to-point)
+    (when (merlin--type-enclosing-query)
+      (-when-let (res (noflet ((merlin--type-display
+                                (bounds type &optional quiet)
+                                (merlin-eldoc--type-display bounds type quiet)))
+                        (merlin-type-enclosing-go-up)))
+        (s-trim res)))))
 
 (defun merlin-eldoc/setup ()
   (eldoc-mode +1)
