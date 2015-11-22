@@ -1,4 +1,4 @@
-;;; packages.el --- cb-calc Layer packages File for Spacemacs
+;;; packages.el --- cb-core Layer packages File for Spacemacs
 ;;; Commentary:
 ;;; Code:
 
