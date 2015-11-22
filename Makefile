@@ -1,9 +1,12 @@
 cwd = $(shell pwd)
-dot-spacemacs = $(cwd)/.spacemacs 
+dot-spacemacs = $(cwd)/.spacemacs
 
-.PHONY: all
+.PHONY: all submodules
 
-all : ~/.spacemacs
+all : ~/.spacemacs submodules
 
 ~/.spacemacs :
 	ln -s $(dot-spacemacs) $@
+
+submodules :
+	git submodule update --init --recursive
