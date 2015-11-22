@@ -79,6 +79,7 @@
       (setq mu4e-use-fancy-chars t)
       (setq mu4e-headers-attach-mark (purecopy '("a" . "📎")))
       (setq mu4e-headers-unread-mark (purecopy '("u" . "●")))
+      (setq mu4e-hide-index-messages t)
 
       (setq mu4e-view-show-images t)
       (setq message-kill-buffer-on-exit t)
