@@ -1,20 +1,23 @@
+emacs = emacs --batch
 emacs_d = ~/.emacs.d
 cwd = $(shell pwd)
-dot-spacemacs = $(cwd)/.spacemacs
+package_d = $(emacs_d)/elpa
+dot_spacemacs = $(cwd)/.spacemacs
+init_el = $(emacs_d)/init.el
 
 .PHONY: all submodules install reinstall
 
 all : install ~/.spacemacs submodules
 
 install :
-	emacs --batch -l $(emacs_d)/init.el
+	$(emacs) -l $(init_el)
 
 reinstall :
-	rm -r $(emacs_d)/elpa
-	emacs --batch -l $(emacs_d)/init.el
+	[ -d $(package_d) ] && rm -r $(package_d)
+	$(emacs) -l $(init_el)
 
 submodules :
 	git submodule update --init --recursive
 
 ~/.spacemacs :
-	ln -s $(dot-spacemacs) $@
+	ln -s $(dot_spacemacs) $@
