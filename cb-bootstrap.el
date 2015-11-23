@@ -43,6 +43,12 @@
     "~/bin")
   "Additional paths to add to `exec-path'.  They may contain utilities needed for bootstrap.")
 
+(defconst cb-bootstrap-package-archives
+  '(("melpa" . "http://melpa.org/packages/")
+    ("org" . "http://orgmode.org/elpa/")
+    ("gnu" . "http://elpa.gnu.org/packages/"))
+  "An alist of package archives required during bootstrap.")
+
 (defconst cb-bootstrap-preload-lisp-files
   (list
    (concat user-layers-directory "cb-core/funcs.el")
@@ -56,6 +62,9 @@
   ;; Show a backtrace if I've stuffed up something in my configuration.
   (setq debug-on-error t)
   (setq debug-on-quit t)
+
+  (dolist (archive cb-bootstrap-package-archives)
+    (add-to-list 'package-archives archive))
 
   (unless package-alist (package-refresh-contents))
   (package-initialize)
