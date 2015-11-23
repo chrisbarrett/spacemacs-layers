@@ -101,8 +101,8 @@
       (setq message-citation-line-function 'message-insert-formatted-citation-line)
       (setq message-citation-line-format "On %a, %b %d %Y, %f wrote:\n")
 
-      ;; Update every 5 minutes.
-      (setq mu4e-update-interval (* 60 5))
+      ;; Update every minute.
+      (setq mu4e-update-interval 60)
 
       ;; use imagemagick, if available
       (when (fboundp 'imagemagick-register-types)
