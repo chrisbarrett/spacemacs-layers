@@ -1,4 +1,4 @@
-;;; cb-bootstrap.el --- File for bootstrapping layers.  -*- lexical-binding: t; -*-
+;;; cb-bootstrap.el --- File for bootstrapping layers.  -*- mode: emacs-lisp; lexical-binding: t; -*-
 
 ;; Copyright (C) 2015  Chris Barrett
 
