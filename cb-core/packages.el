@@ -31,6 +31,7 @@
     iedit
     hl-line
     eldoc
+    ido
     recentf
 
     (locate-key-binding :location local)
