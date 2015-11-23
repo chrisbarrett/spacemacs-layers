@@ -25,6 +25,7 @@ values."
      latex
      (haskell
       :variables
+      haskell-enable-ghci-ng-support t
       haskell-enable-ghc-mod-support nil
       haskell-enable-hindent-style "gibiansky")
      osx

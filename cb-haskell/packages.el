@@ -71,6 +71,13 @@
               ghci-ng
             (executable-find "ghci"))))
 
+  (setq haskell-process-args-stack-ghci
+        (list
+         "--ghc-options" "-ferror-spans"
+         "--with-ghc" "ghci-ng"))
+
+  (concat "stack ghci " (s-join " " haskell-process-args-stack-ghci))
+
   (setq haskell-import-mapping
         '(("Data.Map" . "import qualified Data.Map as M\nimport Data.Map (Map)")
           ("Data.Vector" . "import qualified Data.Vector as V\nimport Data.Vector (Vector)")
