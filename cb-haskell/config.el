@@ -36,6 +36,7 @@
        1 (propertize "λ" 'face 'font-lock-keyword-face)))))
 
 (add-hook 'haskell-mode-hook 'haskell/apply-font-locking)
+(add-hook 'ghc-type-dump-mode-hook 'haskell/apply-font-locking)
 (add-hook 'haskell-interactive-mode-hook 'haskell/apply-font-locking)
 
 (font-lock-add-keywords

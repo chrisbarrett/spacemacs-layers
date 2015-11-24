@@ -117,7 +117,7 @@
 (defun ghc-dump-types (&optional args)
   "Dump the types and signatures defined by the current file."
   (interactive (list (ghc-dump-arguments)))
-  (ghc-dump--command-with-buffer-setup 'ignore "*ghc-types*" args "-ddump-types"))
+  (ghc-dump--command-with-buffer-setup 'ghc-type-dump-mode "*ghc-types*" args "-ddump-types"))
 
 ;;;###autoload
 (defun ghc-dump-splices (&optional args)
@@ -133,10 +133,47 @@
   (ghc-dump--command-with-buffer-setup 'ghc-stg-mode "*ghc-stg*" args "-ddump-stg"))
 
 ;;;###autoload
-(define-derived-mode ghc-stg-mode ghc-core-mode "GHC-STG")
+(define-derived-mode ghc-stg-mode ghc-core-mode "GHC-STG"
+  (read-only-mode +1))
 
 ;;;###autoload
-(define-derived-mode ghc-cmm-mode c-mode "C--")
+(define-derived-mode ghc-type-dump-mode haskell-parent-mode "GHC-Types"
+  (setq-local font-lock-defaults
+              '(haskell-font-lock-choose-keywords
+                nil nil ((?\' . "w") (?_  . "w")) nil
+                (font-lock-syntactic-keywords
+                 . haskell-font-lock-choose-syntactic-keywords)
+                (font-lock-syntactic-face-function
+                 . haskell-syntactic-face-function)
+                ;; Get help from font-lock-syntactic-keywords.
+                (parse-sexp-lookup-properties . t)))
+
+  (read-only-mode +1))
+
+(defconst ghc-type-dump-headers
+  '("TYPE SIGNATURES"
+    "TYPE CONSTRUCTORS"
+    "COERCION AXIOMS"
+    "INSTANCES"
+    "FAMILY INSTANCES"))
+
+(defface ghc-type-dump-section-header
+  '((((background light))
+     (:bold t :foreground "#2f96dc" :height 1.3 :overline t))
+    (((background dark))
+     (:bold t :foreground "#2f96dc" :height 1.3 :overline t)))
+  "The face used for section headers in a GHC type dump."
+  :group 'ghc-dump)
+
+(font-lock-add-keywords
+ 'ghc-type-dump-mode
+ `((,(rx bol (* space) "-- " (* nonl) eol) (0 '(face nil invisible t)))
+   (,(concat "^" (regexp-opt ghc-type-dump-headers 'words)) . 'ghc-type-dump-section-header)
+   (,(rx bol (* space) "axiom" eow) . font-lock-keyword-face)))
+
+;;;###autoload
+(define-derived-mode ghc-cmm-mode c-mode "C--"
+  (read-only-mode +1))
 
 (defconst ghc-cmm-keywords
   '("aborts" "align" "aligned" "also" "as" "big" "bits" "byteorder" "case"
@@ -164,6 +201,7 @@
   (add-to-list 'aggressive-indent-excluded-modes 'asm-mode)
   (add-to-list 'aggressive-indent-excluded-modes 'llvm-mode)
   (add-to-list 'aggressive-indent-excluded-modes 'ghc-core-mode)
+  (add-to-list 'aggressive-indent-excluded-modes 'ghc-type-dump-mode)
   (add-to-list 'aggressive-indent-excluded-modes 'ghc-stg-mode)
   (add-to-list 'aggressive-indent-excluded-modes 'ghc-cmm-mode))
 
