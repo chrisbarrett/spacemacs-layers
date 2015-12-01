@@ -6,6 +6,10 @@
   (require 'use-package nil t)
   (require 's nil t))
 
+(defconst org-directory
+  (let ((in-dropbox (f-join user-dropbox-directory "org/")))
+    (if (f-exists? in-dropbox) in-dropbox "~/org/")))
+
 (defconst cb-org-packages
   '(
     org
@@ -47,10 +51,6 @@
 (defun cb-org/post-init-org ()
   (defconst cb-org/default-stuck-projects
     '("-ignore-3_years+TODO={TODO_OUT\\|PROJECT}/-MAYBE-DONE-CANCELLED" ("NEXT") nil "SCHEDULED:\\|\\<IGNORE\\>"))
-
-  (defconst org-directory
-    (let ((in-dropbox (f-join user-dropbox-directory "org/")))
-      (if (f-exists? in-dropbox) in-dropbox "~/org/")))
 
   (add-hook 'org-mode-hook 'auto-revert-mode)
   (add-hook 'org-mode-hook 'abbrev-mode)
