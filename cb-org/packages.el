@@ -55,12 +55,6 @@
   (add-hook 'org-mode-hook 'auto-revert-mode)
   (add-hook 'org-mode-hook 'abbrev-mode)
 
-  (defun cb-org/maybe-enable-autofill ()
-    (unless (and (boundp 'org-jira-mode) org-jira-mode)
-      (turn-on-auto-fill)))
-
-  (add-hook 'org-mode-hook 'cb-org/maybe-enable-autofill)
-
   (setq org-default-notes-file (f-join org-directory "notes.org"))
   (setq org-M-RET-may-split-line nil)
   (setq org-attach-directory (f-join org-directory "data"))
@@ -347,10 +341,6 @@ Do not change habits, scheduled items or repeating todos."
       (-uniq (-union (cons org-default-notes-file (cb-org/toplevel-files))
                      (cb-org/work-files))))
 
-    (defun cb-org/jira-files ()
-      (when (bound-and-true-p org-jira-working-dir)
-        (f-files org-jira-working-dir 'cb-org/org-file?)))
-
     (defun cb-org/gcal-files ()
       (when (bound-and-true-p org-gcal-dir)
         (f-files org-gcal-dir 'cb-org/org-file?)))
@@ -364,7 +354,7 @@ Do not change habits, scheduled items or repeating todos."
       (--reject (equal "org_archive" (f-ext it)) org-files))
 
     (defun cb-org/work-files ()
-      (-distinct (-concat (cb-org/jira-files) (cb-org/gcal-files) (cb-org/toplevel-files))))
+      (-distinct (-concat (cb-org/gcal-files) (cb-org/toplevel-files))))
 
     (setq org-agenda-files (cb-org/all-org-files))
 
