@@ -50,7 +50,6 @@
   (add-hook 'scala-mode-hook 'scala/maybe-start-ensime)
   (add-hook 'ensime-mode-hook 'cb-core/turn-off-aggressive-indent-mode)
 
-  (setq ensime-default-scala-version "2.11.7")
   (setq ensime-auto-generate-config t)
   (setq ensime-prefer-noninteractive t)
   (setq ensime-sem-high-faces
@@ -65,8 +64,8 @@
           (trait .  (:inherit font-lock-type-face :slant italic))
           (object . font-lock-constant-face)
           (package . font-lock-preprocessor-face)
-          (implicitConversion . ensime-implicit-highlight)
-          (implicitParams . ensime-implicit-highlight)
+          (implicitConversion . (:underline ,solarized-hl-cyan))
+          (implicitParams . (:underline ,solarized-hl-cyan))
           (deprecated . (:strike-through "dark gray"))))
 
   (defconst scala/test-file-template
