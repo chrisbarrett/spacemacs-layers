@@ -417,13 +417,9 @@ It will be called with point just before the current op."
 
 ;;;###autoload
 (defun turn-on-smart-ops-mode ()
-  "Unconditionally enable `smart-ops-global-mode'."
+  "Unconditionally enable `smart-ops-global-mode' for programming modes."
   (interactive)
-  (unless (or
-           (minibufferp)
-           (derived-mode-p 'text-mode)
-           (when (derived-mode-p 'comint-mode)
-             (eq (get major-mode 'mode-class) 'special)))
+  (when (derived-mode-p 'prog-mode)
     (smart-ops-mode +1)))
 
 (defun smart-ops--after-op? (rules)
