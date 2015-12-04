@@ -14,6 +14,7 @@
     hl-sexp
     highlight-defined
     smart-ops
+    checkdoc
     flycheck-cask))
 
 (defun cb-elisp/post-init-eldoc ()
@@ -67,3 +68,7 @@
 (defun cb-elisp/post-init-smart-ops ()
   (define-smart-ops-for-mode 'emacs-lisp-mode
     (smart-ops "." ",@" "," :pad-before t :pad-after nil)))
+
+(defun cb-elisp/init-checkdoc ()
+  (setq checkdoc-force-docstrings-flag nil)
+  (setq checkdoc-arguments-in-order-flag nil))
