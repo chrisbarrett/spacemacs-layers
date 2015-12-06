@@ -61,7 +61,7 @@
   (setq org-catch-invisible-edits 'smart)
   (setq org-clock-persist-file (f-join org-directory ".org-clock-save"))
   (setq org-completion-use-ido t)
-  (setq org-cycle-separator-lines 0)
+  (setq org-cycle-separator-lines 1)
   (setq org-drawers '("COMMENTS" "NOTES" "PROPERTIES" "CLOCK" "LOGBOOK" "RESULTS"))
   (setq org-enforce-todo-dependencies t)
   (setq org-footnote-auto-adjust t)
