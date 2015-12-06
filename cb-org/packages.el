@@ -86,10 +86,11 @@
   (setq org-startup-indented t)
   (setq org-startup-with-inline-images t)
   (setq org-stuck-projects cb-org/default-stuck-projects)
-  (setq org-support-shift-select t)
+
   (setq org-todo-keywords '((type "MAYBE(m)" "TODO(t)" "NEXT(n)" "WAITING(w@/!)" "|" "DONE(d!)" "CANCELLED(c@)")
                             (type "PROJECT(p)" "|")
                             (type "SOMEDAY(S)" "|")))
+
   (setq org-hierarchical-todo-statistics nil)
   (setq org-checkbox-hierarchical-statistics t)
   (setq org-tag-persistent-alist
