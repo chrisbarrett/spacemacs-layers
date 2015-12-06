@@ -15,6 +15,10 @@
 
   (add-hook 'org-agenda-mode-hook (lambda () (smartparens-mode -1)))
 
+  (sp-with-modes 'org-mode
+    (sp-local-pair "\\[" "\\]" :post-handlers '(:add sp/internal-and-external-padding))
+    )
+
   ;;; Rust
 
   (sp-with-modes 'rust-mode
