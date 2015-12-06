@@ -245,7 +245,17 @@ Do not change habits, scheduled items or repeating todos."
     (let (org-log-done org-log-states) ; turn off logging
       (org-todo (if (zerop n-todo) "DONE" "TODO"))))
 
-  (add-hook 'org-after-todo-statistics-hook 'cb-org/children-done-parent-done))
+  (add-hook 'org-after-todo-statistics-hook 'cb-org/children-done-parent-done)
+
+  ;; LaTeX preview on C-c C-c
+
+  (defun cb-org/latex-preview-fragment-at-pt ()
+    (when (memq (org-element-type (org-element-context))
+                '(latex-environment latex-fragment))
+      (org-toggle-latex-fragment)
+      t))
+
+  (add-hook 'org-ctrl-c-ctrl-c-hook 'cb-org/latex-preview-fragment-at-pt t))
 
 (defun cb-org/init-org-drill-table ()
   (use-package org-drill-table
