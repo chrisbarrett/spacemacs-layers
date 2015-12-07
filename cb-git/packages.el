@@ -7,11 +7,7 @@
 
 (defconst cb-git-packages
   '(magit
-    ediff
     git-auto-commit-mode))
-
-(defun cb-git/post-init-ediff ()
-  (add-hook 'diff-auto-refine-mode-hook 'cb-core/turn-off-aggressive-indent-mode))
 
 (defun cb-git/post-init-magit ()
   ;; Remove broken Spacemacs customisation

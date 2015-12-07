@@ -6,7 +6,11 @@
   (require 'use-package nil t))
 
 (defconst cb-diff-packages
-  '((ediff-trees :location local)))
+  '(ediff
+    (ediff-trees :location local)))
+
+(defun cb-diff/post-init-ediff ()
+  (add-hook 'diff-auto-refine-mode-hook 'cb-core/turn-off-aggressive-indent-mode))
 
 (defun cb-diff/init-ediff-trees ()
   (use-package ediff-trees
