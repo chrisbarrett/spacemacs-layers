@@ -1,4 +1,5 @@
 (setq git-magit-status-fullscreen t)
-(setq magit-last-seen-setup-instructions "1.4.0")
+
+(setq vc-follow-symlinks t)
 
 (setenv "GIT_EDITOR" "emacsclient")
