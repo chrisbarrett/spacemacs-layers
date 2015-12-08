@@ -15,7 +15,8 @@
     (user-error "Not a git repo"))
 
   (-let* ((default-directory dir)
-          ((remote . branch) (magit-get-remote-branch))
+          (remote (magit-get-push-remote))
+          (branch (magit-get-push-branch))
           (cmd (format "git config --get remote.%s.url" remote))
           (remote-url (s-trim (shell-command-to-string cmd)))
           ((_input _prot _user host _port filepath _suffix)
@@ -27,10 +28,12 @@
                         (group (* nonl))
                         (group ".git"))
                     remote-url))
+          (branch (-last-item (s-split "/" branch)))
           (url
            (pcase host
              (`"bitbucket.org"
-              (format "https://bitbucket.org/%s/src/%s" filepath branch))
+              (message "branch: %s" branch)
+              (format "https://bitbucket.org/%s/branch/%s" filepath branch))
              (`"github.com"
               (format "https://github.com/%s/tree/%s" filepath branch))
              (`"gogs.movio.co"
