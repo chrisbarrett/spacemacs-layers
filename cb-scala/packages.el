@@ -98,7 +98,9 @@ See `ensime-goto-test-config-defaults' for possible template values.")
   (defadvice ensime-config-load (before fix-ensime-file activate)
     (scala/fix-ensime-file))
 
-  (define-key ensime-inf-mode-map (kbd "C-c C-z") 'scala/switch-to-src)
+  (with-eval-after-load 'ensime-inf
+    (define-key ensime-inf-mode-map (kbd "C-c C-z") 'scala/switch-to-src))
+
   (define-key ensime-mode-map (kbd "C-c C-z") 'ensime-inf-switch)
   (define-key ensime-mode-map (kbd "C-c C-l") 'scala/load-buffer)
   (define-key ensime-mode-map (kbd "C-c C-h") 'ensime-show-doc-for-symbol-at-point)
