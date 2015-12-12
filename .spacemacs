@@ -79,7 +79,6 @@ values."
      cb-sql
      ;; cb-shell
      cb-eshell
-     cb-elfeed
      cb-calc
      ;; cb-extempore
      cb-groovy
