@@ -55,6 +55,9 @@
     (evil-leader/set-key "am" 'mu4e)
     :config
     (progn
+      (with-eval-after-load 'org
+        (require 'org-mu4e))
+
       ;; Enable evil leader in mu4e buffers.
       (add-to-list 'evil-leader/no-prefix-mode-rx "mu4e-main-mode")
       (add-to-list 'evil-leader/no-prefix-mode-rx "mu4e-headers-mode")
