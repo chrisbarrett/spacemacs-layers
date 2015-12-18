@@ -91,6 +91,7 @@
 (defun cb-core/user-config ()
   "This procedure should be called in `dotspacemacs/user-config'."
   (setq-default company-minimum-prefix-length 3)
+  (setq recentf-max-saved-items 1000)
   (setq bookmark-save-flag nil))
 
 (defun cb-core/init-dash-functional ()
@@ -259,7 +260,6 @@
 
 (defun cb-core/post-init-recentf ()
   (setq recentf-save-file (concat spacemacs-cache-directory "recentf"))
-  (setq recentf-max-saved-items 500)
   (setq recentf-max-menu-items 10)
   (setq recentf-keep '(file-remote-p file-readable-p))
 
