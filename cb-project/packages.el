@@ -24,7 +24,6 @@
   (use-package projectile
     :bind
     (("s-f" . projectile-find-file)
-     ("s-F" . project/find-file-in-scope)
      ("s-d" . projectile-find-dir)
      ("s-l" . projectile-switch-project))
     :init
@@ -56,7 +55,22 @@
         (ignore-errors ad-do-it))
 
       (defadvice projectile-replace (around save-window-excursion activate)
-        (save-window-excursion ad-do-it)))))
+        (save-window-excursion ad-do-it))
+
+      ;;; HACK: fix duplicates in projectile projects list on OS X.
+
+      (with-eval-after-load 'projectile
+        (defun projectile-relevant-known-projects ()
+          "Return a list of known projects except the current one (if present)."
+          (if (projectile-project-p)
+
+              (->> projectile-known-projects
+                   (--reduce-from
+                    (if (-contains? (-map 's-downcase acc) (s-downcase it)) acc (cons it acc))
+                    (list (abbreviate-file-name (projectile-project-root))))
+                   (-sort 'string-lessp))
+
+            projectile-known-projects))))))
 
 (defun cb-project/post-init-helm-projectile ()
   (use-package helm-projectile
