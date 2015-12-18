@@ -35,6 +35,7 @@
     let-alist
     dash
     dash-functional
+    hydra
     )
   "Packages required for bootstrapping my configuration.")
 

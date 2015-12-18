@@ -1,10 +1,11 @@
-;;; packages.el --- cb-project Layer packages File for Spacemacs
+;;; packages.el --- cb-project Layer packages File for Spacemacs  -*- lexical-binding: t; -*-
 ;;; Commentary:
 ;;; Code:
 
 (eval-when-compile
   (require 'use-package nil t)
   (require 'dash nil t)
+  (require 'hydra nil t)
   (require 's nil t))
 
 (defconst cb-project-packages
@@ -33,12 +34,34 @@
       "pG" 'projectile-find-other-file-other-window)
     :config
     (progn
+      (defvar cb-project/project-to-switch)
+
+      (defun cb-project/set-project-to-switch ()
+        (setq cb-project/project-to-switch default-directory))
+
+      (add-hook 'projectile-before-switch-project-hook 'cb-project/set-project-to-switch)
+
+      (defun cb-project/call-in-project-to-switch (command)
+        `(lambda ()
+           (interactive)
+           (let ((default-directory cb-project/project-to-switch))
+             ,(if (commandp command)
+                  `(call-interactively ',command)
+                `(funcall ',command)))))
+
+      (eval
+       `(defhydra cb-project-show-project (:color blue)
+          "Execute in project"
+          ("d" ,(cb-project/call-in-project-to-switch 'dired) "dired")
+          ("e" ,(cb-project/call-in-project-to-switch 'cb-eshell--new) "eshell")
+          ("f" ,(cb-project/call-in-project-to-switch 'projectile-find-file) "find file")
+          ("g" ,(cb-project/call-in-project-to-switch 'magit-status) "magit status")
+          ("q" nil "cancel")))
+
       ;;; Vars
 
       (setq projectile-ignored-projects '("/usr/local/"))
-      (setq projectile-switch-project-action (lambda ()
-                                               (projectile-invalidate-cache nil)
-                                               (call-interactively 'magit-status)))
+      (setq projectile-switch-project-action 'cb-project-show-project/body)
       (setq projectile-globally-ignored-directories cb-core/ignored-dirs)
 
       (defadvice projectile-invalidate-cache (before recentf-cleanup activate)
