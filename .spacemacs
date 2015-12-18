@@ -22,75 +22,74 @@ values."
    ;; of a list then all discovered layers will be installed.
    dotspacemacs-configuration-layers
    '(auto-completion
-     latex
+     (c-c++
+      :variables
+      c-c++-default-mode-for-headers 'c++-mode
+      c-c++-enable-clang-support t)
+     clojure
+     dockerfile
+     emacs-lisp
+     finance
+     git
+     gtags
      (haskell
       :variables
       haskell-enable-ghci-ng-support t
       haskell-enable-ghc-mod-support nil
       haskell-enable-hindent-style "gibiansky")
-     osx
-     git
-     version-control
-     scala
+     latex
      markdown
-     dockerfile
-     finance
+     ocaml
      org
-     emacs-lisp
+     osx
      restclient
-     syntax-checking
-     sml
+     scala
      (shell
       :variables
       shell-default-shell 'eshell
-      shell-protect-eshell-prompt nil
-      )
-     gtags
-     (c-c++
-      :variables
-      c-c++-default-mode-for-headers 'c++-mode
-      c-c++-enable-clang-support t
-      )
-     ocaml
-     clojure
-     cb-core
-     cb-evil
-     cb-sunrise-commander
-     cb-autoinsert
-     cb-flycheck
-     cb-org
-     cb-org-reveal
-     cb-elisp
-     cb-cosmetic
-     cb-spelling
-     cb-git
-     cb-yasnippet
-     cb-project
-     cb-smartparens
-     cb-ledger
-     cb-proof
-     cb-haskell
-     cb-scala
-     cb-sml
-     ;; cb-csharp
-     ;; cb-rust
-     cb-idris
+      shell-protect-eshell-prompt nil)
+     sml
+     syntax-checking
+     version-control
+
      ;; cb-agda
-     cb-coffeescript
-     cb-sql
-     ;; cb-shell
-     cb-eshell
+     cb-autoinsert
      cb-calc
-     ;; cb-extempore
-     cb-groovy
+     cb-coffeescript
+     ;; cb-cpp
+     cb-core
+     cb-cosmetic
      cb-crontab
+     ;; cb-csharp
+     cb-dash-docs
+     cb-diff
+     cb-elisp
+     cb-eshell
+     cb-evil
+     ;; cb-extempore
+     cb-flycheck
+     cb-git
+     cb-groovy
+     cb-haskell
+     cb-idris
      cb-js
+     cb-ledger
+     cb-makefile
      cb-mu4e
      cb-ocaml
-     ;; cb-cpp
-     cb-dash-docs
-     cb-makefile
-     cb-diff
+     cb-org
+     cb-org-reveal
+     cb-project
+     cb-proof
+     ;; cb-rust
+     cb-scala
+     ;; cb-shell
+     cb-smartparens
+     cb-sml
+     cb-spelling
+     cb-sql
+     cb-sunrise-commander
+     cb-yasnippet
      )
    ;; List of additional packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these
