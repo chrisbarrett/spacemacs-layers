@@ -2,9 +2,6 @@
 ;;; Commentary:
 ;;; Code:
 
-;;; HACK: work around keymap definition issue.
-(defun bind-map-evil-define-key (&rest _))
-
 (eval-when-compile
   (require 'use-package nil t)
   (require 's nil t)
@@ -17,8 +14,6 @@
     diminish
     company
     company-quickhelp
-    evil
-    evil-surround
     auto-revert
     hideshow
     helm
@@ -104,54 +99,6 @@
 
 (defun cb-core/post-init-company ()
   (setq-default company-minimum-prefix-length 3))
-
-(defun cb-core/post-init-evil ()
-  (setq evil-want-visual-char-semi-exclusive t)
-  (setq evil-shift-width 2)
-  (setq evil-symbol-word-search 'symbol)
-
-  ;; Make window management work for all modes
-
-  (bind-keys*
-   :prefix "C-w"
-   :prefix-map evil/window-emu
-   ("C-w" . evil-window-prev)
-   ("C-s" . split-window-vertically)
-   ("C-v" . split-window-horizontally)
-   ("C-o" . delete-other-windows)
-   ("C-c" . delete-window)
-   ("w" . evil-window-prev)
-   ("s" . split-window-vertically)
-   ("v" . split-window-horizontally)
-   ("o" . delete-other-windows)
-   ("c" . delete-window)))
-
-(defun cb-core/post-init-evil-surround ()
-  (require 'evil-surround)
-  (setq-default evil-surround-pairs-alist
-                '((?\( . ("(" . ")"))
-                  (?\[ . ("[" . "]"))
-                  (?\{ . ("{" . "}"))
-
-                  (?\) . ("(" . ")"))
-                  (?\] . ("[" . "]"))
-                  (?\} . ("{" . "}"))
-
-                  (?# . ("#{" . "}"))
-                  (?b . ("(" . ")"))
-                  (?B . ("{" . "}"))
-                  (?> . ("<" . ">"))
-                  (?t . surround-read-tag)
-                  (?< . surround-read-tag)
-                  (?f . surround-function)))
-
-  ;; Elisp pairs
-
-  (defun core/config-elisp-surround-pairs ()
-    (make-local-variable 'evil-surround-pairs-alist)
-    (push '(?\` . ("`" . "'")) evil-surround-pairs-alist))
-
-  (add-hook 'emacs-lisp-mode-hook 'core/config-elisp-surround-pairs))
 
 (defun cb-core/post-init-autorevert ()
   (diminish 'auto-revert-mode))

@@ -54,6 +54,7 @@ values."
      ocaml
      clojure
      cb-core
+     cb-evil
      cb-sunrise-commander
      cb-autoinsert
      cb-flycheck
