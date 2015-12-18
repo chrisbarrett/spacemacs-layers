@@ -90,7 +90,8 @@
 
 (defun cb-core/user-config ()
   "This procedure should be called in `dotspacemacs/user-config'."
-  (setq-default company-minimum-prefix-length 3))
+  (setq-default company-minimum-prefix-length 3)
+  (setq bookmark-save-flag nil))
 
 (defun cb-core/init-dash-functional ()
   (use-package dash-functional

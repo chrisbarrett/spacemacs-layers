@@ -264,14 +264,18 @@ values."
   "Initialization function for user code.
 It is called immediately after `dotspacemacs/init'.  You are free to put any
 user code."
-  (cb-bootstrap/user-init))
+  (cb-bootstrap/enable-debugging)
+  (cb-bootstrap/initialize-packages)
+  (cb-bootstrap/initialize-exec-path)
+  (cb-bootstrap/load-preloadable-lisp-files))
 
 (defun dotspacemacs/user-config ()
   "Configuration function for user code.
 This function is called at the very end of Spacemacs initialization after
 layers configuration. You are free to put any user code."
   (cb-bootstrap/user-config)
-  (cb-core/user-config))
+  (cb-core/user-config)
+  (cb-bootstrap/disable-debugging))
 
 ;; Do not write anything past this comment. This is where Emacs will
 ;; auto-generate custom variable definitions.

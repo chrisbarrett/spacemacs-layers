@@ -58,39 +58,35 @@
 (defvar cb-bootstrap/package-installation-attempts 2
   "Abort package installation after this number of failed attempts.")
 
-(defun cb-bootstrap/user-init ()
-  ;; Show a backtrace if I've stuffed up something in my configuration.
+(defun cb-bootstrap/enable-debugging ()
+  "Show a backtrace if I've stuffed up something in my configuration."
   (setq debug-on-error t)
-  (setq debug-on-quit t)
+  (setq debug-on-quit t))
 
+(defun cb-bootstrap/initialize-packages ()
   (dolist (archive cb-bootstrap-package-archives)
     (add-to-list 'package-archives archive))
-
   (unless package-alist (package-refresh-contents))
   (package-initialize)
-
   (dolist (pkg cb-bootstrap-packages)
-    (cb-bootstrap--install-package pkg))
+    (cb-bootstrap--install-package pkg)))
 
-  (dolist (dir cb-bootstrap-additional-exec-path-entries)
-    (add-to-list 'exec-path dir))
-
+(defun cb-bootstrap/load-preloadable-lisp-files ()
   (dolist (el cb-bootstrap-preload-lisp-files)
     (load el)))
 
-(defun cb-bootstrap/user-config ()
+(defun cb-bootstrap/initialize-exec-path ()
+  (dolist (dir cb-bootstrap-additional-exec-path-entries)
+    (add-to-list 'exec-path dir)))
 
+(defun cb-bootstrap/user-config ()
   (setq custom-file (concat user-emacs-directory "custom.el"))
   (when (file-exists-p custom-file)
     (load custom-file))
-
   (with-demoted-errors "Personal config: %S"
-    (require 'personal-config nil t))
+    (require 'personal-config nil t)))
 
-  ;; Disable bookmarks.
-  (setq bookmark-save-flag nil)
-
-  ;; Disable debugging now that my configuration has loaded.
+(defun cb-bootstrap/disable-debugging ()
   (setq debug-on-error nil)
   (setq debug-on-quit nil))
 
