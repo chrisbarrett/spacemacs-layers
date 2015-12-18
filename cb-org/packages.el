@@ -19,7 +19,6 @@
     org-indent
     org-archive
     org-table
-    org-habit
     org-src
     org-clock
     org-crypt
@@ -62,20 +61,17 @@
   (setq org-clock-persist-file (f-join org-directory ".org-clock-save"))
   (setq org-completion-use-ido t)
   (setq org-cycle-separator-lines 1)
-  (setq org-drawers '("COMMENTS" "NOTES" "PROPERTIES" "CLOCK" "LOGBOOK" "RESULTS"))
   (setq org-enforce-todo-dependencies t)
   (setq org-footnote-auto-adjust t)
   (setq org-id-locations-file (f-join spacemacs-cache-directory "org-id-locations"))
   (setq org-indirect-buffer-display 'current-window)
   (setq org-insert-heading-respect-content t)
   (setq org-link-abbrev-alist '(("att" . org-attach-expand-link)))
-  (setq org-link-mailto-program '(compose-mail "%a" "%s"))
   (setq org-log-done 'time)
   (setq org-log-into-drawer t)
   (setq org-hide-emphasis-markers t)
   (setq org-outline-path-complete-in-steps nil)
   (setq org-pretty-entities t)
-  (setq org-put-time-stamp-overlays t)
   (setq org-refile-allow-creating-parent-nodes 'confirm)
   (setq org-refile-target-verify-function (lambda () (not (member (nth 2 (org-heading-components)) org-done-keywords))))
   (setq org-refile-targets '((nil :maxlevel . 9) (org-agenda-files :maxlevel . 9)))
@@ -86,27 +82,12 @@
   (setq org-startup-indented t)
   (setq org-startup-with-inline-images t)
   (setq org-stuck-projects cb-org/default-stuck-projects)
+  (setq org-hierarchical-todo-statistics nil)
+  (setq org-checkbox-hierarchical-statistics t)
 
   (setq org-todo-keywords '((type "MAYBE(m)" "TODO(t)" "NEXT(n)" "WAITING(w@/!)" "|" "DONE(d!)" "CANCELLED(c@)")
                             (type "PROJECT(p)" "|")
                             (type "SOMEDAY(S)" "|")))
-
-  (setq org-hierarchical-todo-statistics nil)
-  (setq org-checkbox-hierarchical-statistics t)
-  (setq org-tag-persistent-alist
-        '((:startgroup)
-          ("@computer" . 99)
-          ("@errand" . 101)
-          ("@home" . 104)
-          ("@leisure" . 108)
-          ("@phone" . 112)
-          ("@work" . 119)
-          (:endgroup)))
-
-  (setq org-global-properties
-        `(("Effort_ALL" . ,(concat "1:00 2:00 3:00 4:00 "
-                                   "5:00 6:00 7:00 8:00 9:00 "
-                                   "0:05 0:10 0:30"))))
 
   ;; Faces
 
@@ -191,6 +172,7 @@
 
   (defun cb-org/tidy-org-buffer ()
     "Perform cosmetic fixes to the current org buffer."
+    (interactive)
     (save-restriction
       (org-table-map-tables 'org-table-align 'quiet)
       ;; Realign tags.
@@ -218,8 +200,7 @@
     "Set buffer-local hooks for orgmode."
     (add-hook 'after-save-hook 'cb-org/diary-update-appt-on-save nil t)
     (add-hook 'org-after-todo-state-change-hook 'cb-org/mark-next-parent-tasks-todo nil t)
-    (add-hook 'org-clock-in-hook 'cb-org/mark-next-parent-tasks-todo nil t)
-    (add-hook 'before-save-hook 'cb-org/tidy-org-buffer nil t))
+    (add-hook 'org-clock-in-hook 'cb-org/mark-next-parent-tasks-todo nil t))
 
 
   (add-hook 'org-mode-hook 'cb-org/add-local-hooks)
@@ -274,23 +255,16 @@ Do not change habits, scheduled items or repeating todos."
       (display-buffer buf))))
 
 (defun cb-org/init-org-work ()
-  (use-package org-work
-    :commands (org-work-maybe-start-work
-               maybe-enable-org-work-mode)
-    :init
-    (progn
-      (add-to-list 'load-path (f-join user-layers-directory "cb-org/extensions/org-work"))
-      (add-hook 'org-mode-hook 'maybe-enable-org-work-mode)
-      (add-hook 'after-init-hook 'org-work-maybe-start-work))
-    :config
-    (progn
+  (require 'org-work)
 
-      (defun cb-org/refresh-agenda-when-toggling-work ()
-        "Refresh the agenda when toggling between work states."
-        (when (derived-mode-p 'org-agenda-mode)
-          (cb-org/agenda-dwim)))
+  (defun cb-org/refresh-agenda-when-toggling-work ()
+    "Refresh the agenda when toggling between work states."
+    (when (derived-mode-p 'org-agenda-mode)
+      (cb-org/agenda-dwim)))
 
-      (add-hook 'org-work-state-changed-hook 'cb-org/refresh-agenda-when-toggling-work))))
+  (add-hook 'org-work-state-changed-hook 'cb-org/refresh-agenda-when-toggling-work)
+  (add-hook 'org-mode-hook 'maybe-enable-org-work-mode)
+  (add-hook 'after-init-hook 'org-work-maybe-start-work))
 
 (defun cb-org/init-cb-org-latex-preview-retina ()
   (use-package cb-org-latex-preview-retina))
@@ -313,6 +287,7 @@ Do not change habits, scheduled items or repeating todos."
     (setq org-agenda-include-diary t)
     (setq org-agenda-start-on-weekday nil)
     (setq org-agenda-auto-exclude-function 'cb-org/exclude-tasks-on-hold)
+    (setq org-agenda-files (f-files org-directory (lambda (f) (f-ext? f "org"))))
     (setq org-agenda-diary-file (f-join org-directory "diary.org"))
     (setq org-agenda-hide-tags-regexp (rx (or "noexport" "someday")))
     (setq org-agenda-insert-diary-extract-time t)
@@ -344,31 +319,6 @@ Do not change habits, scheduled items or repeating todos."
 
     (add-hook 'after-init-hook 'cb-org/agenda-dwim)
 
-    (defun cb-org/org-file? (path)
-      (or (f-ext? path "org")
-          (f-ext? path "org_archive")))
-
-    (defun cb-org/all-org-files ()
-      (-uniq (-union (cons org-default-notes-file (cb-org/toplevel-files))
-                     (cb-org/work-files))))
-
-    (defun cb-org/gcal-files ()
-      (when (bound-and-true-p org-gcal-dir)
-        (f-files org-gcal-dir 'cb-org/org-file?)))
-
-    (defun cb-org/toplevel-files ()
-      (f-files org-directory (lambda (f)
-                               (and (s-matches? (rx (or "notes" "work" "diary")) (f-filename f))
-                                    (cb-org/org-file? f)))))
-
-    (defun cb-org/remove-archive-files (org-files)
-      (--reject (equal "org_archive" (f-ext it)) org-files))
-
-    (defun cb-org/work-files ()
-      (-distinct (-concat (cb-org/gcal-files) (cb-org/toplevel-files))))
-
-    (setq org-agenda-files (cb-org/all-org-files))
-
     (defun cb-org/agenda-custom-commands-delete-other-windows (command-list)
       (-map-when (lambda (spec) (listp (cdr spec)))
                  (lambda (spec) (append spec '(((org-agenda-customise-window-hook 'delete-other-windows)))))
@@ -378,39 +328,15 @@ Do not change habits, scheduled items or repeating todos."
           (cb-org/agenda-custom-commands-delete-other-windows
            '(
              ("A" "Agenda and next actions"
-              ((tags-todo "-study-@work-someday-media/NEXT"
-                          ((org-agenda-overriding-header "Next Actions")))
-               (agenda "-@work")
-               (tags-todo "-@work/WAITING"
-                          ((org-agenda-overriding-header "Waiting")))
-               (stuck "-@work")
-               (tags-todo "media|study/NEXT"
-                          ((org-agenda-overriding-header "Media & Study"))))
-              ((org-agenda-tag-filter-preset
-                '("-work_habit" "-ignore"))
-               (org-agenda-files (cb-org/remove-archive-files (cb-org/toplevel-files)))))
-
-             ("w" "Agenda and work actions"
               ((tags-todo "-study-someday-media/NEXT"
                           ((org-agenda-overriding-header "Next Actions")))
                (agenda "")
-               (tags-todo "+@work/WAITING"
+               (tags-todo "WAITING"
                           ((org-agenda-overriding-header "Waiting")))
-               (stuck "+@work"))
-
-              ((org-agenda-files (cb-org/remove-archive-files (cb-org/toplevel-files)))
-               (org-agenda-tag-filter-preset '("-ignore" "-gtd"))
-               (org-stuck-projects
-                '("+@work-hold-ignore+TODO={PROJECT}/-DONE" ("NEXT") nil "SCHEDULED:\\|\\<IGNORE\\>"))
-               (org-agenda-span 'week)
-               (org-agenda-dim-blocked-tasks nil)
-               (org-agenda-clockreport-mode t)
-               (org-agenda-start-on-weekday 1)
-               (org-deadline-warning-days 0)
-               (org-agenda-todo-ignore-deadlines 14)
-               (org-agenda-todo-ignore-scheduled 'all)
-               (org-agenda-remove-tags t)
-               (org-use-property-inheritance t)))
+               (stuck "")
+               (tags-todo "media|study/NEXT"
+                          ((org-agenda-overriding-header "Media & Study"))))
+              ((org-agenda-tag-filter-preset '( "-ignore"))))
 
              ("n" "Next actions"
               ((tags-todo "-study-someday/NEXT"))
@@ -446,8 +372,7 @@ Do not change habits, scheduled items or repeating todos."
                 '("-drill" "-gtd" "-work_habit" "-habit" "-ignore"))
                (org-habit-show-habits nil)
                (org-agenda-include-inactive-timestamps t)
-               (org-agenda-dim-blocked-tasks nil)
-               (org-agenda-files (cb-org/remove-archive-files (cb-org/all-org-files))))))))
+               (org-agenda-dim-blocked-tasks nil))))))
 
     (define-key org-agenda-mode-map (kbd "J") 'org-agenda-goto-date)
 
@@ -495,13 +420,6 @@ Do not change habits, scheduled items or repeating todos."
 
     (add-hook 'org-ctrl-c-ctrl-c-hook 'cb-org/recalculate-whole-table)))
 
-(use-package org-habit
-  :config
-  (progn
-    (setq org-habit-preceding-days 14)
-    (setq org-habit-following-days 4)
-    (setq org-habit-graph-column 70)))
-
 (use-package org-src
   :defer t
   :config
@@ -535,7 +453,6 @@ Do not change habits, scheduled items or repeating todos."
               (lambda () (setq-local require-final-newline nil)))))
 
 (use-package org-clock
-  :init nil
   :config
   (progn
 
