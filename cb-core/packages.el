@@ -12,8 +12,6 @@
 (defconst cb-core-packages
   '(dash-functional
     diminish
-    company
-    company-quickhelp
     auto-revert
     hideshow
     helm
@@ -90,15 +88,16 @@
     "project/project"
     ".ensime_cache"))
 
+(defun cb-core/user-config ()
+  "This procedure should be called in `dotspacemacs/user-config'."
+  (setq-default company-minimum-prefix-length 3))
+
 (defun cb-core/init-dash-functional ()
   (use-package dash-functional
     :config (require 'dash-functional)))
 
 (defun cb-core/post-init-diminish ()
   (diminish 'auto-fill-function " ≣"))
-
-(defun cb-core/post-init-company ()
-  (setq-default company-minimum-prefix-length 3))
 
 (defun cb-core/post-init-autorevert ()
   (diminish 'auto-revert-mode))
