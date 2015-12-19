@@ -34,6 +34,12 @@
       "pG" 'projectile-find-other-file-other-window)
     :config
     (progn
+      ;;; Use a hydra picker for actions when switching project.
+      ;;;
+      ;;; HACK: Define utilities and a macro to rebind `default-directory' for
+      ;;; hydra commands. This is needed for those commands to operate in the
+      ;;; project being switched to.
+
       (defvar cb-project/project-to-switch)
 
       (defun cb-project/set-project-to-switch ()
@@ -41,22 +47,21 @@
 
       (add-hook 'projectile-before-switch-project-hook 'cb-project/set-project-to-switch)
 
-      (defun cb-project/call-in-project-to-switch (command)
-        `(lambda ()
-           (interactive)
-           (let ((default-directory cb-project/project-to-switch))
-             ,(if (commandp command)
-                  `(call-interactively ',command)
-                `(funcall ',command)))))
+      (defmacro cb-project/with-project-as-default-directory (&rest body)
+        (declare (indent 0))
+        `(let* ((default-directory cb-project/project-to-switch)
+                (it default-directory))
+           ,@body))
 
-      (eval
-       `(defhydra cb-project-show-project (:color blue)
-          "Execute in project"
-          ("d" ,(cb-project/call-in-project-to-switch 'dired) "dired")
-          ("e" ,(cb-project/call-in-project-to-switch 'cb-eshell--new) "eshell")
-          ("f" ,(cb-project/call-in-project-to-switch 'projectile-find-file) "find file")
-          ("g" ,(cb-project/call-in-project-to-switch 'magit-status) "magit status")
-          ("q" nil "cancel")))
+      (defhydra cb-project-show-project (:color blue)
+        "Execute in project"
+        ("/" (cb-project/with-project-as-default-directory (helm-projectile-ag)) "ag")
+        ("d" (cb-project/with-project-as-default-directory (dired it)) "dired")
+        ("e" (cb-project/with-project-as-default-directory (cb-eshell--new)) "eshell")
+        ("f" (cb-project/with-project-as-default-directory (projectile-find-file)) "find file")
+        ("g" (cb-project/with-project-as-default-directory (magit-status it)) "magit status")
+        ("S" (cb-project/with-project-as-default-directory (sbt it)) "SBT")
+        ("q" nil "cancel"))
 
       ;;; Vars
 
