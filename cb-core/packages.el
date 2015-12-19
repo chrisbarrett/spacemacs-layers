@@ -92,7 +92,10 @@
   "This procedure should be called in `dotspacemacs/user-config'."
   (setq-default company-minimum-prefix-length 3)
   (setq recentf-max-saved-items 1000)
-  (setq bookmark-save-flag nil))
+  (setq bookmark-save-flag nil)
+
+  ;; Set ace-window keys for dvorak.
+  (setq aw-keys '(?a ?o ?e ?u ?i ?d ?h ?t ?n)))
 
 (defun cb-core/init-dash-functional ()
   (use-package dash-functional
