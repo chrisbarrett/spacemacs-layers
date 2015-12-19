@@ -155,6 +155,21 @@ are between the current date (DATE) and Easter Sunday."
   (- (calendar-absolute-from-gregorian date)
      (calendar-easter-date (calendar-extract-year date))))
 
+(defun holiday-mondayised (year month day)
+  "Return a mondayised holiday at YEAR for the holiday at MONTH, DAY."
+  (let ((date (list month day year)))
+    (cl-case (calendar-day-of-week date)
+      ;; Weekday - use that date
+      ((1 2 3 4 5) date)
+      ;; Weekend - use following Monday.
+      (t
+       (calendar-nth-named-day 1 1 month year day)))))
+
+(defun holiday-days-from-easter (n year)
+  "Add N days to the date of Easter in YEAR."
+  (calendar-gregorian-from-absolute (+ n (calendar-easter-date year))))
+
+
 (autoload 'appt-check "appt")
 
 (defun cb-org/diary-update-appt-on-save ()
