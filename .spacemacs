@@ -21,23 +21,36 @@ values."
    ;; List of configuration layers to load. If it is the symbol `all' instead
    ;; of a list then all discovered layers will be installed.
    dotspacemacs-configuration-layers
-   '(auto-completion
+   '((auto-completion
+      :variables
+      auto-completion-enable-help-tooltip t
+      auto-completion-return-key-behavior 'complete
+      auto-completion-tab-key-behavior 'complete)
      (c-c++
       :variables
       c-c++-default-mode-for-headers 'c++-mode
       c-c++-enable-clang-support t)
-     clojure
+     (clojure
+      :variables
+      clojure-enable-fancify-symbols t)
      dockerfile
      emacs-lisp
+     eyebrowse
      finance
-     git
+     (git
+      :variables
+      git-magit-status-fullscreen t)
      gtags
      (haskell
       :variables
-      haskell-enable-ghci-ng-support t
       haskell-enable-ghc-mod-support nil
-      haskell-enable-hindent-style "gibiansky")
-     latex
+      haskell-enable-ghci-ng-support t
+      haskell-enable-hindent-style "gibiansky"
+      haskell-enable-shm-support nil)
+     ibuffer
+     (latex
+      :variables
+      latex-enable-auto-fill t)
      markdown
      ocaml
      org
@@ -47,9 +60,12 @@ values."
      (shell
       :variables
       shell-default-shell 'eshell
+      shell-default-term-shell "/usr/bin/zsh"
       shell-protect-eshell-prompt nil)
      sml
-     syntax-checking
+     (syntax-checking
+      :variables
+      syntax-checking-enable-tooltips t)
      version-control
 
      ;; cb-agda
