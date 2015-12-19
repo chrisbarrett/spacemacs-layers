@@ -71,8 +71,7 @@ positive or backward if negative."
 
 (defvar core/kill-buffer-ignored-list
   '("*scratch*" "*Messages*" "*Group*" "*elfeed-search*"
-    "work_movio.org"
-    "diary.org" "notes.org" "*spacemacs*"))
+    "work_movio.org" "diary.org" "notes.org" "*spacemacs*" " *mu4e-main*"))
 
 (defvar core/kill-buffer-if-no-proc-list
   '("*shell*" "*eshell*" "*ansi-term*"))
