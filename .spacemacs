@@ -57,6 +57,9 @@ values."
      ocaml
      org
      osx
+     (ranger
+      :variables
+      ranger-cleanup-eagerly t)
      restclient
      scala
      (shell
