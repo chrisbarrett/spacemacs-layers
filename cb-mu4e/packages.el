@@ -76,6 +76,9 @@
       (define-key mu4e-view-mode-map (kbd "j") 'mu4e-view-headers-next)
       (define-key mu4e-view-mode-map (kbd "k") 'mu4e-view-headers-prev)
 
+      ;; Bury mu4e rather than killing it.
+      (define-key mu4e-main-mode-map (kbd "q") 'bury-buffer)
+
       ;; Set variables
 
       (setq mu4e-confirm-quit nil)
