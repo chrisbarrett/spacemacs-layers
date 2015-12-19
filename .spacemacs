@@ -47,7 +47,9 @@ values."
       haskell-enable-ghci-ng-support t
       haskell-enable-hindent-style "gibiansky"
       haskell-enable-shm-support nil)
-     ibuffer
+     (ibuffer
+      :variables
+      ibuffer-group-buffers-by nil)
      (latex
       :variables
       latex-enable-auto-fill t)
@@ -87,6 +89,7 @@ values."
      cb-git
      cb-groovy
      cb-haskell
+     cb-ibuffer
      cb-idris
      cb-js
      cb-ledger
