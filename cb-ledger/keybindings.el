@@ -1,7 +1,4 @@
 ;; HACK: Work around spacemacs clobbering this keybinding
-(add-hook 'after-init-hook
-          (lambda ()
-            (evil-leader/set-key "o$" 'ledger/goto-ledger-file)))
 
 (with-eval-after-load 'ledger-mode
   (define-key ledger-mode-map (kbd "C-c C-c") 'ledger-report)

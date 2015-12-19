@@ -17,6 +17,10 @@
     helm-ag
     neotree))
 
+(defun cb-project/user-config ()
+  (setq projectile-completion-system 'helm)
+  (projectile-cleanup-known-projects))
+
 (defun cb-project/post-init-recentf ()
   (with-eval-after-load 'recentf
     (setq recentf-exclude (-union recentf-exclude (cb-core/regexp-quoted-ignored-dirs)))))
@@ -71,11 +75,6 @@
 
       (defadvice projectile-invalidate-cache (before recentf-cleanup activate)
         (recentf-cleanup))
-
-      (add-hook 'after-init-hook
-                (lambda ()
-                  (setq projectile-completion-system 'helm)
-                  (projectile-cleanup-known-projects)))
 
       ;; Advice
 

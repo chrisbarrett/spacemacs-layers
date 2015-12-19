@@ -296,6 +296,8 @@ This function is called at the very end of Spacemacs initialization after
 layers configuration. You are free to put any user code."
   (cb-bootstrap/user-config)
   (cb-core/user-config)
+  (cb-project/user-config)
+  (cb-ledger/user-config)
   (cb-bootstrap/disable-debugging))
 
 ;; Do not write anything past this comment. This is where Emacs will

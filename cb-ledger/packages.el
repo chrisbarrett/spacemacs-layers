@@ -7,8 +7,9 @@
   "List of all packages to install and/or initialize. Built-in packages
 which require an initialization must be listed explicitly in the list.")
 
-(defconst cb-ledger-excluded-packages '()
-  "List of packages to exclude.")
+(defun cb-ledger/user-config ()
+  ;; Set this keybinding late so that Spacemacs does not clobber it.
+  (evil-leader/set-key "o$" 'ledger/goto-ledger-file))
 
 (eval-when-compile
   (require 'dash nil t)
