@@ -708,17 +708,6 @@ exported file's name. The PDF will be created at DEST."
              "* %?\n%^t"
              :clock-keep t)
 
-            ("h" "Habit" entry
-             (file+olp org-default-notes-file "Habits/Recurring")
-             ,(s-unlines
-               "* TODO %?"
-               "SCHEDULED: %t"
-               ":PROPERTIES:"
-               ":STYLE: habit"
-               ":END:")
-             :clock-keep t)
-
-
             ("l" "Link" entry
              (file+olp org-default-notes-file "Links")
              (function cb-org/read-url-for-capture)
@@ -730,8 +719,6 @@ exported file's name. The PDF will be created at DEST."
              (function cb-org/read-url-for-capture)
              :immediate-finish t
              :clock-keep t)
-
-
 
             ("s" "Someday" entry
              (file+olp org-default-notes-file "Someday")

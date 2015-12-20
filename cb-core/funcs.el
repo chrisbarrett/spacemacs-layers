@@ -11,10 +11,6 @@
 
 ;;; Useful functions
 
-(defun s-unlines (&rest strs)
-  "Join STRS with newlines."
-  (s-join "\n" strs))
-
 (defmacro until (test &rest body)
   "If TEST yields nil, eval BODY... and repeat.
 The order of execution is thus TEST, BODY, TEST, BODY and so on
