@@ -27,8 +27,6 @@
 (defalias 'cal 'calendar)
 (defalias 'rfb 'core/rename-file-and-buffer)
 (defalias 'rbf 'core/rename-file-and-buffer)
-(defalias 'dfb 'core/delete-file-and-buffer)
-(defalias 'dbf 'core/delete-file-and-buffer)
 (defalias 'mv  'core/move-file)
 
 

@@ -158,19 +158,6 @@ If this buffer is a member of `core/kill-buffer-ignored-list', bury it rather th
     (when (projectile-project-p)
       (projectile-invalidate-cache nil))))
 
-(defun core/delete-file-and-buffer (filename buffer)
-  "Delete a file and its associated buffer."
-  (interactive (list (buffer-file-name) (current-buffer)))
-  (when (and (f-exists? filename) (yes-or-no-p "Are you sure you want to remove this file? "))
-    (if (vc-backend filename)
-        (vc-delete-file filename)
-      (delete-file filename)))
-  (ignore-errors (kill-buffer buffer))
-  (recentf-cleanup)
-  (when (projectile-project-p)
-    (projectile-invalidate-cache nil))
-  (message "File '%s' successfully removed" (f-short filename)))
-
 (defun core/toggle-window-split ()
   (interactive)
   (cond
