@@ -396,21 +396,6 @@ Prompt for a command CMD if one cannot be guessed."
 
 (defalias 'insert-guid 'core/insert-uuid)
 
-(defun core/insert-lorem-ipsum (n-paragraphs paragraph-length)
-  "Insert N-PARAGRAPHS of lorem ipsum text into the current buffer.
-PARAGRAPH-LENGTH is one of short, medium, long or verylong."
-  (interactive
-   (list (read-number "Number of paragraphs: " 3)
-         (completing-read "Paragraph length: "
-                          '("short" "medium" "long" "verylong"))))
-  (let ((url (format "http://loripsum.net/api/%s/%s/plaintext"
-                     n-paragraphs paragraph-length)))
-    (insert (with-current-buffer (url-retrieve-synchronously url)
-              ;; Skip HTTP header.
-              (goto-char (point-min))
-              (search-forward "\n\n")
-              (s-trim (buffer-substring (point) (point-max)))))))
-
 
 ;;; Create indirect buffer from region.
 

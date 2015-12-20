@@ -69,7 +69,6 @@
 ;;; Insertion
 
 (evil-leader/set-key "iF" 'insert-file)
-(evil-leader/set-key "iL" 'core/insert-lorem-ipsum)
 (evil-leader/set-key "iT" 'core/insert-timestamp)
 (evil-leader/set-key "iu" 'insert-char)
 (evil-leader/set-key "iU" 'core/insert-uuid)
