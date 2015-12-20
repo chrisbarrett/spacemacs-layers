@@ -438,34 +438,6 @@ Edit from START to END using MODE."
     (shrink-window-if-larger-than-buffer)))
 
 
-;;; Registers
-
-(defun core/make-fn-key-frame-register-command (fn-key)
-  "Define two commands for getting and setting window registers.
-Bind them to the given function key FN-KEY, which should be a symbol."
-  (let* ((setter (intern (format "core/set-frame-register-%s" fn-key)))
-         (jumper (intern (format "core/jump-to-frame-register-%s" fn-key))))
-
-    (eval `(defun ,jumper ()
-             "Auto-generated function. Jumps to a frame register."
-             (interactive)
-             (cond
-              ((get-register ',fn-key)
-               (jump-to-register ',fn-key)
-               (message ,(format "Jumped to register <%s>" fn-key)))
-              (t
-               (user-error ,(format "<%s> register not set." fn-key))))))
-
-    (eval `(defun ,setter ()
-             "Auto-generated function. Sets to a frame register."
-             (interactive)
-             (frameset-to-register ',fn-key)
-             (message ,(format "Set register <%s>" fn-key))))
-
-    (global-set-key (kbd (format "<%s>" fn-key)) jumper)
-    (global-set-key (kbd (format "<S-%s>" fn-key)) setter)))
-
-
 ;;; HACK: override Spacemacs function to prevent M-RET from being bound.
 
 (defun spacemacs/activate-major-mode-leader ()

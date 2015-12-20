@@ -61,6 +61,9 @@ values."
       :variables
       ranger-cleanup-eagerly t)
      restclient
+     (rcirc
+      :variables
+      rcirc-enable-authinfo-support t)
      scala
      (shell
       :variables
@@ -111,6 +114,7 @@ values."
      cb-spelling
      cb-sql
      cb-sunrise-commander
+     cb-workspaces
      cb-yasnippet
      )
    ;; List of additional packages that will be installed without being

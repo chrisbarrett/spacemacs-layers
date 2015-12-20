@@ -128,11 +128,6 @@
 
 ;;; Frame navigation
 
-(core/make-fn-key-frame-register-command 'f7)
-(core/make-fn-key-frame-register-command 'f8)
-(core/make-fn-key-frame-register-command 'f9)
-
-
 (global-set-key (kbd "<f2>") 'next-multiframe-window)
 (global-set-key (kbd "S-<f2>") 'previous-multiframe-window)
 
