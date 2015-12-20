@@ -389,6 +389,11 @@ Prompt for a command CMD if one cannot be guessed."
   "Generate a UUID using the uuid utility."
   (s-trim-right (shell-command-to-string "uuidgen")))
 
+(defun core/generate-password ()
+  (interactive)
+  (kill-new (s-trim (shell-command-to-string "gpg --gen-random --armor 1 30")))
+  (message "Password copied to kill-ring."))
+
 (defun core/insert-uuid ()
   "Insert a GUID at point."
   (interactive "*")
