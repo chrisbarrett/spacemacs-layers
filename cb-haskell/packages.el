@@ -333,7 +333,11 @@
 
   (define-smart-ops-for-mode 'haskell-interactive-mode
     (smart-op ":" :pad-unless (lambda (_) (haskell-interactive-at-prompt)))
-    cb-haskell/smart-ops))
+    cb-haskell/smart-ops)
+
+  ;; HACK: Enable smart ops for `haskell-mode' manually, since it is not derived
+  ;; from `prog-mode'.
+  (add-hook 'haskell-mode-hook 'smart-ops-mode))
 
 (defun cb-haskell/init-haskell-parser ()
   (with-eval-after-load 'haskell-mode
