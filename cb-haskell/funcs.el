@@ -651,7 +651,7 @@ With prefix arg ARG, just insert a newline and indent."
 
 (defun haskell/module->qualified-name (module)
   "Make a reasonable name for MODULE for use in a qualified import."
-  (s-word-initials (-last-item (s-split (rx ".") module))))
+  (-last-item (s-split (rx ".") module)))
 
 (defun haskell/insert-qualified-import (module name)
   "Interactively insert a qualified Haskell import statement for MODULE."
