@@ -158,10 +158,6 @@
 
       (add-hook 'mu4e-compose-mode-hook 'cb-mu4e-flow-text)
 
-      ;; Update in background soon after starting.
-      (run-with-timer 5 nil 'mu4e-update-mail-and-index t)
-
-
       ;; Add read+archive mark
       (add-to-list 'mu4e-marks
                    '(read-and-archive
