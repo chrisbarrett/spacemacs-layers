@@ -168,7 +168,10 @@
       (global-set-key (kbd "C-x m") 'mu4e-multi-compose-new)
       ;; See `mu4e-multi-account-alist' in personal-config file for accounts
       ;; configuration (not on GitHub).
-      (with-eval-after-load 'personal-config (mu4e-multi-enable)))))
+      (with-eval-after-load 'personal-config (mu4e-multi-enable))
+
+      (with-eval-after-load 'mu4e
+        (define-key mu4e-main-mode-map (kbd "C") 'mu4e-multi-compose-new)))))
 
 (defun cb-mu4e/init-mu4e-unread-messages ()
   (use-package mu4e-unread-messages
