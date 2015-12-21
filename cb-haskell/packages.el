@@ -174,22 +174,22 @@
 (defun cb-haskell/post-init-shm ()
   (setq shm-auto-insert-skeletons nil)
 
-  (with-eval-after-load 'shm
-    ;; Disable shm key bindings - I only want SHM for
-    (defconst shm-repl-map (make-sparse-keymap))
-    (defconst shm-map (make-sparse-keymap)))
-
-  (add-hook 'haskell-mode-hook 'structured-haskell-mode)
-  (add-hook 'ghc-core-mode-hook (lambda () (structured-haskell-mode -1)))
-
   (core/remap-face 'shm-current-face 'core/bg-hl-ok)
   (core/remap-face 'shm-quarantine-face 'core/bg-hl-red)
 
-  (with-eval-after-load 'shm
+  ;; Disable most shm bindings
+  (defconst shm-repl-map (make-sparse-keymap))
+  (defconst shm-map (make-sparse-keymap))
+
+  (defun cb-haskell/configure-shm ()
+    (require 'shm)
     (evil-define-key 'normal shm-map "J" 'haskell/join-line)
     (evil-define-key 'insert shm-map (kbd "<return>") 'haskell/ret)
     (define-key shm-map (kbd "C-<return>") 'shm/newline-indent)
-    (define-key shm-map (kbd "SPC") 'haskell/smart-space)))
+    (define-key shm-map (kbd "SPC") 'haskell/smart-space))
+
+  (add-hook 'haskell-mode-hook 'cb-haskell/configure-shm)
+  (add-hook 'ghc-core-mode-hook (lambda () (structured-haskell-mode -1))))
 
 (defun cb-haskell/post-init-ghc ()
   (use-package ghc
