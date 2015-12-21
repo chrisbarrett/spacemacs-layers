@@ -159,7 +159,22 @@
       (add-hook 'mu4e-compose-mode-hook 'cb-mu4e-flow-text)
 
       ;; Update in background soon after starting.
-      (run-with-timer 5 nil 'mu4e-update-mail-and-index t))))
+      (run-with-timer 5 nil 'mu4e-update-mail-and-index t)
+
+
+      ;; Add read+archive mark
+      (add-to-list 'mu4e-marks
+                   '(read-and-archive
+                     :char       "r"
+                     :prompt     "rArchive"
+                     :show-target (lambda (target) "archive")
+                     :action      (lambda (docid msg target)
+                                    ;; must come before proc-move since retag runs
+                                    ;; 'sed' on the file
+                                    (mu4e-action-retag-message msg "-\\Inbox")
+                                    (mu4e~proc-move docid (funcall mu4e-refile-folder msg) "+S-u-N"))))
+      (mu4e~headers-defun-mark-for read-and-archive)
+      (define-key mu4e-headers-mode-map (kbd "r") 'mu4e-headers-mark-for-read-and-archive))))
 
 (defun cb-mu4e/init-mu4e-multi ()
   (use-package mu4e-multi
