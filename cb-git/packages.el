@@ -10,7 +10,7 @@
     vc
     git-auto-commit-mode))
 
-(defun cb-git/pre-init-vc ()
+(defun cb-git/init-vc ()
   (setq vc-follow-symlinks t))
 
 (defun cb-git/pre-init-magit ()
