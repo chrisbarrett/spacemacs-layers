@@ -41,6 +41,7 @@
       ;; leaking into other major modes.
 
       (defun scala/set-normal-state-local-keybindings ()
+        (evil-local-set-key 'normal (kbd "J") 'spacemacs/scala-join-line)
         (evil-local-set-key 'insert (kbd "<return>") 'scala/ret)
         (evil-local-set-key 'normal (kbd "RET") 'ensime-inspect-type-at-point))
 
