@@ -82,6 +82,11 @@
   (setq haskell-stylish-on-save t)
 
   (setq haskell-indentation-layout-offset 4)
+  (setq haskell-indentation-starter-offset 2)
+  (setq haskell-indentation-where-pre-offset 2)
+  (setq haskell-indentation-where-post-offset 2)
+  (setq haskell-indentation-left-offset 4)
+  (setq haskell-indentation-ifte-offset 4)
   (setq haskell-indent-spaces 4)
 
   (setq haskell-process-path-ghci
