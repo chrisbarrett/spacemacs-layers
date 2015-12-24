@@ -158,17 +158,20 @@
 
       (add-hook 'mu4e-compose-mode-hook 'cb-mu4e-flow-text)
 
+      (defun cb-mu4e--read-and-archive-action (docid msg target)
+        ;; must come before proc-move since retag runs 'sed' on the file
+        (mu4e-action-retag-message msg "-\\Inbox")
+        (when (stringp mu4e-refile-folder)
+          (mu4e-multi-enable))
+        (mu4e~proc-move docid (funcall mu4e-refile-folder msg) "+S-u-N"))
+
       ;; Add read+archive mark
       (add-to-list 'mu4e-marks
                    '(read-and-archive
                      :char       "r"
                      :prompt     "rArchive"
                      :show-target (lambda (target) "archive")
-                     :action      (lambda (docid msg target)
-                                    ;; must come before proc-move since retag runs
-                                    ;; 'sed' on the file
-                                    (mu4e-action-retag-message msg "-\\Inbox")
-                                    (mu4e~proc-move docid (funcall mu4e-refile-folder msg) "+S-u-N"))))
+                     :action      cb-mu4e--read-and-archive-action))
       (mu4e~headers-defun-mark-for read-and-archive)
       (define-key mu4e-headers-mode-map (kbd "r") 'mu4e-headers-mark-for-read-and-archive))))
 
