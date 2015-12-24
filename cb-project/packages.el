@@ -27,15 +27,6 @@
 
 (defun cb-project/post-init-projectile ()
   (use-package projectile
-    :bind
-    (("s-f" . projectile-find-file)
-     ("s-d" . projectile-find-dir)
-     ("s-l" . projectile-switch-project))
-    :init
-    (evil-leader/set-key
-      "pa" 'projectile-ag
-      "pg" 'projectile-find-other-file
-      "pG" 'projectile-find-other-file-other-window)
     :config
     (progn
       ;;; Define a command that switches between test and impl, optionally in
