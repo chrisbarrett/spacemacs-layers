@@ -38,6 +38,20 @@
       "pG" 'projectile-find-other-file-other-window)
     :config
     (progn
+      ;;; Define a command that switches between test and impl, optionally in
+      ;;; another window.
+
+      (defun cb-projectile-toggle-between-implementation-and-test (&optional arg)
+        "Toggle between an implementation file and its test file."
+        (interactive "P")
+        (let ((file (projectile-find-implementation-or-test (buffer-file-name))))
+          (if arg
+              (find-file-other-window file)
+            (find-file file))))
+
+      (evil-leader/set-key "pa" 'cb-projectile-toggle-between-implementation-and-test)
+      (evil-leader/set-key "pt" 'projectile-test-project)
+
       ;;; Use a hydra picker for actions when switching project.
       ;;;
       ;;; HACK: Define utilities and a macro to rebind `default-directory' for
@@ -97,7 +111,18 @@
                     (list (abbreviate-file-name (projectile-project-root))))
                    (-sort 'string-lessp))
 
-            projectile-known-projects))))))
+            projectile-known-projects)))
+
+      ;; Customise project types.
+
+      (defun projectile-test-suffix (project-type)
+        "Find default test files suffix based on PROJECT-TYPE."
+        (cond
+         ((member project-type '(rails-rspec ruby-rspec)) "_spec")
+         ((member project-type '(rails-test ruby-test lein-test boot-clj go)) "_test")
+         ((member project-type '(scons)) "test")
+         ((member project-type '(maven symfony)) "Test")
+         ((member project-type '(haskell-stack gradle gradlew grails)) "Spec"))))))
 
 (defun cb-project/post-init-helm-projectile ()
   (use-package helm-projectile
