@@ -79,7 +79,8 @@
 
 (defun cb-cpp/post-init-ggtags ()
   (add-hook 'c++-mode-hook 'ggtags-mode)
-  (set-face-underline 'ggtags-highlight nil))
+  (with-eval-after-load 'ggtags
+    (set-face-underline 'ggtags-highlight nil)))
 
 (defun cb-cpp/post-init-helm-gtags ()
   (add-hook 'c++-mode-hook 'helm-gtags-mode))

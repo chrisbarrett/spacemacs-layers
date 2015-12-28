@@ -80,7 +80,7 @@ values."
      cb-autoinsert
      cb-calc
      cb-coffeescript
-     ;; cb-cpp
+     cb-cpp
      cb-core
      cb-cosmetic
      cb-crontab
