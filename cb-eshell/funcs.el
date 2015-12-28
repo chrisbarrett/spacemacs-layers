@@ -256,6 +256,9 @@ With prefix argument ARG, always create a new shell."
       (when (--any? (s-matches? (rx ".cabal" eos) it) files)
         "cabal")
 
+      (when (--any? (s-matches? (rx "/stack.yaml" eos) it) files)
+        "stack")
+
       ;; Scala projects
 
       (let ((build-sbt (f-join default-directory "build.sbt")))
