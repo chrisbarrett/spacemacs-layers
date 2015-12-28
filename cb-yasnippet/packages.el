@@ -10,10 +10,13 @@
 (defconst cb-yasnippet-packages
   '(yasnippet))
 
+(defvar cb-yasnippet/main-snippets-dir
+  (f-join user-layers-directory "cb-yasnippet/snippets"))
+
 (defun cb-yasnippet/post-init-yasnippet ()
   (yas-global-mode +1)
 
-  (cb-yas/register-snippets-dir (f-join user-layers-directory "cb-yasnippet/snippets"))
+  (cb-yas/register-snippets-dir cb-yasnippet/main-snippets-dir)
 
   (add-hook 'yas-minor-mode-hook 'cb-yas/sync-with-yasnippet)
 

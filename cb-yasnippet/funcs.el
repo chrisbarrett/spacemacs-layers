@@ -14,8 +14,8 @@
 (defvar cb-yasnippet/yas-dirs nil)
 
 (defun cb-yas/register-snippets-dir (dir)
-  (let ((dirs (cons dir cb-yasnippet/yas-dirs)))
-    (setq cb-yasnippet/yas-dirs (-sort 'string< dirs)))
+  (let ((updated (-uniq (-cons* cb-yasnippet/main-snippets-dir dir cb-yasnippet/yas-dirs))))
+    (setq cb-yasnippet/yas-dirs updated))
   (cb-yas/reload-all))
 
 (defun cb-yas/reload-all ()
@@ -109,19 +109,19 @@ Embed in elisp blocks to trigger messages within snippets."
   "Find the commonest identifier prefix in use in this buffer."
   (let ((ns-separators (rx (or ":" "--" "/"))))
     (->> (buffer-string)
-      ;; Extract the identifiers from declarations.
-      (s-match-strings-all
-       (rx bol (* space)
-           "(" (? "cl-") (or "defun" "defmacro" "defvar" "defconst")
-           (+ space)
-           (group (+ (not space)))))
-      ;; Find the commonest prefix.
-      (-map 'cadr)
-      (--filter (s-matches? ns-separators it))
-      (--map (car (s-match (rx (group (* nonl) (or ":" "--" "/"))) it)))
-      (-group-by 'identity)
-      (-max-by (-on '>= 'length))
-      (car))))
+         ;; Extract the identifiers from declarations.
+         (s-match-strings-all
+          (rx bol (* space)
+              "(" (? "cl-") (or "defun" "defmacro" "defvar" "defconst")
+              (+ space)
+              (group (+ (not space)))))
+         ;; Find the commonest prefix.
+         (-map 'cadr)
+         (--filter (s-matches? ns-separators it))
+         (--map (car (s-match (rx (group (* nonl) (or ":" "--" "/"))) it)))
+         (-group-by 'identity)
+         (-max-by (-on '>= 'length))
+         (car))))
 
 (defun yas/find-group-for-snippet ()
   "Find the first group defined in the current file,
@@ -138,16 +138,16 @@ falling back to the file name sans extension."
   "Return a simplified docstring of arglist TEXT."
   (->> (ignore-errors
          (read (format "(%s)" text)))
-    (--keep
-     (ignore-errors
-       (cond
-        ((listp it)
-         (-first (lambda (x)
-                   (and (symbolp x)
-                        (not (s-starts-with? "&" (symbol-name x)))))
-                 it))
-        ((symbolp it) it))))
-    (--remove (s-starts-with? "&" (symbol-name it)))))
+       (--keep
+        (ignore-errors
+          (cond
+           ((listp it)
+            (-first (lambda (x)
+                      (and (symbolp x)
+                           (not (s-starts-with? "&" (symbol-name x)))))
+                    it))
+           ((symbolp it) it))))
+       (--remove (s-starts-with? "&" (symbol-name it)))))
 
 (defun yas/cl-arglist? (text)
   "Non-nil if TEXT is a Common Lisp arglist."
@@ -169,8 +169,8 @@ is a Common Lisp arglist."
   "Format a function docstring for a snippet.
 TEXT is the content of the docstring."
   (let ((docs (->> (yas/simplify-arglist text)
-                (--map (s-upcase (symbol-name it)))
-                (s-join "\n\n"))))
+                   (--map (s-upcase (symbol-name it)))
+                   (s-join "\n\n"))))
     (unless (s-blank? docs)
       (concat "\n\n" docs))))
 
