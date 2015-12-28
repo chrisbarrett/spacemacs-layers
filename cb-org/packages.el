@@ -84,6 +84,7 @@
   (setq org-stuck-projects cb-org/default-stuck-projects)
   (setq org-hierarchical-todo-statistics nil)
   (setq org-checkbox-hierarchical-statistics t)
+  (setq org-log-repeat nil)
 
   (setq org-todo-keywords '((type "MAYBE(m)" "TODO(t)" "NEXT(n)" "WAITING(w@/!)" "|" "DONE(d!)" "CANCELLED(c@)")
                             (type "PROJECT(p)" "|")
