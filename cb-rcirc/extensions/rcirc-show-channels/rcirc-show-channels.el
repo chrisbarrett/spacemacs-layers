@@ -38,8 +38,9 @@
   "Alist mapping buffers to display priorities.
 
 Each element is a cons of (CHANNEL . PRIORITY), where CHANNEL is
-a string naming a channel (e.g. \"#emacs\") and PRIORITY is a
-positive number used to set the display order of each channel.
+a string naming a channel (e.g. \"#emacs@irc.freenode.net\") and
+PRIORITY is a positive number used to set the display order of
+each channel.
 
 Buffers that are not explicitly mentioned here are sorted
 alphabetically and assigned negative orders, such that they are
