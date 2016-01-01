@@ -71,9 +71,9 @@ tiled last."
        (--filter (with-current-buffer it (derived-mode-p 'rcirc-mode it)))))
 
 (defun rcirc-show-channels--channel-buffers ()
-  (->> (-difference
-        (--filter (with-current-buffer it (derived-mode-p 'rcirc-mode)) (buffer-list))
-        (rcirc-show-channels--server-buffers))))
+  (-difference
+   (--filter (with-current-buffer it (derived-mode-p 'rcirc-mode)) (buffer-list))
+   (rcirc-show-channels--server-buffers)))
 
 (defun rcirc-show-channels--tile-buffers (bufs)
   (cl-labels ((go (bufs-and-indices)
