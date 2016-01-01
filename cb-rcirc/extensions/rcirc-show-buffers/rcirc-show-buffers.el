@@ -4,6 +4,8 @@
 
 ;; Author: Chris Barrett <chris.d.barrett@me.com>
 
+;; Package-Requires: ((dash "2.12.1") (cl-lib "1.0") (rcirc "22.1"))
+
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
 ;; the Free Software Foundation, either version 3 of the License, or
@@ -24,6 +26,7 @@
 (require 'dash)
 (require 'rcirc)
 (require 'cl-lib)
+
 (autoload 'eyebrowse-switch-to-window-config "eyebrowse")
 
 (defgroup rcirc-show-buffers nil
