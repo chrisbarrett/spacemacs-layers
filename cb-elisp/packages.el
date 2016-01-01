@@ -15,7 +15,8 @@
     highlight-defined
     smart-ops
     checkdoc
-    flycheck-cask))
+    flycheck-cask
+    nameless))
 
 (defun cb-elisp/post-init-eldoc ()
   (add-hook 'emacs-lisp-mode-hook 'eldoc-mode))
@@ -95,3 +96,16 @@
                   (with-current-buffer checkdoc-diagnostic-buffer
                     (princ (buffer-substring-no-properties (point-min) (point-max)))
                     (kill-buffer)))))))))
+
+(defun cb-elisp/init-nameless ()
+  (use-package nameless
+    :commands nameless-mode-from-hook
+    :init
+    (add-hook 'emacs-lisp-mode-hook #'nameless-mode-from-hook)
+    :config
+    (progn
+      (setq nameless-global-aliases
+            '(("fl" . "font-lock")
+              ("spacemacs" . "sm")))
+      (setq nameless-prefix ":")
+      (setq nameless-private-prefix t))))
