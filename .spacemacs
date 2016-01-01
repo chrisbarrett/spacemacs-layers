@@ -106,6 +106,7 @@ values."
      cb-org-reveal
      cb-project
      cb-proof
+     cb-rcirc
      ;; cb-rust
      cb-scala
      ;; cb-shell
