@@ -1,4 +1,4 @@
-;;; rcirc-show-buffers.el --- Tile rcirc buffers  -*- lexical-binding: t; -*-
+;;; rcirc-show-channels.el --- Tile rcirc channel buffers  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2016  Chris Barrett
 
@@ -29,12 +29,12 @@
 
 (autoload 'eyebrowse-switch-to-window-config "eyebrowse")
 
-(defgroup rcirc-show-buffers nil
+(defgroup rcirc-show-channels nil
   "Command for tiling all RCIRC buffers."
   :group 'rcirc
-  :prefix "rcirc-show-buffers-")
+  :prefix "rcirc-show-channels-")
 
-(defcustom rcirc-show-buffers-priority nil
+(defcustom rcirc-show-channels-priority nil
   "Alist mapping buffers to display priorities.
 
 Each element is a cons of (CHANNEL . PRIORITY), where CHANNEL is
@@ -44,37 +44,37 @@ positive number used to set the display order of each channel.
 Buffers that are not explicitly mentioned here are sorted
 alphabetically and assigned negative orders, such that they are
 tiled last."
-  :group 'rcirc-show-buffers
+  :group 'rcirc-show-channels
   :type '(alist :key-type string :value-type integer))
 
-(defcustom rcirc-show-buffers-eyebrowse-window-config-number nil
+(defcustom rcirc-show-channels-eyebrowse-window-config-number nil
   "The eyebrowse window group to use for RCIRC, or nil to disable."
-  :group 'rcirc-show-buffers
+  :group 'rcirc-show-channels
   :type 'number)
 
-(defun rcirc-show-buffers--apply-channel-ordering (bufs)
+(defun rcirc-show-channels--apply-channel-ordering (bufs)
   (->> bufs
        (--sort (string-lessp (buffer-name it) (buffer-name other)))
        (--map-indexed (cons (- it-index) it))
        (--map (-let [(_ . b) it]
-                (-if-let ((_ . ord) (assoc (buffer-name b) rcirc-show-buffers-priority))
+                (-if-let ((_ . ord) (assoc (buffer-name b) rcirc-show-channels-priority))
                     (cons ord b)
                   it)))
        (--sort (> (car it) (car other)))
        (-map 'cdr)))
 
-(defun rcirc-show-buffers--server-buffers ()
+(defun rcirc-show-channels--server-buffers ()
   (->> rcirc-server-alist
        (-map 'car)
        (--keep (get-buffer (format "*%s*" it)))
        (--filter (with-current-buffer it (derived-mode-p 'rcirc-mode it)))))
 
-(defun rcirc-show-buffers--channel-buffers ()
+(defun rcirc-show-channels--channel-buffers ()
   (->> (-difference
         (--filter (with-current-buffer it (derived-mode-p 'rcirc-mode)) (buffer-list))
-        (rcirc-show-buffers--server-buffers))))
+        (rcirc-show-channels--server-buffers))))
 
-(defun rcirc-show-buffers--tile-buffers (bufs)
+(defun rcirc-show-channels--tile-buffers (bufs)
   (cl-labels ((go (bufs-and-indices)
                   (-let [((idx . b) . bs) bufs-and-indices]
                     (switch-to-buffer b)
@@ -85,7 +85,7 @@ tiled last."
     (delete-other-windows)
     (go (--map-indexed (cons it-index it) bufs))))
 
-(defun rcirc-show-buffers--scroll-to-bottom (bufs)
+(defun rcirc-show-channels--scroll-to-bottom (bufs)
   (dolist (b bufs)
     (with-current-buffer b
       (dolist (w (get-buffer-window-list b))
@@ -93,22 +93,22 @@ tiled last."
         (goto-char (point-max))
         (recenter -1)))))
 
-(defun rcirc-show-buffers--maybe-start-rcirc ()
-  (unless (rcirc-show-buffers--server-buffers)
+(defun rcirc-show-channels--maybe-start-rcirc ()
+  (unless (rcirc-show-channels--server-buffers)
     (if (fboundp 'spacemacs/rcirc)
         (call-interactively 'spacemacs/rcirc)
       (rcirc nil))))
 
-(defun rcirc-show-buffers ()
+(defun rcirc-show-channels ()
   "Switch to eyebrowse workspace 1 and show all rcirc buffers."
   (interactive)
-  (when rcirc-show-buffers-eyebrowse-window-config-number
-    (eyebrowse-switch-to-window-config rcirc-show-buffers-eyebrowse-window-config-number))
-  (rcirc-show-buffers--maybe-start-rcirc)
-  (let ((bufs (rcirc-show-buffers--apply-channel-ordering (rcirc-show-buffers--channel-buffers))))
-    (rcirc-show-buffers--tile-buffers bufs)
-    (rcirc-show-buffers--scroll-to-bottom bufs)))
+  (when rcirc-show-channels-eyebrowse-window-config-number
+    (eyebrowse-switch-to-window-config rcirc-show-channels-eyebrowse-window-config-number))
+  (rcirc-show-channels--maybe-start-rcirc)
+  (let ((bufs (rcirc-show-channels--apply-channel-ordering (rcirc-show-channels--channel-buffers))))
+    (rcirc-show-channels--tile-buffers bufs)
+    (rcirc-show-channels--scroll-to-bottom bufs)))
 
-(provide 'rcirc-show-buffers)
+(provide 'rcirc-show-channels)
 
-;;; rcirc-show-buffers.el ends here
+;;; rcirc-show-channels.el ends here

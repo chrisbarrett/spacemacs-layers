@@ -12,7 +12,7 @@
 
 (defconst cb-rcirc-packages
   '((rcirc-reconnect :location local)
-    (rcirc-show-buffers :location local)))
+    (rcirc-show-channels :location local)))
 
 (defun cb-rcirc/init-rcirc-reconnect ()
   (use-package rcirc-reconnect
@@ -21,13 +21,13 @@
     :init
     (add-hook 'rcirc-mode-hook 'rcirc-reconnect-mode)))
 
-(defun cb-rcirc/init-rcirc-show-buffers ()
-  (use-package rcirc-show-buffers
-    :commands rcirc-show-buffers
+(defun cb-rcirc/init-rcirc-show-channels ()
+  (use-package rcirc-show-channels
+    :commands rcirc-show-channels
     :init
-    (bind-key (kbd "<f7>") 'rcirc-show-buffers)
+    (bind-key (kbd "<f7>") 'rcirc-show-channels)
     :config
     (progn
-      (setq rcirc-show-buffers-eyebrowse-window-config-number 1)
-      (setq rcirc-show-buffers-priority
+      (setq rcirc-show-channels-eyebrowse-window-config-number 1)
+      (setq rcirc-show-channels-priority
             '(("#haskell@irc.freenode.net" . 1))))))
