@@ -3,4 +3,4 @@
 # expand-env: ((yas-indent-line (quote fixed)) (yas-wrap-around-region (quote t)))
 # condition: (yas/bol?)
 # --
-newtype ${1:Name} = ${1:$(yas/haskell-ctor-name)} { un${1:$(yas/haskell-ctor-name)} :: ${2:Type} }
+newtype ${1:Name} = ${1:$(yas/haskell-ctor-name)} {un${1:$(yas/haskell-ctor-name)} :: ${2:Type}}
