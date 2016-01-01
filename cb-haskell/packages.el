@@ -324,7 +324,7 @@
                 (list
                  (smart-ops "->" "=>")
                  (smart-ops "$" "=" "~" "^" ":" "?")
-                 (smart-op ".." :pad-before nil :pad-after nil)
+                 (smart-ops ".." "^~" :pad-before nil :pad-after nil)
                  (smart-op "."
                            :pad-before-unless
                            (lambda (pt)
