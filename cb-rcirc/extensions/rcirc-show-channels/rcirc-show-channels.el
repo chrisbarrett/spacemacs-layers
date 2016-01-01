@@ -100,13 +100,27 @@ tiled last."
       (rcirc nil))))
 
 (defun rcirc-show-channels ()
-  "Switch to eyebrowse workspace 1 and show all rcirc buffers."
+  "Show all rcirc buffers in a tiled window layout. Start rcirc if needed.
+
+If rcirc is starting there will be no channel buffers to display.
+The server buffer will be displayed instead. Once channels have
+been joined, run the command again to tile the channel buffers.
+
+By default, channel buffers are tiled in alphabetical order.
+Customise `rcirc-show-channels-priority' to prioritise certain
+channels in the ordering.
+
+If you use eyebrowse, customise
+`rcirc-show-channels-eyebrowse-window-config-number' to set which
+window config to use for the buffers."
   (interactive)
   (when rcirc-show-channels-eyebrowse-window-config-number
     (eyebrowse-switch-to-window-config rcirc-show-channels-eyebrowse-window-config-number))
   (rcirc-show-channels--maybe-start-rcirc)
   (let ((bufs (rcirc-show-channels--apply-channel-ordering (rcirc-show-channels--channel-buffers))))
-    (rcirc-show-channels--tile-buffers bufs)
+    (if (null bufs)
+        (switch-to-buffer (car (rcirc-show-channels--server-buffers)))
+      (rcirc-show-channels--tile-buffers bufs))
     (rcirc-show-channels--scroll-to-bottom bufs)))
 
 (provide 'rcirc-show-channels)
