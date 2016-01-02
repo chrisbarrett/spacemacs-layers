@@ -11,7 +11,7 @@
 ;;; License: GPLv3
 
 (defconst cb-rcirc-packages
-  '((rcirc-reconnect :location local)
+  '((rcirc-reconnect :location local :disabled t)
     (rcirc-show-channels :location local)))
 
 (defun cb-rcirc/init-rcirc-reconnect ()
