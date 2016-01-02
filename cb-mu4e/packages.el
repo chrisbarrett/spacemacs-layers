@@ -173,7 +173,9 @@
                      :show-target (lambda (target) "archive")
                      :action      cb-mu4e--read-and-archive-action))
       (mu4e~headers-defun-mark-for read-and-archive)
-      (define-key mu4e-headers-mode-map (kbd "r") 'mu4e-headers-mark-for-read-and-archive))))
+      (mu4e~view-defun-mark-for read-and-archive)
+      (define-key mu4e-headers-mode-map (kbd "r") 'mu4e-headers-mark-for-read-and-archive)
+      (define-key mu4e-view-mode-map (kbd "r") 'mu4e-view-mark-for-read-and-archive))))
 
 (defun cb-mu4e/init-mu4e-multi ()
   (use-package mu4e-multi
