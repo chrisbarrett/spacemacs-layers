@@ -106,14 +106,16 @@
 
       ;; Customise project types.
 
-      (defun projectile-test-suffix (project-type)
-        "Find default test files suffix based on PROJECT-TYPE."
+      (defun cb-projectile-test-suffix (project-type)
         (cond
+         ((member project-type '(emacs-cask)) "-test")
          ((member project-type '(rails-rspec ruby-rspec)) "_spec")
          ((member project-type '(rails-test ruby-test lein-test boot-clj go)) "_test")
          ((member project-type '(scons)) "test")
          ((member project-type '(maven symfony)) "Test")
-         ((member project-type '(haskell-stack gradle gradlew grails)) "Spec"))))))
+         ((member project-type '(haskell-stack gradle gradlew grails)) "Spec")))
+
+      (setq projectile-test-suffix-function #'cb-projectile-test-suffix))))
 
 (defun cb-project/post-init-helm-projectile ()
   (use-package helm-projectile
