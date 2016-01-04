@@ -27,23 +27,23 @@
 (bind-key* "<f12>" 'org-work-toggle-at-work)
 
 (spacemacs/declare-prefix "o" "org")
-(evil-leader/set-key "oa" 'cb-org/agenda-dwim)
-(evil-leader/set-key "ob" 'org-iswitchb)
-(evil-leader/set-key "oc" 'org-clock-goto)
-(evil-leader/set-key "od" 'cb-org/goto-diary)
-(evil-leader/set-key "ok" 'org-capture)
-(evil-leader/set-key "os" 'org-search-view)
-(evil-leader/set-key "on" 'cb-org/goto-notes)
-(evil-leader/set-key "ow" 'cb-org/goto-work)
-(evil-leader/set-key "ot" 'cb-org/todo-list)
-(evil-leader/set-key "ov" 'cb-org/tags-list)
+(spacemacs/set-leader-keys "oa" 'cb-org/agenda-dwim)
+(spacemacs/set-leader-keys "ob" 'org-iswitchb)
+(spacemacs/set-leader-keys "oc" 'org-clock-goto)
+(spacemacs/set-leader-keys "od" 'cb-org/goto-diary)
+(spacemacs/set-leader-keys "ok" 'org-capture)
+(spacemacs/set-leader-keys "os" 'org-search-view)
+(spacemacs/set-leader-keys "on" 'cb-org/goto-notes)
+(spacemacs/set-leader-keys "ow" 'cb-org/goto-work)
+(spacemacs/set-leader-keys "ot" 'cb-org/todo-list)
+(spacemacs/set-leader-keys "ov" 'cb-org/tags-list)
 
 (with-eval-after-load 'org-agenda
   (define-key org-agenda-mode-map (kbd "C-f") 'evil-scroll-page-down)
   (define-key org-agenda-mode-map (kbd "C-b") 'evil-scroll-page-up))
 
-(evil-leader/set-key "oh" 'helm-org-agenda-files-headings)
-(evil-leader/set-key-for-mode 'org-mode "mP" 'org-plot/gnuplot)
+(spacemacs/set-leader-keys "oh" 'helm-org-agenda-files-headings)
+(spacemacs/set-leader-keys-for-major-mode 'org-mode "mP" 'org-plot/gnuplot)
 
 ;; Remove ahs keys that override org keybindings
 (with-eval-after-load 'auto-highlight-symbol

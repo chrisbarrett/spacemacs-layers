@@ -9,7 +9,7 @@ which require an initialization must be listed explicitly in the list.")
 
 (defun cb-ledger/user-config ()
   ;; Set this keybinding late so that Spacemacs does not clobber it.
-  (evil-leader/set-key "o$" 'ledger/goto-ledger-file))
+  (spacemacs/set-leader-keys "o$" 'ledger/goto-ledger-file))
 
 (eval-when-compile
   (require 'dash nil t)

@@ -43,10 +43,11 @@
 
 ;;; Personal config
 
-(evil-leader/set-key "fep"
-  (defun cb-core/goto-personal-config ()
-    (interactive)
-    (find-library "personal-config")))
+(defun cb-core/goto-personal-config ()
+  (interactive)
+  (find-library "personal-config"))
+
+(spacemacs/set-leader-keys "fep" #'cb-core/goto-personal-config)
 
 ;;; Company
 
@@ -66,15 +67,15 @@
 
 ;;; Insertion
 
-(evil-leader/set-key "iF" 'insert-file)
-(evil-leader/set-key "iT" 'core/insert-timestamp)
-(evil-leader/set-key "iu" 'insert-char)
-(evil-leader/set-key "iU" 'core/insert-uuid)
-(evil-leader/set-key "iV" 'add-file-local-variable)
-(evil-leader/set-key "iP" 'add-file-local-variable-prop-line)
-(evil-leader/set-key "i#" 'core/insert-shebang)
+(spacemacs/set-leader-keys "iF" 'insert-file)
+(spacemacs/set-leader-keys "iT" 'core/insert-timestamp)
+(spacemacs/set-leader-keys "iu" 'insert-char)
+(spacemacs/set-leader-keys "iU" 'core/insert-uuid)
+(spacemacs/set-leader-keys "iV" 'add-file-local-variable)
+(spacemacs/set-leader-keys "iP" 'add-file-local-variable-prop-line)
+(spacemacs/set-leader-keys "i#" 'core/insert-shebang)
 
-(evil-leader/set-key "Fo" 'other-frame)
+(spacemacs/set-leader-keys "Fo" 'other-frame)
 
 (evil-set-initial-state 'comint-mode 'normal)
 
@@ -98,9 +99,9 @@
 (with-eval-after-load 'occur
   (evilified-state-evilify occur-mode occur-mode-map))
 
-(evil-leader/set-key "oo" 'helm-occur)
-(evil-leader/set-key "om" 'helm-multi-occur)
-(evil-leader/set-key "O" 'occur)
+(spacemacs/set-leader-keys "oo" 'helm-occur)
+(spacemacs/set-leader-keys "om" 'helm-multi-occur)
+(spacemacs/set-leader-keys "O" 'occur)
 
 (evil-ex-define-cmd "nospell"
                     (lambda ()
@@ -114,8 +115,8 @@
 
 ;;; Window management
 
-(evil-leader/set-key "wo" 'delete-other-windows)
-(evil-leader/set-key "|" 'core/toggle-window-split)
+(spacemacs/set-leader-keys "wo" 'delete-other-windows)
+(spacemacs/set-leader-keys "|" 'core/toggle-window-split)
 
 (evil-global-set-key 'normal (kbd "C-w |") 'core/toggle-window-split)
 (evil-global-set-key 'normal (kbd "C-w -") 'split-window-below)
@@ -133,4 +134,4 @@
 (evil-global-set-key 'emacs (kbd "C-w k") 'next-multiframe-window)
 (evil-global-set-key 'emacs (kbd "C-w j") 'previous-multiframe-window)
 
-(evil-leader/set-key (kbd "ww") 'ace-window)
+(spacemacs/set-leader-keys (kbd "ww") 'ace-window)

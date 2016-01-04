@@ -54,7 +54,7 @@
         (kbd "SPC") 'idris/smart-space
         (kbd "<backspace>") 'idris/backspace)
 
-      (evil-leader/set-key-for-mode 'idris-mode
+      (spacemacs/set-leader-keys-for-major-mode 'idris-mode
         "mr" 'idris-load-file
         "mt" 'idris-type-at-point
         "md" 'idris-add-clause

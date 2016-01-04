@@ -40,8 +40,8 @@
               (find-file-other-window file)
             (find-file file))))
 
-      (evil-leader/set-key "pa" 'cb-projectile-toggle-between-implementation-and-test)
-      (evil-leader/set-key "pt" 'projectile-test-project)
+      (spacemacs/set-leader-keys "pa" 'cb-projectile-toggle-between-implementation-and-test)
+      (spacemacs/set-leader-keys "pt" 'projectile-test-project)
 
       ;;; Use a hydra picker for actions when switching project.
       ;;;

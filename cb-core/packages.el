@@ -220,7 +220,7 @@
   (use-package world-time-mode
     :commands world-time-list
     :init
-    (evil-leader/set-key "at" 'world-time-list)
+    (spacemacs/set-leader-keys "at" 'world-time-list)
     :config
     (progn
       (setq display-time-world-list '(("Pacific/Auckland" "NZT")

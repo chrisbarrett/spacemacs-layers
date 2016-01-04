@@ -52,13 +52,14 @@
     :defer 10
     :load-path "/usr/local/share/emacs/site-lisp/mu4e/"
     :init
-    (evil-leader/set-key "am" 'mu4e)
+    (spacemacs/set-leader-keys "am" 'mu4e)
     :config
     (progn
       (with-eval-after-load 'org
         (require 'org-mu4e))
 
       ;; Enable evil leader in mu4e buffers.
+      (require 'evil-leader)
       (add-to-list 'evil-leader/no-prefix-mode-rx "mu4e-main-mode")
       (add-to-list 'evil-leader/no-prefix-mode-rx "mu4e-headers-mode")
       (add-to-list 'evil-leader/no-prefix-mode-rx "mu4e-view-mode")

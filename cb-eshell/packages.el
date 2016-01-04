@@ -36,9 +36,9 @@
 
   (evil-set-initial-state 'eshell-mode 'insert)
 
-  (evil-leader/set-key-for-mode 'eshell-mode "ib" 'eshell-insert-buffer-name)
-  (evil-leader/set-key-for-mode 'eshell-mode "ii" 'eshell-insert-process)
-  (evil-leader/set-key-for-mode 'eshell-mode "iv" 'eshell-insert-envvar)
+  (spacemacs/set-leader-keys-for-major-mode 'eshell-mode "ib" 'eshell-insert-buffer-name)
+  (spacemacs/set-leader-keys-for-major-mode 'eshell-mode "ii" 'eshell-insert-process)
+  (spacemacs/set-leader-keys-for-major-mode 'eshell-mode "iv" 'eshell-insert-envvar)
 
   (defun cb-eshell/ret ()
     "Do not send input if the command is empty."

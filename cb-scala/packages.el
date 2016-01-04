@@ -121,7 +121,7 @@ See `ensime-goto-test-config-defaults' for possible template values.")
     (evil-define-key 'normal ensime-mode-map (kbd "M-P") 'ensime-backward-note)
     (evil-define-key 'normal ensime-mode-map (kbd "RET") 'ensime-inspect-type-at-point))
 
-  (evil-leader/set-key-for-mode 'scala-mode "ii" 'ensime-import-type-at-point))
+  (spacemacs/set-leader-keys-for-major-mode 'scala-mode "ii" 'ensime-import-type-at-point))
 
 (defun cb-scala/post-init-sbt-mode ()
   (bind-key "<S-f1>" 'scala-sbt/bring)

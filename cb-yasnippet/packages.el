@@ -37,10 +37,10 @@
     (evil-define-key 'insert yas-keymap (kbd "SPC") 'yas/space))
 
   (spacemacs/declare-prefix "Y" "yasnippet")
-  (evil-leader/set-key "Yf" 'yas-visit-snippet-file)
-  (evil-leader/set-key "Yn" 'yas-new-snippet)
-  (evil-leader/set-key "Yy" 'yas-insert-snippet)
-  (evil-leader/set-key "Yr" 'cb-yas/reload-all)
+  (spacemacs/set-leader-keys "Yf" 'yas-visit-snippet-file)
+  (spacemacs/set-leader-keys "Yn" 'yas-new-snippet)
+  (spacemacs/set-leader-keys "Yy" 'yas-insert-snippet)
+  (spacemacs/set-leader-keys "Yr" 'cb-yas/reload-all)
 
   ;; Advise editing commands.
   ;;

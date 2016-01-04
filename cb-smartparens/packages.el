@@ -49,7 +49,7 @@
 
   (spacemacs/declare-prefix "," "smartparens")
 
-  (evil-leader/set-key
+  (spacemacs/set-leader-keys
     ",A" 'sp-add-to-previous-sexp
     ",a" 'sp-add-to-next-sexp
     ",B" 'sp-backward-barf-sexp

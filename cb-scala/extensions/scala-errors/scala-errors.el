@@ -203,11 +203,11 @@ Used when refreshing the error list.")
 
 (eval-after-load 'evil-leader
   '(progn
-     (evil-leader/set-key-for-mode 'scala-mode "mfl" 'scala-errors-show-errors)
-     (evil-leader/set-key-for-mode 'scala-mode "mfg" 'scala-errors-refresh)
-     (evil-leader/set-key-for-mode 'scala-mode "mff" 'scala-errors-goto-first-error)
-     (evil-leader/set-key-for-mode 'scala-mode "mfn" 'scala-errors-goto-next-error)
-     (evil-leader/set-key-for-mode 'scala-mode "mfp" 'scala-errors-goto-prev-error)))
+     (spacemacs/set-leader-keys-for-major-mode 'scala-mode "mfl" 'scala-errors-show-errors)
+     (spacemacs/set-leader-keys-for-major-mode 'scala-mode "mfg" 'scala-errors-refresh)
+     (spacemacs/set-leader-keys-for-major-mode 'scala-mode "mff" 'scala-errors-goto-first-error)
+     (spacemacs/set-leader-keys-for-major-mode 'scala-mode "mfn" 'scala-errors-goto-next-error)
+     (spacemacs/set-leader-keys-for-major-mode 'scala-mode "mfp" 'scala-errors-goto-prev-error)))
 
 
 (provide 'scala-errors)
