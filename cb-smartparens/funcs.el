@@ -214,7 +214,7 @@ BODY is any number of forms to be evaluated."
 (defun sp/generic-prog-backspace ()
   "Delete backwards with context-sensitive formatting."
   (interactive)
-  (-if-let (sexp (sp-get-enclosing-sexp))
+  (-if-let (sexp (ignore-errors (sp-get-enclosing-sexp)))
       (cond
        ((sp/inside-empty-angle-braces-no-content?)
         (delete-char 1)
@@ -243,7 +243,7 @@ BODY is any number of forms to be evaluated."
 (defun sp/generic-prog-space ()
   "Insert a space, performing extra padding inside braced expressions."
   (interactive)
-  (-if-let (sexp (sp-get-enclosing-sexp))
+  (-if-let (sexp (ignore-errors (sp-get-enclosing-sexp)))
       (cond
        ((or (sp/inside-curly-braces-no-content? nil sexp)
             (sp/inside-square-braces-no-content? nil sexp))
