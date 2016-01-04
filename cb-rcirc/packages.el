@@ -29,5 +29,6 @@
     :config
     (progn
       (setq rcirc-show-channels-eyebrowse-window-config-number 1)
+      (setq rcirc-time-format "%H:%M ")
       (setq rcirc-show-channels-priority
             '(("#haskell@irc.freenode.net" . 1))))))
