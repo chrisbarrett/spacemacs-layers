@@ -1,27 +1,24 @@
-[submodule "cb-proof/extensions/proofgeneral"]
-	path = cb-proof/extensions/proofgeneral
+[submodule "cb-proof/local/proofgeneral"]
+	path = cb-proof/local/proofgeneral
 	url = https://github.com/emacsattic/proofgeneral.git
-[submodule "cb-mu4e/extensions/mu4e-multi"]
-	path = cb-mu4e/extensions/mu4e-multi
+[submodule "cb-mu4e/local/mu4e-multi"]
+	path = cb-mu4e/local/mu4e-multi
 	url = https://github.com/fgallina/mu4e-multi.git
-[submodule "cb-core/extensions/super-smart-ops"]
-	path = cb-core/extensions/super-smart-ops
+[submodule "cb-core/local/super-smart-ops"]
+	path = cb-core/local/super-smart-ops
 	url = https://github.com/chrisbarrett/super-smart-ops.git
-[submodule "cb-agda/extensions/agda-mode"]
-	path = cb-agda/extensions/agda-mode
+[submodule "cb-agda/local/agda-mode"]
+	path = cb-agda/local/agda-mode
 	url = https://github.com/jwiegley/agda-mode.git
-[submodule "cb-haskell/extensions/liquid-types"]
-	path = cb-haskell/extensions/liquid-types
+[submodule "cb-haskell/local/liquid-types"]
+	path = cb-haskell/local/liquid-types
 	url = https://github.com/ucsd-progsys/liquid-types.el.git
-[submodule "cb-flycheck/extensions/haskell-flycheck"]
-	path = cb-flycheck/extensions/haskell-flycheck
+[submodule "cb-flycheck/local/haskell-flycheck"]
+	path = cb-flycheck/local/haskell-flycheck
 	url = https://github.com/chrisdone/haskell-flycheck.git
-[submodule "cb-sunrise-commander/extensions/sunrise-commander"]
-	path = cb-sunrise-commander/extensions/sunrise-commander
+[submodule "cb-sunrise-commander/local/sunrise-commander"]
+	path = cb-sunrise-commander/local/sunrise-commander
 	url = https://github.com/escherdragon/sunrise-commander.git
-[submodule "org-reveal/assets/reveal.js"]
-	path = org-reveal/assets/reveal.js
-	url = https://github.com/hakimel/reveal.js.git
 [submodule "cb-org-reveal/submodules/reveal.js"]
 	path = cb-org-reveal/submodules/reveal.js
 	url = https://github.com/hakimel/reveal.js.git
