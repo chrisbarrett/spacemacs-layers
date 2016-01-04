@@ -35,17 +35,7 @@
       (add-hook 'scala-mode-hook 'cb-scala/set-local-hooks)
 
       (define-key scala-mode-map (kbd "M-RET") 'scala/meta-ret)
-      (define-key scala-mode-map (kbd "C-c C-e") 'scala/insert-extends)
-
-      ;; HACK: set some scala key bindings in a hook to prevent them mysteriously
-      ;; leaking into other major modes.
-
-      (defun scala/set-normal-state-local-keybindings ()
-        (evil-local-set-key 'normal (kbd "J") 'spacemacs/scala-join-line)
-        (evil-local-set-key 'insert (kbd "<return>") 'scala/ret)
-        (evil-local-set-key 'normal (kbd "RET") 'ensime-inspect-type-at-point))
-
-      (add-hook 'scala-mode-hook 'scala/set-normal-state-local-keybindings))))
+      (define-key scala-mode-map (kbd "C-c C-e") 'scala/insert-extends))))
 
 (defun cb-scala/post-init-ensime ()
   (add-hook 'scala-mode-hook 'scala/maybe-start-ensime)
