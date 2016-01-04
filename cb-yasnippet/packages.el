@@ -36,11 +36,11 @@
     (bind-key "<backspace>" 'yas/backspace yas-keymap)
     (evil-define-key 'insert yas-keymap (kbd "SPC") 'yas/space))
 
-  (spacemacs/declare-prefix "y" "yasnippet")
-  (evil-leader/set-key "yf" 'yas-visit-snippet-file)
-  (evil-leader/set-key "yn" 'yas-new-snippet)
-  (evil-leader/set-key "yy" 'yas-insert-snippet)
-  (evil-leader/set-key "yr" 'cb-yas/reload-all)
+  (spacemacs/declare-prefix "Y" "yasnippet")
+  (evil-leader/set-key "Yf" 'yas-visit-snippet-file)
+  (evil-leader/set-key "Yn" 'yas-new-snippet)
+  (evil-leader/set-key "Yy" 'yas-insert-snippet)
+  (evil-leader/set-key "Yr" 'cb-yas/reload-all)
 
   ;; Advise editing commands.
   ;;
