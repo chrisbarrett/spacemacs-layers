@@ -4,8 +4,7 @@
 (eval-when-compile
   (require 's nil t)
   (require 'dash nil t)
-  (require 'noflet nil t)
-  (require 'ensime nil t))
+  (require 'noflet nil t))
 
 ;;; Interactive
 
