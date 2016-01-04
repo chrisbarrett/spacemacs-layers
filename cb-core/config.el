@@ -130,9 +130,7 @@ Work around spacemacs' aggressive manipulation of `face-remapping-alist'."
 
 ;;; Saving behaviour
 
-(add-hook 'after-save-hook   'executable-make-buffer-file-executable-if-script-p)
-(add-hook 'before-save-hook  'whitespace-cleanup)
-(add-hook 'before-save-hook  'delete-trailing-whitespace)
+(add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
 
 ;;; Editing advice
 
