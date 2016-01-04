@@ -23,9 +23,9 @@
 
 ;;; Code:
 
+(require 'cl-lib)
 (require 'dash)
 (require 'rcirc)
-(require 'cl-lib)
 
 (autoload 'eyebrowse-switch-to-window-config "eyebrowse")
 
@@ -76,15 +76,39 @@ tiled last."
    (rcirc-show-channels--server-buffers)))
 
 (defun rcirc-show-channels--tile-buffers (bufs)
-  (cl-labels ((go (bufs-and-indices)
-                  (-let [((idx . b) . bs) bufs-and-indices]
-                    (switch-to-buffer b)
-                    (when bs
-                      (let ((w (if (cl-evenp idx) (split-window-horizontally) (split-window-vertically))))
-                        (select-window w)
-                        (go bs))))))
-    (delete-other-windows)
-    (go (--map-indexed (cons it-index it) bufs))))
+  (let ((windows (rcirc-show-channels--make-n-tiles (length bufs))))
+    (cl-assert (equal (length bufs) (length windows)) t)
+    (--map-indexed
+     (progn
+       (select-window (elt windows it-index))
+       (switch-to-buffer it))
+     bufs)))
+
+(defun rcirc-show-channels--make-n-tiles (n)
+  "Create a tiled window with N entries.
+
+Create horizontal splits, then split each of those at most once
+until there are exactly `n' windows in this frame.
+
+Return the created windows."
+  (delete-other-windows)
+  (let* ((evens
+          (-iterate (lambda (_)
+                      (split-window-horizontally))
+                    (selected-window)
+                    (ceiling (/ n 2.0))))
+         (odds
+          (->> (-drop (cl-rem n 2) evens)
+               (--map (progn
+                        (select-window it)
+                        (split-window-vertically)))))
+         (results
+          (->> (-zip-fill nil evens odds)
+               (--reduce-from (cons (cdr it) (cons (car it) acc)) nil)
+               (nreverse)
+               (-non-nil))))
+    (cl-assert (-all? #'windowp results) t)
+    results))
 
 (defun rcirc-show-channels--scroll-to-bottom (bufs)
   (dolist (b bufs)
@@ -101,10 +125,10 @@ tiled last."
       (rcirc nil))))
 
 (defun rcirc-show-channels ()
-  "Show all rcirc buffers in a tiled window layout. Start rcirc if needed.
+  "Show all rcirc buffers in a tiled window layout.  Start rcirc if needed.
 
 If rcirc is starting there will be no channel buffers to display.
-The server buffer will be displayed instead. Once channels have
+The server buffer will be displayed instead.  Once channels have
 been joined, run the command again to tile the channel buffers.
 
 By default, channel buffers are tiled in alphabetical order.
@@ -117,12 +141,24 @@ window config to use for the buffers."
   (interactive)
   (when rcirc-show-channels-eyebrowse-window-config-number
     (eyebrowse-switch-to-window-config rcirc-show-channels-eyebrowse-window-config-number))
-  (rcirc-show-channels--maybe-start-rcirc)
-  (let ((bufs (rcirc-show-channels--apply-channel-ordering (rcirc-show-channels--channel-buffers))))
-    (if (null bufs)
-        (switch-to-buffer (car (rcirc-show-channels--server-buffers)))
-      (rcirc-show-channels--tile-buffers bufs))
-    (rcirc-show-channels--scroll-to-bottom bufs)))
+
+  (let ((current-channel
+         (--first (and (with-current-buffer it (derived-mode-p 'rcirc-mode))
+                       (-contains? (rcirc-show-channels--channel-buffers) it))
+                  (buffer-list))))
+
+    (rcirc-show-channels--maybe-start-rcirc)
+
+    (let ((bufs (rcirc-show-channels--apply-channel-ordering (rcirc-show-channels--channel-buffers))))
+      (if (null bufs)
+          (switch-to-buffer (car (rcirc-show-channels--server-buffers)))
+        (rcirc-show-channels--tile-buffers bufs))
+      (rcirc-show-channels--scroll-to-bottom bufs))
+
+    (when current-channel
+      (select-window (--first (equal (window-buffer it)
+                                     current-channel)
+                              (window-list))))))
 
 (provide 'rcirc-show-channels)
 
