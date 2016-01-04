@@ -209,13 +209,12 @@
 
   (defun cb-org/set-next-todo-state ()
     "When marking a todo to DONE, set the next TODO as NEXT.
-Do not change habits, scheduled items or repeating todos."
+Do not scheduled items or repeating todos."
     (when (equal org-state "DONE")
       (save-excursion
         (when (and (ignore-errors (outline-forward-same-level 1) t)
                    (equal (org-get-todo-state) "TODO"))
-          (unless (or (org-is-habit-p)
-                      (org-entry-get (point) "STYLE")
+          (unless (or (org-entry-get (point) "STYLE")
                       (org-entry-get (point) "LAST_REPEAT")
                       (org-get-scheduled-time (point)))
             (org-todo "NEXT"))))))
@@ -300,7 +299,7 @@ Do not change habits, scheduled items or repeating todos."
     (setq org-agenda-skip-deadline-prewarning-if-scheduled t)
     (setq org-agenda-skip-scheduled-if-done t)
     (setq org-agenda-sorting-strategy
-          '((agenda habit-down time-up priority-down category-keep)
+          '((agenda time-up priority-down category-keep)
             (todo priority-down category-keep scheduled-up)
             (tags priority-down category-keep)
             (search category-keep)))
@@ -370,8 +369,7 @@ Do not change habits, scheduled items or repeating todos."
                (tags-todo "someday&skill"
                           ((org-agenda-overriding-header "Decide whether to promote any learning tasks to NEXT actions"))))
               ((org-agenda-tag-filter-preset
-                '("-drill" "-gtd" "-work_habit" "-habit" "-ignore"))
-               (org-habit-show-habits nil)
+                '("-drill" "-gtd" "-ignore"))
                (org-agenda-include-inactive-timestamps t)
                (org-agenda-dim-blocked-tasks nil))))))
 
