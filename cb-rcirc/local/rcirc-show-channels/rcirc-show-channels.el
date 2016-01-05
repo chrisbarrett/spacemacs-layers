@@ -76,7 +76,10 @@ tiled last."
    (rcirc-show-channels--server-buffers)))
 
 (defun rcirc-show-channels--tile-buffers (bufs)
-  (let ((windows (rcirc-show-channels--make-n-tiles (length bufs))))
+  (let ((windows
+         (if (equal 2 (length bufs))
+             (rcirc-show-channels--make-horizontal-split)
+           (rcirc-show-channels--make-n-tiles (length bufs)))))
     (cl-assert (equal (length bufs) (length windows)) t)
     (--map-indexed
      (progn
@@ -109,6 +112,12 @@ Return the created windows."
                (-non-nil))))
     (cl-assert (-all? #'windowp results) t)
     results))
+
+(defun rcirc-show-channels--make-horizontal-split ()
+  (delete-other-windows)
+  (let ((w1 (selected-window))
+        (w2 (split-window-horizontally)))
+    (list w1 w2)))
 
 (defun rcirc-show-channels--scroll-to-bottom (bufs)
   (dolist (b bufs)
