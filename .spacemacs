@@ -64,7 +64,7 @@ values."
      (rcirc
       :variables
       rcirc-enable-authinfo-support t)
-     scala
+     ;; scala
      (shell
       :variables
       shell-default-shell 'eshell
@@ -108,7 +108,7 @@ values."
      cb-proof
      cb-rcirc
      ;; cb-rust
-     cb-scala
+     ;; cb-scala
      ;; cb-shell
      cb-smartparens
      cb-sml
