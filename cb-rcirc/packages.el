@@ -25,7 +25,7 @@
   (use-package rcirc-show-channels
     :commands rcirc-show-channels
     :init
-    (bind-key (kbd "<f7>") 'rcirc-show-channels)
+    (bind-key (kbd "<f5>") 'rcirc-show-channels)
     :config
     (progn
       (setq rcirc-show-channels-eyebrowse-window-config-number 1)
