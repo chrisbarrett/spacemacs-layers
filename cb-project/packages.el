@@ -27,6 +27,10 @@
 
 (defun cb-project/post-init-projectile ()
   (use-package projectile
+    :bind
+    (("s-f" . projectile-find-file)
+     ("s-d" . projectile-find-dir)
+     ("s-l" . projectile-switch-project))
     :config
     (progn
       ;;; Define a command that switches between test and impl, optionally in
