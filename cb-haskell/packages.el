@@ -302,12 +302,6 @@
       (delete-region beg end)
       (insert "{-@ ") (save-excursion (insert " @-}"))))
 
-  (defun haskell/dot-accessing-module-or-constructor? ()
-    (save-excursion
-      (forward-char -1)
-      (-when-let (sym (thing-at-point 'symbol))
-        (s-uppercase? (substring sym 0 1)))))
-
   (defun cb-haskell/indent-if-in-exports ()
     (when (ignore-errors (s-matches? "ExportSpec" (elt (shm-current-node) 0)))
       (haskell-indentation-indent-line)))
@@ -317,17 +311,7 @@
                 (list
                  (smart-ops "->" "=>")
                  (smart-ops "$" "=" "~" "^" ":" "?")
-                 (smart-ops ".." "^~" :pad-before nil :pad-after nil)
-                 (smart-op "."
-                           :pad-before-unless
-                           (lambda (pt)
-                             (s-matches? "forall" (buffer-substring (line-beginning-position) (point))))
-                           :pad-unless
-                           (lambda (pt)
-                             (or
-                              (haskell/dot-accessing-module-or-constructor?)
-                              (equal (char-after) (string-to-char "}"))
-                              (funcall (smart-ops-after-match? (rx digit)) pt))))
+                 (smart-ops "^~" :pad-before nil :pad-after nil)
                  (smart-op ";"
                            :pad-before nil :pad-after t)
                  (smart-ops ","
