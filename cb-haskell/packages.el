@@ -95,18 +95,11 @@
               ghci-ng
             (executable-find "ghci"))))
 
-  (setq haskell-process-args-stack-ghci
-        (list
-         "--ghc-options" "-ferror-spans"
-         "--with-ghc" "ghci-ng"))
-
-  (concat "stack ghci " (s-join " " haskell-process-args-stack-ghci))
-
   (setq haskell-import-mapping
         '(("Data.Map" . "import qualified Data.Map as Map\nimport Data.Map (Map)")
           ("Data.Maybe" . "import qualified Data.Maybe as Maybe")
           ("Data.Vector" . "import qualified Data.Vector as Vector\nimport Data.Vector (Vector)")
-          ("Data.Text" . "import qualified Data.Text as T\nimport Data.Text (Text, pack, unpack)")))
+          ("Data.Text" . "import qualified Data.Text as T\nimport Data.Text (Text)")))
 
   (setq haskell-language-extensions
         '("-XUnicodeSyntax" "-XLambdaCase"))
