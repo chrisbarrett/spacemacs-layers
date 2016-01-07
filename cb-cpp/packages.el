@@ -44,11 +44,11 @@
 
 (defun cb-cpp/init-company-irony ()
   (use-package company-irony
-    :config
+    :if (configuration-layer/package-usedp 'company)
+    :defer t
+    :init
     (progn
-      (with-eval-after-load 'company
-        (add-to-list 'company-backends 'company-irony))
-
+      (push 'company-irony company-backends-c-mode-common)
       (add-hook 'irony-mode-hook 'company-irony-setup-begin-commands))))
 
 (defun cb-cpp/init-irony-eldoc ()
@@ -65,9 +65,9 @@
 
 (defun cb-cpp/init-company-irony-c-headers ()
   (use-package company-irony-c-headers
-    :config
-    (with-eval-after-load 'company
-      (add-to-list 'company-backends '(company-irony-c-headers)))))
+    :if (configuration-layer/package-usedp 'company)
+    :defer t
+    :init (push 'company-irony-c-headers company-backends-c-mode-common)))
 
 (defun cb-cpp/init-google-c-style ()
   (use-package google-c-style
