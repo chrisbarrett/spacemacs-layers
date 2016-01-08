@@ -139,7 +139,7 @@
 
     (evil-define-key 'normal haskell-mode-map (kbd "SPC i i") 'haskell/insert-import)
     (evil-define-key 'normal haskell-mode-map (kbd "SPC i q") 'haskell/insert-qualified-import)
-    (evil-define-key 'normal haskell-mode-map (kbd "SPC i l") 'haskell/insert-language-pragma)
+    (evil-define-key 'normal haskell-mode-map (kbd "SPC i L") 'haskell/insert-language-pragma)
     (evil-define-key 'normal haskell-mode-map (kbd "SPC i o") 'haskell/insert-ghc-option)
 
     (evil-define-key 'normal haskell-mode-map (kbd "M-RET") 'haskell/meta-ret)
@@ -324,9 +324,8 @@
                            :pad-before nil :pad-after nil
                            :action #'cb-haskell/reformat-pragma-at-point)
                  (smart-op "@"
-                           :pad-unless
-                           (lambda (pt)
-                             (s-matches? "=" (buffer-substring (point) (line-end-position))))
+                           :pad-before nil
+                           :pad-after nil
                            :action 'cb-haskell/reformat-refinement-type-at-point)
                  (smart-ops-default-ops))))
 

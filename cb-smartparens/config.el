@@ -44,7 +44,7 @@
   (sp-with-modes '(haskell-mode inf-haskell-mode haskell-interactive-mode)
     (sp-local-pair "\"" "\"" :post-handlers '(:add sp/external-padding))
     (sp-local-pair "{" "}" :post-handlers '(:add sp/external-padding))
-    (sp-local-pair "(" ")" :post-handlers '(:add sp/external-padding))
+    (sp-local-pair "(" ")" :post-handlers '(:add sp/haskell-external-padding))
     (sp-local-pair "[" "]" :post-handlers '(:add sp/external-padding))
     (sp-local-pair "{-@" "@-}" :post-handlers '(:add sp/internal-and-external-padding))
     (sp-local-pair "{-#" "#-}" :post-handlers '(:add sp/internal-and-external-padding))

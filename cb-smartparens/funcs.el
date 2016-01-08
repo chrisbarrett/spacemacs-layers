@@ -406,3 +406,23 @@ With prefix arg ARG, just insert a newline and indent."
       (sp/internal-padding id action context)
     (and (sp/external-padding id action context)
          (sp/internal-padding id action context))))
+
+
+;;; Haskell utils
+
+(defun sp/haskell-external-padding (id action ctx)
+  "Add external padding around ID.
+Insert leading padding unless at start of line or after an open round paren."
+  (when (and (equal action 'insert)
+             (equal ctx 'code))
+    (save-excursion
+      (when (search-backward (sp-get-pair id :open)
+                             (line-beginning-position) t)
+        (let ((bol-to-point (buffer-substring (line-beginning-position) (point))))
+          (cond
+           ((s-matches? (rx bol (* space) eol) bol-to-point))
+           ((s-matches? (rx (or "@" "(" "[") (* space) eol) bol-to-point)
+            (delete-horizontal-space))
+           (t
+            (just-one-space))))
+        t))))
