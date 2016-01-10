@@ -79,6 +79,7 @@ values."
      ;; cb-agda
      cb-autoinsert
      cb-calc
+     cb-circe
      cb-coffeescript
      cb-cpp
      cb-core
@@ -106,7 +107,7 @@ values."
      cb-org-reveal
      cb-project
      cb-proof
-     cb-rcirc
+     ;; cb-rcirc
      ;; cb-rust
      ;; cb-scala
      ;; cb-shell
