@@ -3,21 +3,22 @@
 ;;; Code:
 
 (eval-when-compile
-  (require 'use-package nil t)
-  (require 'dash nil t)
-  (require 's nil t))
+  (require 'use-package nil t))
+
+(require 'dash)
+(require 's)
 
 (defconst cb-scala-packages
   '(scala-mode2
     sbt-mode
     ensime
     smart-ops
+    cb-buffers
 
     (scala-errors :location local)
     (scala-pretty-sbt :location local)
     (scala-yasnippet :location local)
-    (ensime-diminished-modeline :location local)
-    ))
+    (ensime-diminished-modeline :location local)))
 
 (defun cb-scala/post-init-scala-mode2 ()
   (use-package scala-mode2
@@ -236,3 +237,8 @@ See `ensime-goto-test-config-defaults' for possible template values.")
 
 (defun cb-scala/init-ensime-diminished-modeline ()
   (use-package ensime-diminished-modeline))
+
+(defun cb-scala/post-init-cb-buffers ()
+  (use-package cb-buffers
+    :config
+    (add-to-list 'cb-buffers-indent-commands-alist '(scala-mode . ensime-format-source))))

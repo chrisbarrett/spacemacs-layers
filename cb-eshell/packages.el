@@ -43,7 +43,7 @@
   (defun cb-eshell/ret ()
     "Do not send input if the command is empty."
     (interactive)
-    (let ((empty-command? (s-matches? (concat eshell-prompt-regexp " *$") (current-line))))
+    (let ((empty-command? (s-matches? (concat eshell-prompt-regexp " *$") (cb-buffers-current-line))))
       (unless empty-command?
         (call-interactively 'eshell-send-input))))
 
@@ -61,3 +61,5 @@
              (while (pcomplete-here*
                      (funcall pcomplete-command-completion-function)
                      (pcomplete-arg 'last) t)))))))
+
+;;; packages.el ends here

@@ -1,9 +1,15 @@
-;; -*- lexical-binding: t; -*-
+;;; funcs.el --- Funcs for cb-idris layer. -*- lexical-binding: t; -*-
+;;; Commentary:
+;;; Code:
 
-(eval-when-compile
-  (require 'cb-buffers nil t)
-  (require 's nil t)
-  (require 'dash nil t))
+(require 'dash)
+(require 's)
+(require 'thingatpt)
+
+(autoload 'cb-buffers-current-line "cb-buffers")
+(autoload 'cb-buffers-filtera "cb-buffers")
+(autoload 'evil-insert-state "evil-states")
+(autoload 'idris-newline-and-indent "idris-commands")
 
 (defun idris/after-subexpr-opening? ()
   (s-matches? (rx (or "{" "[" "{-" "[|") (* space) eol)
@@ -107,7 +113,7 @@
 (defun idris/ret ()
   "Indent and align on newline."
   (interactive "*")
-  (if (s-matches? comment-start (current-line))
+  (if (s-matches? comment-start (cb-buffers-current-line))
       (comment-indent-new-line)
 
     (cond
@@ -118,7 +124,7 @@
       (delete-horizontal-space)
       (indent-for-tab-command))
 
-     ((s-matches? (rx bol (* space) eol) (current-line))
+     ((s-matches? (rx bol (* space) eol) (cb-buffers-current-line))
       (delete-horizontal-space)
       (newline))
 
@@ -134,7 +140,7 @@
   (cond
 
    ;; Insert new type decl case below the current one.
-   ((s-matches? (rx bol (* space) "|") (current-line))
+   ((s-matches? (rx bol (* space) "|") (cb-buffers-current-line))
     (let ((col (save-excursion (back-to-indentation) (current-column))))
       (goto-char (line-end-position))
       (newline)
@@ -144,8 +150,8 @@
     (message "New data case"))
 
    ;; Insert new type decl case below the current one.
-   ((and (s-matches? (rx bol (* space) "data") (current-line))
-         (not (s-matches? "where" (current-line))))
+   ((and (s-matches? (rx bol (* space) "data") (cb-buffers-current-line))
+         (not (s-matches? "where" (cb-buffers-current-line))))
 
     (-if-let (col (save-excursion
                     (goto-char (line-beginning-position))
@@ -170,7 +176,7 @@
                  (back-to-indentation)
                  (current-column))))
 
-      (unless (s-matches? (rx bol (* space) eol) (current-line))
+      (unless (s-matches? (rx bol (* space) eol) (cb-buffers-current-line))
         (newline))
 
       (indent-to-column col)
@@ -178,13 +184,13 @@
       (just-one-space)))
 
    ;; Insert new line starting with comma.
-   ((s-matches? (rx bol (* space) ",") (current-line))
-    (cb-hs:newline-indent-to-same-col)
+   ((s-matches? (rx bol (* space) ",") (cb-buffers-current-line))
+    (idris/newline-indent-to-same-col)
     (insert ", ")
     (message "New entry"))
 
    ;; Create a new line in a comment.
-   ((s-matches? comment-start (current-line))
+   ((s-matches? comment-start (cb-buffers-current-line))
     (fill-paragraph)
     (comment-indent-new-line)
     (message "New comment line"))
@@ -194,3 +200,11 @@
     (idris/ret)))
 
   (evil-insert-state))
+
+(defun idris/newline-indent-to-same-col ()
+  (let ((col (save-excursion (back-to-indentation) (current-column))))
+    (goto-char (line-end-position))
+    (newline)
+    (indent-to col)))
+
+;;; funcs.el ends here

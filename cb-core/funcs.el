@@ -11,14 +11,6 @@
 
 ;;; Useful functions
 
-(defmacro until (test &rest body)
-  "If TEST yields nil, eval BODY... and repeat.
-The order of execution is thus TEST, BODY, TEST, BODY and so on
-until TEST returns non-nil."
-  (declare (indent 1))
-  `(while (not ,test)
-     ,@body))
-
 (defun line-content-relative (move-n-lines)
   "Return the line at point, or another line relative to this line.
 MOVE-N-LINES is an integer that will return a line forward if
@@ -47,10 +39,6 @@ positive or backward if negative."
     (goto-char (line-end-position))
     (newline)
     (indent-to col)))
-
-(defun core/in-string-or-comment? ()
-  "Non-nil if point is at a string or comment."
-  (nth 8 (syntax-ppss)))
 
 
 ;;; Buffer management
@@ -184,56 +172,6 @@ positive or backward if negative."
 (defun core/warn-exit-emacs-rebound ()
   (interactive)
   (user-error "Type <C-c k k> to exit Emacs"))
-
-
-;;; Indentation
-
-(defun core/indent-buffer ()
-  "Indent the whole buffer."
-  (interactive)
-  (ignore-errors
-    (save-excursion
-      (goto-char (point-min))
-      (while (not (eobp))
-        (unless (s-blank? (current-line))
-          (indent-according-to-mode))
-        (forward-line)))))
-
-(defvar core/indent-commands-alist
-  nil
-  "Alist of commands to run to indent the buffer, indexed by major-mode")
-
-(defun core/indent-dwim (&optional arg)
-  "Perform a context-sensitive indentation action.
-With prefix argument ARG, justify text."
-  (interactive "P")
-  (let ((in-string? (nth 8 (syntax-ppss))))
-    (cond
-     ((region-active-p)
-      (indent-region (region-beginning) (region-end))
-      (message "Indented region."))
-
-     (in-string?
-      (if (apply 'derived-mode-p core/lisp-modes)
-          (lisp-fill-paragraph arg)
-        (or (fill-comment-paragraph)
-            (fill-paragraph arg)))
-      (message "Filled paragraph."))
-
-     ((assoc major-mode core/indent-commands-alist)
-      (funcall (cdr (assoc major-mode core/indent-commands-alist)))
-      (message "Formatted buffer."))
-
-     (t
-      (core/indent-buffer)
-      (message "Indented buffer.")))))
-
-(defun core/outdent ()
-  "Remove indentation on the current line."
-  (interactive "*")
-  (save-excursion
-    (goto-char (line-beginning-position))
-    (delete-horizontal-space)))
 
 
 ;;; Compilation

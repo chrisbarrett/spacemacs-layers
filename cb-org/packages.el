@@ -3,8 +3,10 @@
 ;;; Code:
 
 (eval-when-compile
-  (require 'use-package nil t)
-  (require 's nil t))
+  (require 'use-package nil t))
+
+(require 's)
+(require 'f)
 
 (defconst org-directory
   (let ((in-dropbox (f-join user-dropbox-directory "org/")))
@@ -176,7 +178,7 @@
 
   (defadvice org-toggle-heading (after goto-line-end activate)
     "Prevent point from being moved to the line beginning."
-    (when (s-matches? (rx bol (+ "*") (* space) eol) (current-line))
+    (when (s-matches? (rx bol (+ "*") (* space) eol) (cb-buffers-current-line))
       (goto-char (line-end-position))))
 
 
@@ -751,3 +753,5 @@ exported file's name. The PDF will be created at DEST."
              :clock-keep t)
 
             ))))
+
+;;; packages.el ends here

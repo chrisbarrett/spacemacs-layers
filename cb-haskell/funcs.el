@@ -1,8 +1,15 @@
-;; -*- lexical-binding: t; -*-
+;;; funcs.el --- Functions for cb-haskell layer.  -*- lexical-binding: t; -*-
+;;; Commentary:
+;;; Code:
+
 (require 'dash)
 (require 's)
 (require 'ert)
-(require 'haskell-parser nil t)
+(require 'thingatpt)
+
+(autoload 'cb-macros-until "cb-macros")
+(autoload 'cb-buffers-current-line "cb-buffers")
+(autoload 'cb-buffers-in-string-or-comment "cb-buffers")
 
 (defun haskell/after-subexpr-opening? ()
   (s-matches? (rx (or "{" "[" "{-" "{-#" "(#" "{-@") (* space) eol)
@@ -73,7 +80,7 @@ With prefix arg ARG, just insert a newline and indent."
      (arg
       (newline-and-indent))
 
-     ((s-matches? (rx bol (? ">") (* space) "--") (current-line))
+     ((s-matches? (rx bol (? ">") (* space) "--") (cb-buffers-current-line))
       (insert "\n-- "))
 
      ((or (sp/inside-curly-braces? t sexp)
@@ -106,7 +113,7 @@ With prefix arg ARG, just insert a newline and indent."
         (while (and (search-forward-regexp (rx ",") nil t)
                     (<= beg (sp/beg)))
           (when (equal beg (sp/beg))
-            (unless (core/in-string-or-comment?)
+            (unless (cb-buffers-in-string-or-comment?)
               (forward-char -1)
               (insert "\n")
               (indent-according-to-mode)
@@ -143,7 +150,7 @@ With prefix arg ARG, just insert a newline and indent."
                                                   t)
                                     nil t)
 
-        (unless (core/in-string-or-comment?)
+        (unless (cb-buffers-in-string-or-comment?)
           (replace-match repl t t nil 1))))))
 
 
@@ -156,7 +163,7 @@ With prefix arg ARG, just insert a newline and indent."
   (cond
    ;; Append new record field
    ((and (haskell/at-record-decl-data-header?)
-         (or (s-matches? (rx "{" (* space) eol) (current-line))
+         (or (s-matches? (rx "{" (* space) eol) (cb-buffers-current-line))
              (s-matches? (rx bol (* space) "{") (line-content-relative +1))))
     (search-forward "{")
     (-let [(&plist :end end) (sp-get-enclosing-sexp)]
@@ -168,7 +175,7 @@ With prefix arg ARG, just insert a newline and indent."
       (message "New field")))
 
    ;; Insert new case below the current type decl.
-   ((s-matches? (rx bol (? ">") (* space) "data" (+ space)) (current-line))
+   ((s-matches? (rx bol (? ">") (* space) "data" (+ space)) (cb-buffers-current-line))
     (goto-char (line-end-position))
     (newline)
     (insert "| ")
@@ -178,38 +185,38 @@ With prefix arg ARG, just insert a newline and indent."
     (message "New data case"))
 
    ;; Insert new type decl case below the current one.
-   ((s-matches? (rx bol (? ">") (* space) "|") (current-line))
+   ((s-matches? (rx bol (? ">") (* space) "|") (cb-buffers-current-line))
     (haskell/newline-indent-to-same-col)
     (insert "| ")
     (message "New data case"))
 
    ;; Insert new alternative case
-   ((s-matches? (rx bol (? ">") (* space) "<|>") (current-line))
+   ((s-matches? (rx bol (? ">") (* space) "<|>") (cb-buffers-current-line))
     (haskell/newline-indent-to-same-col)
     (insert "<|> ")
     (message "New alternative"))
 
    ;; Insert new applicative case
-   ((s-matches? (rx bol (? ">") (* space) "<$>") (current-line))
+   ((s-matches? (rx bol (? ">") (* space) "<$>") (cb-buffers-current-line))
     (haskell/newline-indent-to-same-col)
     (insert "<*> ")
     (message "New applicative"))
 
    ;; Insert new applicative case
-   ((s-matches? (rx bol (? ">") (* space) "<*>") (current-line))
+   ((s-matches? (rx bol (? ">") (* space) "<*>") (cb-buffers-current-line))
     (haskell/newline-indent-to-same-col)
     (insert "<*> ")
     (message "New applicative"))
 
    ;; Insert new import
-   ((s-matches? (rx bol (? ">") (* space) "import") (current-line))
+   ((s-matches? (rx bol (? ">") (* space) "import") (cb-buffers-current-line))
     (haskell/newline-indent-to-same-col)
     (insert "import ")
     (message "New import"))
 
    ;; Insert new record field
    ((and (haskell/in-data-decl?)
-         (or (s-matches? (rx bol (? ">") (* space) (or "{") (* space)) (current-line))
+         (or (s-matches? (rx bol (? ">") (* space) (or "{") (* space)) (cb-buffers-current-line))
              (s-matches? (rx "{" (* space) eol) (line-content-relative -1))))
     (haskell/insert-record-field)
     (message "New field"))
@@ -229,40 +236,40 @@ With prefix arg ARG, just insert a newline and indent."
 
    ;; Insert new record field
    ((and (haskell/in-data-decl?)
-         (s-matches? (rx bol (? ">") (* space) (or "{" ",") (* space)) (current-line)))
+         (s-matches? (rx bol (? ">") (* space) (or "{" ",") (* space)) (cb-buffers-current-line)))
     (haskell/insert-record-field)
     (message "New field"))
 
    ;; Insert new line starting with comma.
-   ((s-matches? (rx bol (? ">") (* space) ",") (current-line))
+   ((s-matches? (rx bol (? ">") (* space) ",") (cb-buffers-current-line))
     (haskell/newline-indent-to-same-col)
     (insert ", ")
     (message "New entry"))
 
    ;; Insert new line starting with an arrow.
-   ((s-matches? (rx bol (? ">") (* space) (or "→" "->")) (current-line))
+   ((s-matches? (rx bol (? ">") (* space) (or "→" "->")) (cb-buffers-current-line))
     (haskell/newline-indent-to-same-col)
     (insert (format "%s " (haskell/fmt-rarrow)))
     (message "New arrow"))
 
    ;; Insert new pattern match case below the current one.
-   ((s-matches? (rx bol (? ">") (* space) (+ (not (any "="))) (or "->" "→")) (current-line))
+   ((s-matches? (rx bol (? ">") (* space) (+ (not (any "="))) (or "->" "→")) (cb-buffers-current-line))
     (haskell/newline-indent-to-same-col)
     (yas-expand-snippet (format "${1:pat} %s $0" (haskell/fmt-rarrow)))
     (message "New pattern match case"))
-   ((s-matches? (rx bol (? ">") (* space) "case" (+ space)) (current-line))
+   ((s-matches? (rx bol (? ">") (* space) "case" (+ space)) (cb-buffers-current-line))
     (newline-and-indent)
     (yas-expand-snippet (format "${1:pat} %s $0" (haskell/fmt-rarrow)))
     (message "New pattern match case"))
 
    ;; Insert new line starting with a comma for the current braced expr
-   ((s-matches? (rx bol (? ">") (* space) (or "[" "{")) (current-line))
+   ((s-matches? (rx bol (? ">") (* space) (or "[" "{")) (cb-buffers-current-line))
     (haskell/newline-indent-to-same-col)
     (insert ", ")
     (message "New entry"))
 
    ;; Insert new line with a do-binding.
-   ((s-matches? (rx bol (? ">") (* space) (+ nonl) (or "<-" "←")) (current-line))
+   ((s-matches? (rx bol (? ">") (* space) (+ nonl) (or "<-" "←")) (cb-buffers-current-line))
     (back-to-indentation)
     (let ((col (current-column)))
       (search-forward-regexp (rx  (or "<-" "←")))
@@ -280,12 +287,12 @@ With prefix arg ARG, just insert a newline and indent."
   (evil-insert-state))
 
 (defun haskell/at-record-decl-data-header? ()
-  (when (s-matches? (rx bol (? ">") (* space) "data" space) (current-line))
+  (when (s-matches? (rx bol (? ">") (* space) "data" space) (cb-buffers-current-line))
     (shm/reparse)
     (save-excursion
       (back-to-indentation)
       (shm/goto-parent-end)
-      (s-matches? "}" (current-line)))))
+      (s-matches? "}" (cb-buffers-current-line)))))
 
 (defun haskell/newline-and-insert-at-col (col str)
   "Insert STR on a new line at COL."
@@ -310,7 +317,7 @@ With prefix arg ARG, just insert a newline and indent."
     "import" "infixl" "infixr" "newtype" "data" "type" "if" "then" "else"))
 
 (defun haskell/first-ident-on-line ()
-  (car (-difference (s-split (rx (? ">") space) (current-line) t)
+  (car (-difference (s-split (rx (? ">") space) (cb-buffers-current-line) t)
                     haskell/haskell-keywords)))
 
 (defun haskell/insert-function-template (fname parsed-typesig)
@@ -354,14 +361,14 @@ With prefix arg ARG, just insert a newline and indent."
      (s-matches? (eval `(rx bol (? ">") (* space)
                             (? (or "let" "where") (+ space))
                             ,fname (+ nonl) "="))
-                 (current-line)))))
+                 (cb-buffers-current-line)))))
 
 (defun haskell/back-to-function-typesig (fname)
   (let ((function-decl-rx
          (rx-to-string `(and bol (? ">") (* space) (? (or "let" "where") (+ space))
                              (group-n 1 ,fname) (+ space) (or "∷" "::")))))
     (cond
-     ((s-matches? function-decl-rx (current-line))
+     ((s-matches? function-decl-rx (cb-buffers-current-line))
       (goto-char (line-beginning-position))
       (search-forward-regexp function-decl-rx)
       (goto-char (match-beginning 1)))
@@ -370,7 +377,7 @@ With prefix arg ARG, just insert a newline and indent."
 
 (defun haskell/in-data-decl? ()
   (cond
-   ((core/in-string-or-comment?) nil)
+   ((cb-buffers-in-string-or-comment?) nil)
    ((s-matches? "}" (buffer-substring (line-beginning-position) (point))) nil)
    ((thing-at-point-looking-at (rx bol (? ">") (* space) "data ")) t)
    (t
@@ -382,12 +389,12 @@ With prefix arg ARG, just insert a newline and indent."
   (save-excursion
     (goto-char (line-beginning-position))
     (and (haskell/in-data-decl?)
-         (s-matches? (rx "}" (* space) eol) (current-line)))))
+         (s-matches? (rx "}" (* space) eol) (cb-buffers-current-line)))))
 
 (defun haskell/insert-deriving-clause ()
   (goto-char (line-end-position))
   (when (s-matches? (rx (not space) (* space) "}" (* space) eol)
-                    (current-line))
+                    (cb-buffers-current-line))
     (search-backward "}")
     (newline-and-indent)
     (goto-char (line-end-position)))
@@ -398,7 +405,7 @@ With prefix arg ARG, just insert a newline and indent."
 
 (defun haskell/insert-record-field ()
   (let ((underscore-prefix-style?
-         (s-matches? (rx bol (? ">") (* space) (? (or "{" ",")) (* space) "_") (current-line)))
+         (s-matches? (rx bol (? ">") (* space) (? (or "{" ",")) (* space) "_") (cb-buffers-current-line)))
 
         (inserting-first-field? (sp/inside-curly-braces-blank-content?))
 
@@ -550,7 +557,7 @@ With prefix arg ARG, just insert a newline and indent."
     (haskell/goto-buffer-start)
     (while (search-forward-regexp haskell/ghc-opts-regex nil t)
       (replace-match "")
-      (when (s-blank? (current-line))
+      (when (s-blank? (cb-buffers-current-line))
         (join-line)))))
 
 (defvar haskell//language-pragmas nil)
@@ -590,13 +597,13 @@ With prefix arg ARG, just insert a newline and indent."
   (goto-char (point-min))
 
   ;; Skip #! line
-  (when (and (s-matches? (rx bol "#!") (current-line))
+  (when (and (s-matches? (rx bol "#!") (cb-buffers-current-line))
              (search-forward "#!" nil t))
     (goto-char (line-end-position))
     (forward-char 1))
 
   (while (and (not (eobp))
-              (s-blank? (current-line)))
+              (s-blank? (cb-buffers-current-line)))
     (forward-line 1)))
 
 (defun haskell/parse-module (str)
@@ -635,13 +642,13 @@ With prefix arg ARG, just insert a newline and indent."
       (search-forward "where")
       (forward-line)
       (beginning-of-line)
-      (while (and (s-blank? (current-line))
+      (while (and (s-blank? (cb-buffers-current-line))
                   (not (eobp)))
         (forward-line)))
 
      ;; Otherwise insert on first blank line.
      (t
-      (until (or (eobp) (s-blank? (current-line)))
+      (cb-macros-until (or (eobp) (s-blank? (cb-buffers-current-line)))
         (forward-line))))
 
     ;; Insert import statement.
@@ -685,8 +692,8 @@ With prefix arg ARG, just insert a newline and indent."
 (defun haskell/flyspell-verify ()
   "Prevent common flyspell false positives in haskell-mode."
   (and (flyspell-generic-progmode-verify)
-       (not (or (s-matches? (rx bol (? ">") (* space) "{-#") (current-line))
-                (s-matches? (rx bol (? ">") (* space) "foreign import") (current-line))))))
+       (not (or (s-matches? (rx bol (? ">") (* space) "{-#") (cb-buffers-current-line))
+                (s-matches? (rx bol (? ">") (* space) "foreign import") (cb-buffers-current-line))))))
 
 (defun haskell/configure-flyspell ()
   (setq-local flyspell-generic-check-word-predicate 'haskell/flyspell-verify))
@@ -704,3 +711,5 @@ With prefix arg ARG, just insert a newline and indent."
   (interactive)
   (or (when (fboundp 'ghc-auto) (ghc-auto))
       (haskell-process-cabal-build)))
+
+;;; funcs.el ends here

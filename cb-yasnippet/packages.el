@@ -2,10 +2,12 @@
 ;;; Commentary:
 ;;; Code:
 
-(eval-when-compile
-  (require 's nil t)
-  (require 'dash nil t)
-  (require 'use-package nil t))
+(require 'dash)
+(require 'f)
+(require 's)
+(require 'use-package)
+
+(autoload 'evil-insert-state "evil-states")
 
 (defconst cb-yasnippet-packages
   '(yasnippet))
@@ -34,7 +36,7 @@
   (with-eval-after-load 'yasnippet
     (yas/reload-all)
     (bind-key "<backspace>" 'yas/backspace yas-keymap)
-    (evil-define-key 'insert yas-keymap (kbd "SPC") 'yas/space))
+    (evil-define-key 'insert yas-keymap (kbd "SPC") #'yas/space))
 
   (spacemacs/declare-prefix "Y" "yasnippet")
   (spacemacs/set-leader-keys "Yf" 'yas-visit-snippet-file)
@@ -48,16 +50,14 @@
   ;;
   ;; Pressing S-TAB to go to last field will place point at the end of the field.
 
-  (defadvice yas-next-field (before clear-blank-field activate)
-    (yas/clear-blank-field))
-
-  (defadvice yas-prev-field (before clear-blank-field activate)
-    (yas/clear-blank-field))
-
-  (defadvice yas-next-field (after goto-field-end activate)
+  (defun cb-yasnippet/goto-field-end ()
     (yas/maybe-goto-field-end)
-    (evil-insert-state))
+    (when (and (boundp 'evil-mode) evil-mode)
+      (evil-insert-state)))
 
-  (defadvice yas-prev-field (after goto-field-end activate)
-    (yas/maybe-goto-field-end)
-    (evil-insert-state)))
+  (advice-add 'yas-next-field :before #'yas/clear-blank-field)
+  (advice-add 'yas-prev-field :before #'yas/clear-blank-field)
+  (advice-add 'yas-next-field :after #'cb-yasnippet/goto-field-end)
+  (advice-add 'yas-prev-field :after #'cb-yasnippet/goto-field-end))
+
+;;; packages.el ends here

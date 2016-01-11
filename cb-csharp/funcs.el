@@ -1,13 +1,22 @@
+;;; funcs.el --- Supporting functions for cb-csharp layer.
+;;; Commentary:
+;;; Code:
+
+(require 'dash)
+(require 's)
+
+(autoload 'cb-buffers-current-line "cb-buffers")
+
 (defun csharp/line-pad-usings ()
   "Add a trailing line of padding after usings."
   (save-excursion
     (goto-char (point-min))
     (when (search-forward-regexp (rx bol "using") nil t)
-      (while (and (s-matches? (rx bol "using") (current-line))
+      (while (and (s-matches? (rx bol "using") (cb-buffers-current-line))
                   (not (eobp)))
         (forward-line))
 
-      (unless (s-blank? (current-line))
+      (unless (s-blank? (cb-buffers-current-line))
         (goto-char (line-beginning-position))
         (newline)))))
 
@@ -121,3 +130,5 @@
       (when (called-interactively-p nil)
         (message "Already using '%s'" ns))
     (csharp/do-insert-at-imports ns)))
+
+;;; funcs.el ends here

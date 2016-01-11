@@ -1,18 +1,11 @@
 ;;; packages.el --- cb-sml Layer packages File for Spacemacs
-;;
-;; Copyright (c) 2012-2014 Sylvain Benner
-;; Copyright (c) 2014-2015 Sylvain Benner & Contributors
-;;
-;; Author: Sylvain Benner <sylvain.benner@gmail.com>
-;; URL: https://github.com/syl20bnr/spacemacs
-;;
-;; This file is not part of GNU Emacs.
-;;
-;;; License: GPLv3
+;;; Commentary:
+;;; Code:
 
-(eval-when-compile
-  (require 'flycheck nil t)
-  (require 'use-package nil t))
+(require 'use-package)
+(require 'dash)
+(autoload 'evil-local-set-key "evil-core")
+(autoload 'flycheck-buffer "flycheck")
 
 (defconst cb-sml-packages
   '(sml-mode
@@ -40,7 +33,7 @@
       (define-key sml-mode-map (kbd "M-SPC") nil)
 
       (defun cb-sml/set-local-bindings ()
-        (evil-local-set-key 'normal ",ct" 'flycheck-buffer))
+        (evil-local-set-key 'normal ",ct" #'flycheck-buffer))
 
       (add-hook 'sml-mode-hook 'cb-sml/set-local-bindings)
 
@@ -61,14 +54,14 @@
       (defadvice evil-open-below (around sml-indent activate)
         (let ((col (current-indentation)))
           ad-do-it
-          (when (and (derived-mode-p 'sml-mode) (s-blank? (s-trim (current-line))))
+          (when (and (derived-mode-p 'sml-mode) (s-blank? (s-trim (cb-buffers-current-line))))
             (delete-horizontal-space)
             (indent-to col))))
 
       (defadvice evil-open-above (around sml-indent activate)
         (let ((col (current-indentation)))
           ad-do-it
-          (when (and (derived-mode-p 'sml-mode) (s-blank? (s-trim (current-line))))
+          (when (and (derived-mode-p 'sml-mode) (s-blank? (s-trim (cb-buffers-current-line))))
             (delete-horizontal-space)
             (indent-to col))))
 
@@ -85,6 +78,7 @@
                   (add-function :around (symbol-function 'sml-smie-rules) #'cb-sml/smie-rules))))))
 
 (defun cb-sml/post-init-smart-ops ()
+  (require 'smart-ops)
   (let ((ops (-flatten-n 1 (list
                             (smart-ops "," ";" :pad-before nil)
                             (smart-ops "*" "^" "@")
@@ -101,3 +95,5 @@
 (defun cb-sml/init-lazy-sml-mode ()
   (use-package lazy-sml-mode
     :mode ("\\.lml\\'" . lazy-sml-mode)))
+
+;;; packages.el ends here

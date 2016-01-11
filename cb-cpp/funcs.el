@@ -2,25 +2,28 @@
 ;;; Commentary:
 ;;; Code:
 
-(eval-when-compile
-  (require 's nil t)
-  (require 'dash nil t))
+(require 'dash)
+(require 's)
+
+(autoload 'cb-buffers-current-line "cb-buffers")
+(autoload 'evil-insert-state "evil-states")
+(autoload 'yas-expand-snippet "yasnippet")
 
 (defun cb-cpp/M-RET ()
   (interactive "*")
   (cond
-   ((s-matches? (rx bol (* space) "using" space) (current-line))
+   ((s-matches? (rx bol (* space) "using" space) (cb-buffers-current-line))
     (cb-cpp/semicolon-then-newline)
     (yas-expand-snippet "using $0;")
     (message "Inserted using directive."))
 
-   ((s-matches? (rx bol (* space) "#include" (+ space) "<") (current-line))
+   ((s-matches? (rx bol (* space) "#include" (+ space) "<") (cb-buffers-current-line))
     (goto-char (line-end-position))
     (newline-and-indent)
     (yas-expand-snippet "#include <$0>")
     (message "Inserted library include."))
 
-   ((s-matches? (rx bol (* space) "#include" (+ space) "\"") (current-line))
+   ((s-matches? (rx bol (* space) "#include" (+ space) "\"") (cb-buffers-current-line))
     (goto-char (line-end-position))
     (newline-and-indent)
     (yas-expand-snippet "#include \"$0\"")
@@ -58,3 +61,5 @@ without qualification."
                     (buffer-string))
         unqualified
       qualified-name)))
+
+;;; funcs.el ends here

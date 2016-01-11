@@ -173,39 +173,6 @@ Work around spacemacs' aggressive manipulation of `face-remapping-alist'."
          (with-current-buffer buf
            (ansi-color-apply-on-region (point-min) (point-max))))))
 
-;;; Mode listings
-
-(defconst core/lisp-modes
-  `(cider-repl-mode
-    clojure-mode
-    clojurescript-mode
-    common-lisp-mode
-    emacs-lisp-mode
-    geiser-repl-mode
-    inferior-emacs-lisp-mode
-    inferior-lisp-mode
-    inferior-scheme-mode
-    lisp-mode
-    repl-mode
-    scheme-mode
-    slime-mode
-    slime-repl-mode
-    extempore-mode
-    inferior-extempore-mode))
-
-(defconst core/prompt-modes
-  '(comint-mode
-    inf-ruby-mode
-    inferior-python-mode
-    ielm-mode
-    erc-mode
-    term-mode
-    utop-mode
-    slime-repl-mode
-    inferior-scheme-mode
-    inferior-haskell-mode
-    sclang-post-buffer-mode))
-
 ;;; Language modes
 
 (add-to-list 'auto-mode-alist (cons (rx ".zsh" eos) 'shell-script-mode))

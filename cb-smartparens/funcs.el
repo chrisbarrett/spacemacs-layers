@@ -1,8 +1,21 @@
-(eval-when-compile
-  (require 's nil t)
-  (require 'dash nil t)
-  (require 'smartparens nil t)
-  )
+;;; funcs.el --- Helper functions for cb-smartparens layer.
+;;; Commentary:
+;;; Code:
+
+(require 'cl-lib)
+(require 'dash)
+(require 's)
+(require 'thingatpt)
+
+(autoload 'cb-buffers-current-line "cb-buffers")
+(autoload 'cb-buffers-in-string-or-comment? "cb-buffers")
+(autoload 'smart-ops-backspace "smart-ops")
+(autoload 'smartparens-mode "smartparens")
+(autoload 'sp-get-enclosing-sexp "smartparens")
+(autoload 'sp-get-pair "smartparens")
+(autoload 'sp-in-code-p "smartparens")
+(autoload 'sp-in-string-p "smartparens")
+(autoload 'sp-up-sexp "smartparens")
 
 ;;; Move up and reformat parens when closing.
 
@@ -46,7 +59,7 @@ Prefix ARG is passed to `sp-up-sexp'."
 (defun sp/kill-blank-lines ()
   (interactive)
   (cond
-   ((s-blank? (s-trim (current-line)))
+   ((s-blank? (s-trim (cb-buffers-current-line)))
     (kill-whole-line))
    (t
     (call-interactively 'sp-kill-sexp)
@@ -57,7 +70,7 @@ Prefix ARG is passed to `sp-up-sexp'."
       (delete-horizontal-space t))
 
     ;; Join lines cleanly.
-    (when (s-blank? (s-trim (current-line)))
+    (when (s-blank? (s-trim (cb-buffers-current-line)))
       (let ((pt (point)))
         (join-line)
         (goto-char (1+ pt)))))))
@@ -169,7 +182,7 @@ STATEMENT-DELIMETER-RX."
         (while (and (search-forward-regexp statement-delimiter-rx nil t)
                     (<= beg (sp/beg)))
           (when (equal beg (sp/beg))
-            (unless (core/in-string-or-comment?)
+            (unless (cb-buffers-in-string-or-comment?)
               (insert "\n")
               (indent-according-to-mode))))))
 
@@ -262,7 +275,7 @@ With prefix arg ARG, just insert a newline and indent."
   (cond
    (arg
     (newline-and-indent))
-   ((core/in-string-or-comment?)
+   ((cb-buffers-in-string-or-comment?)
     (comment-indent-new-line)
     (just-one-space))
 
@@ -281,7 +294,7 @@ With prefix arg ARG, just insert a newline and indent."
   "Pad delimiters with spaces."
   (when (and (equal 'insert action)
              (or (sp-in-code-p id action ctx)
-                 (sp/ml-just-inserted-double-quotes? id action ctx)))
+                 (sp/just-inserted-double-quotes? id action ctx)))
     ;; Insert a leading space, unless
     ;; 1. this is the first position of another list
     ;; 2. this form begins a new line.
@@ -402,7 +415,7 @@ With prefix arg ARG, just insert a newline and indent."
 
 (defun sp/scala-curly-brace-padding (id action context)
   "Insert internal and external padding."
-  (if (s-matches? (rx bol (* space) "import" eow) (current-line))
+  (if (s-matches? (rx bol (* space) "import" eow) (cb-buffers-current-line))
       (sp/internal-padding id action context)
     (and (sp/external-padding id action context)
          (sp/internal-padding id action context))))
@@ -426,3 +439,5 @@ Insert leading padding unless at start of line or after an open round paren."
            (t
             (just-one-space))))
         t))))
+
+;;; funcs.el ends here

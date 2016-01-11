@@ -21,13 +21,14 @@
 
 ;;; Code:
 
-(require 'merlin)
-(require 's)
 (require 'dash)
+(require 'merlin)
+(require 'noflet)
+(require 's)
 
-(defun merlin-eldoc--type-display (bounds type &optional quiet)
-  "Display the type TYPE of the expression occuring at BOUNDS.
-If QUIET is non nil, then an overlay and the merlin types can be used."
+(autoload 'cb-buffers-in-string-or-comment? "cb-buffers")
+
+(defun merlin-eldoc--type-display (_bounds type &optional quiet)
   (if (not type)
       (unless quiet (message "<no information>"))
     (let ((count 0)
@@ -43,10 +44,10 @@ If QUIET is non nil, then an overlay and the merlin types can be used."
 
 (defun merlin-eldoc/eldoc-function ()
   (unless (let ((at-open? (rx bol (* space) "open" eow)))
-            (or (core/in-string-or-comment?)
+            (or (cb-buffers-in-string-or-comment?)
                 (save-excursion
                   (skip-chars-backward "\n \t")
-                  (s-matches? at-open? (current-line)))))
+                  (s-matches? at-open? (buffer-substring (line-beginning-position) (line-end-position))))))
     (merlin-sync-to-point)
     (when (merlin--type-enclosing-query)
       (-when-let (res (noflet ((merlin--type-display

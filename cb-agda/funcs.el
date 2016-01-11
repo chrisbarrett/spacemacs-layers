@@ -1,5 +1,14 @@
+;;; funcs.el --- Functions for cb-agda layer.
+
+;;; Commentary:
+
+;;; Code:
+
 (require 'dash)
 (require 's)
+
+(autoload 'cb-buffers-current-line "cb-buffers")
+(autoload 'evil-insert-state "evil-states")
 
 ;; Smart M-RET
 
@@ -22,7 +31,7 @@
   (interactive)
   (cond
 
-   ((s-matches? (rx bol (* space) "..." (+ space) "|") (current-line))
+   ((s-matches? (rx bol (* space) "..." (+ space) "|") (cb-buffers-current-line))
     (goto-char (line-end-position))
     (newline)
     (insert "... | "))
@@ -35,7 +44,7 @@
                  (back-to-indentation)
                  (current-column))))
 
-      (unless (s-matches? (rx bol (* space) eol) (current-line))
+      (unless (s-matches? (rx bol (* space) eol) (cb-buffers-current-line))
         (newline))
 
       (indent-to-column col)
@@ -43,7 +52,7 @@
       (just-one-space)))
 
    ;; Create a new line in a comment.
-   ((s-matches? comment-start (current-line))
+   ((s-matches? comment-start (cb-buffers-current-line))
     (fill-paragraph)
     (comment-indent-new-line)
     (message "New comment line"))
@@ -69,3 +78,5 @@
     (let ((case-fold-search nil))
       (while (search-forward-regexp sym nil t)
         (replace-match repl)))))
+
+;;; funcs.el ends here

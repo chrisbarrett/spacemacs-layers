@@ -1,6 +1,6 @@
 # key: l
 # name: let
-# condition: (not (s-matches? "-l" (current-line)))
+# condition: (not (s-matches? "-l" (cb-buffers-current-line)))
 # --
 (let (($1))
   $0)

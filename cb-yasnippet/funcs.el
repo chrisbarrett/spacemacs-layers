@@ -1,13 +1,28 @@
-;;; Utilities
+;;; funcs.el --- Helper functions for cb-yasnippet layer.
 ;;; Commentary:
 ;;; Code:
 
-(eval-when-compile
-  (require 's nil t)
-  (require 'f nil t)
-  (require 'dash nil t)
-  (require 'dash-functional nil t)
-  (require 'yasnippet nil t))
+(require 'dash)
+(require 'dash-functional)
+(require 'f)
+(require 's)
+
+(autoload 'yas--all-templates "yasnippet")
+(autoload 'yas--field-contains-point-p "yasnippet")
+(autoload 'yas--field-end "yasnippet")
+(autoload 'yas--field-modified-p "yasnippet")
+(autoload 'yas--field-start "yasnippet")
+(autoload 'yas--field-text-for-display "yasnippet")
+(autoload 'yas--get-snippet-tables "yasnippet")
+(autoload 'yas--skip-and-clear "yasnippet")
+(autoload 'yas--template-content "yasnippet")
+(autoload 'yas--template-expand-env "yasnippet")
+(autoload 'yas-expand-snippet "yasnippet")
+(autoload 'yas-next-field "yasnippet")
+(autoload 'yas-reload-all "yasnippet")
+
+(defvar yas-text nil)
+(defvar yas-snippet-dirs nil)
 
 ;;; Snippet dir registration
 
@@ -185,11 +200,16 @@ TEXT is the content of the docstring."
                             nil t)
     (match-string 1)))
 
+(defun yas/autoload-file-for-function (sym)
+  (-if-let (file (symbol-file (if (stringp sym) (intern sym) sym)))
+      (f-filename (f-no-ext file))
+    ""))
+
 
 ;;; Editing commands
 
 (defun yas/space ()
-  "Clear and skip this field if it is unmodified. Otherwise insert a space."
+  "Clear and skip this field if it is unmodified.  Otherwise insert a space."
   (interactive "*")
   (let ((field (yas/current-field)))
     (cond ((and field
@@ -226,7 +246,7 @@ Otherwise delete backwards."
       (goto-char (line-beginning-position))
       (search-forward-regexp (rx bow "pub" eow (* space)) (line-end-position) t)
       (narrow-to-region (point) (line-end-position))
-      (cbyas:bol?))))
+      (yas/bol?))))
 
 (defun yas/rust-fmt-println-args (text)
   "Format the contents of a call to `println!' based on the given format string."
@@ -254,3 +274,5 @@ Otherwise delete backwards."
 
 (defun yas/haskell-ctor-name (&optional text)
   (car (s-split (rx space) (or text yas-text))))
+
+;;; funcs.el ends here

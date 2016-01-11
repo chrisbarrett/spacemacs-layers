@@ -1,11 +1,30 @@
-;;; -*- lexical-binding: t; -*-
+;;; funcs.el --- Helper functions for cb-scala layer -*- lexical-binding: t; -*-
+;;; Commentary:
 ;;; Code:
 
-(eval-when-compile
-  (require 'cb-buffers nil t)
-  (require 's nil t)
-  (require 'dash nil t)
-  (require 'noflet nil t))
+(require 'cl-lib)
+(require 'dash)
+(require 'f)
+(require 'noflet)
+(require 's)
+(require 'thingatpt)
+
+(autoload 'cb-buffers-filtera "cb-buffers")
+(autoload 'cb-buffers-in-string-or-comment? "cb-buffers")
+(autoload 'cb-buffers-current-line "cb-buffers")
+(autoload 'ensime "ensime")
+(autoload 'ensime--get-name "ensime-config")
+(autoload 'ensime-inf-load-file "ensime-inf")
+(autoload 'ensime-inf-run-scala "ensime-inf")
+(autoload 'ensime-top-level-class-closest-to-point "ensime-goto-testfile")
+(autoload 'ensime-config-find "ensime-config")
+(autoload 'ensime-config-load "ensime-config")
+(autoload 'evil-insert-state "evil-states")
+(autoload 'sbt-command "sbt-mode")
+(autoload 'sbt:find-root-impl "sbt-mode-project")
+(autoload 'projectile-project-p "projectile")
+(autoload 'sp-get-enclosing-sexp "smartparens")
+(autoload 'yas-expand-snippet "yasnippet")
 
 ;;; Interactive
 
@@ -71,7 +90,7 @@
       (core/open-line-below-current-indentation)
       (insert "* "))
 
-     ((or arg (core/in-string-or-comment?))
+     ((or arg (cb-buffers-in-string-or-comment?))
       (comment-indent-new-line)
       (just-one-space))
 
@@ -111,19 +130,19 @@
       (sp/generic-prog-ret)))))
 
 (defun scala/at-scaladoc? ()
-  (s-matches? (rx bol (* space) (? "/") (+ "*")) (current-line)))
+  (s-matches? (rx bol (* space) (? "/") (+ "*")) (cb-buffers-current-line)))
 
 (defun scala/at-case-class? ()
-  (s-matches? (rx bol (* space) "case" (+ space) "class" eow) (current-line)))
+  (s-matches? (rx bol (* space) "case" (+ space) "class" eow) (cb-buffers-current-line)))
 
 (defun scala/at-case-object? ()
-  (s-matches? (rx bol (* space) "case" (+ space) "object" eow) (current-line)))
+  (s-matches? (rx bol (* space) "case" (+ space) "object" eow) (cb-buffers-current-line)))
 
 (defun scala/at-abstract-sealed-class? ()
-  (s-matches? (rx bol (* space) "abstract" (+ space) "sealed" (+ space) "class" eow) (current-line)))
+  (s-matches? (rx bol (* space) "abstract" (+ space) "sealed" (+ space) "class" eow) (cb-buffers-current-line)))
 
 (defun scala/at-sealed-trait? ()
-  (s-matches? (rx bol (* space) "sealed" (+ space) "trait" eow) (current-line)))
+  (s-matches? (rx bol (* space) "sealed" (+ space) "trait" eow) (cb-buffers-current-line)))
 
 (defun scala/meta-ret ()
   "Create a newline and perform a context-sensitive continuation.
@@ -133,49 +152,49 @@
   (cond
 
    ;; Insert new type decl case below the current one.
-   ((s-matches? (rx bol (* space) "var" eow) (current-line))
+   ((s-matches? (rx bol (* space) "var" eow) (cb-buffers-current-line))
     (core/open-line-below-current-indentation)
-    (yas-insert-first-snippet (lambda (sn) (equal "var" (yas--template-name sn))))
+    (yas-expand-snippet "var ${1:ident} = $0")
     (message "New var binding"))
 
    ;; Insert new type decl case below the current one.
-   ((s-matches? (rx bol (* space) (? "lazy" (+ space)) "val" eow) (current-line))
+   ((s-matches? (rx bol (* space) (? "lazy" (+ space)) "val" eow) (cb-buffers-current-line))
     (core/open-line-below-current-indentation)
-    (yas-insert-first-snippet (lambda (sn) (equal "val" (yas--template-name sn))))
+    (yas-expand-snippet "val ${1:ident} = $0")
     (message "New val binding"))
 
    ;; Insert new type decl case below the current one.
-   ((s-matches? (rx bol (* space) "private" (+ space) (? "lazy" (+ space)) "val" eow) (current-line))
+   ((s-matches? (rx bol (* space) "private" (+ space) (? "lazy" (+ space)) "val" eow) (cb-buffers-current-line))
     (core/open-line-below-current-indentation)
-    (yas-insert-first-snippet (lambda (sn) (equal "private val" (yas--template-name sn))))
+    (yas-expand-snippet "private val ${1:ident} = $0")
     (message "New val binding"))
 
    ;; Insert new type decl case below the current one.
-   ((s-matches? (rx bol (* space) "protected" (+ space) (? "lazy" (+ space)) "val" eow) (current-line))
+   ((s-matches? (rx bol (* space) "protected" (+ space) (? "lazy" (+ space)) "val" eow) (cb-buffers-current-line))
     (core/open-line-below-current-indentation)
-    (yas-insert-first-snippet (lambda (sn) (equal "protected val" (yas--template-name sn))))
+    (yas-expand-snippet "protected val ${1:ident} = $0")
     (message "New val binding"))
 
    ;; Insert new case class.
    ((or (scala/at-case-class?) (scala/at-sealed-trait?) (scala/at-abstract-sealed-class?))
     (core/open-line-below-current-indentation)
-    (yas-insert-first-snippet (lambda (sn) (equal "case class" (yas--template-name sn))))
+    (yas-expand-snippet "case class ${1:Case}(${2:params...})")
     (message "New case class"))
 
    ;; Insert new case object.
    ((scala/at-case-object?)
     (core/open-line-below-current-indentation)
-    (yas-insert-first-snippet (lambda (sn) (equal "case object" (yas--template-name sn))))
-    (message "New case class"))
+    (yas-expand-snippet "case object ${1:Name}")
+    (message "New case object"))
 
    ;; Insert new type decl case below the current one.
-   ((s-matches? (rx bol (* space) "case") (current-line))
+   ((s-matches? (rx bol (* space) "case") (cb-buffers-current-line))
     (core/open-line-below-current-indentation)
-    (yas-insert-first-snippet (lambda (sn) (equal "case" (yas--template-name sn))))
+    (yas-expand-snippet "case ${1:binding} => $0")
     (message "New data case"))
 
    ;; Insert new import statement
-   ((s-matches? (rx bol (* space) "import" eow) (current-line))
+   ((s-matches? (rx bol (* space) "import" eow) (cb-buffers-current-line))
     (core/open-line-below-current-indentation)
     (insert "import ")
     (message "New import statement"))
@@ -291,7 +310,7 @@
            (goto-char (line-end-position))
 
            (while (and (not (bobp))
-                       (s-blank? (current-line)))
+                       (s-blank? (cb-buffers-current-line)))
              (forward-line -1)
              (goto-char (line-end-position))))
 
@@ -311,7 +330,7 @@
   (interactive)
   (let* ((impl-class
           (or (ensime-top-level-class-closest-to-point)
-              (return (message "Could not find top-level class"))))
+              (cl-return (message "Could not find top-level class"))))
          (cleaned-class (replace-regexp-in-string "<empty>\\." "" impl-class))
          (command (concat "~test-only  " cleaned-class)))
     (sbt-command command)))
@@ -525,3 +544,5 @@ fails to find the sbt root."
                                  (directory-files (concat dir "project") nil ".+\\.scala$"))))))))
           (when root
             (setq-local sbt:buffer-project-root root))))))
+
+;;; funcs.el ends here

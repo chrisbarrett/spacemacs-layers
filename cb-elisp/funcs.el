@@ -1,3 +1,17 @@
+;;; funcs.el --- Functions for cb-elisp layer.
+
+;;; Commentary:
+
+;;; Code:
+
+(require 'dash)
+(require 'thingatpt)
+
+(autoload 'cb-macros-until "cb-macros")
+(autoload 'evil-insert-state "evil-state")
+(autoload 'sp-backward-up-sexp "smartparens")
+(autoload 'sp-up-sexp "smartparens")
+
 ;;; Define intelligent M-RET command.
 
 (defconst elisp/let-expression-re
@@ -23,7 +37,7 @@
   (cond
    ;; Insert let-binding
    ((save-excursion (elisp/let-expr-start))
-    (until (elisp/at-let-binding-form?) (sp-backward-up-sexp))
+    (cb-macros-until (elisp/at-let-binding-form?) (sp-backward-up-sexp))
     (sp-up-sexp)
     (newline-and-indent)
     (insert "()")
@@ -31,7 +45,7 @@
    (t
     (sp-up-sexp)
     (newline-and-indent)
-    (when evil-mode
+    (when (and (boundp 'evil-mode) evil-mode)
       (evil-insert-state)))))
 
 
@@ -65,3 +79,5 @@ Return the bounds of the evaluated form."
   (-if-let ((&plist :beg beg :end end) (elisp/thing-for-eval))
       (eval-region beg end)
     (user-error "Nothing to evaluate")))
+
+;;; funcs.el ends here

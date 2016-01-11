@@ -1,55 +1,42 @@
 ;;; funcs.el --- Functions for OCaml layer.  -*- lexical-binding: t; -*-
-
-;; Copyright (C) 2015  Chris Barrett
-
-;; Author: Chris Barrett <chris.d.barrett@me.com>
-
-;; This program is free software; you can redistribute it and/or modify
-;; it under the terms of the GNU General Public License as published by
-;; the Free Software Foundation, either version 3 of the License, or
-;; (at your option) any later version.
-
-;; This program is distributed in the hope that it will be useful,
-;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-;; GNU General Public License for more details.
-
-;; You should have received a copy of the GNU General Public License
-;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
 ;;; Commentary:
-
 ;;; Code:
 
-(require 's nil t)
-(require 'dash nil t)
-(require 'yasnippet nil t)
-(require 'f nil t)
+(eval-when-compile
+  (require 'tuareg nil t))
+
+(require 'dash)
+(require 'f)
+(require 's)
+
+(autoload 'cb-buffers-current-line "cb-buffers")
+(autoload 'evil-insert-state "evil-states")
+(autoload 'yas-expand-snippet "yasnippet")
 
 (defun cb-ocaml/at-match-header? ()
-  (s-matches? (rx "match" (+ nonl) "with" (* space) eol) (current-line)))
+  (s-matches? (rx "match" (+ nonl) "with" (* space) eol) (cb-buffers-current-line)))
 
 (defun cb-ocaml/at-case? ()
-  (s-matches? (rx bol (* space) (or "with" "|") (+ nonl) "->") (current-line)))
+  (s-matches? (rx bol (* space) (or "with" "|") (+ nonl) "->") (cb-buffers-current-line)))
 
 (defun cb-ocaml/at-type-decl? ()
-  (or (s-matches? (rx bol (* space) (or "|" "type")) (current-line))
-      (when (s-matches? "=" (current-line))
+  (or (s-matches? (rx bol (* space) (or "|" "type")) (cb-buffers-current-line))
+      (when (s-matches? "=" (cb-buffers-current-line))
         (save-excursion
           (forward-line -1)
-          (s-matches? (rx bol (* space) "type") (current-line))))))
+          (s-matches? (rx bol (* space) "type") (cb-buffers-current-line))))))
 
 (defun cb-ocaml/at-let-binding? ()
-  (s-matches? (rx bol (* space) "let" eow) (current-line)))
+  (s-matches? (rx bol (* space) "let" eow) (cb-buffers-current-line)))
 
 (defun cb-ocaml/at-val-binding? ()
-  (s-matches? (rx bol (* space) "val" eow) (current-line)))
+  (s-matches? (rx bol (* space) "val" eow) (cb-buffers-current-line)))
 
 (defun cb-ocaml/at-import? ()
-  (s-matches? (rx bol (* space) "open" eow) (current-line)))
+  (s-matches? (rx bol (* space) "open" eow) (cb-buffers-current-line)))
 
 (defun cb-ocaml/at-function-keyword? ()
-  (s-matches? (rx bow "function" (* space) eol) (current-line)))
+  (s-matches? (rx bow "function" (* space) eol) (cb-buffers-current-line)))
 
 (defun cb-ocaml/m-ret ()
   (interactive)
@@ -76,7 +63,7 @@
       (message "Inserted pattern match case.")))
 
    ((cb-ocaml/at-case?)
-    (let ((col (if (s-matches? (rx bol (* space) "with" eow) (current-line))
+    (let ((col (if (s-matches? (rx bol (* space) "with" eow) (cb-buffers-current-line))
                    (1+ (current-indentation))
                  (current-indentation))))
       (goto-char (line-end-position))
@@ -113,3 +100,5 @@
     (reindent-then-newline-and-indent)))
 
   (evil-insert-state))
+
+;;; funcs.el ends here

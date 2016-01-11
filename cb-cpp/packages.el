@@ -106,7 +106,7 @@
     (kbd "SPC") 'sp/generic-prog-space)
 
   (defun cb-cpp/set-local-hooks ()
-    (add-hook 'before-save-hook 'core/indent-buffer nil t))
+    (add-hook 'before-save-hook 'cb-buffers-indent-whole-buffer nil t))
 
   (add-hook 'c++-mode-hook 'cb-cpp/set-local-hooks)
 
@@ -122,7 +122,7 @@
   (defun cb-cpp/flyspell-verify ()
     "Do not spellcheck imports."
     (and (flyspell-generic-progmode-verify)
-         (not (s-matches? (rx bol (* space) "#") (current-line)))))
+         (not (s-matches? (rx bol (* space) "#") (cb-buffers-current-line)))))
 
   (defun cb-cpp/configure-flyspell ()
     (setq-local flyspell-generic-check-word-predicate 'cb-cpp/flyspell-verify))
