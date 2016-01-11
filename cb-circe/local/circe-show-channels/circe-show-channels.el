@@ -53,7 +53,7 @@ tiled last."
   :group 'circe-show-channels
   :type 'number)
 
-(defun circe-show-channels--apply-channel-ordering (bufs)
+(defun circe-show-channels--apply-buffer-ordering (bufs)
   (->> bufs
        (--sort (string-lessp (buffer-name it) (buffer-name other)))
        (--map-indexed (cons (- it-index) it))
@@ -64,9 +64,9 @@ tiled last."
        (--sort (> (car it) (car other)))
        (-map 'cdr)))
 
-(defun circe-show-channels--channel-buffers ()
+(defun circe-show-channels--chat-buffers ()
   (--filter (with-current-buffer it
-              (derived-mode-p 'circe-channel-mode))
+              (derived-mode-p 'circe-chat-mode))
             (buffer-list)))
 
 (defun circe-show-channels--tile-buffers (bufs)
@@ -143,22 +143,22 @@ window config to use for the buffers."
   (when circe-show-channels-eyebrowse-window-config-number
     (eyebrowse-switch-to-window-config circe-show-channels-eyebrowse-window-config-number))
 
-  (let ((current-channel
+  (let ((current-chat
          (--first (with-current-buffer it
-                    (derived-mode-p 'circe-channel-mode))
+                    (derived-mode-p 'circe-chat-mode))
                   (buffer-list))))
 
     (circe-show-channels--maybe-start-circe)
 
-    (let ((bufs (circe-show-channels--apply-channel-ordering (circe-show-channels--channel-buffers))))
+    (let ((bufs (circe-show-channels--apply-buffer-ordering (circe-show-channels--chat-buffers))))
       (if (null bufs)
           (switch-to-buffer (car (circe-server-buffers)))
         (circe-show-channels--tile-buffers bufs))
       (circe-show-channels--scroll-to-bottom bufs))
 
-    (when current-channel
+    (when current-chat
       (select-window (--first (equal (window-buffer it)
-                                     current-channel)
+                                     current-chat)
                               (window-list))))))
 
 (provide 'circe-show-channels)
