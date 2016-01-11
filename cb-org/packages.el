@@ -11,8 +11,7 @@
     (if (f-exists? in-dropbox) in-dropbox "~/org/")))
 
 (defconst cb-org-packages
-  '(
-    org
+  '(org
     org-drill-table
     gnuplot
     org-agenda
@@ -26,11 +25,23 @@
     org-capture
     ox
     ox-texinfo
-
     org-present
-
     (org-work :location local)
     (cb-org-latex-preview-retina :location local)))
+
+;; HACK: Set aliases for incorrectly-prefixed outline functions required by org.
+(defalias 'outline-show-children 'show-children)
+(defalias 'outline-hide-subtree 'hide-subtree)
+(defalias 'outline-show-subtree 'show-subtree)
+(defalias 'outline-show-branches 'show-branches)
+(defalias 'outline-hide-sublevels 'hide-sublevels)
+(defalias 'outline-hide-other 'hide-other)
+(defalias 'outline-hide-leaves 'hide-leaves)
+(defalias 'outline-hide-body 'hide-body)
+(defalias 'outline-hide-region-body 'hide-region-body)
+(defalias 'outline-hide-entry 'hide-entry)
+(defalias 'outline-show-entry 'show-entry)
+(defalias 'outline-show-all 'show-all)
 
 (defun cb-org/post-init-org-present ()
   (setq org-present-text-scale 4)
