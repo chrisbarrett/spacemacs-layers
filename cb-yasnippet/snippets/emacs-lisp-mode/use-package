@@ -3,10 +3,9 @@
 # expand-env: ((yas-indent-line (quote fixed)) (yas-wrap-around-region (quote t)))
 # condition: (yas/bol?)
 # --
-(use-package ${1:`(or (yas/find-ident-for-use-package) "ident")`}${2:
-  :diminish ${3:mode}}${4:
-  :commands ${5:cmds}}${6:
-  :init nil}
+(use-package `(yas/find-ident-for-use-package)`
+  :commands nil
+  :init nil
   :config
   (progn
     $0

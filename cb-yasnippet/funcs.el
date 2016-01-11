@@ -196,9 +196,11 @@ TEXT is the content of the docstring."
 (defun yas/find-ident-for-use-package ()
   "Infer the name of the package being configured by the name of the enclosing defun."
   (save-excursion
-    (search-backward-regexp (rx "defun" (? "*") (+ space) (+ nonl) "/init-" (group (+ (not space))))
-                            nil t)
-    (match-string 1)))
+    (save-match-data
+      (if (search-backward-regexp (rx "defun" (? "*") (+ space) (+ nonl) "/" (? (or "pre-" "post-")) "init-" (group (+ (not space))))
+                                  nil t)
+          (match-string 1)
+        (read-string "Package name: ")))))
 
 (defun yas/autoload-file-for-function (sym)
   (-if-let (file (symbol-file (if (stringp sym) (intern sym) sym)))
