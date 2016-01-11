@@ -19,6 +19,7 @@
     smart-ops
     aggressive-indent
     llvm-mode
+    cb-buffers
 
     (ghc-dump :location local)
     (haskell-parser :location local)
@@ -366,3 +367,8 @@
 
       (add-hook 'haskell-mode-hook #'cb-haskell/maybe-init-liquid-haskell)
       (add-hook 'literate-haskell-mode-hook #'cb-haskell/maybe-init-liquid-haskell))))
+
+(defun cb-haskell/post-init-cb-buffers ()
+  (use-package cb-buffers
+    :config
+    (add-to-list 'cb-buffers-indent-commands-alist '(haskell-mode . haskell/format-dwim))))

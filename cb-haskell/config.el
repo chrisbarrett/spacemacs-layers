@@ -58,6 +58,4 @@
   "Suppress window-changes."
   (save-window-excursion ad-do-it))
 
-(add-to-list 'cb-buffers-indent-commands-alist '(haskell-mode . haskell/format-dwim))
-
 (defalias 'ghci 'haskell-interactive-switch)
