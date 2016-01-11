@@ -4,4 +4,4 @@
 # binding: direct-keybinding
 # condition: (yas/bol?)
 # --
-(autoload '${1:ident} "${2:file}")
+(autoload '${1:ident} "${1:$(yas/autoload-file-for-function yas/text)}")
