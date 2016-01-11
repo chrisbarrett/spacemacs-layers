@@ -77,7 +77,7 @@ Each entry is either:
         "The face for the Circe prompt.")
 
       (setq circe-reduce-lurker-spam t)
-      (setq circe-active-users-timeout (* 60 10))
+      (setq circe-active-users-timeout (* 60 30)) ; 30 minutes
       (setq circe-format-say "{nick}> {body}")
       (setq circe-format-self-say (concat (propertize ">>>" 'face 'cb-circe-self-say-face) " {body}"))
       (setq circe-prompt-string (concat (propertize ">>>" 'face 'circe-prompt-face) " "))
