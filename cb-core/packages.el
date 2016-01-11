@@ -294,17 +294,18 @@
       (bind-key* (kbd "C-<backspace>") 'cb-buffers-maybe-kill)
       (bind-key (kbd "C-c k b") 'cb-buffers-maybe-kill-all)
 
-      (define-key prog-mode-map (kbd "M-q") 'cb-buffers-indent-dwim)
-      (evil-define-key 'normal  prog-mode-map (kbd "M-q") 'cb-buffers-indent-dwim)
+      (define-key prog-mode-map (kbd "M-q") #'cb-buffers-indent-dwim)
+      (evil-define-key 'normal  prog-mode-map (kbd "M-q") #'cb-buffers-indent-dwim)
 
       (with-eval-after-load 'sgml-mode
-        (evil-define-key 'normal  sgml-mode-map (kbd "M-q") 'cb-buffers-indent-dwim))
+        (evil-define-key 'normal  sgml-mode-map (kbd "M-q") #'cb-buffers-indent-dwim))
 
       (with-eval-after-load 'nxml-mode
-        (evil-define-key 'normal nxml-mode-map (kbd "M-q") 'cb-buffers-indent-dwim))
+        (evil-define-key 'normal nxml-mode-map (kbd "M-q") #'cb-buffers-indent-dwim))
 
-      (global-set-key (kbd "<backtab>") 'cb-buffers-outdent-line)
-      (evil-global-set-key 'normal (kbd "<backtab>") 'cb-buffers-outdent-line))))
+      (evil-global-set-key 'normal (kbd "TAB") #'cb-buffers-indent-dwim)
+      (global-set-key (kbd "<backtab>") #'cb-buffers-outdent-line)
+      (evil-global-set-key 'normal (kbd "<backtab>") #'cb-buffers-outdent-line))))
 
 
 ;;; packages.el ends here

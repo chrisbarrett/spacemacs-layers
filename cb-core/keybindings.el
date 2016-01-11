@@ -17,9 +17,6 @@
 
 (evil-global-set-key 'normal (kbd "C-<up>") 'core/move-line-up)
 (evil-global-set-key 'normal (kbd "C-<down>") 'core/move-line-down)
-(evil-global-set-key 'normal (kbd "TAB") 'indent-line)
-
-;;; Indentation
 
 ;;; Exiting Emacs
 
