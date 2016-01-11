@@ -30,11 +30,11 @@
 
 (defconst cb-bootstrap-packages
   '(s
+    dash
+    dash-functional
     noflet
     f
     let-alist
-    dash
-    dash-functional
     hydra
     )
   "Packages required for bootstrapping my configuration.")
