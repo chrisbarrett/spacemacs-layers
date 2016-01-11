@@ -19,14 +19,6 @@ until TEST returns non-nil."
   `(while (not ,test)
      ,@body))
 
-(defun current-region (&optional no-properties)
-  "Return the current active region, or nil if there is no region active.
-If NO-PROPERTIES is non-nil, return the region without text properties."
-  (when (region-active-p)
-    (funcall (if no-properties 'buffer-substring-no-properties 'buffer-substring)
-             (region-beginning)
-             (region-end))))
-
 (defun line-content-relative (move-n-lines)
   "Return the line at point, or another line relative to this line.
 MOVE-N-LINES is an integer that will return a line forward if
