@@ -107,7 +107,9 @@ matched pairs Set to nil to disable this behaviour."
   (s-matches? (rx bos (* space) eos) (smart-ops--bol-to-pt)))
 
 (defun smart-ops--inside-string-or-comment? ()
-  (nth 8 (syntax-ppss)))
+  (or (nth 8 (syntax-ppss))
+      (-intersection (list font-lock-comment-face font-lock-doc-face font-lock-string-face)
+                     (face-at-point nil t))))
 
 (defun smart-ops--op-characters (rules)
   (let ((excluded (-map 'string-to-char '(" ")))
