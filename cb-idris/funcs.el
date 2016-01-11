@@ -1,8 +1,9 @@
 ;; -*- lexical-binding: t; -*-
+
 (eval-when-compile
+  (require 'cb-buffers nil t)
   (require 's nil t)
-  (require 'dash nil t)
-  )
+  (require 'dash nil t))
 
 (defun idris/after-subexpr-opening? ()
   (s-matches? (rx (or "{" "[" "{-" "[|") (* space) eol)
@@ -29,7 +30,7 @@
 (defun idris/switch-to-src ()
   "Pop to the last idris source buffer."
   (interactive)
-  (-if-let ((buf) (--filter-buffers (derived-mode-p 'idris-mode)))
+  (-if-let ((buf) (cb-buffers-filtera (derived-mode-p 'idris-mode)))
       (pop-to-buffer buf)
     (error "No idris buffers")))
 

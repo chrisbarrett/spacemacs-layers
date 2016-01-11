@@ -12,9 +12,6 @@
 (global-set-key (kbd "C-c e e") 'toggle-debug-on-error)
 (global-set-key (kbd "C-x a a") 'align-regexp)
 
-(bind-key* (kbd "C-<backspace>") 'core/kill-this-buffer)
-(bind-key (kbd "C-c k b") 'core/clean-buffers)
-
 (when (fboundp 'cycle-spacing)
   (global-set-key (kbd "M-SPC") 'cycle-spacing))
 

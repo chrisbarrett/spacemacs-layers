@@ -43,8 +43,6 @@ positive or backward if negative."
                   (push atom acc))))
     acc))
 
-(cl-defmacro --filter-buffers (pred-form &optional (bufs '(buffer-list)))
-  `(--filter (with-current-buffer it ,pred-form) ,bufs))
 
 (defun core/read-string-with-default (prompt default &optional initial-input history)
   "Read a string from the user with a default value added to the prompt."
@@ -65,47 +63,11 @@ positive or backward if negative."
 
 ;;; Buffer management
 
-(defvar core/kill-buffer-ignored-list
-  '("*scratch*" "*Messages*" "*Group*" "*elfeed-search*"
-    "work_movio.org" "diary.org" "notes.org" "*spacemacs*" " *mu4e-main*"))
-
-(defvar core/kill-buffer-if-no-proc-list
-  '("*shell*" "*eshell*" "*ansi-term*"))
-
-(defun core/buffer-ignored-or-live? (buf)
-  (or (-contains? (-concat core/kill-buffer-if-no-proc-list
-                           core/kill-buffer-ignored-list)
-                  (buffer-name buf))
-      (get-buffer-process buf)))
-
-(defun core/clean-buffers ()
-  "Close all buffers not in the ignore list."
-  (interactive)
-  (delete-other-windows)
-  (let ((other-buffers (-difference (buffer-list) (list (current-buffer)))))
-    (-each (--filter-buffers (not (core/buffer-ignored-or-live? it)) other-buffers)
-      'kill-buffer)))
-
-(defun core/kill-this-buffer ()
-  "Kill the current buffer.
-If this buffer is a member of `core/kill-buffer-ignored-list', bury it rather than killing it."
-  (interactive)
-  (cond
-   ((-contains? core/kill-buffer-ignored-list (buffer-name (current-buffer)))
-    (bury-buffer))
-   ((and (-contains? core/kill-buffer-if-no-proc-list (buffer-name (current-buffer)))
-         (process-live-p (get-buffer-process (current-buffer))))
-    (bury-buffer))
-   (t
-    ;; HACK: Avoid read-only text property errors.
-    (let ((inhibit-read-only t))
-      (kill-buffer (current-buffer))))))
-
 (defun core/move-file (buffer to-dir)
   "Move BUFFER's corresponding file to DEST."
   (interactive (list (current-buffer) (read-directory-name "Move to: ")))
-  (let ((dest (f-join to-dir (f-filename (core/buffer-file-name-assert-exists buffer)))))
-    (core/rename-file-and-buffer buffer dest)))
+  (let ((current-file-name (f-filename (core/buffer-file-name-assert-exists buffer))))
+    (core/rename-file-and-buffer buffer to-dir current-file-name)))
 
 (defun core/rename-file-and-buffer (buffer dest-dir dest-filename)
   "Rename the current buffer and file it is visiting."

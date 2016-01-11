@@ -2,6 +2,7 @@
 ;;; Code:
 
 (eval-when-compile
+  (require 'cb-buffers nil t)
   (require 's nil t)
   (require 'dash nil t)
   (require 'noflet nil t))
@@ -11,7 +12,7 @@
 (defun scala/switch-to-src ()
   "Switch back to the last scala source file."
   (interactive)
-  (-when-let (buf (car (--filter-buffers (derived-mode-p 'scala-mode))))
+  (-when-let (buf (car (cb-buffers-filtera (derived-mode-p 'scala-mode))))
     (pop-to-buffer buf)))
 
 (defun scala/load-buffer (file)

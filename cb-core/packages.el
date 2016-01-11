@@ -27,6 +27,7 @@
     ido
     recentf
 
+    (cb-buffers :location local)
     (locate-key-binding :location local)
     (smart-ops :location local)
     (case :location local)))
@@ -285,6 +286,13 @@
   (add-to-list 'ido-ignore-files "flycheck_")
   (add-to-list 'ido-ignore-files "\\.swp")
   (add-to-list 'ido-ignore-files "\\.DS_Store"))
+
+(defun cb-core/init-cb-buffers ()
+  (use-package cb-buffers
+    :config
+    (progn
+      (bind-key* (kbd "C-<backspace>") 'cb-buffers-maybe-kill)
+      (bind-key (kbd "C-c k b") 'cb-buffers-maybe-kill-all))))
 
 
 ;;; End
