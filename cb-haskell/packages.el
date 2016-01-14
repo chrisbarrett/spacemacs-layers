@@ -148,9 +148,6 @@
     (define-key haskell-mode-map (kbd "<backtab>") 'haskell-indentation-indent-backwards)
     (define-key haskell-mode-map (kbd "TAB") 'haskell-indentation-indent-line)
 
-    (evil-define-key 'normal haskell-mode-map (kbd "C-c C-c") 'cb-haskell/C-c-C-c)
-    (define-key haskell-mode-map (kbd "C-c C-c") 'cb-haskell/C-c-C-c)
-
     (define-key haskell-mode-map (kbd "M-,")           'pop-tag-mark)
     (define-key haskell-mode-map (kbd "M-P")           'flymake-goto-prev-error)
     (define-key haskell-mode-map (kbd "M-N")           'flymake-goto-next-error)

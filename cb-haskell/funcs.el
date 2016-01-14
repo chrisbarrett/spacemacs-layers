@@ -698,18 +698,4 @@ With prefix arg ARG, just insert a newline and indent."
 (defun haskell/configure-flyspell ()
   (setq-local flyspell-generic-check-word-predicate 'haskell/flyspell-verify))
 
-
-;;; Commands
-
-(defun haskell/join-line ()
-  (interactive)
-  (forward-line 1)
-  (goto-char (line-beginning-position))
-  (call-interactively 'shm/delete-indentation))
-
-(defun cb-haskell/C-c-C-c ()
-  (interactive)
-  (or (when (fboundp 'ghc-auto) (ghc-auto))
-      (haskell-process-cabal-build)))
-
 ;;; funcs.el ends here
