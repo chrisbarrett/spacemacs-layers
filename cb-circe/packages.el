@@ -81,6 +81,7 @@ Each entry is either:
       (setq circe-format-say "{nick}> {body}")
       (setq circe-format-self-say (concat (propertize ">>>" 'face 'cb-circe-self-say-face) " {body}"))
       (setq circe-prompt-string (concat (propertize ">>>" 'face 'circe-prompt-face) " "))
+      (setq circe-highlight-nick-type 'all)
 
       ;; Timestamps in margins.
 

@@ -33,8 +33,13 @@
 
   (add-hook 'snippet-mode-hook (lambda () (setq-local require-final-newline nil)))
 
+  (bind-key (kbd "TAB") #'yas-expand prog-mode-map)
+
   (with-eval-after-load 'yasnippet
     (yas/reload-all)
+
+    (evil-define-key 'insert yas-minor-mode-map (kbd "TAB") #'yas-expand)
+
     (bind-key "<backspace>" 'yas/backspace yas-keymap)
     (evil-define-key 'insert yas-keymap (kbd "SPC") #'yas/space))
 
