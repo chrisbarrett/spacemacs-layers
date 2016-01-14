@@ -320,6 +320,7 @@ user code."
   "Configuration function for user code.
 This function is called at the very end of Spacemacs initialization after
 layers configuration. You are free to put any user code."
+  (setq powerline-default-separator 'utf-8)
   (cb-bootstrap/user-config)
   (cb-core/user-config)
   (cb-project/user-config)
