@@ -129,6 +129,9 @@
   (add-hook 'haskell-mode-hook 'haskell/configure-flyspell)
 
   (with-eval-after-load 'haskell-mode
+    (when (require 'ghc nil t)
+      (define-key haskell-mode-map (kbd "C-c C-s") 'ghc-case-split))
+
     (evil-define-key 'insert haskell-mode-map (kbd "<backspace>") 'haskell/backspace)
     (evil-define-key 'normal haskell-mode-map (kbd "<backspace>") nil)
 
@@ -219,7 +222,6 @@
       (defadvice ghc-check-syntax (around no-op activate))
 
       (with-eval-after-load 'haskell-mode
-        (define-key haskell-mode-map (kbd "C-c C-s") 'ghc-case-split)
         (define-key haskell-mode-map (kbd "C-c C-r") 'ghc-refine)
         (define-key haskell-mode-map (kbd "C-c C-a") 'ghc-auto)
 
