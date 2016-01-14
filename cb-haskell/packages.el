@@ -90,12 +90,6 @@
   (setq haskell-indentation-ifte-offset 4)
   (setq haskell-indent-spaces 4)
 
-  (setq haskell-process-path-ghci
-        (let ((ghci-ng (f-join user-home-directory ".local/bin/ghci-ng")))
-          (if (f-executable? ghci-ng)
-              ghci-ng
-            (executable-find "ghci"))))
-
   (setq haskell-import-mapping
         '(("Data.Map" . "import qualified Data.Map as Map\nimport Data.Map (Map)")
           ("Data.Maybe" . "import qualified Data.Maybe as Maybe")
