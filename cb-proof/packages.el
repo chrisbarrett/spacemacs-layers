@@ -46,6 +46,9 @@
 
       (add-hook 'coq-mode-hook 'coq/configure-coq-buffer)
 
+      (with-eval-after-load 'aggressive-indent
+        (add-to-list 'aggressive-indent-excluded-modes 'coq-mode))
+
       ;; Advices
 
       (defadvice coq-insert-match (after format-period activate)
