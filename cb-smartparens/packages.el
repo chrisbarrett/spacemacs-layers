@@ -81,3 +81,5 @@
     ",<" 'sp-backward-down-sexp
     ",>" 'sp-down-sexp
     ))
+
+;;; packages.el ends here
