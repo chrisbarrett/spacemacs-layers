@@ -57,40 +57,16 @@
   :type '(alist :key-type symbol :value-type function))
 
 (defcustom cb-buffers-lisp-modes
-  '(cider-repl-mode
-    clojure-mode
-    clojurescript-mode
-    common-lisp-mode
-    emacs-lisp-mode
-    geiser-repl-mode
-    inferior-emacs-lisp-mode
-    inferior-lisp-mode
-    inferior-scheme-mode
-    lisp-mode
-    repl-mode
-    scheme-mode
-    slime-mode
-    slime-repl-mode
-    extempore-mode
-    inferior-extempore-mode)
+  (if (boundp 'cb-vars-lisp-modes)
+      cb-vars-lisp-modes
+    '(clojure-mode
+      clojurescript-mode
+      common-lisp-mode
+      emacs-lisp-mode
+      inferior-emacs-lisp-mode
+      lisp-mode
+      scheme-mode))
   "List of major modes that use Lisp editing conventions."
-  :group 'cb-buffers
-  :type '(list symbol))
-
-
-(defcustom cb-buffers-prompt-modes
-  '(comint-mode
-    inf-ruby-mode
-    inferior-python-mode
-    ielm-mode
-    erc-mode
-    term-mode
-    utop-mode
-    slime-repl-mode
-    inferior-scheme-mode
-    inferior-haskell-mode
-    sclang-post-buffer-mode)
-  "List of major modes that use prompt editing conventions."
   :group 'cb-buffers
   :type '(list symbol))
 

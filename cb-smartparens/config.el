@@ -3,7 +3,7 @@
 ;;; Code:
 
 (require 'dash)
-(require 'cb-buffers nil t)
+(require 'cb-vars)
 
 (autoload 'sp-navigate-reindent-after-up "smartparens")
 (autoload 'smartparens-mode "smartparens")
@@ -14,7 +14,7 @@
 
   ;;; Remove apostrophe pair for some modes
 
-  (sp-with-modes cb-buffers-prompt-modes
+  (sp-with-modes cb-vars-prompt-modes
     (sp-local-pair "'" "'" :actions '(:rem insert)))
 
   (sp-local-pair 'org-mode                 "'" "'" :actions '(:rem insert))
@@ -129,7 +129,7 @@
 
   ;;; Lisp modes
 
-  (sp-with-modes cb-buffers-lisp-modes
+  (sp-with-modes cb-vars-lisp-modes
     (sp-local-pair "\"" "\"" :post-handlers '(:add sp/lisp-just-one-space))
     (sp-local-pair "{" "}"   :post-handlers '(:add sp/lisp-just-one-space))
     (sp-local-pair "[" "]"   :post-handlers '(:add sp/lisp-just-one-space))
@@ -149,7 +149,7 @@
 
   ;; Extend `sp-navigate-reindent-after-up' to all lisps.
   (let ((ls (assoc 'interactive sp-navigate-reindent-after-up)))
-    (setcdr ls (-uniq (-concat (cdr ls) cb-buffers-lisp-modes))))
+    (setcdr ls (-uniq (-concat (cdr ls) cb-vars-lisp-modes))))
 
   ;;; Markdown
 

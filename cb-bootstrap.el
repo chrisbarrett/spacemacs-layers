@@ -52,6 +52,7 @@
 
 (defconst cb-bootstrap-preload-lisp-files
   (list
+   (concat user-layers-directory "cb-vars.el")
    (concat user-layers-directory "cb-core/funcs.el")
    (concat user-layers-directory "cb-core/config.el"))
   "Aggressively load these packages.  They contain utilities needed in layer definitions.")
