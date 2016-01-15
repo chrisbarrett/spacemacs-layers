@@ -9,14 +9,6 @@
   '(smartparens))
 
 (defun cb-smartparens/post-init-smartparens ()
-  ;; HACK: remove hook set by Spacemacs. This hook could leave smartparens
-  ;; disabled if a snippet was exited under unusual circumstances.
-  (defvar smartparens-enabled-initially t)
-  (remove-hook 'yas-before-expand-snippet-hook (lambda ()
-                                                 ;; If enabled, smartparens will mess snippets expanded by `hippie-expand`
-                                                 (setq smartparens-enabled-initially smartparens-mode)
-                                                 (smartparens-mode -1)))
-
   (setq sp-navigate-close-if-unbalanced t)
   (setq sp-message-width nil)
 
