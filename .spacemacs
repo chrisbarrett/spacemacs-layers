@@ -110,7 +110,6 @@ values."
      ;; cb-rcirc
      ;; cb-rust
      ;; cb-scala
-     ;; cb-shell
      cb-smartparens
      cb-sml
      cb-spelling
