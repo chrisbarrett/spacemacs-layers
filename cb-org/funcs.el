@@ -2,11 +2,28 @@
 ;;; Commentary:
 ;;; Code:
 
-(eval-when-compile
-  (require 'org nil t)
-  (require 'dash nil t)
-  (require 's nil t)
-  )
+(require 'calendar)
+(require 'dash)
+(require 'f)
+(require 's)
+
+(autoload 'appt-check "appt")
+(autoload 'org-agenda-filter-apply "org-agenda")
+(autoload 'org-at-heading-p "org")
+(autoload 'org-at-table-p "org")
+(autoload 'org-back-to-heading "org")
+(autoload 'org-clock-special-range "org-clock")
+(autoload 'org-clone-subtree-with-time-shift "org")
+(autoload 'org-content "org")
+(autoload 'org-copy-subtree "org")
+(autoload 'org-cut-subtree "org")
+(autoload 'org-dblock-write:clocktable "org-clock")
+(autoload 'org-find-exact-headline-in-buffer "org")
+(autoload 'org-float-time "org-compat")
+(autoload 'org-kill-note-or-show-branches "org")
+(autoload 'org-narrow-to-subtree "org")
+(autoload 'org-parse-time-string "org")
+(autoload 'org-time-stamp-format "org")
 
 ;; Leader commands
 
@@ -77,7 +94,7 @@
     (org-cut-subtree n)))
 
 (defun cb-org/ctrl-c-ret ()
-  "Call `org-table-hline-and-move' or `org-insert-todo-heading' dep. on context."
+  "Call `org-table-hline-and-move' or `org-insert-todo-heading'."
   (interactive)
   (cond
    ((org-at-table-p) (call-interactively 'org-table-hline-and-move))
@@ -169,9 +186,6 @@ are between the current date (DATE) and Easter Sunday."
   "Add N days to the date of Easter in YEAR."
   (calendar-gregorian-from-absolute (+ n (calendar-easter-date year))))
 
-
-(autoload 'appt-check "appt")
-
 (defun cb-org/diary-update-appt-on-save ()
   (save-restriction
     (save-window-excursion
@@ -256,3 +270,5 @@ are between the current date (DATE) and Easter Sunday."
                            (point))))
         (end-of-line 0))))
   )
+
+;;; funcs.el ends here
