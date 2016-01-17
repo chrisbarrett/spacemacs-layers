@@ -180,15 +180,6 @@ is a Common Lisp arglist."
 is a Common Lisp arglist."
   (if (yas/cl-arglist? text) 'cl-defmacro 'defmacro))
 
-(defun yas/process-docstring (text)
-  "Format a function docstring for a snippet.
-TEXT is the content of the docstring."
-  (let ((docs (->> (yas/simplify-arglist text)
-                   (--map (s-upcase (symbol-name it)))
-                   (s-join "\n\n"))))
-    (unless (s-blank? docs)
-      (concat "\n\n" docs))))
-
 (defun yas/find-prefix-for-use-package ()
   "Find the name of the package being configured by the name of the enclosing defun."
   (f-filename (f-dirname (buffer-file-name))))
