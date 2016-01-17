@@ -432,6 +432,8 @@ Do not scheduled items or repeating todos."
     (add-hook 'org-mode-hook 'visual-line-mode)
     (add-hook 'org-mode-hook 'turn-off-auto-fill)
     ))
+    (setq appt-message-warning-time 60)
+
     (add-hook 'org-finalize-agenda-hook #'org-agenda-to-appt)
 
 (use-package org-indent
