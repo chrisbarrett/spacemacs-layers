@@ -429,12 +429,12 @@ Do not scheduled items or repeating todos."
 
     (define-key org-agenda-mode-map (kbd "J") 'org-agenda-goto-date)
 
-    (add-hook 'org-mode-hook 'visual-line-mode)
-    (add-hook 'org-mode-hook 'turn-off-auto-fill)
-    ))
     (setq appt-message-warning-time 60)
+    (setq appt-display-interval 5)
 
     (add-hook 'org-finalize-agenda-hook #'org-agenda-to-appt)
+    (add-hook 'org-mode-hook #'visual-line-mode)
+    (add-hook 'org-mode-hook #'turn-off-auto-fill)))
 
 (use-package org-indent
   :diminish org-indent-mode)
