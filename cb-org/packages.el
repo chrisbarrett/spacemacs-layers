@@ -250,7 +250,47 @@ Do not scheduled items or repeating todos."
       (org-toggle-latex-fragment)
       t))
 
-  (add-hook 'org-ctrl-c-ctrl-c-hook 'cb-org/latex-preview-fragment-at-pt t))
+  (add-hook 'org-ctrl-c-ctrl-c-hook #'cb-org/latex-preview-fragment-at-pt t)
+
+  ;;; Keybindings
+
+  (spacemacs/declare-prefix "o" "org")
+  (spacemacs/set-leader-keys "oa" #'cb-org/agenda-dwim)
+  (spacemacs/set-leader-keys "ob" #'org-iswitchb)
+  (spacemacs/set-leader-keys "oc" #'org-clock-goto)
+  (spacemacs/set-leader-keys "od" #'cb-org/goto-diary)
+  (spacemacs/set-leader-keys "ok" #'org-capture)
+  (spacemacs/set-leader-keys "os" #'org-search-view)
+  (spacemacs/set-leader-keys "on" #'cb-org/goto-notes)
+  (spacemacs/set-leader-keys "ow" #'cb-org/goto-work)
+  (spacemacs/set-leader-keys "ot" #'cb-org/todo-list)
+  (spacemacs/set-leader-keys "ov" #'cb-org/tags-list)
+
+  ;; HACK: Override clashing keybinding
+  (with-eval-after-load 'flyspell
+    (define-key flyspell-mode-map (kbd "C-c $") nil))
+
+  (spacemacs/set-leader-keys "oh" #'helm-org-agenda-files-headings)
+  (spacemacs/set-leader-keys-for-major-mode 'org-mode "mP" #'org-plot/gnuplot)
+
+  (with-eval-after-load 'org
+    (define-key org-mode-map (kbd "C-c C-.") #'org-time-stamp-inactive)
+    (define-key org-mode-map (kbd "M-p")     #'org-metaup)
+    (define-key org-mode-map (kbd "M-n")     #'org-metadown)
+    (define-key org-mode-map (kbd "C-c c")   #'org-columns)
+    (define-key org-mode-map (kbd "C-c C-k") #'cb-org/ctrl-c-ctrl-k)
+    (define-key org-mode-map (kbd "C-c RET") #'cb-org/ctrl-c-ret)
+    (define-key org-mode-map (kbd "C-c ;")   nil)
+    (define-key org-mode-map (kbd "M-C-g")   #'org-plot/gnuplot)
+
+    (evil-define-key 'normal org-mode-map (kbd "RET") #'org-return))
+
+  ;; Remove ahs keys that override org keybindings
+  (with-eval-after-load 'auto-highlight-symbol
+    (define-key auto-highlight-symbol-mode-map (kbd "M-<left>") nil)
+    (define-key auto-highlight-symbol-mode-map (kbd "M-<right>") nil)
+    (define-key auto-highlight-symbol-mode-map (kbd "M-S-<left>") nil)
+    (define-key auto-highlight-symbol-mode-map (kbd "M-S-<right>") nil)))
 
 (defun cb-org/init-org-drill-table ()
   (use-package org-drill-table
@@ -293,6 +333,8 @@ Do not scheduled items or repeating todos."
                 (run-hooks 'org-agenda-customise-window-hook))))
   :config
   (progn
+    (define-key org-agenda-mode-map (kbd "C-f") 'evil-scroll-page-down)
+    (define-key org-agenda-mode-map (kbd "C-b") 'evil-scroll-page-up)
 
     (defun cb-org/exclude-tasks-on-hold (tag)
       (and (equal tag "hold") (concat "-" tag)))
