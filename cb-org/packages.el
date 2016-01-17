@@ -212,7 +212,6 @@
 
   (defun cb-org/add-local-hooks ()
     "Set buffer-local hooks for orgmode."
-    (add-hook 'after-save-hook 'cb-org/diary-update-appt-on-save nil t)
     (add-hook 'org-after-todo-state-change-hook 'cb-org/mark-next-parent-tasks-todo nil t)
     (add-hook 'org-clock-in-hook 'cb-org/mark-next-parent-tasks-todo nil t))
 
@@ -430,10 +429,10 @@ Do not scheduled items or repeating todos."
 
     (define-key org-agenda-mode-map (kbd "J") 'org-agenda-goto-date)
 
-    (add-hook 'org-agenda-mode-hook 'org-agenda-to-appt)
     (add-hook 'org-mode-hook 'visual-line-mode)
     (add-hook 'org-mode-hook 'turn-off-auto-fill)
     ))
+    (add-hook 'org-finalize-agenda-hook #'org-agenda-to-appt)
 
 (use-package org-indent
   :diminish org-indent-mode)

@@ -186,12 +186,6 @@ are between the current date (DATE) and Easter Sunday."
   "Add N days to the date of Easter in YEAR."
   (calendar-gregorian-from-absolute (+ n (calendar-easter-date year))))
 
-(defun cb-org/diary-update-appt-on-save ()
-  (save-restriction
-    (save-window-excursion
-      (org-agenda-to-appt t)
-      (appt-check 'force))))
-
 
 ;;; Config support
 
