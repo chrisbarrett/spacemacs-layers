@@ -53,19 +53,19 @@
   (defun cb-org/set-use-flyspell () (setq cb-org/use-flyspell? t))
   (defun cb-org/maybe-reenable-flyspell () (when cb-org/use-flyspell? (flyspell-mode +1)))
 
-  (add-hook 'flyspell-mode-hook 'cb-org/set-use-flyspell)
-  (add-hook 'org-present-mode-hook 'turn-off-flyspell)
-  (add-hook 'org-present-mode-quit-hook 'cb-org/maybe-reenable-flyspell)
+  (add-hook 'flyspell-mode-hook #'cb-org/set-use-flyspell)
+  (add-hook 'org-present-mode-hook #'turn-off-flyspell)
+  (add-hook 'org-present-mode-quit-hook #'cb-org/maybe-reenable-flyspell)
 
-  (add-hook 'org-present-mode-hook 'spacemacs/toggle-mode-line-on)
-  (add-hook 'org-present-mode-quit-hook 'spacemacs/toggle-mode-line-off))
+  (add-hook 'org-present-mode-hook #'spacemacs/toggle-mode-line-on)
+  (add-hook 'org-present-mode-quit-hook #'spacemacs/toggle-mode-line-off))
 
 (defun cb-org/post-init-org ()
   (defconst cb-org/default-stuck-projects
     '("-ignore-3_years+TODO={TODO_OUT\\|PROJECT}/-MAYBE-DONE-CANCELLED" ("NEXT") nil "SCHEDULED:\\|\\<IGNORE\\>"))
 
-  (add-hook 'org-mode-hook 'auto-revert-mode)
-  (add-hook 'org-mode-hook 'abbrev-mode)
+  (add-hook 'org-mode-hook #'auto-revert-mode)
+  (add-hook 'org-mode-hook #'abbrev-mode)
 
   (setq org-default-notes-file (f-join org-directory "notes.org"))
   (setq org-M-RET-may-split-line nil)
@@ -212,11 +212,10 @@
 
   (defun cb-org/add-local-hooks ()
     "Set buffer-local hooks for orgmode."
-    (add-hook 'org-after-todo-state-change-hook 'cb-org/mark-next-parent-tasks-todo nil t)
-    (add-hook 'org-clock-in-hook 'cb-org/mark-next-parent-tasks-todo nil t))
+    (add-hook 'org-after-todo-state-change-hook #'cb-org/mark-next-parent-tasks-todo nil t)
+    (add-hook 'org-clock-in-hook #'cb-org/mark-next-parent-tasks-todo nil t))
 
-
-  (add-hook 'org-mode-hook 'cb-org/add-local-hooks)
+  (add-hook 'org-mode-hook #'cb-org/add-local-hooks)
 
 
   (defun cb-org/set-next-todo-state ()
@@ -231,7 +230,7 @@ Do not scheduled items or repeating todos."
                       (org-get-scheduled-time (point)))
             (org-todo "NEXT"))))))
 
-  (add-hook 'org-after-todo-state-change-hook 'cb-org/set-next-todo-state)
+  (add-hook 'org-after-todo-state-change-hook #'cb-org/set-next-todo-state)
 
 
   (defun cb-org/children-done-parent-done (n-done n-todo)
@@ -239,7 +238,7 @@ Do not scheduled items or repeating todos."
     (let (org-log-done org-log-states) ; turn off logging
       (org-todo (if (zerop n-todo) "DONE" "TODO"))))
 
-  (add-hook 'org-after-todo-statistics-hook 'cb-org/children-done-parent-done)
+  (add-hook 'org-after-todo-statistics-hook #'cb-org/children-done-parent-done)
 
   ;; LaTeX preview on C-c C-c
 
@@ -294,12 +293,12 @@ Do not scheduled items or repeating todos."
 (defun cb-org/init-org-drill-table ()
   (use-package org-drill-table
     :config
-    (add-hook 'org-ctrl-c-ctrl-c-hook 'org-drill-table-update)))
+    (add-hook 'org-ctrl-c-ctrl-c-hook #'org-drill-table-update)))
 
 (defun cb-org/post-init-gnuplot ()
   (setq gnuplot-image-format "png")
   (setq gnuplot-inline-image-mode 'dedicated)
-  (add-hook 'gnuplot-mode-hook 'page-break-lines-mode)
+  (add-hook 'gnuplot-mode-hook #'page-break-lines-mode)
 
   (defadvice org-plot/gnuplot (around display-buffer activate)
     (ignore-errors ad-do-it)
@@ -314,9 +313,9 @@ Do not scheduled items or repeating todos."
     (when (derived-mode-p 'org-agenda-mode)
       (cb-org/agenda-dwim)))
 
-  (add-hook 'org-work-state-changed-hook 'cb-org/refresh-agenda-when-toggling-work)
-  (add-hook 'org-mode-hook 'maybe-enable-org-work-mode)
-  (add-hook 'after-init-hook 'org-work-maybe-start-work))
+  (add-hook 'org-work-state-changed-hook #'cb-org/refresh-agenda-when-toggling-work)
+  (add-hook 'org-mode-hook #'maybe-enable-org-work-mode)
+  (add-hook 'after-init-hook #'org-work-maybe-start-work))
 
 (defun cb-org/init-cb-org-latex-preview-retina ()
   (use-package cb-org-latex-preview-retina))
@@ -371,7 +370,7 @@ Do not scheduled items or repeating todos."
           (list :hours "%d" :require-hours t
                 :minutes ":%02d" :require-minutes t))
 
-    (add-hook 'after-init-hook 'cb-org/agenda-dwim)
+    (add-hook 'after-init-hook #'cb-org/agenda-dwim)
 
     (defun cb-org/agenda-custom-commands-delete-other-windows (command-list)
       (-map-when (lambda (spec) (listp (cdr spec)))
@@ -473,7 +472,7 @@ Do not scheduled items or repeating todos."
                 (message "Table up-to-date")
               (message "Table updated"))))))
 
-    (add-hook 'org-ctrl-c-ctrl-c-hook 'cb-org/recalculate-whole-table)))
+    (add-hook 'org-ctrl-c-ctrl-c-hook #'cb-org/recalculate-whole-table)))
 
 (use-package org-src
   :defer t
@@ -503,7 +502,7 @@ Do not scheduled items or repeating todos."
       "Run a hook when exiting src block."
       (run-hooks 'org-edit-src-before-exit-hook))
 
-    (add-hook 'org-edit-src-before-exit-hook 'delete-trailing-whitespace)
+    (add-hook 'org-edit-src-before-exit-hook #'delete-trailing-whitespace)
     (add-hook 'org-src-mode-hook
               (lambda () (setq-local require-final-newline nil)))))
 
@@ -572,7 +571,7 @@ Switch projects and subprojects from NEXT back to TODO."
         (beginning-of-line 0)
         (org-remove-empty-drawer-at (point))))
 
-    (add-hook 'org-clock-out-hook 'cb-org/remove-empty-clock-drawers t)))
+    (add-hook 'org-clock-out-hook #'cb-org/remove-empty-clock-drawers t)))
 
 (use-package org-crypt
   :config
@@ -595,7 +594,7 @@ Switch projects and subprojects from NEXT back to TODO."
         (org-decrypt-entry)
         t))
 
-    (add-hook 'org-ctrl-c-ctrl-c-hook 'cb-org/decrypt-entry)
+    (add-hook 'org-ctrl-c-ctrl-c-hook #'cb-org/decrypt-entry)
 
     (setq org-crypt-disable-auto-save 'encypt)
     (org-crypt-use-before-save-magic)
@@ -683,7 +682,7 @@ exported file's name. The PDF will be created at DEST."
         (call-interactively 'org-export-koma-letter-at-subtree)
         'export-koma-letter))
 
-    (add-hook 'org-ctrl-c-ctrl-c-hook 'cb-org/C-c-C-c-export-koma-letter t)
+    (add-hook 'org-ctrl-c-ctrl-c-hook #'cb-org/C-c-C-c-export-koma-letter t)
 
     (add-to-list 'org-latex-classes '("koma-letter" "
 \\documentclass[paper=A4,pagesize,fromalign=right,
