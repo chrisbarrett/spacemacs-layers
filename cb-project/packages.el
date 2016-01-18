@@ -159,34 +159,26 @@
       (setq skeletor-scala-use-ensime t)
       (setq skeletor-user-directory (f-join user-layers-directory "cb-project/project-skeletons"))
 
-      (defvar cb-project/scala-movio-endpoint-test-prefix)
-
-      (skeletor-define-template "movio-scala-play-project"
-        :title "Scala Play Project (Movio)"
+      (skeletor-define-constructor "MM Microservice"
+        :title "MM Microservice (Scala, Play 2.4)"
+        :no-git? t
         :no-license? t
-        :requires-executables
-        '(("scala" . "http://www.scala-lang.org")
-          ("sbt" . "http://www.scala-sbt.org"))
-
-        :substitutions
-        `(,@cb-project/scala-artifact-versions
-          ("__MOVIO-ARTIFACTORY-URL__" . movio-artifactory-url)
-          ("__MOVIO-ARTIFACTORY-REPO-URL__" . movio-artifactory-repo-url)
-
-          ("__APIDOC-PROJECT-NAME__" .
-           (lambda () (read-string "Apidoc project name: " (s-chop-suffix "-svc" (s-chop-prefix "mm-" skeletor-project-name)))))
-
-          ("__DESCRIPTION__" . (lambda () (read-string "Description: "))))
-
-        :after-creation
-        (lambda (dir)
-          (when skeletor-scala-use-ensime
-            (skeletor--log-info "Configuring SBT and ENSIME. This may take a while...")
-            (sbt-gen-ensime dir))))
-
+        :requires-executables '(("g8" . "https://github.com/n8han/giter8"))
+        :initialise
+        (lambda (spec)
+          (let-alist spec
+            (let ((template-dir "/Users/chrisb/.g8/mm-microservice.g8"))
+              (skeletor--log-info "Updating g8 template...")
+              (skeletor-shell-command "git fetch origin; git stash save; git reset --hard origin/master" template-dir)
+              (skeletor--log-info "Generating project...")
+              (skeletor-with-shell-setup (format "g8 file://%s --name=%s"
+                                                 (shell-quote-argument template-dir)
+                                                 (shell-quote-argument .project-name))
+                                         #'ignore
+                                         .project-dir)))))
 
       (skeletor-define-template "movio-scala-library"
-        :title "Scala Library (Movio)"
+        :title "MM Library (Scala)"
         :no-license? t
         :requires-executables
         '(("scala" . "http://www.scala-lang.org")
@@ -196,7 +188,6 @@
         `(,@cb-project/scala-artifact-versions
           ("__MOVIO-ARTIFACTORY-URL__". movio-artifactory-url)
           ("__MOVIO-ARTIFACTORY-REPO-URL__". movio-artifactory-repo-url)
-
           ("__DESCRIPTION__" . (lambda () (read-string "Description: "))))
 
         :after-creation
