@@ -337,7 +337,7 @@ Do not scheduled items or repeating todos."
     (defun cb-org/exclude-tasks-on-hold (tag)
       (and (equal tag "hold") (concat "-" tag)))
 
-    (setq org-agenda-include-diary t)
+    (setq org-agenda-include-diary nil)
     (setq org-agenda-start-on-weekday nil)
     (setq org-agenda-auto-exclude-function 'cb-org/exclude-tasks-on-hold)
     (setq org-agenda-files (f-files org-directory (lambda (f) (f-ext? f "org"))))
