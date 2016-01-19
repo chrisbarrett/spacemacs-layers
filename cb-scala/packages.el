@@ -17,6 +17,7 @@
     cb-buffers
     aggressive-indent
 
+    (sbt-file-mode :location local)
     (scala-errors :location local)
     (scala-pretty-sbt :location local)
     (scala-yasnippet :location local)
@@ -25,8 +26,7 @@
 (defun cb-scala/post-init-aggressive-indent ()
   (use-package aggressive-indent
     :config
-    (progn
-      (add-to-list 'aggressive-indent-dont-indent-if '(f-ext? (buffer-file-name) "sbt")))))
+    (add-to-list 'aggressive-indent-excluded-modes 'sbt-file-mode)))
 
 (defun cb-scala/post-init-scala-mode2 ()
   (use-package scala-mode2
@@ -221,6 +221,10 @@ See `ensime-goto-test-config-defaults' for possible template values.")
         (smart-op "///" :action 'scala/replace-slashes-with-doc)
         cb-scala/common-ops)
 
+      (define-smart-ops-for-mode 'sbt-file-mode
+        (smart-op "///" :action 'scala/replace-slashes-with-doc)
+        cb-scala/common-ops)
+
       (define-smart-ops-for-mode 'ensime-inf-mode
         (smart-op ":"
                   :pad-before nil
@@ -249,5 +253,9 @@ See `ensime-goto-test-config-defaults' for possible template values.")
   (use-package cb-buffers
     :config
     (add-to-list 'cb-buffers-indent-commands-alist '(scala-mode . ensime-format-source))))
+
+(defun cb-scala/init-sbt-file-mode ()
+  (use-package sbt-file-mode
+    :mode ("\\.sbt\\'" . sbt-file-mode)))
 
 ;;; packages.el ends here
