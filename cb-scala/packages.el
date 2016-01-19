@@ -51,7 +51,6 @@
   (add-hook 'ensime-mode-hook 'cb-core/turn-off-aggressive-indent-mode)
 
   (setq ensime-auto-generate-config t)
-  (setq ensime-prefer-noninteractive t)
   (setq ensime-implicit-gutter-icons nil)
   (setq ensime-sem-high-faces
         `((var . scala-font-lock:var-face)

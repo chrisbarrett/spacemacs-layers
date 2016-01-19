@@ -467,8 +467,7 @@ With prefix argument ARG, always create a new shell."
   "Fix malformed scalariform settings in FILE."
   (interactive)
   (require 'ensime)
-  (let* ((ensime-prefer-noninteractive t)
-         (file (or file (ensime-config-find)))
+  (let* ((file (or file (ensime-config-find)))
          (buf (find-file-noselect file)))
     (with-current-buffer buf
       (scala/fix-dot-ensime)
