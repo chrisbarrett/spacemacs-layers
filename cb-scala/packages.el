@@ -50,8 +50,8 @@
       (define-key scala-mode-map (kbd "C-c C-e") 'scala/insert-extends))))
 
 (defun cb-scala/post-init-ensime ()
-  (add-hook 'scala-mode-hook 'scala/maybe-start-ensime)
-  (add-hook 'ensime-mode-hook 'cb-core/turn-off-aggressive-indent-mode)
+  (add-hook 'scala-mode-hook #'scala/maybe-start-ensime)
+  (add-hook 'ensime-mode-hook #'cb-core/turn-off-aggressive-indent-mode)
 
   (setq ensime-auto-generate-config t)
   (setq ensime-implicit-gutter-icons nil)
@@ -96,9 +96,8 @@ See `ensime-goto-test-config-defaults' for possible template values.")
               :test-template-fn (lambda () scala/test-file-template)))
 
 
-      ;;; Fix up ensime files before loading
-  (defadvice ensime-config-load (before fix-ensime-file activate)
-    (scala/fix-ensime-file))
+  ;; Fix up ensime files before loading
+  (advice-add 'ensime-config-load :before #'scala/fix-ensime-file)
 
   (with-eval-after-load 'ensime-inf
     (define-key ensime-inf-mode-map (kbd "C-c C-z") 'scala/switch-to-src))
@@ -140,10 +139,10 @@ See `ensime-goto-test-config-defaults' for possible template values.")
     (cb-core/turn-off-aggressive-indent-mode)
     (show-smartparens-mode -1)
     (show-paren-mode -1)
-    (local-set-key (kbd "C-l") 'spacemacs/comint-clear-buffer)
-    (local-set-key (kbd "C-c RET") 'scala/sbt-send-ret))
+    (local-set-key (kbd "C-l") #'spacemacs/comint-clear-buffer)
+    (local-set-key (kbd "C-c RET") #'scala/sbt-send-ret))
 
-  (add-hook 'sbt-mode-hook 'cb-scala/set-up-sbt-mode))
+  (add-hook 'sbt-mode-hook #'cb-scala/set-up-sbt-mode))
 
 (defun cb-scala/post-init-smart-ops ()
   (use-package smart-ops
