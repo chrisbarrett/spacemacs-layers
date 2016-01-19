@@ -26,6 +26,7 @@
     eldoc
     ido
     recentf
+    neotree
 
     (cb-buffers :location local)
     (locate-key-binding :location local)
@@ -303,5 +304,9 @@
       (with-eval-after-load 'nxml-mode
         (evil-define-key 'normal nxml-mode-map (kbd "M-q") #'cb-buffers-indent-dwim)))))
 
+(defun cb-core/post-init-neotree ()
+  (use-package neotree
+    :config
+    (setq neo-theme 'arrow)))
 
 ;;; packages.el ends here
