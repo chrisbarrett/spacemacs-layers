@@ -38,10 +38,13 @@
        `(scala-font-lock:var-face
          ((t (:foreground ,solarized-hl-orange :underline nil)))))
 
-      (defun cb-scala/set-local-hooks ()
-        (add-hook 'evil-insert-state-exit-hook 'scala/unicode-buffer))
+      (defun cb-scala/set-local-values ()
+        ;; HACK: override ensime-company's binding.
+        (local-set-key (kbd "TAB") #'yas/expand)
 
-      (add-hook 'scala-mode-hook 'cb-scala/set-local-hooks)
+        (add-hook 'evil-insert-state-exit-hook #'scala/unicode-buffer))
+
+      (add-hook 'scala-mode-hook #'cb-scala/set-local-values)
 
       (define-key scala-mode-map (kbd "M-RET") 'scala/meta-ret)
       (define-key scala-mode-map (kbd "C-c C-e") 'scala/insert-extends))))
