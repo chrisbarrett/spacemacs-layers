@@ -62,6 +62,7 @@
     "temp"
 
     ".cache"
+    ".g8"
     "var/folders"
     "Mail"
 
