@@ -168,7 +168,7 @@
 
 (defun cb-mu4e/init-mu4e-unread-messages ()
   (use-package mu4e-unread-messages
-    :after 'mu4e
+    :after mu4e
     :config
     (progn
       (setq display-time-use-mail-icon t)
