@@ -94,37 +94,37 @@
 (defun ghc-dump-core (&optional args)
   "Dump the GHC Core representation of this buffer after simplification."
   (interactive (list (ghc-dump-arguments)))
-  (ghc-dump--command-with-buffer-setup 'ghc-core-mode "*ghc-core*" args "-ddump-simpl"))
+  (ghc-dump--command-with-buffer-setup #'ghc-core-mode "*ghc-core*" args "-ddump-simpl"))
 
 ;;;###autoload
 (defun ghc-dump-desugared (&optional args)
   "Dump the GHC Core representation of the current file."
   (interactive (list (ghc-dump-arguments)))
-  (ghc-dump--command-with-buffer-setup 'ghc-core-mode "*ghc-desugared*" args "-ddump-ds"))
+  (ghc-dump--command-with-buffer-setup #'ghc-core-mode "*ghc-desugared*" args "-ddump-ds"))
 
 ;;;###autoload
 (defun ghc-dump-opt-cmm (&optional args)
   "Dump the C-- representation of the current file."
   (interactive (list (ghc-dump-arguments)))
-  (ghc-dump--command-with-buffer-setup 'ghc-cmm-mode "*ghc-opt-cmm*" args "-ddump-cmm"))
+  (ghc-dump--command-with-buffer-setup #'ghc-cmm-mode "*ghc-opt-cmm*" args "-ddump-cmm"))
 
 ;;;###autoload
 (defun ghc-dump-llvm (&optional args)
   "Dump the LLVM representation of the current file."
   (interactive (list (ghc-dump-arguments)))
-  (ghc-dump--command-with-buffer-setup 'llvm-mode "*ghc-llvm*" args "-ddump-llvm"))
+  (ghc-dump--command-with-buffer-setup #'llvm-mode "*ghc-llvm*" args "-ddump-llvm"))
 
 ;;;###autoload
 (defun ghc-dump-asm (&optional args)
   "Dump the assembler representation of the current file."
   (interactive (list (ghc-dump-arguments)))
-  (ghc-dump--command-with-buffer-setup 'asm-mode "*ghc-asm*" args "-ddump-asm"))
+  (ghc-dump--command-with-buffer-setup #'asm-mode "*ghc-asm*" args "-ddump-asm"))
 
 ;;;###autoload
 (defun ghc-dump-types (&optional args)
   "Dump the types and signatures defined by the current file."
   (interactive (list (ghc-dump-arguments)))
-  (ghc-dump--command-with-buffer-setup 'ghc-type-dump-mode "*ghc-types*" args "-ddump-types"))
+  (ghc-dump--command-with-buffer-setup #'ghc-type-dump-mode "*ghc-types*" args "-ddump-types"))
 
 ;;;###autoload
 (defun ghc-dump-splices (&optional args)
@@ -137,7 +137,7 @@
 (defun ghc-dump-stg (&optional args)
   "Dump the GHC STG representation of this buffer."
   (interactive (list (ghc-dump-arguments)))
-  (ghc-dump--command-with-buffer-setup 'ghc-stg-mode "*ghc-stg*" args "-ddump-stg"))
+  (ghc-dump--command-with-buffer-setup #'ghc-stg-mode "*ghc-stg*" args "-ddump-stg"))
 
 ;;;###autoload
 (defvar ghc-dump-popup-mode-map
