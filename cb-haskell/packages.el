@@ -366,3 +366,5 @@
   (use-package cb-buffers
     :config
     (add-to-list 'cb-buffers-indent-commands-alist '(haskell-mode . haskell/format-dwim))))
+
+;;; packages.el ends here
