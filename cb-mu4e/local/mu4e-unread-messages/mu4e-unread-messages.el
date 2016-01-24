@@ -31,6 +31,7 @@
 
 (require 's)
 (require 'dash)
+(require 'mu4e)
 
 (defgroup mu4e-unread-messages nil
   "Display an indicator in the modeline for unread mu4e messages."

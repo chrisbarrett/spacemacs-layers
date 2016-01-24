@@ -166,9 +166,9 @@
       (define-key mu4e-headers-mode-map (kbd "r") 'mu4e-headers-mark-for-read-and-archive)
       (define-key mu4e-view-mode-map (kbd "r") 'mu4e-view-mark-for-read-and-archive))))
 
-
 (defun cb-mu4e/init-mu4e-unread-messages ()
   (use-package mu4e-unread-messages
+    :after 'mu4e
     :config
     (progn
       (setq display-time-use-mail-icon t)
