@@ -64,7 +64,9 @@ values."
      (rcirc
       :variables
       rcirc-enable-authinfo-support t)
-     scala
+     (scala
+      :variables
+      scala-enable-eldoc t)
      (shell
       :variables
       shell-default-shell 'eshell
