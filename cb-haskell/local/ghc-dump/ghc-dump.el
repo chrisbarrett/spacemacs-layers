@@ -140,8 +140,6 @@
   (ghc-dump--command-with-buffer-setup 'ghc-stg-mode "*ghc-stg*" args "-ddump-stg"))
 
 ;;;###autoload
-(define-derived-mode ghc-stg-mode ghc-core-mode "GHC-STG"
-  (read-only-mode +1))
 (defvar ghc-dump-popup-mode-map
   (let ((map (make-sparse-keymap)))
     (define-key map (kbd "q") #'quit-window)
@@ -153,6 +151,8 @@
   nil nil ghc-dump-popup-mode-map)
 
 ;;;###autoload
+(define-derived-mode ghc-stg-mode ghc-core-mode "GHC-STG")
+
 ;;;###autoload
 (define-derived-mode ghc-type-dump-mode haskell-parent-mode "GHC-Types"
   (setq-local font-lock-defaults
@@ -187,8 +187,7 @@
    (,(rx bol (* space) "axiom" eow) . font-lock-keyword-face)))
 
 ;;;###autoload
-(define-derived-mode ghc-cmm-mode c-mode "C--"
-  (read-only-mode +1))
+(define-derived-mode ghc-cmm-mode c-mode "C--")
 
 (defconst ghc-cmm-keywords
   '("aborts" "align" "aligned" "also" "as" "big" "bits" "byteorder" "case"
