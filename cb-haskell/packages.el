@@ -197,7 +197,6 @@
 
   (defun cb-haskell/configure-shm ()
     (require 'shm)
-    (evil-define-key 'normal shm-map "J" 'haskell/join-line)
     (evil-define-key 'insert shm-map (kbd "<return>") 'haskell/ret)
     (define-key shm-map (kbd "C-<return>") 'shm/newline-indent)
     (define-key shm-map (kbd "SPC") 'haskell/smart-space))
