@@ -31,24 +31,29 @@
           (async-start
            `(lambda ()
               (require 'smtpmail)
-              (with-temp-buffer
-                (insert ,buf-content)
-                (set-buffer-multibyte nil)
-                ;; Pass in the variable environment for smtpmail
-                ,(async-inject-variables
-                  "\\`\\(smtpmail\\|sendmail\\|async-smtpmail\\|\\(user-\\)?mail\\)-\\|auth-sources"
-                  nil "\\`\\(mail-header-format-function\\|smtpmail-address-buffer\\|mail-mode-abbrev-table\\)")
-                (run-hooks 'async-smtpmail-before-send-hook)
-                (smtpmail-send-it)))
-           `(lambda (&optional ignore)
-              (message "Delivering message to %s...done" ,to)))))
+              (condition-case err
+                  (with-temp-buffer
+                    (insert ,buf-content)
+                    (set-buffer-multibyte nil)
+                    ;; Pass in the variable environment for smtpmail
+                    ,(async-inject-variables
+                      "\\`\\(smtpmail\\|sendmail\\|async-smtpmail\\|\\(user-\\)?mail\\)-\\|auth-sources"
+                      nil "\\`\\(mail-header-format-function\\|smtpmail-address-buffer\\|mail-mode-abbrev-table\\)")
+                    (run-hooks 'async-smtpmail-before-send-hook)
+                    (smtpmail-send-it)
+                    (cons t nil))
+                (error
+                 (cons nil err))))
+           `(-lambda ((success? . err))
+              (if success?
+                  (message "Delivering message to %s...done" ,to)
+                (message "Delivering message to %s...FAILED. Error: %s" ,to err))))))
 
       (setq send-mail-function 'cb-async-smtpmail-send-it)
       (setq message-send-mail-function 'cb-async-smtpmail-send-it))))
 
 (defun cb-mu4e/init-mu4e ()
   (use-package mu4e
-    :defer 10
     :load-path "/usr/local/share/emacs/site-lisp/mu4e/"
     :commands (mu4e mu4e-compose-new)
     :bind (("C-x m" . mu4e-compose-new))
