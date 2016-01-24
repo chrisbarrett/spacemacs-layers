@@ -39,9 +39,6 @@
          ((t (:foreground ,solarized-hl-orange :underline nil)))))
 
       (defun cb-scala/set-local-values ()
-        ;; HACK: override ensime-company's binding.
-        (local-set-key (kbd "TAB") #'yas/expand)
-
         (add-hook 'evil-insert-state-exit-hook #'scala/unicode-buffer))
 
       (add-hook 'scala-mode-hook #'cb-scala/set-local-values)
