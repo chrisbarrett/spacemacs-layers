@@ -142,22 +142,6 @@
 
       (add-to-list 'mu4e-view-actions '("&viewInExternalBrowser" . cb-mu4e-action-view-in-external-browser) t)
 
-      ;; Start at the 'To' header when composing.
-      (defun cb-mu4e-goto-to-header ()
-        (interactive)
-        ;; HACK: I can't figure out how to hook into this mode correctly and
-        ;; that makes me sad. :(
-        (run-with-timer 0.03 nil
-                        (lambda ()
-                          (goto-char (point-min))
-                          (search-forward "to:" nil t)
-                          (evil-append-line 1)
-                          (just-one-space))))
-
-      (add-hook 'message-mode-hook 'cb-mu4e-goto-to-header)
-
-
-
       ;; Add format=flowed so receiving clients can format plain text correctly.
       (defun cb-mu4e-flow-text ()
         (use-hard-newlines t 'guess))
