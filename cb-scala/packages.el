@@ -43,8 +43,9 @@
 
       (add-hook 'scala-mode-hook #'cb-scala/set-local-values)
 
-      (define-key scala-mode-map (kbd "M-RET") 'scala/meta-ret)
-      (define-key scala-mode-map (kbd "C-c C-e") 'scala/insert-extends))))
+      (define-key scala-mode-map (kbd "M-RET") #'scala/meta-ret)
+
+      (define-key scala-mode-map (kbd "C-c C-e") #'scala/insert-extends)
 
 (defun cb-scala/post-init-ensime ()
   (add-hook 'scala-mode-hook #'scala/maybe-start-ensime)
