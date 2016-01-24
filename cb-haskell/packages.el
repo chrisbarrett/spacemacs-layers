@@ -201,8 +201,15 @@
     (define-key shm-map (kbd "C-<return>") 'shm/newline-indent)
     (define-key shm-map (kbd "SPC") 'haskell/smart-space))
 
-  (add-hook 'haskell-mode-hook 'cb-haskell/configure-shm)
-  (add-hook 'ghc-core-mode-hook (lambda () (structured-haskell-mode -1))))
+  (add-hook 'haskell-mode-hook #'cb-haskell/configure-shm)
+
+  (defun cb-haskell/structured-haskell-mode-off ()
+    (when (and (boundp 'structured-haskell-mode) structured-haskell-mode)
+      (ignore-errors
+        (structured-haskell-mode -1))))
+
+  (add-hook 'ghc-core-mode-hook #'cb-haskell/structured-haskell-mode-off)
+  (add-hook 'ghc-stg-mode-hook #'cb-haskell/structured-haskell-mode-off))
 
 (defun cb-haskell/post-init-ghc ()
   (use-package ghc
