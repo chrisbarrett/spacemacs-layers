@@ -59,19 +59,24 @@
       (with-eval-after-load 'org
         (require 'org-mu4e))
 
-      (define-key mu4e-main-mode-map (kbd "SPC") nil)
-      (define-key mu4e-view-mode-map (kbd "SPC") nil)
-      (define-key mu4e-headers-mode-map (kbd "SPC") nil)
+      (evilified-state-evilify-map mu4e-main-mode-map
+        :mode mu4e-main-mode
+        :bindings
+        (kbd "j") 'mu4e~headers-jump-to-maildir)
 
-      ;; Vim-style navigation.
+      (evilified-state-evilify-map mu4e-headers-mode-map
+        :mode mu4e-headers-mode
+        :bindings
+        (kbd "J") 'mu4e~headers-jump-to-maildir
+        (kbd "j") 'mu4e-headers-next
+        (kbd "k") 'mu4e-headers-prev)
 
-      (define-key mu4e-headers-mode-map (kbd "J") 'mu4e~headers-jump-to-maildir)
-      (define-key mu4e-headers-mode-map (kbd "j") 'mu4e-headers-next)
-      (define-key mu4e-headers-mode-map (kbd "k") 'mu4e-headers-prev)
-
-      (define-key mu4e-view-mode-map (kbd "J") 'mu4e~view-headers-jump-to-maildir)
-      (define-key mu4e-view-mode-map (kbd "j") 'mu4e-view-headers-next)
-      (define-key mu4e-view-mode-map (kbd "k") 'mu4e-view-headers-prev)
+      (evilified-state-evilify-map mu4e-view-mode-map
+        :mode mu4e-view-mode
+        :bindings
+        (kbd "J") 'mu4e~view-headers-jump-to-maildir
+        (kbd "j") 'mu4e-view-headers-next
+        (kbd "k") 'mu4e-view-headers-prev)
 
       ;; Bury mu4e rather than killing it.
       (define-key mu4e-main-mode-map (kbd "q") 'bury-buffer)
