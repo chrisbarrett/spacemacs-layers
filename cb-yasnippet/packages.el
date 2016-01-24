@@ -10,7 +10,8 @@
 (autoload 'evil-insert-state "evil-states")
 
 (defconst cb-yasnippet-packages
-  '(yasnippet))
+  '(yasnippet
+    smartparens))
 
 (defvar cb-yasnippet/main-snippets-dir
   (f-join user-layers-directory "cb-yasnippet/snippets"))
@@ -49,26 +50,6 @@
   (spacemacs/set-leader-keys "Yy" 'yas-insert-snippet)
   (spacemacs/set-leader-keys "Yr" 'cb-yas/reload-all)
 
-  ;; HACK: Work around Spacemacs issue with smartparens strict mode.
-
-  (defun cb-yasnippet/smartparens-strict-mode-active? ()
-    (and smartparens-mode smartparens-global-strict-mode))
-
-  (defconst cb-yasnippet/should-enable-smartparens-strict-mode (cb-yasnippet/smartparens-strict-mode-active?))
-
-  (defun cb-yasnippet/disable-smartparens-strict-mode ()
-    (let ((active? (cb-yasnippet/smartparens-strict-mode-active?)))
-      (setq cb-yasnippet/should-enable-smartparens-strict-mode active?)
-      (when active?
-        (smartparens-strict-mode -1))))
-
-  (defun cb-yasnippet/restore-smartparens-strict-mode ()
-    (when cb-yasnippet/should-enable-smartparens-strict-mode
-      (smartparens-strict-mode +1)))
-
-  (add-hook 'yas-before-expand-snippet-hook #'cb-yasnippet/disable-smartparens-strict-mode)
-  (add-hook 'yas-after-exit-snippet-hook #'cb-yasnippet/restore-smartparens-strict-mode)
-
   ;; Advise editing commands.
   ;;
   ;; Pressing SPC in an unmodified field will clear it and switch to the next.
@@ -84,5 +65,20 @@
   (advice-add 'yas-prev-field :before #'yas/clear-blank-field)
   (advice-add 'yas-next-field :after #'cb-yasnippet/goto-field-end)
   (advice-add 'yas-prev-field :after #'cb-yasnippet/goto-field-end))
+
+(defun cb-yasnippet/post-init-smartparens ()
+  (use-package smartparens
+    :config
+    (progn
+      ;; HACK: Work around Spacemacs issue with smartparens strict mode.
+
+      (defun cb-yasnippet/disable-smartparens-strict-mode ()
+        (smartparens-strict-mode -1))
+
+      (defun cb-yasnippet/restore-smartparens-strict-mode ()
+        (smartparens-strict-mode +1))
+
+      (add-hook 'yas-before-expand-snippet-hook #'cb-yasnippet/disable-smartparens-strict-mode)
+      (add-hook 'yas-after-exit-snippet-hook #'cb-yasnippet/restore-smartparens-strict-mode))))
 
 ;;; packages.el ends here
