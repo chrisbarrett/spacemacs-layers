@@ -31,7 +31,9 @@
 (defun cb-haskell/init-ghc-dump ()
   (use-package ghc-dump
     :config
-    (spacemacs/set-leader-keys-for-major-mode 'haskell-mode "mD" 'ghc-dump-popup)))
+    (progn
+      (spacemacs/set-leader-keys-for-major-mode 'haskell-mode "D" #'ghc-dump-popup)
+      (bind-key "q" #'cb-buffers-maybe-kill ghc-dump-popup-mode-map))))
 
 (defun cb-haskell/post-init-flycheck ()
   (with-eval-after-load 'flycheck
