@@ -1,9 +1,6 @@
 [submodule "cb-proof/local/proofgeneral"]
 	path = cb-proof/local/proofgeneral
 	url = https://github.com/emacsattic/proofgeneral.git
-[submodule "cb-mu4e/local/mu4e-multi"]
-	path = cb-mu4e/local/mu4e-multi
-	url = https://github.com/fgallina/mu4e-multi.git
 [submodule "cb-core/local/super-smart-ops"]
 	path = cb-core/local/super-smart-ops
 	url = https://github.com/chrisbarrett/super-smart-ops.git

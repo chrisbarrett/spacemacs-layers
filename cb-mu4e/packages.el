@@ -11,7 +11,6 @@
 (defconst cb-mu4e-packages
   '(async
     (mu4e :location local)
-    (mu4e-multi :location local)
     (mu4e-unread-messages :location local)))
 
 (defun cb-mu4e/init-async ()
@@ -51,6 +50,8 @@
   (use-package mu4e
     :defer 10
     :load-path "/usr/local/share/emacs/site-lisp/mu4e/"
+    :commands (mu4e mu4e-compose-new)
+    :bind (("C-x m" . mu4e-compose-new))
     :init
     (spacemacs/set-leader-keys "am" 'mu4e)
     :config
@@ -131,8 +132,6 @@
 
       (add-to-list 'mu4e-view-actions '("&viewInExternalBrowser" . cb-mu4e-action-view-in-external-browser) t)
 
-      (setq browse-url-mailto-function 'mu4e-multi-compose-new)
-
       ;; Start at the 'To' header when composing.
       (defun cb-mu4e-goto-to-header ()
         (interactive)
@@ -156,11 +155,10 @@
       (add-hook 'mu4e-compose-mode-hook 'cb-mu4e-flow-text)
 
       (defun cb-mu4e--read-and-archive-action (docid msg target)
-        ;; must come before proc-move since retag runs 'sed' on the file
+        ;; Must come before proc-move since retag runs 'sed' on the file
         (mu4e-action-retag-message msg "-\\Inbox")
-        (when (stringp mu4e-refile-folder)
-          (mu4e-multi-enable))
-        (mu4e~proc-move docid (funcall mu4e-refile-folder msg) "+S-u-N"))
+        (-let (((_ . dest) (assoc 'mu4e-refile-folder (mu4e-context-vars (mu4e-context-current)))))
+          (mu4e~proc-move docid dest "+S-u-N")))
 
       ;; Add read+archive mark
       (add-to-list 'mu4e-marks
@@ -174,17 +172,6 @@
       (define-key mu4e-headers-mode-map (kbd "r") 'mu4e-headers-mark-for-read-and-archive)
       (define-key mu4e-view-mode-map (kbd "r") 'mu4e-view-mark-for-read-and-archive))))
 
-(defun cb-mu4e/init-mu4e-multi ()
-  (use-package mu4e-multi
-    :config
-    (progn
-      (global-set-key (kbd "C-x m") 'mu4e-multi-compose-new)
-      ;; See `mu4e-multi-account-alist' in personal-config file for accounts
-      ;; configuration (not on GitHub).
-      (with-eval-after-load 'personal-config (mu4e-multi-enable))
-
-      (with-eval-after-load 'mu4e
-        (define-key mu4e-main-mode-map (kbd "C") 'mu4e-multi-compose-new)))))
 
 (defun cb-mu4e/init-mu4e-unread-messages ()
   (use-package mu4e-unread-messages
