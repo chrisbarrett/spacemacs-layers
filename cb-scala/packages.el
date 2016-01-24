@@ -210,12 +210,12 @@ See `ensime-goto-test-config-defaults' for possible template values.")
                      (smart-ops "___" :bypass? t)
 
                      ;; Reformat '=???' as '= ???'
-                     (smart-op "=???"
-                               :action
-                               (lambda (&rest _)
-                                 (save-excursion
-                                   (skip-chars-backward "? ")
-                                   (just-one-space)))))))
+                     (smart-ops "=???" "=???,"
+                                :action
+                                (lambda (&rest _)
+                                  (save-excursion
+                                    (skip-chars-backward ",? ")
+                                    (just-one-space)))))))
 
       (define-smart-ops-for-mode 'scala-mode
         (smart-op "///" :action 'scala/replace-slashes-with-doc)
