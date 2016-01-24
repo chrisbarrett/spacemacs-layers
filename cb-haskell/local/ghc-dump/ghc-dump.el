@@ -35,21 +35,28 @@
 
 (defun ghc-dump--command-with-buffer-setup (buffer-init-fn bufname args &rest dump-flags)
   (save-buffer)
-  (let* ((buf (generate-new-buffer bufname))
+  (let* ((buf (get-buffer-create bufname))
          (neh (lambda () (kill-buffer buf)))
          (ghc-args
           (-flatten (list dump-flags "-c" (buffer-file-name) args))))
+    (with-current-buffer buf
+      (read-only-mode -1)
+      (erase-buffer))
+
     (add-hook 'next-error-hook neh)
     (if (ghc-dump--stack-project?)
         (apply #'call-process "stack" nil buf nil "ghc" "--" ghc-args)
       (apply #'call-process "ghc" nil buf nil ghc-args))
 
-    (pop-to-buffer buf)
     (with-current-buffer buf
-      (goto-char (point-min))
       (funcall buffer-init-fn)
-      (whitespace-cleanup))
-    (remove-hook 'next-error-hook neh)))
+      (whitespace-cleanup)
+      (ghc-dump-popup-mode +1)
+      (read-only-mode +1)
+      (goto-char (point-min))
+      (display-buffer buf)
+      (message "")
+      (remove-hook 'next-error-hook neh))))
 
 (defun ghc-dump--stack-project? ()
   (f-traverse-upwards
@@ -135,7 +142,17 @@
 ;;;###autoload
 (define-derived-mode ghc-stg-mode ghc-core-mode "GHC-STG"
   (read-only-mode +1))
+(defvar ghc-dump-popup-mode-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map (kbd "q") #'quit-window)
+    map))
 
+;;;###autoload
+(define-minor-mode ghc-dump-popup-mode
+  "Minor mode for ghc-dump popup buffers."
+  nil nil ghc-dump-popup-mode-map)
+
+;;;###autoload
 ;;;###autoload
 (define-derived-mode ghc-type-dump-mode haskell-parent-mode "GHC-Types"
   (setq-local font-lock-defaults
@@ -146,9 +163,7 @@
                 (font-lock-syntactic-face-function
                  . haskell-syntactic-face-function)
                 ;; Get help from font-lock-syntactic-keywords.
-                (parse-sexp-lookup-properties . t)))
-
-  (read-only-mode +1))
+                (parse-sexp-lookup-properties . t))))
 
 (defconst ghc-type-dump-headers
   '("TYPE SIGNATURES"
