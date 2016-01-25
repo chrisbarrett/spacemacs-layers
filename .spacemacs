@@ -98,6 +98,7 @@ values."
      cb-ibuffer
      cb-idris
      cb-js
+     cb-layouts
      cb-ledger
      cb-makefile
      cb-mu4e
