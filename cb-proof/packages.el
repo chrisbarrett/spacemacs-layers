@@ -9,6 +9,7 @@
   '((proof-site :location local)
     (coq :location local)
     (proof-script :location local)
+    flycheck
     smart-ops))
 
 (add-to-list 'load-path (f-join user-layers-directory "cb-proof/local/PG/generic"))
@@ -132,3 +133,7 @@
 
     (smart-ops "?" "^" "~" "\\")
     (smart-ops-default-ops)))
+
+(defun cb-proof/post-init-flycheck ()
+  (with-eval-after-load 'flycheck
+    (add-to-list 'flycheck-disabled-checkers 'coq)))
