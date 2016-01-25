@@ -2,15 +2,14 @@
 ;;; Commentary:
 ;;; Code:
 
+(require 'use-package)
+(require 'f)
+
 (defconst cb-proof-packages
   '((proof-site :location local)
     (coq :location local)
     (proof-script :location local)
     smart-ops))
-
-(eval-when-compile
-  (require 'use-package nil t)
-  (require 'f nil t))
 
 (add-to-list 'load-path (f-join user-layers-directory "cb-proof/local/PG/generic"))
 
@@ -83,7 +82,39 @@
     :defer t
     :config
     (progn
-      (define-key proof-mode-map (kbd "C-<return>") nil))))
+      (define-key proof-mode-map (kbd "C-<return>") nil)
+
+      ;; HACK: Redefine `proof-mode' to derive from `prog-mode'.
+      (define-derived-mode proof-mode prog-mode
+        proof-general-name
+        "Proof General major mode class for proof scripts.
+\\{proof-mode-map}"
+
+        (setq proof-buffer-type 'script)
+
+        ;; Set default indent function (can be overriden in derived modes)
+        (make-local-variable 'indent-line-function)
+        (setq indent-line-function 'proof-indent-line)
+
+        ;; During write-file it can happen that we re-set the mode for the
+        ;; currently active scripting buffer.  The user might also do this
+        ;; for some reason.  We could maybe let this pass through, but it
+        ;; seems safest to treat it as a kill buffer operation (retract and
+        ;; clear spans).  NB: other situations cause double calls to proof-mode.
+        (if (eq (current-buffer) proof-script-buffer)
+            (proof-script-kill-buffer-fn))
+
+        ;; We set hook functions here rather than in proof-config-done so
+        ;; that they can be adjusted by prover specific code if need be.
+        (proof-script-set-buffer-hooks)
+
+        ;; Set after change functions
+        (proof-script-set-after-change-functions)
+
+        (add-hook 'after-set-visited-file-name-hooks
+                  'proof-script-set-visited-file-name nil t)
+
+        (add-hook 'proof-activate-scripting-hook 'proof-cd-sync nil t)))))
 
 (defun cb-proof/post-init-smart-ops ()
   (define-smart-ops-for-mode 'coq-mode
