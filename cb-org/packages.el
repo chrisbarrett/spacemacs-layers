@@ -365,59 +365,52 @@ Do not scheduled items or repeating todos."
 
     (add-hook 'after-init-hook #'cb-org/agenda-dwim)
 
-    (defun cb-org/agenda-custom-commands-delete-other-windows (command-list)
-      (-map-when (lambda (spec) (listp (cdr spec)))
-                 (lambda (spec) (append spec '(((org-agenda-customise-window-hook 'delete-other-windows)))))
-                 command-list))
-
     (setq org-agenda-custom-commands
-          (cb-org/agenda-custom-commands-delete-other-windows
-           '(
-             ("A" "Agenda and next actions"
-              ((tags-todo "-study-someday-media/NEXT"
-                          ((org-agenda-overriding-header "Next Actions")))
-               (agenda "")
-               (tags-todo "WAITING"
-                          ((org-agenda-overriding-header "Waiting")))
-               (stuck "")
-               (tags-todo "media|study/NEXT"
-                          ((org-agenda-overriding-header "Media & Study"))))
-              ((org-agenda-tag-filter-preset '( "-ignore"))))
+          '(("A" "Agenda and next actions"
+             ((tags-todo "-study-someday-media/NEXT"
+                         ((org-agenda-overriding-header "Next Actions")))
+              (agenda "")
+              (tags-todo "WAITING"
+                         ((org-agenda-overriding-header "Waiting")))
+              (stuck "")
+              (tags-todo "media|study/NEXT"
+                         ((org-agenda-overriding-header "Media & Study"))))
+             ((org-agenda-tag-filter-preset '( "-ignore"))))
 
-             ("n" "Next actions"
-              ((tags-todo "-study-someday/NEXT"))
-              ((org-agenda-overriding-header "Next Actions")))
+            ("n" "Next actions"
+             ((tags-todo "-study-someday/NEXT"))
+             ((org-agenda-overriding-header "Next Actions")))
 
-             ("r" "Weekly Review"
-              ((agenda ""
-                       ((org-agenda-overriding-header "Review Previous Week")
-                        (org-agenda-ndays 7)
-                        (org-agenda-start-day "-7d")
-                        (org-agenda-show-log t)))
-               (agenda ""
-                       ((org-agenda-overriding-header "Review Upcoming Events")
-                        (org-agenda-ndays 14)))
-               (stuck ""
-                      ((org-agenda-overriding-header "Review Stuck Projects")))
-               (todo "WAITING"
-                     ((org-agenda-overriding-header "Review Tasks on Hold")))
+            ("r" "Weekly Review"
+             ((agenda ""
+                      ((org-agenda-overriding-header "Review Previous Week")
+                       (org-agenda-ndays 7)
+                       (org-agenda-start-day "-7d")
+                       (org-agenda-show-log t)))
+              (agenda ""
+                      ((org-agenda-overriding-header "Review Upcoming Events")
+                       (org-agenda-ndays 14)))
+              (stuck ""
+                     ((org-agenda-overriding-header "Review Stuck Projects")))
+              (todo "WAITING"
+                    ((org-agenda-overriding-header "Review Tasks on Hold")))
 
-               (tags-todo "-@work-someday-media/NEXT"
-                          ((org-agenda-overriding-header "Next Actions")))
-               (tags-todo "-@work+goals+3_months/PROJECT|NEXT"
-                          ((org-agenda-overriding-header "Review 3 Month Goals")))
-               (tags-todo "-@work+goals+1_year/PROJECT|NEXT"
-                          ((org-agenda-overriding-header "Review 1 Year Goals")))
-               (tags-todo "-@work+goals+3_years/MAYBE|SOMEDAY|PROJECT|NEXT"
-                          ((org-agenda-overriding-header "Review 3 Year Goals")))
-               (tags-todo "someday-skill/MAYBE|NEXT"
-                          ((org-agenda-overriding-header "Decide whether to promote any SOMEDAY items to NEXT actions")))
-               (tags-todo "someday&skill"
-                          ((org-agenda-overriding-header "Decide whether to promote any learning tasks to NEXT actions"))))
-              ((org-agenda-tag-filter-preset
-                '("-drill" "-gtd" "-ignore"))
-               (org-agenda-include-inactive-timestamps t)
-               (org-agenda-dim-blocked-tasks nil))))))
+              (tags-todo "-@work-someday-media/NEXT"
+                         ((org-agenda-overriding-header "Next Actions")))
+              (tags-todo "-@work+goals+3_months/PROJECT|NEXT"
+                         ((org-agenda-overriding-header "Review 3 Month Goals")))
+              (tags-todo "-@work+goals+1_year/PROJECT|NEXT"
+                         ((org-agenda-overriding-header "Review 1 Year Goals")))
+              (tags-todo "-@work+goals+3_years/MAYBE|SOMEDAY|PROJECT|NEXT"
+                         ((org-agenda-overriding-header "Review 3 Year Goals")))
+              (tags-todo "someday-skill/MAYBE|NEXT"
+                         ((org-agenda-overriding-header "Decide whether to promote any SOMEDAY items to NEXT actions")))
+              (tags-todo "someday&skill"
+                         ((org-agenda-overriding-header "Decide whether to promote any learning tasks to NEXT actions"))))
+             ((org-agenda-tag-filter-preset
+               '("-drill" "-gtd" "-ignore"))
+              (org-agenda-include-inactive-timestamps t)
+              (org-agenda-dim-blocked-tasks nil)))))
 
     (define-key org-agenda-mode-map (kbd "J") 'org-agenda-goto-date)
 
