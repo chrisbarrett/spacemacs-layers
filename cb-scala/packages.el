@@ -144,6 +144,7 @@ See `ensime-goto-test-config-defaults' for possible template values.")
 
 (defun cb-scala/post-init-smart-ops ()
   (use-package smart-ops
+    :after scala-mode2
     :config
     (progn
 
@@ -238,16 +239,18 @@ See `ensime-goto-test-config-defaults' for possible template values.")
   (use-package scala-errors))
 
 (defun cb-scala/init-scala-pretty-sbt ()
-  (with-eval-after-load 'sbt-mode
-    (require 'scala-pretty-sbt)))
+  (use-package scala-pretty-sbt
+    :after sbt-mode))
 
 (defun cb-scala/init-scala-yasnippet ()
-  (with-eval-after-load 'scala-mode2
-    (require 'scala-yasnippet)
+  (use-package scala-yasnippet
+    :after scala-mode2
+    :config
     (cb-yas/register-snippets-dir (f-join scala-yasnippet--root "snippets"))))
 
 (defun cb-scala/init-ensime-diminished-modeline ()
-  (use-package ensime-diminished-modeline))
+  (use-package ensime-diminished-modeline
+    :after ensime))
 
 (defun cb-scala/post-init-cb-buffers ()
   (use-package cb-buffers
