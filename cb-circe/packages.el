@@ -128,7 +128,7 @@ Each entry is either:
     (when (equal "IRC" (spacemacs//current-layout-name))
       (circe-show-channels)))
 
-  (add-hook 'circe-mode-hook #'cb-circe/maybe-refresh-layout)
+  (add-hook 'circe-channel-mode-hook #'cb-circe/maybe-refresh-layout)
 
   (spacemacs|define-custom-layout "IRC"
     :binding "i"
