@@ -259,7 +259,7 @@ Do not scheduled items or repeating todos."
   ;;; Keybindings
 
   (spacemacs/declare-prefix "o" "org")
-  (spacemacs/set-leader-keys "oa" #'cb-org/agenda-dwim)
+  (spacemacs/set-leader-keys "oa" #'cb-org/show-agenda)
   (spacemacs/set-leader-keys "ob" #'org-iswitchb)
   (spacemacs/set-leader-keys "oc" #'org-clock-goto)
   (spacemacs/set-leader-keys "od" #'cb-org/goto-diary)
@@ -362,8 +362,6 @@ Do not scheduled items or repeating todos."
     (setq org-time-clocksum-format
           (list :hours "%d" :require-hours t
                 :minutes ":%02d" :require-minutes t))
-
-    (add-hook 'after-init-hook #'cb-org/agenda-dwim)
 
     (setq org-agenda-custom-commands
           '(("A" "Agenda and next actions"

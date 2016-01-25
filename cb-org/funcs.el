@@ -100,10 +100,11 @@
    ((org-at-table-p) (call-interactively 'org-table-hline-and-move))
    (t (call-interactively 'org-insert-todo-heading))))
 
-(defun cb-org/agenda-dwim ()
-  "Show the work agenda view if at work, otherwise the standard agenda."
+(defun cb-org/show-agenda ()
+  "Show the agenda fullscreen."
   (interactive)
-  (org-agenda current-prefix-arg "A"))
+  (org-agenda current-prefix-arg "A")
+  (delete-other-windows))
 
 
 ;;; Diary utils
