@@ -27,8 +27,6 @@
 (require 'dash)
 (require 'circe)
 
-(autoload 'eyebrowse-switch-to-window-config "eyebrowse")
-
 (defgroup circe-show-channels nil
   "Command for tiling all Circe buffers."
   :group 'circe
@@ -47,11 +45,6 @@ alphabetically and assigned negative orders, such that they are
 tiled last."
   :group 'circe-show-channels
   :type '(alist :key-type string :value-type integer))
-
-(defcustom circe-show-channels-eyebrowse-window-config-number nil
-  "The eyebrowse window group to use for Circe, or nil to disable."
-  :group 'circe-show-channels
-  :type 'number)
 
 (defun circe-show-channels--apply-buffer-ordering (bufs)
   (->> bufs
@@ -134,14 +127,8 @@ been joined, run the command again to tile the channel buffers.
 
 By default, channel buffers are tiled in alphabetical order.
 Customise `circe-show-channels-priority' to prioritise certain
-channels in the ordering.
-
-If you use eyebrowse, customise
-`circe-show-channels-eyebrowse-window-config-number' to set which
-window config to use for the buffers."
+channels in the ordering."
   (interactive)
-  (when circe-show-channels-eyebrowse-window-config-number
-    (eyebrowse-switch-to-window-config circe-show-channels-eyebrowse-window-config-number))
 
   (let ((current-chat
          (--first (with-current-buffer it

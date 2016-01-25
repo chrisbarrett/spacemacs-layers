@@ -35,6 +35,7 @@
 
 (defconst cb-circe-packages
   '(circe
+    persp-mode
     (circe-notifications :location local)
     (circe-show-channels :location local))
   "The list of Lisp packages required by the cb-circe layer.
@@ -116,17 +117,35 @@ Each entry is either:
 (defun cb-circe/init-circe-notifications ()
   (use-package circe-notifications
     :commands enable-circe-notifications
+    :after circe
     :init
     (add-hook 'circe-server-connected-hook #'enable-circe-notifications)
     :config
     (setq circe-notifications-backend "terminal-notifier")))
 
+(defun cb-circe/post-init-persp-mode ()
+  (defun cb-circe/maybe-refresh-layout ()
+    (when (equal "IRC" (spacemacs//current-layout-name))
+      (circe-show-channels)))
+
+  (add-hook 'circe-mode-hook #'cb-circe/maybe-refresh-layout)
+
+  (spacemacs|define-custom-layout "IRC"
+    :binding "i"
+    :body
+    (circe-show-channels))
+
+  (spacemacs|use-package-add-hook persp-mode
+    :post-config
+    (push (lambda (buf)
+            (with-current-buffer buf (derived-mode-p 'circe-mode)))
+          persp-filter-save-buffers-function)))
+
 (defun cb-circe/init-circe-show-channels ()
   (use-package circe-show-channels
-    :bind ("<f5>" . circe-show-channels)
+    :after circe
+    :commands circe-show-channels
     :config
-    (progn
-      (setq circe-show-channels-eyebrowse-window-config-number 1)
-      (setq circe-show-channels-priority '(("#haskell" . 1))))))
+    (setq circe-show-channels-priority '(("#haskell" . 1)))))
 
 ;;; packages.el ends here
