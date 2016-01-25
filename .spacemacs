@@ -61,9 +61,6 @@ values."
       :variables
       ranger-cleanup-eagerly t)
      restclient
-     (rcirc
-      :variables
-      rcirc-enable-authinfo-support t)
      (scala
       :variables
       scala-enable-eldoc t)
