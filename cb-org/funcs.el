@@ -103,10 +103,7 @@
 (defun cb-org/agenda-dwim ()
   "Show the work agenda view if at work, otherwise the standard agenda."
   (interactive)
-  (if (and (boundp 'org-work--at-work?) org-work--at-work?)
-      (org-agenda current-prefix-arg "w")
-    (org-agenda current-prefix-arg "A"))
-  (delete-other-windows))
+  (org-agenda current-prefix-arg "A"))
 
 
 ;;; Diary utils
