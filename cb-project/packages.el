@@ -80,7 +80,10 @@
 
       (setq projectile-ignored-projects '("/usr/local/"))
       (setq projectile-switch-project-action 'cb-project-show-project/body)
-      (setq projectile-globally-ignored-directories cb-core/ignored-dirs)
+      (setq projectile-globally-ignored-directories cb-vars-ignored-dirs)
+
+      (dolist (suf cb-vars-ignored-extensions)
+        (add-to-list 'projectile-globally-ignored-file-suffixes suf))
 
       (defadvice projectile-invalidate-cache (before recentf-cleanup activate)
         (recentf-cleanup))

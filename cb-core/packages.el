@@ -33,64 +33,6 @@
     (smart-ops :location local)
     (case :location local)))
 
-(defconst cb-core/ignored-files-regexps
-  '("\\.elc$"
-    "\\.pyc$"
-    "TAGS"
-    "\\.gz$"
-    "flycheck_"
-    "\\.DS_Store"
-    "\\.swp"
-    "#$"
-    "^/?sudo"
-    "\\.bbdb"
-    "\\.newsrc"
-    "/gnus$"
-    "/gnus.eld$"
-    "\\.ido\\.last"
-    "\\.org-clock-save\\.el$"))
-
-(defconst cb-core/ignored-dirs
-  '(".idea"
-    "dist"
-    "target"
-    "obj"
-    "build"
-    "log"
-    "logs"
-    "tmp"
-    "temp"
-
-    ".cache"
-    ".g8"
-    "var/folders"
-    "Mail"
-
-    ;; VC
-    ".git"
-    ".hg"
-    ".fslckout"
-    ".bzr"
-    "_darcs"
-    ".tox"
-    ".svn"
-
-    ;; Emacs
-    ".cask"
-    "elpa"
-    "snippets"
-    ".emacs.d/url"
-    "Emacs.app"
-
-    ;; Haskell
-    ".cabal-sandbox"
-    ".stack-work"
-
-    ;; Scala
-    "project/target"
-    "project/project"
-    ".ensime_cache"))
-
 (defun cb-core/user-config ()
   "This procedure should be called in `dotspacemacs/user-config'."
   (setq-default company-minimum-prefix-length 3)
@@ -262,7 +204,7 @@
     :commands (locate-key-binding)))
 
 (defun cb-core/regexp-quoted-ignored-dirs ()
-  (--map (format "/%s/" (regexp-quote it)) cb-core/ignored-dirs))
+  (--map (format "/%s/" (regexp-quote it)) cb-vars-ignored-dirs))
 
 (defun cb-core/post-init-recentf ()
   (setq recentf-save-file (concat spacemacs-cache-directory "recentf"))
@@ -277,17 +219,15 @@
     (setq recentf-exclude
           (-distinct (-concat recentf-exclude
                               (cb-core/regexp-quoted-ignored-dirs)
-                              cb-core/ignored-files-regexps)))
+                              cb-vars-ignored-files-regexps)))
     (recentf-cleanup)))
 
 (defun cb-core/post-init-ido ()
   (setq ido-use-filename-at-point 'guess)
   (add-to-list 'ido-ignore-buffers "\\*helm.*")
   (add-to-list 'ido-ignore-buffers "\\*Minibuf.*")
-  (add-to-list 'ido-ignore-files (rx bos "Icon" control))
-  (add-to-list 'ido-ignore-files "flycheck_")
-  (add-to-list 'ido-ignore-files "\\.swp")
-  (add-to-list 'ido-ignore-files "\\.DS_Store"))
+  (dolist (regexp cb-vars-ignored-files-regexps)
+    (add-to-list 'ido-ignore-files it)))
 
 (defun cb-core/init-cb-buffers ()
   (use-package cb-buffers

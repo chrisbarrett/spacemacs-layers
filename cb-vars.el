@@ -52,6 +52,75 @@
     extempore-mode
     inferior-extempore-mode))
 
+(defconst cb-vars-ignored-extensions
+  '(".elc"
+    ".pyc"
+    ".v.d"
+    ".vo"
+    ".glob"))
+
+(defconst cb-vars-ignored-files-regexps
+  '("\\.elc\\'"
+    "\\`Icon[[:cntrl:]]"
+    "\\.pyc\\'"
+    "\\.vo\\'"
+    "/TAGS\\'"
+    "\\.gz\\'"
+    "/flycheck_"
+    "\\.glob\\'"
+    "\\.v\\.d\\'"
+    "\\.DS_Store"
+    "\\.swp"
+    "#$"
+    "^/?sudo"
+    "\\.bbdb"
+    "\\.newsrc"
+    "/gnus\\'"
+    "/gnus.eld\\'"
+    "\\.ido\\.last"
+    "\\.org-clock-save\\.el\\'"))
+
+(defconst cb-vars-ignored-dirs
+  '(".idea"
+    "dist"
+    "target"
+    "obj"
+    "build"
+    "log"
+    "logs"
+    "tmp"
+    "temp"
+
+    ".cache"
+    ".g8"
+    "var/folders"
+    "Mail"
+
+    ;; VC
+    ".git"
+    ".hg"
+    ".fslckout"
+    ".bzr"
+    "_darcs"
+    ".tox"
+    ".svn"
+
+    ;; Emacs
+    ".cask"
+    "elpa"
+    "snippets"
+    ".emacs.d/url"
+    "Emacs.app"
+
+    ;; Haskell
+    ".cabal-sandbox"
+    ".stack-work"
+
+    ;; Scala
+    "project/target"
+    "project/project"
+    ".ensime_cache"))
+
 (provide 'cb-vars)
 
 ;;; cb-vars.el ends here
