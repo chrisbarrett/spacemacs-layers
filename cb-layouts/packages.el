@@ -65,10 +65,24 @@ Each entry is either:
     :body
     (progn
       (cb-org/show-agenda)
-      (let ((win (split-window-sensibly)))
-        (save-window-excursion
-          (select-window win)
-          (mu4e)))))
+      (let ((win (selected-window)))
+        (select-window (split-window-sensibly))
+        (mu4e)
+        (select-window win))))
+
+  (with-eval-after-load 'mu4e
+    (defun cb-layouts/maybe-bury-mu4e-buffer ()
+      (interactive)
+      (unless (equal (spacemacs//current-layout-name) "Agenda+Mail")
+        (bury-buffer)))
+    (define-key mu4e-main-mode-map (kbd "q") #'cb-layouts/maybe-bury-mu4e-buffer))
+
+  (with-eval-after-load 'org-agenda
+    (defun cb-layouts/maybe-bury-agenda-buffer ()
+      (interactive)
+      (unless (equal (spacemacs//current-layout-name) "Agenda+Mail")
+        (bury-buffer)))
+    (define-key org-agenda-mode-map (kbd "q") #'cb-layouts/maybe-bury-agenda-buffer))
 
   (spacemacs|use-package-add-hook persp-mode
     :post-config

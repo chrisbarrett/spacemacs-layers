@@ -83,9 +83,6 @@
         (kbd "j") 'mu4e-view-headers-next
         (kbd "k") 'mu4e-view-headers-prev)
 
-      ;; Bury mu4e rather than killing it.
-      (define-key mu4e-main-mode-map (kbd "q") 'bury-buffer)
-
       ;; Set variables
 
       (setq mu4e-use-fancy-chars t)
