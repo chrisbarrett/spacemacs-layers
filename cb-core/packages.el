@@ -228,7 +228,7 @@
   (add-to-list 'ido-ignore-buffers "\\*helm.*")
   (add-to-list 'ido-ignore-buffers "\\*Minibuf.*")
   (dolist (regexp cb-vars-ignored-files-regexps)
-    (add-to-list 'ido-ignore-files it)))
+    (add-to-list 'ido-ignore-files regexp)))
 
 (defun cb-core/init-cb-buffers ()
   (use-package cb-buffers
