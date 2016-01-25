@@ -137,6 +137,7 @@
 
 (defun cb-core/init-alert ()
   (use-package alert
+    :defer t
     :config
     (setq alert-default-style 'message)))
 
