@@ -48,19 +48,23 @@
 (defalias 'outline-show-all 'show-all)
 
 (defun cb-org/post-init-org-present ()
-  (setq org-present-text-scale 4)
+  (use-package org-present
+    :after org
+    :config
+    (progn
+      (setq org-present-text-scale 4)
 
-  ;; Disable flyspell during presentations.
-  (defvar-local cb-org/use-flyspell? nil)
-  (defun cb-org/set-use-flyspell () (setq cb-org/use-flyspell? t))
-  (defun cb-org/maybe-reenable-flyspell () (when cb-org/use-flyspell? (flyspell-mode +1)))
+      ;; Disable flyspell during presentations.
+      (defvar-local cb-org/use-flyspell? nil)
+      (defun cb-org/set-use-flyspell () (setq cb-org/use-flyspell? t))
+      (defun cb-org/maybe-reenable-flyspell () (when cb-org/use-flyspell? (flyspell-mode +1)))
 
-  (add-hook 'flyspell-mode-hook #'cb-org/set-use-flyspell)
-  (add-hook 'org-present-mode-hook #'turn-off-flyspell)
-  (add-hook 'org-present-mode-quit-hook #'cb-org/maybe-reenable-flyspell)
+      (add-hook 'flyspell-mode-hook #'cb-org/set-use-flyspell)
+      (add-hook 'org-present-mode-hook #'turn-off-flyspell)
+      (add-hook 'org-present-mode-quit-hook #'cb-org/maybe-reenable-flyspell)
 
-  (add-hook 'org-present-mode-hook #'spacemacs/toggle-mode-line-on)
-  (add-hook 'org-present-mode-quit-hook #'spacemacs/toggle-mode-line-off))
+      (add-hook 'org-present-mode-hook #'spacemacs/toggle-mode-line-on)
+      (add-hook 'org-present-mode-quit-hook #'spacemacs/toggle-mode-line-off))))
 
 (defun cb-org/post-init-org ()
   (defconst cb-org/default-stuck-projects
@@ -294,33 +298,30 @@ Do not scheduled items or repeating todos."
 
 (defun cb-org/init-org-drill-table ()
   (use-package org-drill-table
+    :after org
     :config
     (add-hook 'org-ctrl-c-ctrl-c-hook #'org-drill-table-update)))
 
 (defun cb-org/post-init-gnuplot ()
-  (setq gnuplot-image-format "png")
-  (setq gnuplot-inline-image-mode 'dedicated)
-  (add-hook 'gnuplot-mode-hook #'page-break-lines-mode)
+  (use-package gnuplot
+    :after org
+    :config
+    (progn
+      (setq gnuplot-image-format "png")
+      (setq gnuplot-inline-image-mode 'dedicated)
+      (add-hook 'gnuplot-mode-hook #'page-break-lines-mode)
 
-  (defadvice org-plot/gnuplot (around display-buffer activate)
-    (ignore-errors ad-do-it)
-    (-when-let (buf (get-buffer gnuplot-image-buffer-name))
-      (display-buffer buf))))
-
-
+      (defadvice org-plot/gnuplot (around display-buffer activate)
+        (ignore-errors ad-do-it)
+        (-when-let (buf (get-buffer gnuplot-image-buffer-name))
+          (display-buffer buf))))))
 
 (defun cb-org/init-cb-org-latex-preview-retina ()
-  (use-package cb-org-latex-preview-retina))
+  (use-package cb-org-latex-preview-retina
+    :after org))
 
 (use-package org-agenda
-  :init
-  (progn
-    (defvar org-agenda-customise-window-hook nil
-      "Relay hook for `org-agenda-mode-hook'.  Suitable for setting up the window.")
-
-    (add-hook 'org-agenda-mode-hook
-              (lambda ()
-                (run-hooks 'org-agenda-customise-window-hook))))
+  :after org
   :config
   (progn
     (define-key org-agenda-mode-map (kbd "C-f") 'evil-scroll-page-down)
@@ -428,9 +429,11 @@ Do not scheduled items or repeating todos."
     (add-hook 'org-mode-hook #'turn-off-auto-fill)))
 
 (use-package org-indent
+  :after org
   :diminish org-indent-mode)
 
 (use-package org-archive
+  :after org
   :config
   (progn
 
@@ -450,6 +453,7 @@ Do not scheduled items or repeating todos."
       (org-set-tags-to (org-get-tags-at)))))
 
 (use-package org-table
+  :after org
   :config
   (progn
 
@@ -467,7 +471,7 @@ Do not scheduled items or repeating todos."
     (add-hook 'org-ctrl-c-ctrl-c-hook #'cb-org/recalculate-whole-table)))
 
 (use-package org-src
-  :defer t
+  :after org
   :config
   (progn
     (setq org-src-fontify-natively t)
@@ -484,6 +488,7 @@ Do not scheduled items or repeating todos."
               (lambda () (setq-local require-final-newline nil)))))
 
 (use-package org-clock
+  :after org
   :config
   (progn
 
@@ -551,6 +556,7 @@ Switch projects and subprojects from NEXT back to TODO."
     (add-hook 'org-clock-out-hook #'cb-org/remove-empty-clock-drawers t)))
 
 (use-package org-crypt
+  :after org
   :config
   (progn
 
@@ -578,6 +584,7 @@ Switch projects and subprojects from NEXT back to TODO."
     (add-to-list 'org-tags-exclude-from-inheritance "crypt")))
 
 (use-package org-drill
+  :after org
   :commands (org-drill
              org-drill-strip-all-data
              org-drill-cram
@@ -594,7 +601,7 @@ Switch projects and subprojects from NEXT back to TODO."
       (org-save-all-org-buffers))))
 
 (use-package ox
-  :defer t
+  :after org
   :init
   (setq org-export-backends '(ascii html latex md koma-letter))
   :config
@@ -627,6 +634,7 @@ table tr.tr-even td {
 ")))
 
 (use-package ox-texinfo
+  :after org
   :config
   (progn
 
@@ -675,6 +683,7 @@ exported file's name. The PDF will be created at DEST."
 [PACKAGES]"))))
 
 (use-package org-capture
+  :after org
   :config
   (progn
 
