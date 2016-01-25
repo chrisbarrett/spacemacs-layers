@@ -2,4 +2,4 @@
 # name: define-key
 # key: dk
 # --
-(define-key ${1:keymap} (kbd "${2:key}") '${3:cmd})
+(define-key ${1:keymap} (kbd "${2:key}") #'${3:cmd})
