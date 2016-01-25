@@ -12,7 +12,7 @@
   (require 'use-package nil t)
   (require 'f nil t))
 
-(add-to-list 'load-path (f-join user-layers-directory "cb-proof/local/proofgeneral/generic"))
+(add-to-list 'load-path (f-join user-layers-directory "cb-proof/local/PG/generic"))
 
 (defun cb-proof/init-proof-site ()
   (require 'proof-site)

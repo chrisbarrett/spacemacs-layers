@@ -1,6 +1,3 @@
-[submodule "cb-proof/local/proofgeneral"]
-	path = cb-proof/local/proofgeneral
-	url = https://github.com/emacsattic/proofgeneral.git
 [submodule "cb-core/local/super-smart-ops"]
 	path = cb-core/local/super-smart-ops
 	url = https://github.com/chrisbarrett/super-smart-ops.git
@@ -19,3 +16,6 @@
 [submodule "cb-org-reveal/submodules/reveal.js"]
 	path = cb-org-reveal/submodules/reveal.js
 	url = https://github.com/hakimel/reveal.js.git
+[submodule "cb-proof/local/PG"]
+	path = cb-proof/local/PG
+	url = https://github.com/ProofGeneral/PG.git
