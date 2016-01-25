@@ -713,7 +713,7 @@ exported file's name. The PDF will be created at DEST."
              :clock-keep t)
 
             ("T" "Todo (work)" entry
-             (file+olp org-work-file "Tasks")
+             (file+olp cb-org-work-file "Tasks")
              "* TODO %?"
              :clock-keep t)
 
@@ -724,7 +724,7 @@ exported file's name. The PDF will be created at DEST."
              :clock-keep t)
 
             ("N" "Next Action (work)" entry
-             (file+olp org-work-file "Tasks")
+             (file+olp cb-org-work-file "Tasks")
              "* NEXT %?"
              :clock-keep t)
 
@@ -735,7 +735,7 @@ exported file's name. The PDF will be created at DEST."
              :clock-keep t)
 
             ("D" "Diary (work)" entry
-             (file+datetree org-work-file)
+             (file+datetree cb-org-work-file)
              "* %?\n%^t"
              :clock-keep t)
 
@@ -746,7 +746,7 @@ exported file's name. The PDF will be created at DEST."
              :clock-keep t)
 
             ("L" "Link (work)" entry
-             (file+olp org-work-file "Links")
+             (file+olp cb-org-work-file "Links")
              (function cb-org/read-url-for-capture)
              :immediate-finish t
              :clock-keep t)
