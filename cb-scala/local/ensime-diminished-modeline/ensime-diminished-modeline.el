@@ -21,13 +21,15 @@
 
 ;;; Code:
 
+(require 'ensime)
+
 (defun ensime-diminished--pretty-error-counts (conn)
   (let* ((errors (ensime-num-errors conn))
          (warnings (ensime-num-warnings conn))
          (parts (list (when (plusp errors)
-                        (propertize (format "•%s" errors) 'face 'spacemacs-mode-line-flycheck-error-face))
+                        (propertize (format "•%s" errors) 'face 'flycheck-fringe-error))
                       (when (plusp warnings)
-                        (propertize (format "•%s" warnings) 'face 'spacemacs-mode-line-flycheck-warning-face)))))
+                        (propertize (format "•%s" warnings) 'face 'flycheck-fringe-warning)))))
     (when (plusp (+ errors warnings))
       (concat " " (s-join " " (-non-nil parts))))))
 
@@ -39,7 +41,7 @@
   connection-name, and possibly some state
   information."
     (when ensime-mode
-      (condition-case err
+      (condition-case _
           (let ((conn (ensime-connection-or-nil)))
             (cond ((and ensime-mode (not conn))
                    (cond

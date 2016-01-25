@@ -12,6 +12,9 @@
   (let ((in-dropbox (f-join user-dropbox-directory "org/")))
     (if (f-exists? in-dropbox) in-dropbox "~/org/")))
 
+(defvar cb-org-work-file (f-join org-directory "work.org")
+  "Defines the path to file for work-related todos, etc.")
+
 (defconst cb-org-packages
   '(org
     org-drill-table
@@ -28,7 +31,6 @@
     ox
     ox-texinfo
     org-present
-    (org-work :location local)
     (cb-org-latex-preview-retina :location local)))
 
 ;; HACK: Set aliases for incorrectly-prefixed outline functions required by org.
@@ -305,17 +307,7 @@ Do not scheduled items or repeating todos."
     (-when-let (buf (get-buffer gnuplot-image-buffer-name))
       (display-buffer buf))))
 
-(defun cb-org/init-org-work ()
-  (require 'org-work)
 
-  (defun cb-org/refresh-agenda-when-toggling-work ()
-    "Refresh the agenda when toggling between work states."
-    (when (derived-mode-p 'org-agenda-mode)
-      (cb-org/agenda-dwim)))
-
-  (add-hook 'org-work-state-changed-hook #'cb-org/refresh-agenda-when-toggling-work)
-  (add-hook 'org-mode-hook #'maybe-enable-org-work-mode)
-  (add-hook 'after-init-hook #'org-work-maybe-start-work))
 
 (defun cb-org/init-cb-org-latex-preview-retina ()
   (use-package cb-org-latex-preview-retina))

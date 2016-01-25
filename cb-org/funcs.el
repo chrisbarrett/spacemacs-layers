@@ -37,7 +37,7 @@
 
 (defun cb-org/goto-work ()
   (interactive)
-  (find-file org-work-file))
+  (find-file cb-org-work-file))
 
 (defun cb-org/todo-list ()
   "Show the todo list."
