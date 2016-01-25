@@ -29,9 +29,7 @@
 
 (require 's)
 (require 'dash)
-
-(eval-when-compile
-  (require 'yasnippet nil t))
+(require 'yasnippet)
 
 (defun yas/bol? ()
   "Non-nil if point is on an empty line or at the first word.
