@@ -2,11 +2,10 @@
 ;;; Commentary:
 ;;; Code:
 
-(eval-when-compile
-  (require 'use-package nil t)
-  (require 'dash nil t)
-  (require 'hydra nil t)
-  (require 's nil t))
+(require 'dash)
+(require 'hydra nil t)
+(require 's)
+(require 'use-package)
 
 (defconst cb-project-packages
   '(skeletor
@@ -44,8 +43,8 @@
               (find-file-other-window file)
             (find-file file))))
 
-      (spacemacs/set-leader-keys "pa" 'cb-projectile-toggle-between-implementation-and-test)
-      (spacemacs/set-leader-keys "pt" 'projectile-test-project)
+      (spacemacs/set-leader-keys "pa" #'cb-projectile-toggle-between-implementation-and-test)
+      (spacemacs/set-leader-keys "pt" #'projectile-test-project)
 
       ;;; Use a hydra picker for actions when switching project.
       ;;;
@@ -58,9 +57,10 @@
       (defun cb-project/set-project-to-switch ()
         (setq cb-project/project-to-switch default-directory))
 
-      (add-hook 'projectile-before-switch-project-hook 'cb-project/set-project-to-switch)
+      (add-hook 'projectile-before-switch-project-hook #'cb-project/set-project-to-switch)
 
       (defmacro cb-project/with-project-as-default-directory (&rest body)
+        "Bind the project to navigate to as the `default-directory'. Also bind the variable `it' to that dir."
         (declare (indent 0))
         `(let* ((default-directory cb-project/project-to-switch)
                 (it default-directory))
@@ -79,22 +79,15 @@
       ;;; Vars
 
       (setq projectile-ignored-projects '("/usr/local/"))
-      (setq projectile-switch-project-action 'cb-project-show-project/body)
+      (setq projectile-switch-project-action #'cb-project-show-project/body)
       (setq projectile-globally-ignored-directories cb-vars-ignored-dirs)
 
       (dolist (suf cb-vars-ignored-extensions)
         (add-to-list 'projectile-globally-ignored-file-suffixes suf))
 
-      (defadvice projectile-invalidate-cache (before recentf-cleanup activate)
-        (recentf-cleanup))
 
-      ;; Advice
-
-      (defadvice projectile-cache-current-file (around ignore-errors activate)
-        (ignore-errors ad-do-it))
-
-      (defadvice projectile-replace (around save-window-excursion activate)
-        (save-window-excursion ad-do-it))
+      (defun cb-project--recentf-cleanup (_ &rest _) (recentf-cleanup))
+      (advice-add #'projectile-invalidate-cache :before #'cb-project--recentf-cleanup)
 
       ;;; HACK: fix duplicates in projectile projects list on OS X.
 
@@ -158,7 +151,7 @@
           )))
     :config
     (progn
-      (setq skeletor-show-project-command 'magit-status)
+      (setq skeletor-show-project-command #'magit-status)
       (setq skeletor-scala-use-ensime t)
       (setq skeletor-user-directory (f-join user-layers-directory "cb-project/project-skeletons"))
 
