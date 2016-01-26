@@ -198,6 +198,12 @@ is a Common Lisp arglist."
       (f-filename (f-no-ext file))
     ""))
 
+(defun yas/at-line-above-decl? ()
+  (save-excursion
+    (forward-line)
+    (back-to-indentation)
+    (thing-at-point-looking-at (rx (* space) "(" (or "cl-defun" "defun" "defvar" "defconst")))))
+
 
 ;;; Editing commands
 

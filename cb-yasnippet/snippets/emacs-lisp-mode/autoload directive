@@ -2,6 +2,6 @@
 # name: autoload directive
 # key: al
 # binding: direct-keybinding
-# condition: (yas/bol?)
+# condition: (and (yas/bol?) (yas/at-line-above-decl?))
 # --
 ;;;###autoload

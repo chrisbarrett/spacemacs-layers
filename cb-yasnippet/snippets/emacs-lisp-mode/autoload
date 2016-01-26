@@ -2,6 +2,6 @@
 # name: autoload
 # key: al
 # binding: direct-keybinding
-# condition: (yas/bol?)
+# condition: (and (yas/bol?) (not (yas/at-line-above-decl?)))
 # --
 (autoload '${1:ident} "${1:$(yas/autoload-file-for-function yas/text)}")
