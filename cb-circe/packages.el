@@ -30,8 +30,8 @@
 
 ;;; Code:
 
-(eval-when-compile
-  (require 'use-package nil t))
+(require 'use-package)
+(require 'dash)
 
 (defconst cb-circe-packages
   '(circe
@@ -83,6 +83,20 @@ Each entry is either:
       (setq circe-format-self-say (concat (propertize ">>>" 'face 'cb-circe-self-say-face) " {body}"))
       (setq circe-prompt-string (concat (propertize ">>>" 'face 'circe-prompt-face) " "))
       (setq circe-highlight-nick-type 'all)
+
+      ;; Show channel name in prompt.
+
+      (defun cb-circe/bufname-to-channame (s)
+        (-let* (((_ gitter-fmt) (s-match (rx (+ nonl) "/" (group (+ nonl)) eos) s))
+                ((_ standard-fmt) (s-match (rx "#" (group (+ nonl)) eos) s)))
+          (or gitter-fmt standard-fmt)))
+
+      (defun cb-circe/set-prompt ()
+        (let* ((chan (cb-circe/bufname-to-channame (buffer-name)))
+               (prompt (concat (propertize (concat chan ">>>") 'face 'circe-prompt-face) " ")))
+          (lui-set-prompt prompt)))
+
+      (add-hook 'circe-chat-mode-hook #'cb-circe/set-prompt)
 
       ;; Timestamps in margins.
 
