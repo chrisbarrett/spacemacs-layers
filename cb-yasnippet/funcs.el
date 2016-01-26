@@ -6,6 +6,7 @@
 (require 'dash-functional)
 (require 'f)
 (require 's)
+(require 'thingatpt)
 
 (autoload 'yas--all-templates "yasnippet")
 (autoload 'yas--field-contains-point-p "yasnippet")
