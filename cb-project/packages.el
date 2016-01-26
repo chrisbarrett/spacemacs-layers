@@ -66,7 +66,7 @@
                 (it default-directory))
            ,@body))
 
-      (defhydra cb-project-show-project (:color blue)
+      (defhydra cb-project-show-project (:color amaranth)
         "Execute in project"
         ("/" (cb-project/with-project-as-default-directory (helm-projectile-ag)) "ag")
         ("d" (cb-project/with-project-as-default-directory (dired it)) "dired")
