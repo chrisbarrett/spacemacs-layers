@@ -14,7 +14,8 @@
     helm-projectile
     ag
     helm-ag
-    neotree))
+    neotree
+    (cb-project-show-project :location local)))
 
 (defun cb-project/user-config ()
   (setq projectile-completion-system 'helm)
@@ -46,45 +47,13 @@
       (spacemacs/set-leader-keys "pa" #'cb-projectile-toggle-between-implementation-and-test)
       (spacemacs/set-leader-keys "pt" #'projectile-test-project)
 
-      ;;; Use a hydra picker for actions when switching project.
-      ;;;
-      ;;; HACK: Define utilities and a macro to rebind `default-directory' for
-      ;;; hydra commands. This is needed for those commands to operate in the
-      ;;; project being switched to.
-
-      (defvar cb-project/project-to-switch)
-
-      (defun cb-project/set-project-to-switch ()
-        (setq cb-project/project-to-switch default-directory))
-
-      (add-hook 'projectile-before-switch-project-hook #'cb-project/set-project-to-switch)
-
-      (defmacro cb-project/with-project-as-default-directory (&rest body)
-        "Bind the project to navigate to as the `default-directory'. Also bind the variable `it' to that dir."
-        (declare (indent 0))
-        `(let* ((default-directory cb-project/project-to-switch)
-                (it default-directory))
-           ,@body))
-
-      (defhydra cb-project-show-project (:color amaranth)
-        "Execute in project"
-        ("/" (cb-project/with-project-as-default-directory (helm-projectile-ag)) "ag")
-        ("d" (cb-project/with-project-as-default-directory (dired it)) "dired")
-        ("e" (cb-project/with-project-as-default-directory (cb-eshell--new)) "eshell")
-        ("f" (cb-project/with-project-as-default-directory (projectile-find-file)) "find file")
-        ("g" (cb-project/with-project-as-default-directory (magit-status it)) "magit status")
-        ("S" (cb-project/with-project-as-default-directory (sbt it)) "SBT")
-        ("q" nil "cancel"))
-
       ;;; Vars
 
       (setq projectile-ignored-projects '("/usr/local/"))
-      (setq projectile-switch-project-action #'cb-project-show-project/body)
       (setq projectile-globally-ignored-directories cb-vars-ignored-dirs)
 
       (dolist (suf cb-vars-ignored-extensions)
         (add-to-list 'projectile-globally-ignored-file-suffixes suf))
-
 
       (defun cb-project--recentf-cleanup (_ &rest _) (recentf-cleanup))
       (advice-add #'projectile-invalidate-cache :before #'cb-project--recentf-cleanup)
@@ -197,3 +166,9 @@
     (core/remap-face 'neo-dir-link-face 'default)
     (set-face-foreground neo-file-link-face solarized-hl-orange)
     (set-face-foreground neo-root-dir-face solarized-hl-blue)))
+(defun cb-project/init-cb-project-show-project ()
+  (use-package cb-project-show-project
+    :after projectile
+    :config (cb-project-show-project-init)))
+
+;;; packages.el ends here
