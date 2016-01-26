@@ -5,6 +5,7 @@
 (require 'dash)
 (require 'hydra nil t)
 (require 's)
+(require 'f)
 (require 'use-package)
 
 (defconst cb-project-packages
@@ -19,10 +20,12 @@
 
 (defun cb-project/user-config ()
   (setq projectile-completion-system 'helm)
-  (projectile-cleanup-known-projects))
+  (with-eval-after-load 'projectile
+    (projectile-cleanup-known-projects)))
 
 (defun cb-project/post-init-recentf ()
-  (with-eval-after-load 'recentf
+  (use-package recentf
+    :config
     (setq recentf-exclude (-union recentf-exclude (cb-core/regexp-quoted-ignored-dirs)))))
 
 (defun cb-project/post-init-projectile ()
@@ -88,15 +91,21 @@
 
 (defun cb-project/post-init-helm-projectile ()
   (use-package helm-projectile
+    :after projectile
     :bind
     (("s-t" . helm-projectile))))
 
 (defun cb-project/post-init-ag ()
-  (with-eval-after-load 'ag
+  (use-package ag
+    :after projectile
+    :config
     (setq ag-ignore-list (-union ag-ignore-list (cb-core/regexp-quoted-ignored-dirs)))))
 
 (defun cb-project/post-init-helm-ag ()
-  (setq helm-ag-insert-at-point 'symbol))
+  (use-package helm-ag
+    :after projectile
+    :config
+    (setq helm-ag-insert-at-point 'symbol)))
 
 (defun cb-project/init-skeletor ()
   (use-package skeletor
@@ -162,10 +171,14 @@
             (sbt-gen-ensime dir)))))))
 
 (defun cb-project/post-init-neotree ()
-  (with-eval-after-load 'neotree
-    (core/remap-face 'neo-dir-link-face 'default)
-    (set-face-foreground neo-file-link-face solarized-hl-orange)
-    (set-face-foreground neo-root-dir-face solarized-hl-blue)))
+  (use-package neotree
+    :defer t
+    :config
+    (progn
+      (core/remap-face 'neo-dir-link-face 'default)
+      (set-face-foreground neo-file-link-face solarized-hl-orange)
+      (set-face-foreground neo-root-dir-face solarized-hl-blue))))
+
 (defun cb-project/init-cb-project-show-project ()
   (use-package cb-project-show-project
     :after projectile
