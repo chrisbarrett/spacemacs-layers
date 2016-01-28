@@ -45,7 +45,7 @@
   :type '(list string))
 
 (defcustom cb-buffers-kill-buffer-ignored-modes
-  '(circe-mode)
+  '(circe-mode org-agenda-mode)
   "List of modes whose buffers should be buried and not killed."
   :group 'cb-buffers
   :type '(list symbol))
