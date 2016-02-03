@@ -10,7 +10,7 @@ which require an initialization must be listed explicitly in the list.")
 
 (defun cb-ledger/user-config ()
   ;; Set this keybinding late so that Spacemacs does not clobber it.
-  (spacemacs/set-leader-keys "o$" 'ledger/goto-ledger-file))
+  (spacemacs/set-leader-keys "o$" #'cb-ledger-goto-ledger-file))
 
 (eval-when-compile
   (require 'use-package nil t))
@@ -78,12 +78,12 @@ which require an initialization must be listed explicitly in the list.")
 
       ;;; Keybindings
 
-      (define-key ledger-mode-map (kbd "C-c C-c") 'ledger-report)
-      (define-key ledger-mode-map (kbd "M-RET")   'ledger-toggle-current-transaction)
-      (define-key ledger-mode-map (kbd "M-q")     'ledger/format-buffer)
-      (define-key ledger-mode-map (kbd "C-c C-.") 'ledger/insert-timestamp)
+      (define-key ledger-mode-map (kbd "C-c C-c") #'ledger-report)
+      (define-key ledger-mode-map (kbd "M-RET")   #'ledger-toggle-current-transaction)
+      (define-key ledger-mode-map (kbd "M-q")     #'cb-ledger-format-buffer)
+      (define-key ledger-mode-map (kbd "C-c C-.") #'cb-ledger-insert-timestamp)
 
-      (evil-define-key 'normal ledger-report-mode-map (kbd "q") 'kill-buffer-and-window))))
+      (evil-define-key 'normal ledger-report-mode-map (kbd "q") #'kill-buffer-and-window))))
 
 (defun cb-ledger/init-cb-ledger-reports ()
   (use-package cb-ledger-reports
