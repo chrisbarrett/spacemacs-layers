@@ -93,7 +93,7 @@ Each entry is either:
 
       (defun cb-circe/set-prompt ()
         (let* ((chan (cb-circe/bufname-to-channame (buffer-name)))
-               (prompt (concat (propertize (concat chan ">>>") 'face 'circe-prompt-face) " ")))
+               (prompt (concat "#" (propertize chan 'face 'circe-prompt-face) " > ")))
           (lui-set-prompt prompt)))
 
       (add-hook 'circe-chat-mode-hook #'cb-circe/set-prompt)
@@ -143,6 +143,7 @@ Each entry is either:
       (circe-show-channels)))
 
   (add-hook 'circe-channel-mode-hook #'cb-circe/maybe-refresh-layout)
+  (add-hook 'persp-activated-hook #'cb-circe/maybe-refresh-layout)
 
   (spacemacs|define-custom-layout "IRC"
     :binding "i"
@@ -160,6 +161,9 @@ Each entry is either:
     :after circe
     :commands circe-show-channels
     :config
-    (setq circe-show-channels-priority '(("#haskell" . 1)))))
+    (progn
+      (setq circe-show-channels-priority '(("#haskell" . 1)))
+      (with-eval-after-load 'circe
+        (define-key circe-mode-map (kbd "C-c C-s") #'circe-show-channels)))))
 
 ;;; packages.el ends here
