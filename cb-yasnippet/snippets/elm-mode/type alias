@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: type alias
+# key: ta
+# --
+type alias $0

@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: case
+# key: c
+# --
+case $0 of
