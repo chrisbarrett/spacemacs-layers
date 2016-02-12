@@ -119,7 +119,10 @@
     ;; Scala
     "project/target"
     "project/project"
-    ".ensime_cache"))
+    ".ensime_cache"
+
+    ;; Elm
+    "elm-stuff"))
 
 (provide 'cb-vars)
 
