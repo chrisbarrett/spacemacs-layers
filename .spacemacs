@@ -53,7 +53,7 @@ values."
       ibuffer-group-buffers-by nil)
      (latex
       :variables
-      latex-enable-auto-fill t)
+      latex-enable-auto-fill nil)
      markdown
      ocaml
      org
