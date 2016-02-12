@@ -107,8 +107,8 @@
     (yas-expand-snippet "${1:pat} -> $0")
     (message "New pattern match case"))
    ((s-matches? (rx bol (* space) "case" (+ space)) (cb-buffers-current-line))
-    (newline-and-indent)
-    (yas-expand-snippet "${1:pat} -> $0")
+    (elm-meta-ret--newline-indent-to-same-col)
+    (yas-expand-snippet "  ${1:pat} -> $0")
     (message "New pattern match case"))
 
    ;; Insert new line starting with a comma for the current braced expr
