@@ -34,6 +34,7 @@ values."
       :variables
       clojure-enable-fancify-symbols t)
      dockerfile
+     elm
      emacs-lisp
      eyebrowse
      finance
@@ -88,6 +89,7 @@ values."
      cb-dash-docs
      cb-diff
      cb-elisp
+     cb-elm
      cb-eshell
      cb-evil
      ;; cb-extempore
