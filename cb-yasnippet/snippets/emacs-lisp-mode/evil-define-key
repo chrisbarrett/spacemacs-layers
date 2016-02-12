@@ -4,4 +4,4 @@
 # binding: direct-keybinding
 # condition: (yas/bol?)
 # --
-(evil-define-key '${1:state} ${2:keymap} (kbd "${3:key}") '${4:cmd})
+(evil-define-key '${1:state} ${2:keymap} (kbd "${3:key}") #'${4:cmd})
