@@ -2,16 +2,8 @@
 # name: scalatest class (WordSpec)
 # condition: (yas/bol?)
 # --
-import org.scalatest.{ WordSpec, Matchers }
+import org.scalatest.{ Inspectors, Matchers, WordSpec }
 
-trait ${1:$$(scala-yasnippet-test-fixture-name)} extends WordSpec with Matchers
-
-class ${2:Name} extends $1 {
-  "Foo" when {
-    "bar" should {
-      "baz" in {
-        pending
-      }
-    }
-  }
+class ${1:$$(scala-yasnippet-test-fixture-name)} extends WordSpec with Matchers with Inspectors {
+  $0
 }

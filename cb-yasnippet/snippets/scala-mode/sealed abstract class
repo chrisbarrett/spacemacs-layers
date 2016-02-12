@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: sealed abstract class
+# key: sac
+# --
+sealed abstract class $0
