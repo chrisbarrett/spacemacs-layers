@@ -69,7 +69,7 @@ The rest of the line must be blank."
 ;;; Test fixtures
 
 (defun scala-yasnippet-test-fixture-name ()
-  (or (ignore-errors (s-replace "Tests" "Test" (f-filename (f-no-ext (buffer-file-name)))))
+  (or (ignore-errors (f-filename (f-no-ext (buffer-file-name))))
       "TestFixture"))
 
 (provide 'scala-yasnippet)
