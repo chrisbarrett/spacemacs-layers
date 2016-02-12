@@ -87,7 +87,15 @@
 
 (defun cb-elisp/post-init-smart-ops ()
   (define-smart-ops-for-mode 'emacs-lisp-mode
-    (smart-ops "." ",@" "," :pad-before t :pad-after nil)))
+    (smart-ops "`" "," ",@"
+               :pad-before t
+               :pad-after nil
+               :pad-unless (smart-ops-after-match? (rx (any ",{[(") eos)))
+    (smart-ops "."
+               :pad-before t
+               :pad-after t
+               :pad-unless
+               (smart-ops-after-match? (rx digit eos)))))
 
 (defun cb-elisp/init-checkdoc ()
   (setq checkdoc-force-docstrings-flag nil)
