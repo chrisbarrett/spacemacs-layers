@@ -120,9 +120,9 @@ Each entry is either:
     :config
     (sp-with-modes '(elm-mode elm-interactive-mode)
       (sp-local-pair "\"" "\"" :post-handlers '(:add sp/external-padding))
-      (sp-local-pair "{" "}" :post-handlers '(:add sp/external-padding))
+      (sp-local-pair "{" "}" :post-handlers '(:add sp/internal-and-external-padding))
       (sp-local-pair "(" ")" :post-handlers '(:add sp/external-padding))
-      (sp-local-pair "[" "]" :post-handlers '(:add sp/external-padding))
+      (sp-local-pair "[" "]" :post-handlers '(:add sp/internal-and-external-padding))
       (sp-local-pair "`" "`" :post-handlers '(:add sp/external-padding))
       (sp-local-pair "'" "'" :actions '(:rem insert)))))
 
