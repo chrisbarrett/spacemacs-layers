@@ -78,7 +78,12 @@
     "/gnus\\'"
     "/gnus.eld\\'"
     "\\.ido\\.last"
-    "\\.org-clock-save\\.el\\'"))
+    "\\.org-clock-save\\.el\\'"
+
+    ;; Elm
+    ".*/elm-stuff/.*"
+    "\\.elmi\\'"
+    "\\.elmo\\'"))
 
 (defconst cb-vars-ignored-dirs
   '(".idea"
@@ -122,7 +127,7 @@
     ".ensime_cache"
 
     ;; Elm
-    "elm-stuff"))
+    ".*/elm-stuff"))
 
 (provide 'cb-vars)
 
