@@ -42,6 +42,7 @@
     elm-mode
     smart-ops
     smartparens
+    (elm-insert-exposing :location local)
     (elm-meta-ret :location local))
   "The list of Lisp packages required by the cb-elm layer.
 
@@ -125,6 +126,12 @@ Each entry is either:
       (sp-local-pair "[" "]" :post-handlers '(:add sp/internal-and-external-padding))
       (sp-local-pair "`" "`" :post-handlers '(:add sp/external-padding))
       (sp-local-pair "'" "'" :actions '(:rem insert)))))
+
+(defun cb-elm/init-elm-insert-exposing ()
+  (use-package elm-insert-exposing
+    :commands elm-insert-exposing-init
+    :config
+    (add-hook 'elm-mode-hook #'elm-insert-exposing-init)))
 
 (defun cb-elm/init-elm-meta-ret ()
   (use-package elm-meta-ret
