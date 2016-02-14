@@ -6,10 +6,7 @@
 # expand-env: ((yas-indent-line 'fixed) (yas-wrap-around-region 't))
 # --
 (defun `(yas/find-prefix-for-use-package)`/init-${1:package-name} ()
-  (use-package $1${2:
-    :diminish ${3:mode}}${4:
-    :commands ${5:cmds}}${6:
-    :init nil}
+  (use-package $1
     :config
     (progn
       $0

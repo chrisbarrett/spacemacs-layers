@@ -1,0 +1,12 @@
+# -*- mode: snippet -*-
+# name: define package post-init
+# key: pi
+# condition: (yas/bol?)
+# expand-env: ((yas-indent-line 'fixed) (yas-wrap-around-region 't))
+# --
+(defun `(yas/find-prefix-for-use-package)`/post-init-${1:package-name} ()
+  (use-package $1
+    :config
+    (progn
+      $0
+      )))
