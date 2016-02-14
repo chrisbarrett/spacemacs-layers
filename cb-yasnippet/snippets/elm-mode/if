@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: if
+# key: i
+# expand-env: ((yas-indent-line 'fixed) (yas-wrap-around-region 't))
+# --
+if $0
+  then
+  else
