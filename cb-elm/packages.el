@@ -37,7 +37,8 @@
 (autoload 'evil-define-key "evil-core")
 
 (defconst cb-elm-packages
-  '(aggressive-indent
+  '(autoinsert
+    aggressive-indent
     elm-mode
     smart-ops
     smartparens
@@ -68,6 +69,24 @@ Each entry is either:
 
       - A list beginning with the symbol `recipe' is a melpa
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
+
+(defun cb-elm/post-init-autoinsert ()
+  (use-package autoinsert
+    :config
+    (add-to-list 'auto-insert-alist
+                 '(("\\.elm\\'" . "Elm Src File")
+                   nil
+                   "module " (s-upper-camel-case (file-name-base)) " where" "\n"
+                   "\n"
+                   _
+                   "\n"
+                   "-- Model\n"
+                   "\n"
+                   "-- Update\n"
+                   "\n"
+                   "-- View\n"
+                   "\n"
+                   ))))
 
 (defun cb-elm/post-init-aggressive-indent ()
   (use-package aggressive-indent
