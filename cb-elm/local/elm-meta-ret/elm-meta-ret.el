@@ -21,7 +21,7 @@
 
 ;;; Code:
 
-(require 'elm-mode nil t)
+(require 'elm-mode)
 
 (autoload 'cb-buffers-current-line "cb-buffers")
 (autoload 'evil-insert-state "evil-states")
@@ -53,6 +53,24 @@
   (car (-difference (s-split (rx space) (cb-buffers-current-line) t)
                     elm--keywords)))
 
+(defun elm-meta-ret--at-incomplete-type-decl-header? ()
+  (let ((cur-line (cb-buffers-current-line))
+        (prev-line (save-excursion
+                     (forward-line -1)
+                     (cb-buffers-current-line)))
+        (decl-rx (rx bol (* space) "type" (+ space) (+ alnum))))
+    (or (s-matches? decl-rx cur-line)
+        (s-matches? decl-rx prev-line))))
+
+(defun elm-meta-ret--after-complete-type-decl-header? ()
+  (let ((cur-line (cb-buffers-current-line))
+        (prev-line (save-excursion
+                     (forward-line -1)
+                     (cb-buffers-current-line)))
+        (decl-rx (rx bol (* space) "type" (+ space) (+ alnum) (? eol) (* space) "=")))
+    (or (s-matches? decl-rx cur-line)
+        (s-matches? decl-rx prev-line))))
+
 ;;;###autoload
 (defun elm-meta-ret ()
   "Open a new line in a context-sensitive way."
@@ -66,7 +84,7 @@
     (message "New import"))
 
    ;; Insert new case below the current type decl.
-   ((s-matches? (rx bol (* space) "type" (+ space)) (cb-buffers-current-line))
+   ((elm-meta-ret--after-complete-type-decl-header?)
     (goto-char (line-end-position))
     (newline)
     (insert "| ")
@@ -74,6 +92,16 @@
     (elm-indent-cycle)
     (goto-char (line-end-position))
     (message "New data case"))
+
+   ;; Insert '=' for incomplete type decls.
+   ((elm-meta-ret--at-incomplete-type-decl-header?)
+    (goto-char (line-end-position))
+    (newline)
+    (insert "= ")
+    (goto-char (line-beginning-position))
+    (elm-indent-cycle)
+    (goto-char (line-end-position))
+    (message "Completing type decl"))
 
    ;; Insert new type decl case below the current one.
    ((s-matches? (rx bol (* space) "|") (cb-buffers-current-line))
