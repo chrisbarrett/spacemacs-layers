@@ -48,7 +48,13 @@
       (define-key scala-mode-map (kbd "C-c C-e") #'scala/insert-extends))))
 
 (defun cb-scala/post-init-ensime ()
-  (add-hook 'scala-mode-hook #'scala/maybe-start-ensime)
+
+  (defun scala/configure-ensime ()
+    "Ensure the file exists before starting `ensime-mode'."
+    (unless (f-ext? (buffer-file-name) "sbt")
+      (ensime-mode +1)))
+
+  (add-hook 'scala-mode-hook #'scala/configure-ensime)
   (add-hook 'ensime-mode-hook #'cb-core/turn-off-aggressive-indent-mode)
 
   (setq ensime-auto-generate-config t)
