@@ -119,6 +119,26 @@ See `ensime-goto-test-config-defaults' for possible template values.")
     (evil-define-key 'normal ensime-mode-map (kbd "M-P") 'ensime-backward-note)
     (evil-define-key 'normal ensime-mode-map (kbd "RET") 'ensime-inspect-type-at-point))
 
+  ;; HACK: Prevent ensime from clobbering company settings.
+  (with-eval-after-load 'ensime-company
+    (defun ensime-company-enable ()
+      (set (make-local-variable 'company-backends) '(ensime-company))
+      (company-mode)
+      (yas-minor-mode-on)
+      (set (make-local-variable 'company-idle-delay) 0)))
+
+  ;; HACK: Fix errors with ensime eldoc function.
+  (with-eval-after-load 'ensime-inspector
+    (defun ensime-type-at-point (&optional arg)
+      "Echo the type at point to the minibuffer.
+A prefix argument will add the type to the kill ring."
+      (interactive "P")
+      (let* ((type (ensime-rpc-get-type-at-point))
+             (fullname (ensime-type-full-name-with-args type)))
+        (when arg
+          (kill-new fullname))
+        (message fullname))))
+
   (spacemacs/set-leader-keys-for-major-mode 'scala-mode "ii" 'ensime-import-type-at-point))
 
 (defun cb-scala/post-init-sbt-mode ()

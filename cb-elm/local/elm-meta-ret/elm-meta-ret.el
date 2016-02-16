@@ -54,22 +54,19 @@
                     elm--keywords)))
 
 (defun elm-meta-ret--at-incomplete-type-decl-header? ()
-  (let ((cur-line (cb-buffers-current-line))
-        (prev-line (save-excursion
-                     (forward-line -1)
-                     (cb-buffers-current-line)))
+  (let ((from-prev-line (save-excursion
+                          (forward-line -1)
+                          (buffer-substring (line-beginning-position) (point-max))))
         (decl-rx (rx bol (* space) "type" (+ space) (+ alnum))))
-    (or (s-matches? decl-rx cur-line)
-        (s-matches? decl-rx prev-line))))
+    (and (s-matches? decl-rx from-prev-line)
+         (not (elm-meta-ret--after-complete-type-decl-header?)))))
 
 (defun elm-meta-ret--after-complete-type-decl-header? ()
-  (let ((cur-line (cb-buffers-current-line))
-        (prev-line (save-excursion
-                     (forward-line -1)
-                     (cb-buffers-current-line)))
+  (let ((from-prev-line (save-excursion
+                          (forward-line -1)
+                          (buffer-substring (line-beginning-position) (point-max))))
         (decl-rx (rx bol (* space) "type" (+ space) (+ alnum) (? eol) (* space) "=")))
-    (or (s-matches? decl-rx cur-line)
-        (s-matches? decl-rx prev-line))))
+    (s-matches? decl-rx from-prev-line)))
 
 ;;;###autoload
 (defun elm-meta-ret ()
