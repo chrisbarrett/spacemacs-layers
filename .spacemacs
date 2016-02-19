@@ -312,9 +312,9 @@ values."
    ))
 
 (defun dotspacemacs/user-init ()
-  It is called immediately after `dotspacemacs/init'.  You are free to put almost
-  any user code here.  The exception is org related code, which should be placed
-  in `dotspacemacs/user-config'."
+  "It is called immediately after `dotspacemacs/init'.  You are free to put almost
+any user code here.  The exception is org related code, which should be placed
+in `dotspacemacs/user-config'."
   (cb-bootstrap/enable-debugging)
   (cb-bootstrap/initialize-packages)
   (cb-bootstrap/initialize-exec-path)
