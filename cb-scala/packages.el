@@ -198,6 +198,7 @@ A prefix argument will add the type to the kill ring."
                      (smart-ops "???" "?" "=" "==" "+" "-" "*" "/" "<" ">" "|" "$" "&" "%" "!" "~")
                      (smart-ops ":" "," :pad-before nil)
                      (smart-ops "@" :pad-after nil)
+                     (smart-ops ":=")
 
                      ;; Inserting this op means you're probably editing a
                      ;; function return type. Pad internally and move point
@@ -223,12 +224,20 @@ A prefix argument will add the type to the kill ring."
                                   (save-excursion
                                     (search-backward "_")
                                     (just-one-space))))
+                     (smart-ops ":=>"
+                                :pad-before nil
+                                :action
+                                (lambda (&rest _)
+                                  (save-excursion
+                                    (search-backward "=")
+                                    (just-one-space))))
                      (smart-ops "_=>"
                                 :action
                                 (lambda (&rest _)
                                   (save-excursion
                                     (search-backward "=")
                                     (just-one-space))))
+
 
                      ;; Prevent above smart ops from breaking underscores in
                      ;; symbols.
