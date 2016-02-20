@@ -231,30 +231,30 @@
     (progn
       ;; FIX: Ensure Smartparens functions do not trigger indentation as a side-effect.
 
-      (defmacro cb-haskell/sp-advise-to-preserve-indent-level (fname)
-        `(defadvice ,fname (around preserve-indentation activate)
-           (if (derived-mode-p 'haskell-mode)
-               (let ((col (current-indentation)))
-                 (atomic-change-group
-                   ad-do-it
-                   (save-excursion
-                     (goto-char (line-beginning-position))
-                     (delete-horizontal-space)
-                     (indent-to col))))
-             ad-do-it)))
+      (defun cb-haskell/hacky-sp-preserve-indent-level (original-fn &rest args)
+        (if (derived-mode-p 'haskell-mode)
+            (let ((col (current-indentation)))
+              (atomic-change-group
+                (apply original-fn args)
+                (save-excursion
+                  (goto-char (line-beginning-position))
+                  (delete-horizontal-space)
+                  (indent-to col))))
+          (apply original-fn args)))
 
-      (cb-haskell/sp-advise-to-preserve-indent-level sp-kill-sexp)
-      (cb-haskell/sp-advise-to-preserve-indent-level sp-unwrap-sexp)
-      (cb-haskell/sp-advise-to-preserve-indent-level sp-forward-slurp-sexp)
-      (cb-haskell/sp-advise-to-preserve-indent-level sp-backward-slurp-sexp)
-      (cb-haskell/sp-advise-to-preserve-indent-level sp-forward-barf-sexp)
-      (cb-haskell/sp-advise-to-preserve-indent-level sp-backward-barf-sexp)
-      (cb-haskell/sp-advise-to-preserve-indent-level sp-join-sexp)
-      (cb-haskell/sp-advise-to-preserve-indent-level sp-absorb-sexp)
-      (cb-haskell/sp-advise-to-preserve-indent-level sp-splice-sexp)
-      (cb-haskell/sp-advise-to-preserve-indent-level sp-splice-sexp-killing-around)
-      (cb-haskell/sp-advise-to-preserve-indent-level sp-splice-sexp-killing-forward)
-      (cb-haskell/sp-advise-to-preserve-indent-level sp-splice-sexp-killing-backward))))
+      (dolist (fn '(sp-kill-sexp
+                    sp-unwrap-sexp
+                    sp-forward-slurp-sexp
+                    sp-backward-slurp-sexp
+                    sp-forward-barf-sexp
+                    sp-backward-barf-sexp
+                    sp-join-sexp
+                    sp-absorb-sexp
+                    sp-splice-sexp
+                    sp-splice-sexp-killing-around
+                    sp-splice-sexp-killing-forward
+                    sp-splice-sexp-killing-backward))
+        (advice-add fn :around #'cb-haskell/hacky-sp-preserve-indent-level)))))
 
 (defun cb-haskell/post-init-smart-ops ()
   (defun cb-haskell/reformat-comment-at-point ()
