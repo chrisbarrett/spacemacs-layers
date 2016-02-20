@@ -115,10 +115,6 @@
 
   (add-hook 'haskell-mode-hook #'cb-haskell/maybe-haskell-interactive-mode)
 
-  (custom-set-faces
-   '(haskell-operator-face
-     ((t :italic nil))))
-
   (defun cb-haskell/set-local-hooks ()
     (setq evil-shift-width 4)
     (setq tab-width 4))
@@ -127,6 +123,15 @@
   (add-hook 'haskell-mode-hook #'cb-haskell/set-local-hooks)
   (add-hook 'haskell-mode-hook #'turn-on-haskell-doc-mode)
   (add-hook 'haskell-mode-hook #'haskell-decl-scan-mode)
+
+  (custom-set-faces
+   '(haskell-interactive-face-compile-error ((t (:foreground nil))))
+   '(haskell-operator-face ((t :italic nil))))
+
+  (defun cb-haskell/interactive-apply-font-locking ()
+    (font-lock-add-keywords nil `(("Compilation failed." . '(face nil :foreground compilation-error-face)))))
+
+  (add-hook 'haskell-interactive-mode-hook #'cb-haskell/interactive-apply-font-locking)
 
   (with-eval-after-load 'haskell
     (diminish 'interactive-haskell-mode " λ"))

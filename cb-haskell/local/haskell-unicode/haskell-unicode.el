@@ -44,7 +44,7 @@
           (replace-match repl t t nil 1))))))
 
 ;;;###autoload
-(defun haskell-unicode-buffer (&optional force)
+(defun haskell-unicode-apply-to-buffer (&optional force)
   "Apply transformations to the entire buffer if unicode syntax is enabled.
 
 With optional argument FORCE, apply unconditionally."
@@ -57,10 +57,56 @@ With optional argument FORCE, apply unconditionally."
               ("forall" "∀"))
       (apply 'haskell-unicode-rewrite-symbol it))))
 
+;;; Font locking
+
+(defun haskell-unicode--font-lock-replace-match (regex group replacement)
+  (list regex
+        `(0 (progn (compose-region (match-beginning ,group) (match-end ,group)
+                                   ,replacement 'decompose-region)
+                   nil))))
+
+(defun haskell-unicode--apply-font-lock ()
+  (font-lock-add-keywords
+   nil
+   `((,(rx (or bol space "}" ")" "]")
+           (group "$" (? "!"))
+           (or eol space "{" "(" "["))
+      1 'font-lock-comment-face)
+
+     (,(rx (not (any "(")) (group ",") (not (any ")")))
+      1 'font-lock-comment-face)
+
+     (";" . font-lock-comment-face)
+
+     ("∀" . font-lock-keyword-face)
+
+     (,(rx bol (* space) "type" (+ space) "family" eow) . font-lock-keyword-face)
+
+     ,(haskell-unicode--font-lock-replace-match (rx (or (and space (group-n 1 ".") space)
+                                         (and "(" (group-n 1 ".") ")")
+                                         ))
+                                 1 "·")
+
+     ,(haskell-unicode--font-lock-replace-match (rx space (group "<-") (or space eol)) 1 "←")
+     ,(haskell-unicode--font-lock-replace-match (rx (or space "(") (group "->") (or ")" space eol)) 1 "→")
+     ,(haskell-unicode--font-lock-replace-match (rx space (group "=>") (or space eol)) 1 "⇒")
+     ,(haskell-unicode--font-lock-replace-match (rx space (group "::") (or space eol)) 1 "∷")
+
+     ;; Lambda forms
+     ,(haskell-unicode--font-lock-replace-match
+       (rx (group "\\") (and (* space)
+                             (or word "_" (and "(" (* nonl) ")"))
+                             (*? nonl))
+           (* space) (or "->" "→"))
+       1 (propertize "λ" 'face 'font-lock-keyword-face)))))
+
 ;;;###autoload
 (defun haskell-unicode-init ()
-  (add-hook 'before-save-hook 'haskell-unicode-buffer nil t)
-  (add-hook 'evil-insert-state-exit-hook 'haskell-unicode-buffer nil t))
+  (haskell-unicode--apply-font-lock)
+  (add-hook 'ghc-type-dump-mode-hook #'haskell-unicode--apply-font-lock)
+  (add-hook 'haskell-interactive-mode-hook #'haskell-unicode--apply-font-lock)
+  (add-hook 'before-save-hook #'haskell-unicode-apply-to-buffer nil t)
+  (add-hook 'evil-insert-state-exit-hook #'haskell-unicode-apply-to-buffer nil t))
 
 (provide 'haskell-unicode)
 
