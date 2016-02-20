@@ -293,7 +293,7 @@
 
   ;; HACK: Enable smart ops for `haskell-mode' manually, since it is not derived
   ;; from `prog-mode'.
-  (add-hook 'haskell-mode-hook 'smart-ops-mode))
+  (add-hook 'haskell-mode-hook #'smart-ops-mode))
 
 (defun cb-haskell/post-init-aggressive-indent ()
   (with-eval-after-load 'aggressive-indent
