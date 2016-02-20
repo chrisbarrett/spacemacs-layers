@@ -62,25 +62,6 @@
   (setq haskell-process-suggest-hayoo-imports nil)
   (setq haskell-process-suggest-haskell-docs-imports t)
 
-  ;; HACK: Advise suggestion functions to always just go ahead.
-
-  (defun cb-haskell--silence-y-or-n-p (fn &rest args)
-    "Stub `y-or-n-p' such that it always returns t."
-    (noflet ((y-or-n-p (_) t))
-      (apply fn args)))
-
-  (advice-add 'haskell-process-suggest-add-package :around #'cb-haskell--silence-y-or-n-p)
-  (advice-add 'haskell-process-suggest-imports :around #'cb-haskell--silence-y-or-n-p)
-  (advice-add 'haskell-process-suggest-pragma :around #'cb-haskell--silence-y-or-n-p)
-
-  (defun cb-haskell--cabal-add-dependency-never-prompts (fn &rest args)
-    "Change the `no-prompt' positional argument to always be true."
-    (-let [(package version _no-prompt sort silent) args]
-      (prog1 (funcall fn package version t sort silent)
-        (message "Added %s to cabal dependencies." package))))
-
-  (advice-add 'haskell-cabal-add-dependency :around #'cb-haskell--cabal-add-dependency-never-prompts)
-
   (setq haskell-process-type 'stack-ghci)
   (setq haskell-process-use-presentation-mode t)
   (setq haskell-interactive-mode-scroll-to-bottom t)
