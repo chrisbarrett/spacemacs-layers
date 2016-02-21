@@ -21,6 +21,7 @@
     cb-buffers
 
     (ghc-dump :location local)
+    (haskell-ctrl-c-ctrl-c :location local)
     (haskell-flyspell :location local)
     (haskell-ghc-opts :location local)
     (haskell-imports :location local)
@@ -136,7 +137,6 @@
     (define-key haskell-mode-map (kbd "C-c C-d")      #'haskell-w3m-open-haddock)
     (define-key haskell-mode-map (kbd "C-c C-f")      #'haskell-cabal-visit-file)
     (define-key haskell-mode-map (kbd "C-c C-h")      #'haskell-hoogle)
-    (define-key haskell-mode-map (kbd "C-c C-c")      #'haskell-process-cabal-build)
     (define-key haskell-mode-map (kbd "C-c C-k")      #'haskell-interactive-mode-clear)
     (define-key haskell-mode-map (kbd "<backspace>")  #'haskell/backspace)
     (define-key haskell-mode-map (kbd "C-c i") 'shm-reformat-decl))
@@ -303,6 +303,12 @@
   (use-package cb-buffers
     :config
     (add-to-list 'cb-buffers-indent-commands-alist '(haskell-mode . haskell/format-dwim))))
+
+(defun cb-haskell/init-haskell-ctrl-c-ctrl-c ()
+  (use-package haskell-ctrl-c-ctrl-c
+    :commands haskell-ctrl-c-ctrl-c-init
+    :init
+    (add-hook 'haskell-mode-hook #'haskell-ctrl-c-ctrl-c-init)))
 
 (defun cb-haskell/init-haskell-flyspell ()
   (use-package haskell-flyspell
