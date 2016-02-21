@@ -27,48 +27,15 @@
 
 (autoload 'cb-buffers-current-line "cb-buffers")
 (autoload 'evil-define-key "evil-core")
+(autoload 'haskell-navigate-imports-go "haskell-navigate-imports")
 (autoload 'haskell-session-all-modules "haskell-modules")
 (autoload 'haskell-session-maybe "haskell-session")
-
-(defun haskell-imports--goto-buffer-start ()
-  (goto-char (point-min))
-
-  ;; Skip #! line
-  (when (and (s-matches? (rx bol "#!") (cb-buffers-current-line))
-             (search-forward "#!" nil t))
-    (goto-char (line-end-position))
-    (forward-char 1))
-
-  (while (and (not (eobp))
-              (s-blank? (cb-buffers-current-line)))
-    (forward-line 1)))
 
 (defun haskell-imports--insert-at-imports (str)
   "Prepend STR to this buffer's list of imported modules."
   (save-excursion
-    (haskell-imports--goto-buffer-start)
-
-    (cond
-     ;; Move directly to import statements.
-     ((search-forward-regexp (rx bol (? ">") "import") nil t))
-
-     ;; Move past module declaration.
-     ((search-forward "module" nil t)
-      (search-forward "where")
-      (forward-line)
-      (beginning-of-line)
-      (while (and (s-blank? (cb-buffers-current-line))
-                  (not (eobp)))
-        (forward-line)))
-
-     ;; Otherwise insert on first blank line.
-     (t
-      (while (not (or (eobp) (s-blank? (cb-buffers-current-line))))
-        (forward-line))))
-
-    ;; Insert import statement.
-    (beginning-of-line)
     (open-line 1)
+    (haskell-navigate-imports-go)
     (insert str)))
 
 (defun haskell-imports--module-to-qualified-name (module)
