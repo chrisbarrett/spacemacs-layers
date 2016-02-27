@@ -1,6 +1,7 @@
 # key: f
 # name: fn
 # condition: (yas/rust-bol-or-after-accessibility-modifier?)
+# expand-env: ((yas-indent-line 'fixed) (yas-wrap-around-region 't))
 # --
 fn ${1:name}(${2:args})${3: -> ${4:T}} {
     $0
