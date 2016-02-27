@@ -62,6 +62,9 @@ values."
       :variables
       ranger-cleanup-eagerly t)
      restclient
+     (rust
+      :variables
+      rust-enable-racer t)
      (scala
       :variables
       scala-enable-eldoc t)
@@ -110,7 +113,7 @@ values."
      cb-project
      cb-proof
      ;; cb-rcirc
-     ;; cb-rust
+     cb-rust
      cb-scala
      cb-smartparens
      cb-sml
