@@ -31,13 +31,6 @@
     (sp-local-pair "\\[" "\\]" :post-handlers '(:add sp/internal-and-external-padding))
     )
 
-  ;;; Rust
-
-  (sp-with-modes 'rust-mode
-    (sp-local-pair "{" "}" :post-handlers '(:add sp/internal-and-external-padding))
-    (sp-local-pair "'" "'" :actions '(:rem insert))
-    )
-
   ;;; Scala
 
   (sp-with-modes 'scala-mode
