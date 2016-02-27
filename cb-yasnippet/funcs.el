@@ -102,7 +102,7 @@ Embed in elisp blocks to trigger messages within snippets."
   (-when-let (field (yas/current-field))
     (yas--field-text-for-display field)))
 
-(defun yas/clear-blank-field ()
+(defun yas/clear-blank-field (&rest _)
   "Clear the current field if it is blank."
   (-when-let* ((beg (yas/beginning-of-field))
                (end (yas/end-of-field))

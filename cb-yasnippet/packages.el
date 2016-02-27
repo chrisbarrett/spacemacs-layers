@@ -55,7 +55,7 @@
       ;;
       ;; Pressing S-TAB to go to last field will place point at the end of the field.
 
-      (defun cb-yasnippet/goto-field-end ()
+      (defun cb-yasnippet/goto-field-end (&rest _)
         (yas/maybe-goto-field-end)
         (when (and (boundp 'evil-mode) evil-mode)
           (evil-insert-state)))
