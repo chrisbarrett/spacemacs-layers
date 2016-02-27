@@ -1,7 +1,8 @@
 # key: m
 # name: match
+# condition: (yas/bol?)
+# expand-env: ((yas-indent-line 'fixed) (yas-wrap-around-region 't))
 # --
 match ${1:expr} {
-    ${2:x} => $0,
-    _ =>
+    $0
 }
