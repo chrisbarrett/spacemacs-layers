@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: logger info
+# key: li
+# condition: (yas/bol?)
+# expand-env: ((yas-indent-line 'fixed) (yas-wrap-around-region 't))
+# --
+logger.info(s"$0")

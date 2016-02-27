@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: logger debug
+# key: ld
+# condition: (yas/bol?)
+# expand-env: ((yas-indent-line 'fixed) (yas-wrap-around-region 't))
+# --
+logger.debug(s"$0")
