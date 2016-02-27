@@ -14,7 +14,7 @@
 
     (smart-ops "." "::"
                :pad-before nil :pad-after nil
-               :action 'company-manual-begin)
+               :action #'company-manual-begin)
 
     ;; Position point inside template braces.
     (smart-op "<>"
@@ -22,3 +22,7 @@
               :action (lambda (&rest _) (search-backward ">")))
 
     (smart-ops-default-ops)))
+
+(provide 'packages)
+
+;;; packages.el ends here
