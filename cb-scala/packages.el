@@ -26,7 +26,9 @@
 (defun cb-scala/post-init-aggressive-indent ()
   (use-package aggressive-indent
     :config
-    (add-to-list 'aggressive-indent-excluded-modes 'sbt-file-mode)))
+    (progn
+      (add-to-list 'aggressive-indent-excluded-modes 'scala-mode)
+      (add-to-list 'aggressive-indent-excluded-modes 'sbt-file-mode))))
 
 (defun cb-scala/post-init-scala-mode2 ()
   (use-package scala-mode2
