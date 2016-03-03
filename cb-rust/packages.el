@@ -16,7 +16,17 @@
 (defun cb-rust/post-init-smart-ops ()
   (add-hook 'rust-mode-hook #'smart-ops-mode)
   (define-smart-ops-for-mode 'rust-mode
-    (smart-ops ";" "," "~" "&" ":" :pad-before nil)
+    (smart-ops "|" :pad-before nil :pad-after nil)
+    (smart-ops ";" "," "~" ":" :pad-before nil)
+    (smart-ops "&" "!" :bypass? t)
+    (smart-ops ":&"
+               :pad-before nil
+               :pad-after nil
+               :action
+               (lambda (&rest _)
+                 (save-excursion
+                   (skip-chars-backward "&")
+                   (just-one-space))))
 
     (smart-ops "." "::"
                :pad-before nil :pad-after nil
