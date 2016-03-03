@@ -36,6 +36,8 @@
 (defun cb-core/user-config ()
   "This procedure should be called in `dotspacemacs/user-config'."
   (setq-default company-minimum-prefix-length 3)
+  (setq-default company-tooltip-align-annotations t)
+
   (setq recentf-max-saved-items 1000)
   (setq bookmark-save-flag nil)
 
