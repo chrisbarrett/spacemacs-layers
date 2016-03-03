@@ -22,6 +22,7 @@
     (scala-errors :location local)
     (scala-pretty-sbt :location local)
     (scala-yasnippet :location local)
+    (ensime-flycheck-integration :location local)
     (ensime-diminished-modeline :location local)))
 
 (defun cb-scala/post-init-aggressive-indent ()
@@ -123,8 +124,6 @@ See `ensime-goto-test-config-defaults' for possible template values.")
     (define-key ensime-mode-map (kbd "C-c C-z") 'ensime-inf-switch)
     (define-key ensime-mode-map (kbd "C-c C-l") 'scala/load-buffer)
     (define-key ensime-mode-map (kbd "C-c C-h") 'ensime-show-doc-for-symbol-at-point)
-    (define-key ensime-mode-map (kbd "M-N") 'ensime-forward-note)
-    (define-key ensime-mode-map (kbd "M-P") 'ensime-backward-note)
 
     (evil-define-key 'normal ensime-inspector-mode-map
       (kbd "M-.") 'ensime-inspector-browse-source
@@ -133,8 +132,6 @@ See `ensime-goto-test-config-defaults' for possible template values.")
       (kbd ".") 'ensime-inspector-forward-page
       (kbd "^") 'ensime-inspector-backward-page)
 
-    (evil-define-key 'normal ensime-mode-map (kbd "M-N") 'ensime-forward-note)
-    (evil-define-key 'normal ensime-mode-map (kbd "M-P") 'ensime-backward-note)
     (evil-define-key 'normal ensime-mode-map (kbd "RET") 'ensime-inspect-type-at-point))
 
   ;; HACK: Prevent ensime from clobbering company settings.
@@ -312,4 +309,11 @@ A prefix argument will add the type to the kill ring."
   (use-package flycheck
     :config
     (setq flycheck-scalastylerc "~/.scalastyle.xml")))
+
+(defun cb-scala/init-ensime-flycheck-integration ()
+  (use-package ensime-flycheck-integration
+    :commands ensime-flycheck-integration-init
+    :config
+    (add-hook 'ensime-mode-hook #'ensime-flycheck-integration-init)))
+
 ;;; packages.el ends here
