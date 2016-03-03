@@ -47,7 +47,16 @@
 
       (define-key scala-mode-map (kbd "M-RET") #'scala/meta-ret)
 
-      (define-key scala-mode-map (kbd "C-c C-e") #'scala/insert-extends))))
+      (define-key scala-mode-map (kbd "C-c C-e") #'scala/insert-extends)
+
+      ;;; HACK: Spacemacs errors when trying to set up ensime for buffers
+      ;;; without file names, such as ediff buffers.
+
+      (defun cb-scala/ignore-errors (fn &rest _)
+        (ignore-errors
+          (funcall fn)))
+
+      (advice-add #'scala/configure-ensime :around #'cb-scala/ignore-errors))))
 
 (defun cb-scala/post-init-ensime ()
 
