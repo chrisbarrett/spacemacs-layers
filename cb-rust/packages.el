@@ -10,7 +10,8 @@
 (defconst cb-rust-packages
   '(smart-ops
     skeletor
-    smartparens))
+    smartparens
+    aggressive-indent))
 
 (defun cb-rust/post-init-smart-ops ()
   (add-hook 'rust-mode-hook #'smart-ops-mode)
@@ -76,12 +77,16 @@
         (skeletor-shell-command "git add -A && git commit -m 'Add initial files'" dir)))))
 
 (defun cb-rust/post-init-smartparens ()
-  (use-package smartparens
-    :config
+  (with-eval-after-load 'smartparens
     (sp-with-modes 'rust-mode
       (sp-local-pair "{" "}" :post-handlers '(:add sp/internal-and-external-padding))
       (sp-local-pair "'" "'" :actions '(:rem insert))
       (sp-local-pair "<" ">" :actions '(:rem insert)))))
+
+(defun cb-rust/post-init-aggressive-indent ()
+  (use-package aggressive-indent
+    :config
+    (add-to-list 'aggressive-indent-excluded-modes 'rust-mode)))
 
 (provide 'packages)
 
