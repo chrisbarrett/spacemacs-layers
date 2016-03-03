@@ -16,6 +16,7 @@
     smart-ops
     cb-buffers
     aggressive-indent
+    flycheck
 
     (sbt-file-mode :location local)
     (scala-errors :location local)
@@ -307,4 +308,8 @@ A prefix argument will add the type to the kill ring."
   (use-package sbt-file-mode
     :mode ("\\.sbt\\'" . sbt-file-mode)))
 
+(defun cb-scala/post-init-flycheck ()
+  (use-package flycheck
+    :config
+    (setq flycheck-scalastylerc "~/.scalastyle.xml")))
 ;;; packages.el ends here
