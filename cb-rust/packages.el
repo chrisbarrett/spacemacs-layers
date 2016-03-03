@@ -9,9 +9,24 @@
 
 (defconst cb-rust-packages
   '(smart-ops
+    rust-mode
     skeletor
     smartparens
     aggressive-indent))
+
+(defun cb-rust/post-init-rust-mode ()
+  (use-package rust-mode
+    :config
+    (progn
+
+      (defun cb-rust/join-line ()
+        "Join lines, deleting intermediate spaces for chained function calls."
+        (interactive)
+        (call-interactively #'evil-join)
+        (when (thing-at-point-looking-at (rx (not space) (* space) "."))
+          (delete-horizontal-space)))
+
+      (evil-define-key 'normal rust-mode-map (kbd "J") #'cb-rust/join-line))))
 
 (defun cb-rust/post-init-smart-ops ()
   (add-hook 'rust-mode-hook #'smart-ops-mode)
