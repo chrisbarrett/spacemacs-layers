@@ -26,6 +26,7 @@
   (evil-set-initial-state 'git-commit-mode 'insert)
 
   (with-eval-after-load 'magit
+    (define-key magit-mode-map (kbd "SPC") nil)
     (define-key magit-status-mode-map (kbd "S-SPC") #'helm-M-x)
     (define-key magit-status-mode-map (kbd "&") #'git/browse-repo)))
 
