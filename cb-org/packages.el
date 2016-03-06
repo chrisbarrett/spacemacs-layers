@@ -368,8 +368,8 @@ Do not scheduled items or repeating todos."
              ((tags-todo "-study-someday-media/NEXT"
                          ((org-agenda-overriding-header "Next Actions")))
               (agenda "")
-              (tags-todo "WAITING"
-                         ((org-agenda-overriding-header "Waiting")))
+              (todo "WAITING"
+                    ((org-agenda-overriding-header "Waiting")))
               (stuck "")
               (tags-todo "media|study/NEXT"
                          ((org-agenda-overriding-header "Media & Study"))))
