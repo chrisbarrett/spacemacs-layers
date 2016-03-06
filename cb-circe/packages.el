@@ -154,7 +154,7 @@ Each entry is either:
     :post-config
     (push (lambda (buf)
             (with-current-buffer buf (derived-mode-p 'circe-mode)))
-          persp-filter-save-buffers-function)))
+          persp-filter-save-buffers-functions)))
 
 (defun cb-circe/init-circe-show-channels ()
   (use-package circe-show-channels

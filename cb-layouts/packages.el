@@ -93,7 +93,7 @@ Each entry is either:
                               'mu4e-compose-mode
                               'mu4e-headers-mode
                               'mu4e-main-mode)))
-          persp-filter-save-buffers-function)))
+          persp-filter-save-buffers-functions)))
 
 (defun cb-layouts/post-init-eyebrowse ()
   (bind-key (kbd "<f5>") 'eyebrowse-switch-to-window-config-1)
