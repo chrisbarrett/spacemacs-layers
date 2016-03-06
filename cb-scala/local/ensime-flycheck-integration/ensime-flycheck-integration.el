@@ -22,28 +22,30 @@
 ;;; Code:
 
 (require 'ensime nil t)
+(require 'flycheck nil t)
+(require 'flycheck-pos-tip nil t)
 
 (autoload 'evil-define-key "evil-core")
-(autoload 'flycheck-next-error "flycheck")
-(autoload 'flycheck-next-error-pos "flycheck")
+
+(defun ensime-flycheck-integration--ensime-buffer-notes ()
+  (when (ensime-connected-p)
+    (let ((conn (ensime-connection)))
+      (append (ensime-java-compiler-notes conn)
+              (ensime-scala-compiler-notes conn)))))
 
 (defun ensime-flycheck-integration--next-ensime-note ()
   (-let* ((start (point))
-          (conn (ensime-connection))
-          (notes (append (ensime-java-compiler-notes conn)
-                         (ensime-scala-compiler-notes conn)))
+          (notes (ensime-flycheck-integration--ensime-buffer-notes))
           ((&plist :beg beg) (ensime-next-note-in-current-buffer notes t))
-          (end (if beg (1+ beg) (point-min))))
+          (end (if beg (ensime-internalize-offset beg) (point-min))))
     (when (< start end)
       end)))
 
 (defun ensime-flycheck-integration--prev-ensime-note ()
   (-let* ((start (point))
-          (conn (ensime-connection))
-          (notes (append (ensime-java-compiler-notes conn)
-                         (ensime-scala-compiler-notes conn)))
+          (notes (ensime-flycheck-integration--ensime-buffer-notes))
           ((&plist :beg beg) (ensime-next-note-in-current-buffer notes nil))
-          (end (if beg (1+ beg) (point-max))))
+          (end (if beg (ensime-internalize-offset beg) (point-max))))
     (when (> start end)
       end)))
 
@@ -52,6 +54,31 @@
 
 (defun ensime-flycheck-integration--prev-flycheck-note ()
   (flycheck-next-error-pos -1))
+
+(defun ensime-flycheck-integration--ensime-notes-at-point ()
+  (-filter (-lambda ((&plist :beg beg :end end))
+             (<= beg (point) (1+ end)))
+           (ensime-flycheck-integration--ensime-buffer-notes)))
+
+(defun ensime-flycheck-integration--maybe-display-note-popup ()
+  (-when-let (errors
+              (-map (-lambda ((&plist :msg msg :severity level :line line :col col))
+                      (flycheck-error-new
+                       :id ""
+                       :buffer (current-buffer)
+                       :checker nil
+                       :filename (buffer-file-name)
+                       :line line
+                       :column col
+                       :message msg
+                       :level level))
+                    (ensime-flycheck-integration--ensime-notes-at-point)))
+    (if (display-graphic-p)
+        (let ((msg (mapconcat #'flycheck-error-format-message-and-id errors "\n\n"))
+              (line-height (-when-let ((height . _) (window-line-height))
+                             (+ height 5))))
+          (pos-tip-show msg nil nil nil flycheck-pos-tip-timeout nil nil nil line-height))
+      (funcall flycheck-pos-tip-display-errors-tty-function errors))))
 
 (defun ensime-flycheck-integration-next-error ()
   "Move forward to the closest Flycheck or ENSIME error."
@@ -68,7 +95,9 @@
       ((null ensime-pos) #'flycheck-next-error)
       ((< flycheck-pos ensime-pos) #'flycheck-next-error)
       (t
-       #'ensime-forward-note)))))
+       #'ensime-forward-note)))
+
+    (ensime-flycheck-integration--maybe-display-note-popup)))
 
 (defun ensime-flycheck-integration-prev-error ()
   "Move backward to the closest Flycheck or ENSIME error."
@@ -84,7 +113,9 @@
       ((null ensime-pos) #'flycheck-previous-error)
       ((< flycheck-pos ensime-pos) #'ensime-backward-note)
       (t
-       #'flycheck-previous-error)))))
+       #'flycheck-previous-error)))
+
+    (ensime-flycheck-integration--maybe-display-note-popup)))
 
 (defun ensime-flycheck-integration-init ()
   (with-eval-after-load 'ensime
