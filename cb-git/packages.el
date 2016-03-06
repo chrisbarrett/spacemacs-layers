@@ -8,7 +8,8 @@
 (defconst cb-git-packages
   '(magit
     vc
-    git-auto-commit-mode))
+    git-auto-commit-mode
+    (git-commit-jira-prefix :location local)))
 
 (defun cb-git/init-vc ()
   (setq vc-follow-symlinks t))
@@ -35,3 +36,9 @@
     :diminish git-auto-commit-mode
     :init
     (add-to-list 'safe-local-variable-values '(gac-automatically-push-p . t))))
+
+(defun cb-git/init-git-commit-jira-prefix ()
+  (use-package git-commit-jira-prefix
+    :commands git-commit-jira-prefix-init
+    :config
+    (add-hook 'git-commit-mode-hook #'git-commit-jira-prefix-init)))
