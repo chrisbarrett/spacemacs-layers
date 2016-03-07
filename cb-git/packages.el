@@ -39,6 +39,6 @@
 
 (defun cb-git/init-git-commit-jira-prefix ()
   (use-package git-commit-jira-prefix
+    :after git-commit
     :commands git-commit-jira-prefix-init
-    :config
-    (add-hook 'git-commit-mode-hook #'git-commit-jira-prefix-init)))
+    :config (git-commit-jira-prefix-init)))
