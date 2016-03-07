@@ -248,11 +248,6 @@ Otherwise delete backwards."
       (narrow-to-region (point) (line-end-position))
       (yas/bol?))))
 
-(defun yas/rust-fmt-println-args (text)
-  "Format the contents of a call to `println!' based on the given format string."
-  (let ((n (s-count-matches "{" text)))
-    (s-repeat n ", ")))
-
 (defun yas/rust-previous-struct-def ()
   "Search backward for the name of the last struct defined in this file."
   (save-match-data

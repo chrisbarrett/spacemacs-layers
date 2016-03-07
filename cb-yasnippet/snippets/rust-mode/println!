@@ -1,4 +1,4 @@
 # key: p
 # name: println!
 # --
-println!("$1"${1:$(yas/rust-fmt-println-args yas/text)});
+println!("$0");
