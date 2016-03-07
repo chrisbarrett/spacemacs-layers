@@ -31,10 +31,45 @@
 (defun cb-rust/post-init-smart-ops ()
   (add-hook 'rust-mode-hook #'smart-ops-mode)
   (define-smart-ops-for-mode 'rust-mode
-    (smart-ops "|" :pad-before nil :pad-after nil)
+    (smart-ops "|" "::*" :pad-before nil :pad-after nil)
     (smart-ops ";" "~" ":" "," :pad-before nil)
     (smart-ops ">," ">>," ">>>," :pad-before nil :pad-after t)
     (smart-ops "&" "!" :bypass? t)
+
+    ;; Trait bounds
+
+    (smart-ops ":>" ":>," ":>>," :pad-before nil :pad-after nil
+               :action
+               (lambda (&rest _)
+                 (skip-chars-backward ">,")
+                 (just-one-space)))
+
+    (smart-ops "+>" "+>," "+>>," :pad-before t :pad-after nil
+               :action
+               (lambda (&rest _)
+                 (skip-chars-backward ">,")
+                 (just-one-space)))
+
+    (smart-ops ":|"
+               :pad-before nil
+               :pad-after t
+               :action
+               (lambda (&rest _)
+                 (skip-chars-backward "|")
+                 (just-one-space)))
+
+    ;; Record wildcards
+
+    (smart-ops ",.."
+               :pad-before nil
+               :pad-after t
+               :action
+               (lambda (&rest _)
+                 (save-excursion
+                   (skip-chars-backward ".")
+                   (just-one-space))))
+
+    ;; References
 
     (smart-ops ":&" ",&"
                :pad-before nil
@@ -45,7 +80,18 @@
                    (skip-chars-backward "&")
                    (just-one-space))))
 
-    (smart-ops "." "::"
+    (smart-ops "->&"
+               :pad-before t
+               :pad-after nil
+               :action
+               (lambda (&rest _)
+                 (save-excursion
+                   (skip-chars-backward "&")
+                   (just-one-space))))
+
+    ;; Scope accessors trigger company completion.
+
+    (smart-ops "." "::" ">::" ">>::"
                :pad-before nil :pad-after nil
                :action #'company-manual-begin)
 
@@ -65,7 +111,7 @@
                           (search-backward ">")
                           (delete-horizontal-space))))
 
-    ;; Assignments
+    ;; Dereferencing
 
     (smart-ops "*"
                :pad-after-unless
@@ -74,19 +120,39 @@
                    (goto-char (1- end))
                    (smart-ops--line-empty-up-to-point?))))
 
-    (smart-ops
-     ;; &mut binding at an assignment site.
-     "=&"
-     ;; assignment to deferenced pointer.
-     "=*"
+    (smart-ops "=*" :pad-after nil
+               :action
+               (lambda (&rest _)
+                 (save-excursion
+                   (skip-chars-backward "*")
+                   (just-one-space))))
 
-     :pad-after nil
-     :action
-     (lambda (&rest _)
-       (save-excursion
-         (search-backward "=")
-         (forward-char 1)
-         (just-one-space))))
+    (smart-ops ",*" ">,*" :pad-before nil :pad-after nil
+               :action
+               (lambda (&rest _)
+                 (save-excursion
+                   (skip-chars-backward "* ")
+                   (just-one-space))))
+
+    ;; Assignments
+
+    (smart-ops "=&" "=|"
+               :pad-after nil
+               :action
+               (lambda (&rest _)
+                 (save-excursion
+                   (search-backward "=")
+                   (forward-char 1)
+                   (just-one-space))))
+
+    (smart-ops "=||"
+               :action
+               (lambda (&rest _)
+                 (save-excursion
+                   (search-backward "=")
+                   (forward-char 1)
+                   (just-one-space))
+                 (search-backward "|")))
 
     ;; Inserting this op means you're probably adding a type annotation. Pad
     ;; internally and move point inside.
