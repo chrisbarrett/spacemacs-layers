@@ -4,4 +4,4 @@
 # binding: direct-keybinding
 # condition: (yas/rust-bol-or-after-accessibility-modifier?)
 # --
-static ${1:NAME$(upcase yas/text)} : ${2:type} = ${3:val};
+static ${1:NAME$(upcase yas/text)}: ${2:type} = ${3:val};
