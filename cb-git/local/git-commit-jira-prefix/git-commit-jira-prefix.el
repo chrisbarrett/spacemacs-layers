@@ -35,28 +35,36 @@
                ((ticket) (s-match (rx bos (group (+ alpha) "-" (+ digit))) branch)))
     ticket))
 
-;;;###autoload
-(defun git-commit-jira-prefix-insert-ticket-number ()
-  "Insert the JIRA ticket number, unless it's already in the buffer."
-  (interactive)
-  (-when-let (ticket (git-commit-jira-prefix--ticket-number))
+(defun git-commit-jira-prefix--message-contains-ticket-number? (ticket-number)
+  (save-excursion
     (goto-char (point-min))
-    (unless (s-contains? ticket (buffer-substring (line-beginning-position)
-                                                  (line-end-position)))
-      (goto-char (line-beginning-position))
-      (insert (format "%s:" ticket))
-      (just-one-space))))
+    (s-contains? ticket-number (buffer-substring (line-beginning-position)
+                                                 (line-end-position)))))
+
+;;;###autoload
+(defun git-commit-jira-prefix-insert-ticket-number (buffer)
+  "Insert the JIRA ticket number, unless it's already in BUFFER."
+  (interactive (list (current-buffer)))
+  (with-current-buffer buffer
+    (-when-let (ticket (git-commit-jira-prefix--ticket-number))
+      (unless (git-commit-jira-prefix--message-contains-ticket-number? ticket)
+        (goto-char (point-min))
+        (goto-char (line-beginning-position))
+        (insert (format "%s:" ticket))
+        (just-one-space)
+        t))))
 
 ;;;###autoload
 (defun git-commit-jira-prefix-insert ()
   (let ((buf (current-buffer)))
     ;; Run after `server-execute', which is run using
     ;; a timer which starts immediately.
-    (run-with-timer
-     0.01 nil (lambda ()
-                (with-current-buffer buf
-                  (git-commit-jira-prefix-insert-ticket-number)
-                  (goto-char (line-end-position)))))))
+    (run-with-timer 0.01 nil
+                    (lambda ()
+                      (when (git-commit-jira-prefix-insert-ticket-number buf)
+                        (run-with-timer 0.1 nil
+                                        (lambda ()
+                                          (goto-char (line-end-position)))))))))
 
 ;;;###autoload
 (defun git-commit-jira-prefix-init ()
