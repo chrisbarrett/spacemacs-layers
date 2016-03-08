@@ -312,8 +312,7 @@ A prefix argument will add the type to the kill ring."
 
 (defun cb-scala/init-ensime-flycheck-integration ()
   (use-package ensime-flycheck-integration
-    :commands ensime-flycheck-integration-init
-    :config
-    (add-hook 'ensime-mode-hook #'ensime-flycheck-integration-init)))
+    :after (ensime flycheck)
+    :config (ensime-flycheck-integration-init)))
 
 ;;; packages.el ends here

@@ -80,6 +80,7 @@
           (pos-tip-show msg nil nil nil flycheck-pos-tip-timeout nil nil nil line-height))
       (funcall flycheck-pos-tip-display-errors-tty-function errors))))
 
+;;;###autoload
 (defun ensime-flycheck-integration-next-error ()
   "Move forward to the closest Flycheck or ENSIME error."
   (interactive)
@@ -99,6 +100,7 @@
 
     (ensime-flycheck-integration--maybe-display-note-popup)))
 
+;;;###autoload
 (defun ensime-flycheck-integration-prev-error ()
   "Move backward to the closest Flycheck or ENSIME error."
   (interactive)
@@ -117,6 +119,7 @@
 
     (ensime-flycheck-integration--maybe-display-note-popup)))
 
+;;;###autoload
 (defun ensime-flycheck-integration-init ()
   (with-eval-after-load 'ensime
     (define-key ensime-mode-map (kbd "M-N") #'ensime-flycheck-integration-next-error)
