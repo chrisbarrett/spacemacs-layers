@@ -31,7 +31,7 @@
 (defun cb-rust/post-init-smart-ops ()
   (add-hook 'rust-mode-hook #'smart-ops-mode)
   (define-smart-ops-for-mode 'rust-mode
-    (smart-ops "|" "::*" :pad-before nil :pad-after nil)
+    (smart-ops "|" "::*" "::*;" "::<" :pad-before nil :pad-after nil)
     (smart-ops ";" "~" ":" "," :pad-before nil)
     (smart-ops ">," ">>," ">>>," :pad-before nil :pad-after t)
     (smart-ops "&" "!" :bypass? t)
@@ -50,7 +50,7 @@
                  (skip-chars-backward ">,")
                  (just-one-space)))
 
-    (smart-ops ":|"
+    (smart-ops ":|" ",|"
                :pad-before nil
                :pad-after t
                :action
@@ -120,7 +120,7 @@
                    (goto-char (1- end))
                    (smart-ops--line-empty-up-to-point?))))
 
-    (smart-ops "=*" :pad-after nil
+    (smart-ops "=*" "|*" :pad-after nil
                :action
                (lambda (&rest _)
                  (save-excursion
