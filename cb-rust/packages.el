@@ -9,6 +9,7 @@
 
 (defconst cb-rust-packages
   '(smart-ops
+    racer
     rust-mode
     skeletor
     smartparens
@@ -27,6 +28,12 @@
           (delete-horizontal-space)))
 
       (evil-define-key 'normal rust-mode-map (kbd "J") #'cb-rust/join-line))))
+
+(defun cb-rust/post-init-racer ()
+  (use-package racer
+    :after rust-mode
+    :config
+    (evil-define-key 'normal racer-mode-map (kbd "M-.") #'racer-find-definition)))
 
 (defun cb-rust/post-init-smart-ops ()
   (add-hook 'rust-mode-hook #'smart-ops-mode)
