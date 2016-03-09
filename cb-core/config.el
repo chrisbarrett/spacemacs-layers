@@ -204,11 +204,6 @@ Work around spacemacs' aggressive manipulation of `face-remapping-alist'."
 
 (add-hook 'diff-auto-refine-mode-hook (lambda () (aggressive-indent-mode -1)))
 
-;; HACK: Work around evil-shift-left bug.
-(defadvice evil-shift-left (around ignore-errors activate)
-  (ignore-errors ad-do-it)
-  (back-to-indentation))
-
 (defadvice dotspacemacs/sync-configuration-layers (after font-lock-fontify activate)
   "Apply font-lock to buffer after reloading Spacemacs."
   (font-lock-fontify-buffer))
