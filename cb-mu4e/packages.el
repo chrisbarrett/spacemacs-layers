@@ -93,16 +93,13 @@
       (setq mu4e-view-show-images t)
       (setq mu4e-view-show-addresses t)
       (setq message-kill-buffer-on-exit t)
+      (setq mu4e-compose-signature-auto-include t)
 
       ;; Use offlineimap to manage maildir.
       (setq mu4e-get-mail-command "offlineimap")
 
       ;; Save attachments to Downloads dir.
       (setq mu4e-attachment-dir (f-expand "~/Downloads"))
-
-      ;; Disable signatures.
-      (setq mu4e-compose-signature nil)
-      (setq mu4e-compose-signature-auto-include nil)
 
       ;; Put quoted messages after signature.
       (setq message-forward-before-signature nil)
