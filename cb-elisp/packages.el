@@ -96,7 +96,8 @@
                :pad-before t
                :pad-after t
                :pad-unless
-               (smart-ops-after-match? (rx digit eos)))))
+               (lambda (&rest _)
+                 (thing-at-point-looking-at (rx digit "."))))))
 
 (defun cb-elisp/init-checkdoc ()
   (setq checkdoc-force-docstrings-flag nil)
