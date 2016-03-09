@@ -23,6 +23,13 @@
 
       (evil-global-set-key 'normal (kbd "\\") 'evil-repeat-find-char-reverse)
 
+      ;; Use visual line navigation by default.
+
+      (evil-global-set-key 'normal (kbd "j") #'evil-next-visual-line)
+      (evil-global-set-key 'normal (kbd "k") #'evil-previous-visual-line)
+      (evil-global-set-key 'normal (kbd "gj") #'evil-next-line)
+      (evil-global-set-key 'normal (kbd "gk") #'evil-previous-line)
+
       ;; Make window management work for all modes
 
       (bind-keys*
