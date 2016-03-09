@@ -3,12 +3,14 @@
 ;;; Code:
 
 (eval-when-compile
+  (require 'evil nil t)
   (require 'use-package nil t))
 
 (defconst cb-evil-packages
   '(evil
     evil-surround
-    evil-numbers))
+    evil-numbers
+    (cb-evil-visual-defaults :location local)))
 
 ;;; HACK: work around keymap definition issue.
 (defun bind-map-evil-define-key (&rest _))
@@ -22,13 +24,6 @@
       (setq evil-symbol-word-search 'symbol)
 
       (evil-global-set-key 'normal (kbd "\\") 'evil-repeat-find-char-reverse)
-
-      ;; Use visual line navigation by default.
-
-      (evil-global-set-key 'normal (kbd "j") #'evil-next-visual-line)
-      (evil-global-set-key 'normal (kbd "k") #'evil-previous-visual-line)
-      (evil-global-set-key 'normal (kbd "gj") #'evil-next-line)
-      (evil-global-set-key 'normal (kbd "gk") #'evil-previous-line)
 
       ;; Make window management work for all modes
 
@@ -72,3 +67,12 @@
     (progn
       (evil-global-set-key 'normal (kbd "+") 'spacemacs/evil-numbers-increase)
       (evil-global-set-key 'normal (kbd "-") 'spacemacs/evil-numbers-decrease))))
+
+(defun cb-evil/init-cb-evil-visual-defaults ()
+  (use-package cb-evil-visual-defaults
+    :commands cb-evil-visual-defaults-init
+    :config (cb-evil-visual-defaults-init)))
+
+(provide 'packages)
+
+;;; packages.el ends here
