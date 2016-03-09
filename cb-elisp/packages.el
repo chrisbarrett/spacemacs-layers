@@ -10,6 +10,7 @@
 (defconst cb-elisp-packages
   '(eldoc
     eval-sexp-fu
+    evil-surround
     dash
     hl-sexp
     highlight-defined
@@ -136,3 +137,13 @@
               ("spacemacs" . "sm")))
       (setq nameless-prefix ":")
       (setq nameless-private-prefix t))))
+
+(defun cb-elisp/post-init-evil-surround ()
+  (use-package evil-surround
+    :config
+    (progn
+      (defun cb-elisp/init-evil-surround-pairs ()
+        (make-local-variable 'evil-surround-pairs-alist)
+        (push '(?\` . ("`" . "'")) evil-surround-pairs-alist))
+
+      (add-hook 'emacs-lisp-mode-hook #'cb-elisp/init-evil-surround-pairs))))
