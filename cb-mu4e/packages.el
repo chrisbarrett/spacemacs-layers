@@ -140,12 +140,6 @@
 
       (add-to-list 'mu4e-view-actions '("&viewInExternalBrowser" . cb-mu4e-action-view-in-external-browser) t)
 
-      ;; Add format=flowed so receiving clients can format plain text correctly.
-      (defun cb-mu4e-flow-text ()
-        (use-hard-newlines t 'guess))
-
-      (add-hook 'mu4e-compose-mode-hook 'cb-mu4e-flow-text)
-
       (defun cb-mu4e--read-and-archive-action (docid msg target)
         ;; Must come before proc-move since retag runs 'sed' on the file
         (mu4e-action-retag-message msg "-\\Inbox")
