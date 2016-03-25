@@ -146,5 +146,12 @@
     (smart-ops-default-ops)))
 
 (defun cb-proof/post-init-flycheck ()
-  (with-eval-after-load 'flycheck
-    (add-to-list 'flycheck-disabled-checkers 'coq)))
+  (use-package flycheck
+    :defer t
+    :config
+    (progn
+      (defun cb-proof/disable-coq-checker ()
+        (add-to-list 'flycheck-disabled-checkers 'coq))
+      (add-hook 'flycheck-mode-hook #'cb-proof/disable-coq-checker))))
+
+;;; packages.el ends here
