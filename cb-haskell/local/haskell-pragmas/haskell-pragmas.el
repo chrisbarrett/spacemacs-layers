@@ -74,7 +74,11 @@
 
 ;;;###autoload
 (defun haskell-pragmas-init ()
-  (evil-define-key 'normal haskell-mode-map (kbd "SPC i L") #'haskell-pragmas-insert))
+  (when (fboundp 'evil-define-key)
+    (evil-define-key 'normal haskell-mode-map
+      (kbd "SPC i L") #'haskell-pragmas-insert))
+  (when (fboundp 'spacemacs/set-leader-keys-for-major-mode)
+    (spacemacs/set-leader-keys-for-major-mode 'haskell-mode "il" #'haskell-pragmas-insert)))
 
 (provide 'haskell-pragmas)
 

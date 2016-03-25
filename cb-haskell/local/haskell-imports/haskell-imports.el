@@ -94,8 +94,15 @@
 
 ;;;###autoload
 (defun haskell-imports-init ()
-  (evil-define-key 'normal haskell-mode-map (kbd "SPC i i") #'haskell-imports-insert-unqualified)
-  (evil-define-key 'normal haskell-mode-map (kbd "SPC i q") #'haskell-imports-insert-qualified))
+  (when (fboundp 'evil-define-key)
+    (evil-define-key 'normal haskell-mode-map
+      (kbd "SPC i i") #'haskell-imports-insert-unqualified
+      (kbd "SPC i q") #'haskell-imports-insert-qualified))
+
+  (when (fboundp 'spacemacs/set-leader-keys-for-major-mode)
+    (spacemacs/set-leader-keys-for-major-mode 'haskell-mode
+      "ii" #'haskell-imports-insert-unqualified
+      "iq" #'haskell-imports-insert-qualified)))
 
 (provide 'haskell-imports)
 
