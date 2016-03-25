@@ -74,7 +74,7 @@
 
 ;;;###autoload
 (defun haskell-pragmas-init ()
-  (evil-define-key 'normal haskell-mode-map (kbd "SPC i L") 'haskell/insert-language-pragma))
+  (evil-define-key 'normal haskell-mode-map (kbd "SPC i L") #'haskell-pragmas-insert))
 
 (provide 'haskell-pragmas)
 
