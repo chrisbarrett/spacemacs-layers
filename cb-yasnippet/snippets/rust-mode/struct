@@ -1,6 +1,6 @@
 # -*- mode: snippet; require-final-newline: nil -*-
 # name: struct
-# key: s
+# key: st
 # binding: direct-keybinding
 # condition: (yas/bol?)
 # --

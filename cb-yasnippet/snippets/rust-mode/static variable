@@ -1,6 +1,6 @@
 # -*- mode: snippet; require-final-newline: nil -*-
 # name: static variable
-# key: st
+# key: static
 # binding: direct-keybinding
 # condition: (yas/rust-bol-or-after-accessibility-modifier?)
 # --
