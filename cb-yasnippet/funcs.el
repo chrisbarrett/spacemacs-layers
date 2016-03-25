@@ -252,7 +252,7 @@ Otherwise delete backwards."
   "Search backward for the name of the last struct defined in this file."
   (save-match-data
     (if (search-backward-regexp (rx (or "enum" "struct") (+ space)
-                                    (group (+ (not (any "{")))))
+                                    (group (+ (not (any ";" "(" "{")))))
                                 nil t)
         (s-trim (match-string 1))
       "Name")))
