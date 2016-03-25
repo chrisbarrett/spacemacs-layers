@@ -27,6 +27,7 @@
     (define-key emacs-lisp-mode-map (kbd "C-c C-f") #'eval-buffer)
     (define-key emacs-lisp-mode-map (kbd "C-c C-b") #'eval-buffer)
     (define-key emacs-lisp-mode-map (kbd "C-c C-c") #'elisp/eval-dwim)
+    (define-key emacs-lisp-mode-map (kbd "C-x C-e") #'pp-eval-last-sexp)
 
     (define-key emacs-lisp-mode-map (kbd "M-.") #'elisp-slime-nav-find-elisp-thing-at-point)
     (evil-define-key 'normal emacs-lisp-mode-map (kbd "M-.") #'elisp-slime-nav-find-elisp-thing-at-point)
