@@ -23,6 +23,14 @@
 ;; Extract the JIRA ticket number from the current branch name, and prepend
 ;; commit messages with that ticket number.
 
+;; Add `(git-commit-jira-prefix-init)' to your Emacs configuration to initialise the package. If you
+;; use `use-package', the form below will do the right thing:
+;;
+;;   (use-package git-commit-jira-prefix
+;;     :after git-commit
+;;     :commands git-commit-jira-prefix-init
+;;     :config (git-commit-jira-prefix-init))
+
 ;;; Code:
 
 (require 'dash)
