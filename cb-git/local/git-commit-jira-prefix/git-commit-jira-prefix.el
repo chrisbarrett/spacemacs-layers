@@ -3,6 +3,7 @@
 ;; Copyright (C) 2016  Chris Barrett
 
 ;; Author: Chris Barrett <chris.d.barrett@me.com>
+;; Package-Requires: ((s "1.10.0") (dash "2.12.1") (magit "20160320.152"))
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
