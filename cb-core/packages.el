@@ -146,10 +146,8 @@
 (defun cb-core/init-smart-ops ()
   (use-package smart-ops
     :diminish smart-ops-mode
-    :config
-    (progn
-      (smart-ops-global-mode)
-      (evil-define-key 'insert smart-ops-mode-map (kbd "<backspace>") nil))))
+    :functions (smart-ops-init)
+    :config (smart-ops-init)))
 
 (defun cb-core/post-init-iedit ()
   (custom-set-faces

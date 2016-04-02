@@ -69,6 +69,7 @@
 
 (require 'dash)
 (require 's)
+(autoload 'evil-define-key "evil-core")
 (autoload 'sp-backward-delete-char "smartparens")
 (autoload 'thing-at-point-looking-at "thingatpt")
 
@@ -470,7 +471,7 @@ It will be called with point just before the current op."
 ;;;###autoload
 (defvar smart-ops-mode-map
   (let ((map (make-sparse-keymap)))
-    (define-key map (kbd "<backspace>") 'smart-ops-backspace)
+    (define-key map (kbd "<backspace>") #'smart-ops-backspace)
     map))
 
 ;;;###autoload
@@ -539,6 +540,12 @@ Useful for Elisp programs."
     (setq smart-ops-debug? t))
    (t
     (setq smart-ops-debug? nil))))
+
+(defun smart-ops-init ()
+  (with-eval-after-load 'evil
+    (evil-define-key 'insert smart-ops-mode-map (kbd "<backspace>") nil)
+    (evil-define-key 'normal smart-ops-mode-map (kbd "<backspace>") #'ignore))
+  (smart-ops-global-mode))
 
 (provide 'smart-ops)
 
