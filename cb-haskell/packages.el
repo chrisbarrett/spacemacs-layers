@@ -8,8 +8,7 @@
   (require 'noflet nil t))
 
 (defconst cb-haskell-packages
-  '(
-    haskell-mode
+  '(haskell-mode
     shm
     hindent
     ghc
@@ -30,7 +29,8 @@
     (haskell-pragmas :location local)
     (haskell-ret :location local)
     (haskell-unicode :location local)
-    (haskell-snippets :excluded t)))
+    (haskell-snippets :excluded t)
+    (haskell-smart-commands :location local)))
 
 (defun cb-haskell/init-llvm-mode ()
   (use-package llvm-mode))
@@ -122,8 +122,6 @@
     (when (require 'ghc nil t)
       (define-key haskell-mode-map (kbd "C-c C-s") #'ghc-case-split))
 
-    (evil-define-key 'insert haskell-mode-map (kbd "<backspace>") #'haskell/backspace)
-    (evil-define-key 'normal haskell-mode-map (kbd "<backspace>") nil)
     (evil-define-key 'normal haskell-mode-map (kbd "<backtab>") #'haskell-indentation-indent-backwards)
     (evil-define-key 'normal haskell-mode-map (kbd "TAB") #'haskell-indentation-indent-line)
     (define-key haskell-mode-map (kbd "<backtab>") #'haskell-indentation-indent-backwards)
@@ -138,7 +136,6 @@
     (define-key haskell-mode-map (kbd "C-c C-f")      #'haskell-cabal-visit-file)
     (define-key haskell-mode-map (kbd "C-c C-h")      #'haskell-hoogle)
     (define-key haskell-mode-map (kbd "C-c C-k")      #'haskell-interactive-mode-clear)
-    (define-key haskell-mode-map (kbd "<backspace>")  #'haskell/backspace)
     (define-key haskell-mode-map (kbd "C-c i") 'shm-reformat-decl))
 
   (with-eval-after-load 'haskell-presentation-mode
@@ -148,8 +145,6 @@
     (define-key haskell-interactive-mode-map (kbd "C-c C-h") #'haskell-hoogle)
     (evil-define-key 'normal haskell-error-mode-map (kbd "q") #'quit-window)
     (evil-define-key 'normal haskell-mode-map (kbd "<return>") #'haskell-process-do-info)
-    (evil-define-key 'insert haskell-interactive-mode-map (kbd "SPC") #'haskell/interactive-smart-space)
-    (evil-define-key 'insert haskell-interactive-mode-map (kbd "<backspace>") #'haskell/backspace)
     (evil-define-key 'normal interactive-haskell-mode-map (kbd "M-.") #'haskell-mode-goto-loc)
     (evil-define-key 'normal interactive-haskell-mode-map (kbd ",t") #'haskell-mode-show-type-at))
 
@@ -169,8 +164,7 @@
   (defun cb-haskell/configure-shm ()
     (require 'shm)
     (evil-define-key 'insert shm-map (kbd "<return>") 'haskell/ret)
-    (define-key shm-map (kbd "C-<return>") 'shm/newline-indent)
-    (define-key shm-map (kbd "SPC") 'haskell/smart-space))
+    (define-key shm-map (kbd "C-<return>") 'shm/newline-indent))
 
   (add-hook 'haskell-mode-hook #'cb-haskell/configure-shm)
 
@@ -355,5 +349,13 @@
     :commands haskell-unicode-init
     :init
     (add-hook 'haskell-mode-hook #'haskell-unicode-init)))
+
+(defun cb-haskell/init-haskell-smart-commands ()
+  (use-package haskell-smart-commands
+    :commands (haskell-smart-commands-init)
+    :init
+    (progn
+      (add-hook 'haskell-interactive-mode-hook #'haskell-smart-commands-init)
+      (add-hook 'haskell-mode-hook #'haskell-smart-commands-init))))
 
 ;;; packages.el ends here
