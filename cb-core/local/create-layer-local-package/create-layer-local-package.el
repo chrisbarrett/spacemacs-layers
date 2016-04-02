@@ -50,8 +50,10 @@
          (with-no-warnings configuration-layer--layers)))
 
 (defun create-layer-local-package--current-layer ()
-  (--first (f-descendant-of? default-directory (plist-get it :dir))
-           (create-layer-local-package--layers)))
+  (-first (-lambda ((&plist :dir layer-dir))
+            (or (f-same? default-directory layer-dir)
+                (f-descendant-of? default-directory layer-dir)))
+          (create-layer-local-package--layers)))
 
 (defun create-layer-local-package--new-elisp-file-path (package-name layer)
   (format "%s%s" (f-join (plist-get layer :dir) "local" package-name package-name) ".el"))
@@ -176,7 +178,7 @@
                                   (create-layer-local-package--display-package-file-and-initialiser package-name layer)
                                   (create-layer-local-package--report-results results)))))))
     (helm :sources (list source)
-          :preselect (plist-get :name (create-layer-local-package--current-layer))
+          :preselect (plist-get (create-layer-local-package--current-layer) :name)
           :buffer "*create local package*"
           :prompt "Create in layer: ")))
 
