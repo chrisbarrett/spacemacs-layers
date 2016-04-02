@@ -104,4 +104,5 @@
                "  </body>"                "\n"
                "</html>"                  "\n")))
 
+      (setq auto-insert-query nil)
       (auto-insert-mode +1))))
