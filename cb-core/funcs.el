@@ -128,14 +128,6 @@
     (forward-line -1)
     (indent-according-to-mode)))
 
-(defun cb-core-remove-line-breaks ()
-  "Remove line endings in a paragraph."
-  (interactive)
-  (let ((fill-column (point-max)))
-    (call-interactively 'fill-paragraph)))
-
-(defalias 'remove-line-breaks #'cb-core-remove-line-breaks)
-
 ;;; Exiting Emacs
 
 (defun cb-core-exit-emacs ()

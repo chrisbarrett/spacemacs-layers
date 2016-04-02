@@ -33,7 +33,8 @@
     (smart-ops :location local)
     (case :location local)
     (create-layer-local-package :location local)
-    (indirect-region :location local)))
+    (indirect-region :location local)
+    (remove-line-breaks :location local)))
 
 (defun cb-core/user-config ()
   "This procedure should be called in `dotspacemacs/user-config'."
@@ -256,5 +257,9 @@
 (defun cb-core/init-indirect-region ()
   (use-package indirect-region
     :commands (indirect-region)))
+
+(defun cb-core/init-remove-line-breaks ()
+  (use-package remove-line-breaks
+    :commands (remove-line-breaks)))
 
 ;;; packages.el ends here
