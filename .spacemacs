@@ -84,6 +84,7 @@ values."
      cb-calc
      cb-circe
      cb-coffeescript
+     cb-company
      cb-cpp
      cb-core
      cb-cosmetic
