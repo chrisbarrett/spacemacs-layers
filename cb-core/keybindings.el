@@ -42,13 +42,10 @@
 
 (spacemacs/set-leader-keys "iF" 'insert-file)
 (spacemacs/set-leader-keys "iu" 'insert-char)
-(spacemacs/set-leader-keys "iU" 'cb-core-insert-uuid)
 (spacemacs/set-leader-keys "iV" 'add-file-local-variable)
 (spacemacs/set-leader-keys "iP" 'add-file-local-variable-prop-line)
 
 (spacemacs/set-leader-keys "Fo" 'other-frame)
-
-(evil-set-initial-state 'comint-mode 'normal)
 
 ;;; Helm
 

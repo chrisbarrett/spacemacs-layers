@@ -162,40 +162,10 @@ REPLACEMENT is the string to substitute for the match in REGEX."
 
 ;;; Global insertion commands
 
-(defun cb-core-filter-atoms (predicate)
-  "Return the elements of the default obarray that match PREDICATE."
-  (let (acc)
-    (mapatoms (lambda (atom)
-                (when (funcall predicate atom)
-                  (push atom acc))))
-    acc))
-
-(defun cb-core-insert-variable-value (variable)
-  "Insert the value of VARIABLE at point."
-  (interactive
-   (list
-    (intern
-     (completing-read
-      "Variable: "
-      (-map 'symbol-name
-            (cb-core-filter-atoms (-orfn 'custom-variable-p 'special-variable-p)))))))
-  (insert (pp-to-string (eval variable))))
-
-(defun cb-core-make-uuid ()
-  "Generate a UUID using the uuid utility."
-  (s-trim-right (shell-command-to-string "uuidgen")))
-
 (defun cb-core-generate-password ()
   (interactive)
   (kill-new (s-trim (shell-command-to-string "gpg --gen-random --armor 1 30")))
   (message "Password copied to kill-ring."))
-
-(defun cb-core-insert-uuid ()
-  "Insert a GUID at point."
-  (interactive "*")
-  (insert (cb-core-make-uuid)))
-
-(defalias 'insert-guid 'cb-core-insert-uuid)
 
 ;;; HACK: override Spacemacs function to prevent M-RET from being bound.
 
