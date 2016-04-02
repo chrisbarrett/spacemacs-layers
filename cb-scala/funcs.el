@@ -70,7 +70,7 @@
   (s-matches? (rx bos (* space) "}") (buffer-substring (point) (line-end-position))))
 
 (defun scala/brace-group-starts-with-case-expr? ()
-  (when (sp/inside-curly-braces-with-content?)
+  (when (sp-inside-curly-braces-with-content?)
     (-let [(&plist :beg beg :end end) (sp-get-enclosing-sexp)]
       (s-matches? (rx (* space) "case")
                   (buffer-substring (1+ beg) (1- end))))))
@@ -101,21 +101,21 @@
       (comment-indent-new-line)
       (just-one-space))
 
-     ((sp/inside-curly-braces-blank-content? nil sexp)
-      (sp/split-braced-expression-over-new-lines (rx ";") sexp))
+     ((sp-inside-curly-braces-blank-content? nil sexp)
+      (sp-split-braced-expression-over-new-lines (rx ";") sexp))
 
-     ((and (sp/inside-curly-braces-with-content? t sexp)
+     ((and (sp-inside-curly-braces-with-content? t sexp)
            (scala/blank-up-to-curly?)
            (scala/after-lambda-arrow?))
-      (sp/split-braced-expression-over-new-lines (rx ";") sexp)
+      (sp-split-braced-expression-over-new-lines (rx ";") sexp)
       (goto-char (line-end-position))
       (save-excursion
         (scala/maybe-swing-down-lambda-body))
       (newline-and-indent))
 
-     ((and (sp/inside-curly-braces-with-content? t sexp)
+     ((and (sp-inside-curly-braces-with-content? t sexp)
            (scala/brace-group-starts-with-case-expr?))
-      (sp/split-braced-expression-over-new-lines (rx ";") sexp)
+      (sp-split-braced-expression-over-new-lines (rx ";") sexp)
       (cond
        ((scala/after-lambda-arrow?)
         (newline-and-indent))
@@ -125,8 +125,8 @@
 
       (goto-char (line-end-position)))
 
-     ;; ((sp/inside-curly-braces-with-content? t)
-     ;;  (sp/split-braced-expression-over-new-lines (rx ";"))
+     ;; ((sp-inside-curly-braces-with-content? t)
+     ;;  (sp-split-braced-expression-over-new-lines (rx ";"))
      ;;  (goto-char (line-end-position))
      ;;  (save-excursion
      ;;    (scala/maybe-swing-down-lambda-body)

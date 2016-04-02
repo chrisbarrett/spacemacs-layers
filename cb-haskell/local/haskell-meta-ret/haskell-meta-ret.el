@@ -162,13 +162,13 @@ positive or backward if negative."
   (let ((underscore-prefix-style?
          (s-matches? (rx bol (? ">") (* space) (? (or "{" ",")) (* space) "_") (cb-buffers-current-line)))
 
-        (inserting-first-field? (sp/inside-curly-braces-blank-content?))
+        (inserting-first-field? (sp-inside-curly-braces-blank-content?))
 
         (brace-or-comma-column
          (save-excursion
            (goto-char (line-beginning-position))
            (cond ((and (search-forward-regexp (rx (or "," "{")) nil t)
-                       (sp/inside-curly-braces?))
+                       (sp-inside-curly-braces?))
                   (forward-char -1)
                   (current-column))
                  (t 2)))))
@@ -213,7 +213,7 @@ positive or backward if negative."
     (search-forward "{")
     (-let [(&plist :end end) (sp-get-enclosing-sexp)]
       (goto-char (1- end))
-      (when (sp/inside-curly-braces? t)
+      (when (sp-inside-curly-braces? t)
         (newline))
       (forward-line -1)
       (haskell-meta-ret--insert-record-field)

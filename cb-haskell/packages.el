@@ -99,7 +99,7 @@
   (add-hook 'haskell-mode-hook #'cb-haskell/maybe-haskell-interactive-mode)
 
   (defun cb-haskell/set-local-hooks ()
-    (setq (with-no-warnings evil-shift-width) 4)
+    (setq evil-shift-width 4)
     (setq tab-width 4))
 
   (add-hook 'haskell-mode-hook #'haskell-indentation-mode)
@@ -153,7 +153,7 @@
     (define-key haskell-cabal-mode-map (kbd "C-c C-k") #'haskell-interactive-mode-clear)))
 
 (defun cb-haskell/post-init-shm ()
-  (setq (with-no-warnings shm-auto-insert-skeletons) nil)
+  (setq shm-auto-insert-skeletons nil)
 
   (core/remap-face 'shm-current-face 'core/bg-hl-ok)
   (core/remap-face 'shm-quarantine-face 'core/bg-hl-red)

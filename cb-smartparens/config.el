@@ -28,7 +28,7 @@
   (add-hook 'org-agenda-mode-hook (lambda () (smartparens-mode -1)))
 
   (sp-with-modes 'org-mode
-    (sp-local-pair "\\[" "\\]" :post-handlers '(:add sp/internal-and-external-padding))
+    (sp-local-pair "\\[" "\\]" :post-handlers '(:add sp-internal-and-external-padding))
     )
 
   ;;; Scala
@@ -41,19 +41,19 @@
   ;;; Json/JavaScript
 
   (sp-with-modes '(js-mode js2-mode)
-    (sp-local-pair "{" "}" :post-handlers '(:add sp/internal-and-external-padding))
+    (sp-local-pair "{" "}" :post-handlers '(:add sp-internal-and-external-padding))
     )
 
   ;;; Haskell
 
   (sp-with-modes '(haskell-mode inf-haskell-mode haskell-interactive-mode)
-    (sp-local-pair "\"" "\"" :post-handlers '(:add sp/external-padding))
-    (sp-local-pair "{" "}" :post-handlers '(:add sp/external-padding))
+    (sp-local-pair "\"" "\"" :post-handlers '(:add sp-external-padding))
+    (sp-local-pair "{" "}" :post-handlers '(:add sp-external-padding))
     (sp-local-pair "(" ")" :post-handlers '(:add sp/haskell-external-padding))
-    (sp-local-pair "[" "]" :post-handlers '(:add sp/external-padding))
-    (sp-local-pair "{-@" "@-}" :post-handlers '(:add sp/internal-and-external-padding))
-    (sp-local-pair "{-#" "#-}" :post-handlers '(:add sp/internal-and-external-padding))
-    (sp-local-pair "`" "`" :post-handlers '(:add sp/external-padding))
+    (sp-local-pair "[" "]" :post-handlers '(:add sp-external-padding))
+    (sp-local-pair "{-@" "@-}" :post-handlers '(:add sp-internal-and-external-padding))
+    (sp-local-pair "{-#" "#-}" :post-handlers '(:add sp-internal-and-external-padding))
+    (sp-local-pair "`" "`" :post-handlers '(:add sp-external-padding))
     (sp-local-pair "'" "'" :actions '(:rem insert))
     )
 
@@ -73,10 +73,10 @@
   ;;; Coq
 
   (sp-with-modes 'coq-mode
-    (sp-local-pair "\"" "\"" :post-handlers '(:add sp/external-padding))
-    (sp-local-pair "{" "}"   :post-handlers '(:add sp/external-padding))
-    (sp-local-pair "[" "]"   :post-handlers '(:add sp/external-padding))
-    (sp-local-pair "(" ")"   :post-handlers '(:add sp/external-padding))
+    (sp-local-pair "\"" "\"" :post-handlers '(:add sp-external-padding))
+    (sp-local-pair "{" "}"   :post-handlers '(:add sp-external-padding))
+    (sp-local-pair "[" "]"   :post-handlers '(:add sp-external-padding))
+    (sp-local-pair "(" ")"   :post-handlers '(:add sp-external-padding))
     (sp-local-pair "'" "'"   :actions '(:rem insert))
     )
 
@@ -96,12 +96,12 @@
   ;;; Idris
 
   (sp-with-modes '(idris-mode idris-repl-mode)
-    (sp-local-pair "\"" "\"" :post-handlers '(:add sp/external-padding))
-    (sp-local-pair "{" "}"   :post-handlers '(:add sp/internal-and-external-padding))
-    (sp-local-pair "[" "]"   :post-handlers '(:add sp/external-padding))
-    (sp-local-pair "(" ")"   :post-handlers '(:add sp/external-padding))
-    (sp-local-pair "`" "`"   :post-handlers '(:add sp/external-padding))
-    (sp-local-pair "[|" "|]" :post-handlers '(:add sp/external-padding))
+    (sp-local-pair "\"" "\"" :post-handlers '(:add sp-external-padding))
+    (sp-local-pair "{" "}"   :post-handlers '(:add sp-internal-and-external-padding))
+    (sp-local-pair "[" "]"   :post-handlers '(:add sp-external-padding))
+    (sp-local-pair "(" ")"   :post-handlers '(:add sp-external-padding))
+    (sp-local-pair "`" "`"   :post-handlers '(:add sp-external-padding))
+    (sp-local-pair "[|" "|]" :post-handlers '(:add sp-external-padding))
     (sp-local-pair "'" nil   :actions nil)
     (sp-local-pair "'" "'"   :actions '(:rem insert))
     )
@@ -109,12 +109,12 @@
   ;;; Agda
 
   (sp-with-modes '(agda2-mode)
-    (sp-local-pair "\"" "\"" :post-handlers '(:add sp/external-padding))
-    (sp-local-pair "{" "}"   :post-handlers '(:add sp/external-padding))
-    (sp-local-pair "[" "]"   :post-handlers '(:add sp/external-padding))
-    (sp-local-pair "(" ")"   :post-handlers '(:add sp/external-padding))
-    (sp-local-pair "`" "`"   :post-handlers '(:add sp/external-padding))
-    (sp-local-pair "[|" "|]" :post-handlers '(:add sp/external-padding))
+    (sp-local-pair "\"" "\"" :post-handlers '(:add sp-external-padding))
+    (sp-local-pair "{" "}"   :post-handlers '(:add sp-external-padding))
+    (sp-local-pair "[" "]"   :post-handlers '(:add sp-external-padding))
+    (sp-local-pair "(" ")"   :post-handlers '(:add sp-external-padding))
+    (sp-local-pair "`" "`"   :post-handlers '(:add sp-external-padding))
+    (sp-local-pair "[|" "|]" :post-handlers '(:add sp-external-padding))
     (sp-local-pair "'" nil   :actions nil)
     (sp-local-pair "'" "'"   :actions '(:rem insert))
     )
@@ -152,7 +152,7 @@
   ;;; Python
 
   (sp-with-modes '(python-mode inferior-python-mode)
-    (sp-local-pair "{" "}" :post-handlers '(:add sp/external-padding)))
+    (sp-local-pair "{" "}" :post-handlers '(:add sp-external-padding)))
 
   ;;; Ruby
 
@@ -165,7 +165,7 @@
     (modify-syntax-entry ?? "w" ruby-mode-syntax-table))
 
   (sp-with-modes '(ruby-mode inf-ruby-mode)
-    (sp-local-pair "{" "}" :post-handlers '(:add sp/internal-and-external-padding))
+    (sp-local-pair "{" "}" :post-handlers '(:add sp-internal-and-external-padding))
     (sp-local-pair "[" "]" :pre-handlers '(sp-ruby-pre-handler))
 
     (sp-local-pair "%q{" "}" :when '(sp-in-code-p))
@@ -192,13 +192,13 @@
   ;;; Swift
 
   (sp-with-modes '(swift-mode)
-    (sp-local-pair "{" "}" :post-handlers '(:add sp/internal-and-external-padding))
+    (sp-local-pair "{" "}" :post-handlers '(:add sp-internal-and-external-padding))
     (sp-local-pair "'" "'"   :actions '(:rem insert)))
 
   ;;; C
 
   (sp-with-modes '(c-mode cc-mode)
-    (sp-local-pair "{" "}" :post-handlers '(:add sp/external-padding))
+    (sp-local-pair "{" "}" :post-handlers '(:add sp-external-padding))
     (sp-local-pair "(" ")" :post-handlers '(:add sp/c-format-after-paren)))
 
   (sp-with-modes 'c++-mode

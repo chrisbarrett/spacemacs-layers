@@ -208,7 +208,7 @@
 (defun cb-rust/post-init-smartparens ()
   (with-eval-after-load 'smartparens
     (sp-with-modes 'rust-mode
-      (sp-local-pair "{" "}" :post-handlers '(:add sp/internal-and-external-padding))
+      (sp-local-pair "{" "}" :post-handlers '(:add sp-internal-and-external-padding))
       (sp-local-pair "'" "'" :actions '(:rem insert))
       (sp-local-pair "<" ">" :actions '(:rem insert)))))
 

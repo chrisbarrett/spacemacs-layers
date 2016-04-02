@@ -136,7 +136,7 @@
     (smart-ops "|"
                :action
                (lambda ()
-                 (when (sp/inside-square-braces?)
+                 (when (sp-inside-square-braces?)
                    (delete-horizontal-space)
                    (insert " ")
                    (save-excursion
