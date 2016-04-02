@@ -256,33 +256,6 @@ Prompt for a command CMD if one cannot be guessed."
 
 (defalias 'insert-guid 'cb-core-insert-uuid)
 
-;;; Create indirect buffer from region.
-
-(defvar-local cb-core--indirect-mode-name nil
-  "Mode to set for indirect buffers.")
-
-(defun cb-core-indirect-region (start end mode)
-  "Edit the current region in another buffer.
-Edit from START to END using MODE."
-  (interactive
-   (list (region-beginning)
-         (region-end)
-         (intern (completing-read
-                  "Mode: "
-                  (--map (list (symbol-name it))
-                         (apropos-internal "-mode$" 'commandp))
-                  nil t cb-core--indirect-mode-name))))
-
-  (setq cb-core--indirect-mode-name (symbol-name mode))
-  (let ((buffer-name (generate-new-buffer-name "*indirect*")))
-    (pop-to-buffer (make-indirect-buffer (current-buffer) buffer-name))
-    (funcall mode)
-    (narrow-to-region start end)
-    (goto-char (point-min))
-    (shrink-window-if-larger-than-buffer)))
-
-(defalias 'indirect-region #'cb-core-indirect-region)
-
 ;;; HACK: override Spacemacs function to prevent M-RET from being bound.
 
 (defun spacemacs/activate-major-mode-leader ()

@@ -32,7 +32,8 @@
     (locate-key-binding :location local)
     (smart-ops :location local)
     (case :location local)
-    (create-layer-local-package :location local)))
+    (create-layer-local-package :location local)
+    (indirect-region :location local)))
 
 (defun cb-core/user-config ()
   "This procedure should be called in `dotspacemacs/user-config'."
@@ -251,5 +252,9 @@
 (defun cb-core/init-create-layer-local-package ()
   (use-package create-layer-local-package
     :commands (create-layer-local-package)))
+
+(defun cb-core/init-indirect-region ()
+  (use-package indirect-region
+    :commands (indirect-region)))
 
 ;;; packages.el ends here
