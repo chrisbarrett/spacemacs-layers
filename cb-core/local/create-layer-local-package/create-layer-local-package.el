@@ -105,7 +105,7 @@
 
       ;; Tidy up blank lines.
       (while (s-blank? (buffer-substring (line-beginning-position) (line-end-position)))
-        (kill-line))
+        (join-line t))
 
       (search-backward initialiser-fn-name)
       (goto-char (match-end 0))
