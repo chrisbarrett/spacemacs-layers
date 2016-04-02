@@ -208,22 +208,6 @@ STATEMENT-DELIMETER-RX."
            (equal (char-after) ?>))))
     (and before? after?)))
 
-(defmacro sp/print-eval-time (desc &rest body)
-  "Print the time taken to evaluate a number of forms.
-
-DESC is a label to print.
-
-BODY is any number of forms to be evaluated."
-  (declare (indent 1))
-  (let ((start-time (cl-gensym "print-eval-time/start-time-"))
-        (result (cl-gensym "print-eval-time/result-"))
-        (elapsed (cl-gensym "print-eval-time/elapsed-")))
-    `(let* ((,start-time (current-time))
-            (,result (progn ,@body))
-            (,elapsed (time-subtract (current-time) ,start-time)))
-       (message "%s...(%s)" ,desc (format-time-string "%Hh, %Mm, %Ss, %3Nms" ,elapsed))
-       ,result)))
-
 (defun sp-generic-prog-backspace ()
   "Delete backwards with context-sensitive formatting."
   (interactive)
@@ -267,7 +251,7 @@ BODY is any number of forms to be evaluated."
         (insert " ")))
     (insert " ")))
 
-(defun sp/generic-prog-ret (&optional arg)
+(defun sp-generic-prog-ret (&optional arg)
   "Insert a newline with context-sensitive formatting.
 
 With prefix arg ARG, just insert a newline and indent."

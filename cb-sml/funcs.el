@@ -120,7 +120,7 @@
 (defun cb-sml/ret ()
   (interactive)
   (let ((col (current-indentation)))
-    (sp/generic-prog-ret)
+    (sp-generic-prog-ret)
     (when (s-blank? (s-trim (cb-buffers-current-line)))
       (delete-horizontal-space)
       (indent-to col))))

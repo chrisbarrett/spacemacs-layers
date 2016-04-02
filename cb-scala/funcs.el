@@ -134,7 +134,7 @@
      ;;    (spacemacs/scala-join-line)))
 
      (t
-      (sp/generic-prog-ret)))))
+      (sp-generic-prog-ret)))))
 
 (defun scala/at-scaladoc? ()
   (s-matches? (rx bol (* space) (? "/") (+ "*")) (cb-buffers-current-line)))

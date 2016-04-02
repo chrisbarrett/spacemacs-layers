@@ -129,7 +129,7 @@
       (newline))
 
      (t
-      (sp/generic-prog-ret)))))
+      (sp-generic-prog-ret)))))
 
 (defun idris/meta-ret ()
   "Create a newline and perform a context-sensitive continuation.

@@ -29,7 +29,7 @@
     (kbd "<backspace>") 'sp-generic-prog-backspace
     (kbd "DEL") 'sp-generic-prog-backspace
     (kbd "SPC") 'sp-generic-prog-space
-    (kbd "RET") 'sp/generic-prog-ret)
+    (kbd "RET") 'sp-generic-prog-ret)
 
   (sp-pair "(" ")"   :bind "M-(")
   (sp-pair "{" "}"   :bind "M-{")
