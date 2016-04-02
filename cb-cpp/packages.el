@@ -103,7 +103,7 @@
 
   (evil-define-key 'insert c++-mode-map
     (kbd "<backspace>") 'sp/generic-prog-backspace
-    (kbd "SPC") 'sp/generic-prog-space)
+    (kbd "SPC") 'sp-generic-prog-space)
 
   (defun cb-cpp/set-local-hooks ()
     (add-hook 'before-save-hook 'cb-buffers-indent-whole-buffer nil t))

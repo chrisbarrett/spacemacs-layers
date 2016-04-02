@@ -23,7 +23,7 @@
     (insert " ")
     (save-excursion (insert " ")))
    (t
-    (sp/generic-prog-space))))
+    (sp-generic-prog-space))))
 
 (defun haskell/interactive-smart-space ()
   (interactive)

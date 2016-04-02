@@ -253,7 +253,7 @@ BODY is any number of forms to be evaluated."
         (smart-ops-backspace)))
     (smart-ops-backspace)))
 
-(defun sp/generic-prog-space ()
+(defun sp-generic-prog-space ()
   "Insert a space, performing extra padding inside braced expressions."
   (interactive)
   (-if-let (sexp (ignore-errors (sp-get-enclosing-sexp)))

@@ -28,7 +28,7 @@
     (insert " ")
     (save-excursion (insert " ")))
    (t
-    (sp/generic-prog-space))))
+    (sp-generic-prog-space))))
 
 
 ;;; Commands
