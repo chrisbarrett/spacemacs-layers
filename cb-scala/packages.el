@@ -14,7 +14,7 @@
     sbt-mode
     ensime
     smart-ops
-    cb-buffers
+    indent-dwim
     aggressive-indent
     flycheck
 
@@ -296,10 +296,10 @@ A prefix argument will add the type to the kill ring."
   (use-package ensime-diminished-modeline
     :after ensime))
 
-(defun cb-scala/post-init-cb-buffers ()
-  (use-package cb-buffers
+(defun cb-scala/post-init-indent-dwim ()
+  (use-package indent-dwim
     :config
-    (add-to-list 'cb-buffers-indent-commands-alist '(scala-mode . ensime-format-source))))
+    (add-to-list 'indent-dwim-commands-alist '(scala-mode . ensime-format-source))))
 
 (defun cb-scala/init-sbt-file-mode ()
   (use-package sbt-file-mode

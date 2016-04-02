@@ -40,7 +40,8 @@
     (insert-shebang :location local)
     (insert-variable-value :location local)
     (insert-guid :location local)
-    (helm-http-status :location local)))
+    (helm-http-status :location local)
+    (indent-dwim :location local)))
 
 (defun cb-core/user-config ()
   "This procedure should be called in `dotspacemacs/user-config'."
@@ -198,16 +199,7 @@
     :config
     (progn
       (bind-key* (kbd "C-<backspace>") 'cb-buffers-maybe-kill)
-      (bind-key (kbd "C-c k b") 'cb-buffers-maybe-kill-all)
-
-      (define-key prog-mode-map (kbd "M-q") #'cb-buffers-indent-dwim)
-      (evil-define-key 'normal  prog-mode-map (kbd "M-q") #'cb-buffers-indent-dwim)
-
-      (with-eval-after-load 'sgml-mode
-        (evil-define-key 'normal  sgml-mode-map (kbd "M-q") #'cb-buffers-indent-dwim))
-
-      (with-eval-after-load 'nxml-mode
-        (evil-define-key 'normal nxml-mode-map (kbd "M-q") #'cb-buffers-indent-dwim)))))
+      (bind-key (kbd "C-c k b") 'cb-buffers-maybe-kill-all))))
 
 (defun cb-core/post-init-neotree ()
   (use-package neotree
@@ -248,5 +240,10 @@
 (defun cb-core/init-helm-http-status ()
   (use-package helm-http-status
     :commands (helm-http-status)))
+
+(defun cb-core/init-indent-dwim ()
+  (use-package indent-dwim
+    :functions (indent-dwim-init)
+    :config (indent-dwim-init)))
 
 ;;; packages.el ends here

@@ -50,34 +50,13 @@
   :group 'cb-buffers
   :type '(list symbol))
 
-(defcustom cb-buffers-indent-commands-alist
-  nil
-  "Alist of commands to run to indent the buffer, indexed by major mode."
-  :group 'cb-buffers
-  :type '(alist :key-type symbol :value-type function))
-
-(defcustom cb-buffers-lisp-modes
-  (if (boundp 'cb-vars-lisp-modes)
-      cb-vars-lisp-modes
-    '(clojure-mode
-      clojurescript-mode
-      common-lisp-mode
-      emacs-lisp-mode
-      inferior-emacs-lisp-mode
-      lisp-mode
-      scheme-mode))
-  "List of major modes that use Lisp editing conventions."
-  :group 'cb-buffers
-  :type '(list symbol))
-
-(cl-defmacro cb-buffers-filtera (pred-form &optional (bufs '(buffer-list)))
-  "Anaphoric buffer filtering macro.
-
-Filter over the buffers, calling PRED-FORM with each buffer
-set to current.
-
-Filters over BUFS, or the buffer list if unspecified."
-  `(--filter (with-current-buffer it ,pred-form) ,bufs))
+(defun cb-buffers--buffer-ignored-or-live? (buf)
+  (or (-contains? (-concat cb-buffers-kill-buffer-if-no-proc-list
+                           cb-buffers-kill-buffer-ignored-list)
+                  (buffer-name buf))
+      (apply #'derived-mode-p cb-buffers-kill-buffer-ignored-modes)
+      (-when-let (proc (get-buffer-process buf))
+        (process-live-p proc))))
 
 (defun cb-buffers-maybe-kill ()
   "Kill or bury the current buffer."
@@ -97,52 +76,8 @@ Filters over BUFS, or the buffer list if unspecified."
       (with-current-buffer buf
         (cb-buffers-maybe-kill)))))
 
-(defun cb-buffers--buffer-ignored-or-live? (buf)
-  (or (-contains? (-concat cb-buffers-kill-buffer-if-no-proc-list
-                           cb-buffers-kill-buffer-ignored-list)
-                  (buffer-name buf))
-      (apply #'derived-mode-p cb-buffers-kill-buffer-ignored-modes)
-      (-when-let (proc (get-buffer-process buf))
-        (process-live-p proc))))
-
 (defun cb-buffers-current-line ()
   (buffer-substring (line-beginning-position) (line-end-position)))
-
-(defun cb-buffers-indent-whole-buffer ()
-  "Indent the whole buffer."
-  (interactive)
-  (ignore-errors
-    (save-excursion
-      (goto-char (point-min))
-      (while (not (eobp))
-        (unless (s-blank? (cb-buffers-current-line))
-          (indent-according-to-mode))
-        (forward-line)))))
-
-(defun cb-buffers-indent-dwim (&optional arg)
-  "Perform a context-sensitive indentation action.
-With prefix argument ARG, justify text."
-  (interactive "P")
-  (let ((in-string? (nth 8 (syntax-ppss))))
-    (cond
-     ((region-active-p)
-      (indent-region (region-beginning) (region-end))
-      (message "Indented region."))
-
-     (in-string?
-      (if (apply 'derived-mode-p cb-buffers-lisp-modes)
-          (lisp-fill-paragraph arg)
-        (or (fill-comment-paragraph)
-            (fill-paragraph arg)))
-      (message "Filled paragraph."))
-
-     ((assoc major-mode cb-buffers-indent-commands-alist)
-      (funcall (cdr (assoc major-mode cb-buffers-indent-commands-alist)))
-      (message "Formatted buffer."))
-
-     (t
-      (cb-buffers-indent-whole-buffer)
-      (message "Indented buffer.")))))
 
 (defun cb-buffers-outdent-line ()
   "Remove indentation on the current line."
@@ -156,6 +91,15 @@ With prefix argument ARG, justify text."
   (or (nth 8 (syntax-ppss))
       (-intersection (list font-lock-comment-face font-lock-doc-face font-lock-string-face)
                      (face-at-point nil t))))
+
+(cl-defmacro cb-buffers-filtera (pred-form &optional (bufs '(buffer-list)))
+  "Anaphoric buffer filtering macro.
+
+Filter over the buffers, calling PRED-FORM with each buffer
+set to current.
+
+Filters over BUFS, or the buffer list if unspecified."
+  `(--filter (with-current-buffer it ,pred-form) ,bufs))
 
 (provide 'cb-buffers)
 

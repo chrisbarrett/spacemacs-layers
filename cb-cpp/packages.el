@@ -10,6 +10,8 @@
   (require 's nil t)
   (require 'use-package nil t))
 
+(autoload 'indent-dwim-whole-buffer "indent-dwim")
+
 (defconst cb-cpp-packages
   '(irony
     aggressive-indent
@@ -106,7 +108,7 @@
     (kbd "SPC") 'sp-generic-prog-space)
 
   (defun cb-cpp/set-local-hooks ()
-    (add-hook 'before-save-hook 'cb-buffers-indent-whole-buffer nil t))
+    (add-hook 'before-save-hook 'indent-dwim-whole-buffer nil t))
 
   (add-hook 'c++-mode-hook 'cb-cpp/set-local-hooks)
 

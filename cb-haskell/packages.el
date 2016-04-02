@@ -7,6 +7,8 @@
   (require 'use-package nil t)
   (require 'noflet nil t))
 
+(autoload 'cb-buffers-maybe-kill "cb-buffers")
+
 (defconst cb-haskell-packages
   '(haskell-mode
     shm
@@ -18,6 +20,7 @@
     aggressive-indent
     llvm-mode
     cb-buffers
+    indent-dwim
 
     (ghc-dump :location local)
     (haskell-ctrl-c-ctrl-c :location local)
@@ -297,8 +300,8 @@
     (with-no-warnings
       (add-to-list 'aggressive-indent-excluded-modes 'haskell-interactive-mode))))
 
-(defun cb-haskell/post-init-cb-buffers ()
-  (use-package cb-buffers
+(defun cb-haskell/post-init-indent-dwim ()
+  (use-package indent-dwim
     :config
     (progn
       (autoload 'haskell-unicode-apply-to-buffer "haskell-unicode")
@@ -310,7 +313,7 @@
         (haskell-mode-stylish-buffer)
         (haskell-unicode-apply-to-buffer))
 
-      (add-to-list 'cb-buffers-indent-commands-alist '(haskell-mode . haskell/format-dwim)))))
+      (add-to-list 'indent-dwim-commands-alist '(haskell-mode . haskell/format-dwim)))))
 
 (defun cb-haskell/init-haskell-ctrl-c-ctrl-c ()
   (use-package haskell-ctrl-c-ctrl-c
