@@ -57,7 +57,7 @@
     (delete-char -1))
 
    (t
-    (sp/generic-prog-backspace))))
+    (sp-generic-prog-backspace))))
 
 ;;; Smart M-RET
 

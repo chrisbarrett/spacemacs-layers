@@ -26,8 +26,8 @@
   (evil-global-set-key 'insert (kbd "DEL") 'sp-backward-delete-char)
 
   (evil-define-key 'insert prog-mode-map
-    (kbd "<backspace>") 'sp/generic-prog-backspace
-    (kbd "DEL") 'sp/generic-prog-backspace
+    (kbd "<backspace>") 'sp-generic-prog-backspace
+    (kbd "DEL") 'sp-generic-prog-backspace
     (kbd "SPC") 'sp-generic-prog-space
     (kbd "RET") 'sp/generic-prog-ret)
 

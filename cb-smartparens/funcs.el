@@ -224,7 +224,7 @@ BODY is any number of forms to be evaluated."
        (message "%s...(%s)" ,desc (format-time-string "%Hh, %Mm, %Ss, %3Nms" ,elapsed))
        ,result)))
 
-(defun sp/generic-prog-backspace ()
+(defun sp-generic-prog-backspace ()
   "Delete backwards with context-sensitive formatting."
   (interactive)
   (-if-let (sexp (ignore-errors (sp-get-enclosing-sexp)))

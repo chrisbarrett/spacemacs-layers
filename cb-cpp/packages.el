@@ -102,7 +102,7 @@
       map))
 
   (evil-define-key 'insert c++-mode-map
-    (kbd "<backspace>") 'sp/generic-prog-backspace
+    (kbd "<backspace>") 'sp-generic-prog-backspace
     (kbd "SPC") 'sp-generic-prog-space)
 
   (defun cb-cpp/set-local-hooks ()
