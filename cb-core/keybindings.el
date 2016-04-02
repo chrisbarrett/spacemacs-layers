@@ -45,7 +45,6 @@
 (spacemacs/set-leader-keys "iU" 'cb-core-insert-uuid)
 (spacemacs/set-leader-keys "iV" 'add-file-local-variable)
 (spacemacs/set-leader-keys "iP" 'add-file-local-variable-prop-line)
-(spacemacs/set-leader-keys "i#" 'cb-core-insert-shebang)
 
 (spacemacs/set-leader-keys "Fo" 'other-frame)
 

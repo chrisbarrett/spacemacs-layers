@@ -35,7 +35,8 @@
     (create-layer-local-package :location local)
     (indirect-region :location local)
     (remove-line-breaks :location local)
-    (insert-timestamp :location local)))
+    (insert-timestamp :location local)
+    (insert-shebang :location local)))
 
 (defun cb-core/user-config ()
   "This procedure should be called in `dotspacemacs/user-config'."
@@ -267,5 +268,10 @@
   (use-package insert-timestamp
     :commands (insert-timestamp)
     :init (spacemacs/set-leader-keys "iT" #'insert-timestamp)))
+
+(defun cb-core/init-insert-shebang ()
+  (use-package insert-shebang
+    :commands (insert-shebang)
+    :init (spacemacs/set-leader-keys "i#" 'insert-shebang)))
 
 ;;; packages.el ends here

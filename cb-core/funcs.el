@@ -162,26 +162,6 @@ REPLACEMENT is the string to substitute for the match in REGEX."
 
 ;;; Global insertion commands
 
-(defun cb-core--interpreter-for-file (filename)
-  (cdr
-   (assoc (file-name-extension filename)
-          '(("el" . "emacs")
-            ("hs" . "runhaskell")
-            ("py" . "python")
-            ("rb" . "ruby")
-            ("sh" . "bash")))))
-
-(defun cb-core-insert-shebang (cmd)
-  "Insert a shebang line at the top of the current buffer.
-Prompt for a command CMD if one cannot be guessed."
-  (interactive
-   (list (or (cb-core--interpreter-for-file buffer-file-name)
-             (read-string "Command name: " nil t))))
-  (save-excursion
-    (goto-char (point-min))
-    (open-line 2)
-    (insert (concat "#!/usr/bin/env " cmd))))
-
 (defun cb-core-filter-atoms (predicate)
   "Return the elements of the default obarray that match PREDICATE."
   (let (acc)
