@@ -551,4 +551,8 @@ fails to find the sbt root."
           (when root
             (setq-local sbt:buffer-project-root root))))))
 
+(defun cb-scala/turn-off-aggressive-indent ()
+  (when (fboundp 'aggressive-indent-mode)
+    (aggressive-indent-mode -1)))
+
 ;;; funcs.el ends here

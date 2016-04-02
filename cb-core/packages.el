@@ -3,6 +3,7 @@
 ;;; Code:
 
 (eval-when-compile
+  (require 'cb-vars nil t)
   (require 'use-package nil t)
   (require 's nil t)
   (require 'dash nil t)
@@ -125,14 +126,11 @@
       (helm-other-buffer (list source) "*helm httpstatus*"))))
 
 (defun cb-core/post-init-aggressive-indent ()
-
-  (defun cb-core/turn-off-aggressive-indent-mode (&rest ignored)
-    (aggressive-indent-mode -1))
-
-  (with-eval-after-load 'aggressive-indent
-    (add-to-list 'aggressive-indent-excluded-modes 'restclient-mode))
-
-  (global-aggressive-indent-mode))
+  (use-package aggressive-indent
+    :config
+    (progn
+      (add-to-list 'aggressive-indent-excluded-modes 'restclient-mode)
+      (global-aggressive-indent-mode))))
 
 (defun cb-core/init-ag ()
   (use-package ag :commands ag))
@@ -211,20 +209,24 @@
     :commands (locate-key-binding)))
 
 (defun cb-core/post-init-recentf ()
-  (setq recentf-save-file (concat spacemacs-cache-directory "recentf"))
-  (setq recentf-max-menu-items 10)
-  (setq recentf-keep '(file-remote-p file-readable-p))
+  (use-package recentf
+    :config
+    (progn
+      (setq recentf-save-file (concat spacemacs-cache-directory "recentf"))
+      (setq recentf-max-menu-items 10)
+      (setq recentf-keep '(file-remote-p file-readable-p))
 
-  (defadvice recentf-cleanup (around hide-messages activate)
-    "Do not message when cleaning up recentf list."
-    (noflet ((message (&rest args))) ad-do-it))
+      (defun cb-core/shut-up-recentf (old-fn &rest rs)
+        (noflet ((message (&rest args)))
+          (apply old-fn rs)))
 
-  (with-eval-after-load 'recentf
-    (setq recentf-exclude
-          (-distinct (-concat recentf-exclude
-                              (cb-core-regexp-quoted-ignored-dirs)
-                              cb-vars-ignored-files-regexps)))
-    (recentf-cleanup)))
+      (advice-add 'recentf-cleanup :around #'cb-core/shut-up-recentf)
+
+      (setq recentf-exclude
+            (-distinct (-concat recentf-exclude
+                                (cb-core-regexp-quoted-ignored-dirs)
+                                cb-vars-ignored-files-regexps)))
+      (recentf-cleanup))))
 
 (defun cb-core/post-init-ido ()
   (setq ido-use-filename-at-point 'guess)

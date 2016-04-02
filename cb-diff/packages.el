@@ -10,7 +10,10 @@
     (ediff-trees :location local)))
 
 (defun cb-diff/post-init-ediff ()
-  (add-hook 'diff-auto-refine-mode-hook 'cb-core/turn-off-aggressive-indent-mode))
+  (defun cb-diff/turn-off-aggressive-indent ()
+    (when (fboundp 'aggressive-indent-mode)
+      (aggressive-indent-mode -1)))
+  (add-hook 'diff-auto-refine-mode-hook #'cb-diff/turn-off-aggressive-indent))
 
 (defun cb-diff/init-ediff-trees ()
   (use-package ediff-trees

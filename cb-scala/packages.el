@@ -68,7 +68,7 @@
       (ensime-mode +1)))
 
   (add-hook 'scala-mode-hook #'scala/configure-ensime)
-  (add-hook 'ensime-mode-hook #'cb-core/turn-off-aggressive-indent-mode)
+  (add-hook 'ensime-mode-hook #'cb-scala/turn-off-aggressive-indent)
 
   (setq ensime-auto-generate-config t)
   (setq ensime-implicit-gutter-icons nil)
@@ -169,7 +169,7 @@ A prefix argument will add the type to the kill ring."
   (setq sbt:program-name "sbt -Dsbt.log.noformat=true")
 
   (defun cb-scala/set-up-sbt-mode ()
-    (cb-core/turn-off-aggressive-indent-mode)
+    (cb-scala/turn-off-aggressive-indent)
     (show-smartparens-mode -1)
     (show-paren-mode -1)
     (local-set-key (kbd "C-l") #'spacemacs/comint-clear-buffer)
