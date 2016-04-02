@@ -85,16 +85,6 @@
 (spacemacs/set-leader-keys "om" 'helm-multi-occur)
 (spacemacs/set-leader-keys "O" 'occur)
 
-(evil-ex-define-cmd "nospell"
-                    (lambda ()
-                      (interactive)
-                      (turn-off-flyspell)))
-
-(evil-ex-define-cmd "spell"
-                    (lambda ()
-                      (interactive)
-                      (turn-on-flyspell)))
-
 ;;; Window management
 
 (spacemacs/set-leader-keys "wo" 'delete-other-windows)

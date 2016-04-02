@@ -6,6 +6,16 @@
   (require 'evil nil t)
   (require 'use-package nil t))
 
+(evil-ex-define-cmd "nospell"
+                    (lambda ()
+                      (interactive)
+                      (turn-off-flyspell)))
+
+(evil-ex-define-cmd "spell"
+                    (lambda ()
+                      (interactive)
+                      (turn-on-flyspell)))
+
 (defconst cb-evil-packages
   '(evil
     evil-surround
