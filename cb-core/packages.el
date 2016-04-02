@@ -31,7 +31,8 @@
     (cb-buffers :location local)
     (locate-key-binding :location local)
     (smart-ops :location local)
-    (case :location local)))
+    (case :location local)
+    (create-layer-local-package :location local)))
 
 (defun cb-core/user-config ()
   "This procedure should be called in `dotspacemacs/user-config'."
@@ -246,5 +247,9 @@
   (use-package neotree
     :config
     (setq neo-theme 'arrow)))
+
+(defun cb-core/init-create-layer-local-package ()
+  (use-package create-layer-local-package
+    :commands (create-layer-local-package)))
 
 ;;; packages.el ends here
