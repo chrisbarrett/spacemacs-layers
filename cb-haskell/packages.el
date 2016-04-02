@@ -49,8 +49,9 @@
     (defun cb-haskell/update-flycheck-ghc-language-extensions ()
       (when (derived-mode-p 'haskell-mode)
         (let ((exts (haskell-pragmas-in-file)))
-          (setq-local flycheck-ghc-language-extensions exts)
-          (setq-local flycheck-hlint-language-extensions exts))))
+          (with-no-warnings
+            (setq-local flycheck-ghc-language-extensions exts)
+            (setq-local flycheck-hlint-language-extensions exts)))))
 
     (add-hook 'haskell-mode-hook #'cb-haskell/update-flycheck-ghc-language-extensions)
     (add-hook 'after-save-hook #'cb-haskell/update-flycheck-ghc-language-extensions)
@@ -98,7 +99,7 @@
   (add-hook 'haskell-mode-hook #'cb-haskell/maybe-haskell-interactive-mode)
 
   (defun cb-haskell/set-local-hooks ()
-    (setq evil-shift-width 4)
+    (setq (with-no-warnings evil-shift-width) 4)
     (setq tab-width 4))
 
   (add-hook 'haskell-mode-hook #'haskell-indentation-mode)
@@ -139,20 +140,20 @@
     (define-key haskell-mode-map (kbd "C-c i") 'shm-reformat-decl))
 
   (with-eval-after-load 'haskell-presentation-mode
-    (evil-define-key 'normal haskell-presentation-mode-map (kbd "q") #'quit-window))
+    (evil-define-key 'normal (with-no-warnings haskell-presentation-mode-map) (kbd "q") #'quit-window))
 
   (with-eval-after-load 'haskell-interactive-mode
-    (define-key haskell-interactive-mode-map (kbd "C-c C-h") #'haskell-hoogle)
-    (evil-define-key 'normal haskell-error-mode-map (kbd "q") #'quit-window)
+    (define-key (with-no-warnings haskell-interactive-mode-map) (kbd "C-c C-h") #'haskell-hoogle)
+    (evil-define-key 'normal (with-no-warnings haskell-error-mode-map) (kbd "q") #'quit-window)
     (evil-define-key 'normal haskell-mode-map (kbd "<return>") #'haskell-process-do-info)
-    (evil-define-key 'normal interactive-haskell-mode-map (kbd "M-.") #'haskell-mode-goto-loc)
-    (evil-define-key 'normal interactive-haskell-mode-map (kbd ",t") #'haskell-mode-show-type-at))
+    (evil-define-key 'normal (with-no-warnings interactive-haskell-mode-map) (kbd "M-.") #'haskell-mode-goto-loc)
+    (evil-define-key 'normal (with-no-warnings interactive-haskell-mode-map) (kbd ",t") #'haskell-mode-show-type-at))
 
   (with-eval-after-load 'haskell-cabal-mode
     (define-key haskell-cabal-mode-map (kbd "C-c C-k") #'haskell-interactive-mode-clear)))
 
 (defun cb-haskell/post-init-shm ()
-  (setq shm-auto-insert-skeletons nil)
+  (setq (with-no-warnings shm-auto-insert-skeletons) nil)
 
   (core/remap-face 'shm-current-face 'core/bg-hl-ok)
   (core/remap-face 'shm-quarantine-face 'core/bg-hl-red)
@@ -238,22 +239,24 @@
 
 (defun cb-haskell/post-init-smart-ops ()
   (defun cb-haskell/reformat-comment-at-point ()
-    (-when-let* (((&plist :beg beg :end end :op op) (sp-get-enclosing-sexp))
-                 (_ (equal op "{"))
-                 (_ (s-matches? (rx bos "{" (* (any "-" space)) "}" eos)
-                                (buffer-substring beg end))))
+    (-when-let ((&plist :beg beg :end end :op op) (sp-get-enclosing-sexp))
+      (when (and (equal op "{")
+                 (s-matches? (rx bos "{" (* (any "-" space)) "}" eos)
+                             (buffer-substring beg end))))
       (goto-char beg)
       (delete-region beg end)
-      (insert "{- ") (save-excursion (insert " -}"))))
+      (insert "{- ")
+      (save-excursion (insert " -}"))))
 
   (defun cb-haskell/reformat-pragma-at-point ()
-    (-when-let* (((&plist :beg beg :end end :op op) (sp-get-enclosing-sexp))
-                 (_ (equal op "{"))
-                 (_ (s-matches? (rx bos "{" (* (any "-" space "#")) "}" eos)
-                                (buffer-substring beg end))))
-      (goto-char beg)
-      (delete-region beg end)
-      (insert "{-# ") (save-excursion (insert " #-}"))))
+    (-when-let ((&plist :beg beg :end end :op op) (sp-get-enclosing-sexp))
+      (when (and (equal op "{")
+                 (s-matches? (rx bos "{" (* (any "-" space "#")) "}" eos)
+                             (buffer-substring beg end)))
+        (goto-char beg)
+        (delete-region beg end)
+        (insert "{-# ")
+        (save-excursion (insert " #-}")))))
 
   (defun cb-haskell/indent-if-in-exports ()
     (when (ignore-errors (s-matches? "ExportSpec" (elt (shm-current-node) 0)))
@@ -291,12 +294,23 @@
 
 (defun cb-haskell/post-init-aggressive-indent ()
   (with-eval-after-load 'aggressive-indent
-    (add-to-list 'aggressive-indent-excluded-modes 'haskell-interactive-mode)))
+    (with-no-warnings
+      (add-to-list 'aggressive-indent-excluded-modes 'haskell-interactive-mode))))
 
 (defun cb-haskell/post-init-cb-buffers ()
   (use-package cb-buffers
     :config
-    (add-to-list 'cb-buffers-indent-commands-alist '(haskell-mode . haskell/format-dwim))))
+    (progn
+      (autoload 'haskell-unicode-apply-to-buffer "haskell-unicode")
+
+      (defun haskell/format-dwim ()
+        "Reformat the buffer."
+        (interactive "*")
+        (hindent/reformat-decl)
+        (haskell-mode-stylish-buffer)
+        (haskell-unicode-apply-to-buffer))
+
+      (add-to-list 'cb-buffers-indent-commands-alist '(haskell-mode . haskell/format-dwim)))))
 
 (defun cb-haskell/init-haskell-ctrl-c-ctrl-c ()
   (use-package haskell-ctrl-c-ctrl-c
