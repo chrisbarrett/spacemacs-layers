@@ -41,7 +41,6 @@
 ;;; Insertion
 
 (spacemacs/set-leader-keys "iF" 'insert-file)
-(spacemacs/set-leader-keys "iT" 'cb-core-insert-timestamp)
 (spacemacs/set-leader-keys "iu" 'insert-char)
 (spacemacs/set-leader-keys "iU" 'cb-core-insert-uuid)
 (spacemacs/set-leader-keys "iV" 'add-file-local-variable)

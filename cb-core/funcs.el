@@ -162,37 +162,6 @@ REPLACEMENT is the string to substitute for the match in REGEX."
 
 ;;; Global insertion commands
 
-(defun cb-core-insert-timestamp ()
-  "Read a timestamp from the user and insert it at point."
-  (interactive)
-  (let ((time (current-time)))
-    (helm :prompt "Timestamp: "
-          :buffer "*Helm Timestamp*"
-          :sources
-          `(((name . "Dates")
-             (candidates . ,(list
-                             (format-time-string "%d-%m-%y" time)
-                             (format-time-string "%d-%m-%Y" time)
-                             (format-time-string "%d-%m-%Y %H:%M" time)
-                             (format-time-string "%d-%m-%Y %I:%M %p" time)))
-             (action . insert)
-             (volatile))
-
-            ((name . "Times")
-             (candidates . ,(list
-                             (format-time-string "%X" time)
-                             (format-time-string "%I:%M %p" time)
-                             (format-time-string "%I:%M:%S %p" time)))
-             (action . insert)
-             (volatile))
-
-            ((name . "Special")
-             (candidates . ,(list
-                             (format-time-string "%d %B, %Y" time)
-                             (format-time-string "%Y-%m-%dT%H%M%S%z")))
-             (action . insert)
-             (volatile))))))
-
 (defun cb-core--interpreter-for-file (filename)
   (cdr
    (assoc (file-name-extension filename)
