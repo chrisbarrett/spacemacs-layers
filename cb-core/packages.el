@@ -203,9 +203,6 @@
   (use-package locate-key-binding
     :commands (locate-key-binding)))
 
-(defun cb-core/regexp-quoted-ignored-dirs ()
-  (--map (format "/%s/" (regexp-quote it)) cb-vars-ignored-dirs))
-
 (defun cb-core/post-init-recentf ()
   (setq recentf-save-file (concat spacemacs-cache-directory "recentf"))
   (setq recentf-max-menu-items 10)
@@ -218,7 +215,7 @@
   (with-eval-after-load 'recentf
     (setq recentf-exclude
           (-distinct (-concat recentf-exclude
-                              (cb-core/regexp-quoted-ignored-dirs)
+                              (cb-core-regexp-quoted-ignored-dirs)
                               cb-vars-ignored-files-regexps)))
     (recentf-cleanup)))
 

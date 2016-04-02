@@ -697,11 +697,16 @@ exported file's name. The PDF will be created at DEST."
       (--first (s-matches? (rx bos (or "http" "https" "www")) it)
                (cons (current-kill 0 t) kill-ring)))
 
+    (defun cb-org/read-string-with-default (prompt default &optional initial-input history)
+      "Read a string from the user with a default value added to the prompt."
+      (read-string (concat (if default (format "%s (default %s)" prompt default) prompt) ": ")
+                   initial-input history default))
+
     (defun cb-org/read-url-for-capture ()
       "Return a capture template string for a URL org-capture."
-      (let* ((url (core/read-string-with-default "URL" (or
-                                                        (thing-at-point-url-at-point)
-                                                        (cb-org/last-url-kill))))
+      (let* ((url (cb-org/read-string-with-default "URL" (or
+                                                           (thing-at-point-url-at-point)
+                                                           (cb-org/last-url-kill))))
              (title (cb-org/parse-html-title (cb-org/url-retrieve-html url))))
         (format "* [[%s][%s]]" url (or title url))))
 

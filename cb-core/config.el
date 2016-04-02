@@ -24,9 +24,9 @@
 (defalias 'qr  'query-replace)
 (defalias 'qrr 'query-replace-regexp)
 (defalias 'cal 'calendar)
-(defalias 'rfb 'core/rename-file-and-buffer)
-(defalias 'rbf 'core/rename-file-and-buffer)
-(defalias 'mv  'core/move-file)
+(defalias 'rfb 'cb-core-rename-file-and-buffer)
+(defalias 'rbf 'cb-core-rename-file-and-buffer)
+(defalias 'mv  'cb-core-move-file)
 
 
 ;;; Set variables
@@ -52,7 +52,7 @@
 (setq-default tab-width 4)
 (setq-default evil-shift-width 2)
 
-(add-hook 'compilation-filter-hook 'core/ansi-colourise-compilation)
+(add-hook 'compilation-filter-hook 'cb-core-ansi-colourise-compilation)
 
 ;;; Colours
 

@@ -1,73 +1,43 @@
-;; -*- lexical-binding: t; -*-
+;;; funcs.el --- Helper functions for cb-core layer -*- lexical-binding: t; -*-
+;;; Documentation:
 
 ;;; Code:
 
+(require 'cl-lib)
+(require 'dash)
+(require 'dash-functional)
+(require 'f)
+(require 's)
+
+(autoload 'ansi-color-apply-on-region "ansi-color")
+(autoload 'helm "helm-command")
 (autoload 'org-move-item-down "org-list")
 (autoload 'org-move-item-up "org-list")
-(require 'cl-lib)
-(require 's)
-(require 'dash)
+(autoload 'projectile-invalidate-cache "projectile")
+(autoload 'projectile-project-p "projectile")
+(autoload 'recentf-cleanup "recentf")
 
-
-;;; Useful functions
+;;; File utils
 
-(defun line-content-relative (move-n-lines)
-  "Return the line at point, or another line relative to this line.
-MOVE-N-LINES is an integer that will return a line forward if
-positive or backward if negative."
-  (save-excursion
-    (forward-line move-n-lines)
-    (buffer-substring (line-beginning-position) (line-end-position))))
-
-(defun filter-atoms (predicate)
-  "Return the elements of the default obarray that match PREDICATE."
-  (let (acc)
-    (mapatoms (lambda (atom)
-                (when (funcall predicate atom)
-                  (push atom acc))))
-    acc))
-
-
-(defun core/read-string-with-default (prompt default &optional initial-input history)
-  "Read a string from the user with a default value added to the prompt."
-  (read-string (concat (if default (format "%s (default %s)" prompt default) prompt) ": ")
-               initial-input history default))
-
-(defun core/open-line-below-current-indentation ()
-  "Open a new line below at the current indent level."
-  (let ((col (save-excursion (back-to-indentation) (current-column))))
-    (goto-char (line-end-position))
-    (newline)
-    (indent-to col)))
-
-
-;;; Buffer management
-
-(defun core/move-file (buffer to-dir)
-  "Move BUFFER's corresponding file to DEST."
-  (interactive (list (current-buffer) (read-directory-name "Move to: ")))
-  (let ((current-file-name (f-filename (core/buffer-file-name-assert-exists buffer))))
-    (core/rename-file-and-buffer buffer to-dir current-file-name)))
-
-(defun core/rename-file-and-buffer (buffer dest-dir dest-filename)
+(defun cb-core-rename-file-and-buffer (buffer dest-dir dest-filename)
   "Rename the current buffer and file it is visiting."
-  (interactive (let ((cur (core/buffer-file-name-assert-exists)))
+  (interactive (let ((cur (cb-core--assert-file-exists-for-buffer)))
                  (list (current-buffer)
                        (read-directory-name "Move to directory: " (f-dirname cur))
                        (read-string "New name: " (f-filename cur)))))
-  (let ((src (core/buffer-file-name-assert-exists buffer))
+  (let ((src (cb-core--assert-file-exists-for-buffer buffer))
         (dest-path (f-join dest-dir dest-filename)))
-    (or (core/try-move-file-with-vc src dest-path)
-        (core/try-rename-file src dest-path))
+    (or (cb-core--try-move-file-with-vc src dest-path)
+        (cb-core--try-rename-file src dest-path))
     (message "File '%s' moved to '%s'" (f-short (f-filename src)) (f-short dest-path))))
 
-(defun core/buffer-file-name-assert-exists (&optional buf)
+(defun cb-core--assert-file-exists-for-buffer (&optional buf)
   (let ((cur (buffer-file-name buf)))
     (if (not (and cur (f-exists? cur)))
         (error "Buffer is not visiting a file!")
       cur)))
 
-(defun core/try-move-file-with-vc (src dest)
+(defun cb-core--try-move-file-with-vc (src dest)
   (condition-case err
       (when (vc-backend src)
         (vc-rename-file src dest)
@@ -82,7 +52,7 @@ positive or backward if negative."
         (t
          (error msg)))))))
 
-(defun core/try-rename-file (src dest)
+(defun cb-core--try-rename-file (src dest)
   (when (and (f-exists? dest) (not (y-or-n-p "File exists. Overwrite?")))
     (user-error "Aborted"))
   (rename-file src dest t)
@@ -96,17 +66,15 @@ positive or backward if negative."
     (when (projectile-project-p)
       (projectile-invalidate-cache nil))))
 
-(defun core/toggle-window-split ()
-  (interactive)
-  (cond
-   ((= (count-windows) 2)
-    (core--rotate-window-layout))
-   ((= 1 (count-windows))
-    (user-error "No windows to rotate"))
-   (t
-    (user-error "Too many windows to rotate"))))
+(defun cb-core-move-file (buffer to-dir)
+  "Move BUFFER's corresponding file to DEST."
+  (interactive (list (current-buffer) (read-directory-name "Move to: ")))
+  (let ((current-file-name (f-filename (cb-core--assert-file-exists-for-buffer buffer))))
+    (cb-core-rename-file-and-buffer buffer to-dir current-file-name)))
 
-(defun core--rotate-window-layout ()
+;;; Window management
+
+(defun cb-core--rotate-window-layout ()
   (let* ((this-win-buffer (window-buffer))
          (next-win-buffer (window-buffer (next-window)))
          (this-win-edges (window-edges (selected-window)))
@@ -129,10 +97,17 @@ positive or backward if negative."
       (select-window first-win)
       (when this-win-2nd (other-window 1)))))
 
-
-;;; Line transposition
+(defun cb-core-toggle-window-split ()
+  (interactive)
+  (cond
+   ((= (count-windows) 2)
+    (cb-core--rotate-window-layout))
+   ((= 1 (count-windows))
+    (user-error "No windows to rotate"))
+   (t
+    (user-error "Too many windows to rotate"))))
 
-(defun core/move-line-up ()
+(defun cb-core-move-line-up ()
   "Move the current line up."
   (interactive)
   (if (derived-mode-p 'org-mode)
@@ -142,7 +117,7 @@ positive or backward if negative."
     (forward-line -2)
     (indent-according-to-mode)))
 
-(defun core/move-line-down ()
+(defun cb-core-move-line-down ()
   "Move the current line up."
   (interactive)
   (if (derived-mode-p 'org-mode)
@@ -153,36 +128,34 @@ positive or backward if negative."
     (forward-line -1)
     (indent-according-to-mode)))
 
-
-;;; Misc interactive commands
-
-(defun remove-line-breaks ()
+(defun cb-core-remove-line-breaks ()
   "Remove line endings in a paragraph."
   (interactive)
   (let ((fill-column (point-max)))
     (call-interactively 'fill-paragraph)))
 
-(defun core/exit-emacs ()
+(defalias 'remove-line-breaks #'cb-core-remove-line-breaks)
+
+;;; Exiting Emacs
+
+(defun cb-core-exit-emacs ()
   (interactive)
   (when (yes-or-no-p "Kill Emacs? ")
     (if (daemonp)
         (server-save-buffers-kill-terminal nil)
       (save-buffers-kill-emacs))))
 
-(defun core/warn-exit-emacs-rebound ()
+(defun cb-core-warn-exit-emacs-rebound ()
   (interactive)
   (user-error "Type <C-c k k> to exit Emacs"))
 
-
-;;; Compilation
+(defun cb-core-regexp-quoted-ignored-dirs ()
+  (--map (format "/%s/" (regexp-quote it)) cb-vars-ignored-dirs))
 
-(defun core/ansi-colourise-compilation ()
+(defun cb-core-ansi-colourise-compilation ()
   (ansi-color-apply-on-region compilation-filter-start (point)))
 
-
-;;; Font lock
-
-(defun core/font-lock-replace-match (regex group replacement)
+(defun cb-core-font-lock-replace-match (regex group replacement)
   "Return a font-lock replacement spec for.
 
 REGEX surrounds the text to be replaced with a group.
@@ -195,10 +168,9 @@ REPLACEMENT is the string to substitute for the match in REGEX."
                                    ,replacement 'decompose-region)
                    nil))))
 
-
 ;;; Global insertion commands
 
-(defun core/insert-timestamp ()
+(defun cb-core-insert-timestamp ()
   "Read a timestamp from the user and insert it at point."
   (interactive)
   (let ((time (current-time)))
@@ -229,7 +201,7 @@ REPLACEMENT is the string to substitute for the match in REGEX."
              (action . insert)
              (volatile))))))
 
-(defun core//filename->interpreter (filename)
+(defun cb-core--interpreter-for-file (filename)
   (cdr
    (assoc (file-name-extension filename)
           '(("el" . "emacs")
@@ -238,18 +210,26 @@ REPLACEMENT is the string to substitute for the match in REGEX."
             ("rb" . "ruby")
             ("sh" . "bash")))))
 
-(defun core/insert-shebang (cmd)
+(defun cb-core-insert-shebang (cmd)
   "Insert a shebang line at the top of the current buffer.
 Prompt for a command CMD if one cannot be guessed."
   (interactive
-   (list (or (core//filename->interpreter buffer-file-name)
+   (list (or (cb-core--interpreter-for-file buffer-file-name)
              (read-string "Command name: " nil t))))
   (save-excursion
     (goto-char (point-min))
     (open-line 2)
     (insert (concat "#!/usr/bin/env " cmd))))
 
-(defun core/insert-variable-value (variable)
+(defun cb-core-filter-atoms (predicate)
+  "Return the elements of the default obarray that match PREDICATE."
+  (let (acc)
+    (mapatoms (lambda (atom)
+                (when (funcall predicate atom)
+                  (push atom acc))))
+    acc))
+
+(defun cb-core-insert-variable-value (variable)
   "Insert the value of VARIABLE at point."
   (interactive
    (list
@@ -257,32 +237,31 @@ Prompt for a command CMD if one cannot be guessed."
      (completing-read
       "Variable: "
       (-map 'symbol-name
-            (filter-atoms (-orfn 'custom-variable-p 'special-variable-p)))))))
+            (cb-core-filter-atoms (-orfn 'custom-variable-p 'special-variable-p)))))))
   (insert (pp-to-string (eval variable))))
 
-(defun core/make-uuid ()
+(defun cb-core-make-uuid ()
   "Generate a UUID using the uuid utility."
   (s-trim-right (shell-command-to-string "uuidgen")))
 
-(defun core/generate-password ()
+(defun cb-core-generate-password ()
   (interactive)
   (kill-new (s-trim (shell-command-to-string "gpg --gen-random --armor 1 30")))
   (message "Password copied to kill-ring."))
 
-(defun core/insert-uuid ()
+(defun cb-core-insert-uuid ()
   "Insert a GUID at point."
   (interactive "*")
-  (insert (core/make-uuid)))
+  (insert (cb-core-make-uuid)))
 
-(defalias 'insert-guid 'core/insert-uuid)
+(defalias 'insert-guid 'cb-core-insert-uuid)
 
-
 ;;; Create indirect buffer from region.
 
-(defvar-local indirect-mode-name nil
+(defvar-local cb-core--indirect-mode-name nil
   "Mode to set for indirect buffers.")
 
-(defun indirect-region (start end mode)
+(defun cb-core-indirect-region (start end mode)
   "Edit the current region in another buffer.
 Edit from START to END using MODE."
   (interactive
@@ -292,9 +271,9 @@ Edit from START to END using MODE."
                   "Mode: "
                   (--map (list (symbol-name it))
                          (apropos-internal "-mode$" 'commandp))
-                  nil t indirect-mode-name))))
+                  nil t cb-core--indirect-mode-name))))
 
-  (setq indirect-mode-name (symbol-name mode))
+  (setq cb-core--indirect-mode-name (symbol-name mode))
   (let ((buffer-name (generate-new-buffer-name "*indirect*")))
     (pop-to-buffer (make-indirect-buffer (current-buffer) buffer-name))
     (funcall mode)
@@ -302,7 +281,8 @@ Edit from START to END using MODE."
     (goto-char (point-min))
     (shrink-window-if-larger-than-buffer)))
 
-
+(defalias 'indirect-region #'cb-core-indirect-region)
+
 ;;; HACK: override Spacemacs function to prevent M-RET from being bound.
 
 (defun spacemacs/activate-major-mode-leader ()
@@ -316,3 +296,5 @@ Edit from START to END using MODE."
                      ,(kbd dotspacemacs-major-mode-leader-key)
                      major-mode-map)))
           '(normal motion))))
+
+;;; funcs.el ends here

@@ -26,7 +26,7 @@
 (defun cb-project/post-init-recentf ()
   (use-package recentf
     :config
-    (setq recentf-exclude (-union recentf-exclude (cb-core/regexp-quoted-ignored-dirs)))))
+    (setq recentf-exclude (-union recentf-exclude (cb-core-regexp-quoted-ignored-dirs)))))
 
 (defun cb-project/post-init-projectile ()
   (use-package projectile
@@ -99,7 +99,7 @@
   (use-package ag
     :after projectile
     :config
-    (setq ag-ignore-list (-union ag-ignore-list (cb-core/regexp-quoted-ignored-dirs)))))
+    (setq ag-ignore-list (-union ag-ignore-list (cb-core-regexp-quoted-ignored-dirs)))))
 
 (defun cb-project/post-init-helm-ag ()
   (use-package helm-ag

@@ -80,6 +80,13 @@
     (goto-char (match-end 0))
     (newline-and-indent)))
 
+(defun scala--open-line-below-current-indentation ()
+  "Open a new line below at the current indent level."
+  (let ((col (save-excursion (back-to-indentation) (current-column))))
+    (goto-char (line-end-position))
+    (newline)
+    (indent-to col)))
+
 (defun scala/ret (&optional arg)
   "Insert a newline with context-sensitive formatting."
   (interactive "P")
@@ -87,7 +94,7 @@
     (cond
      ((scala/at-scaladoc?)
       (goto-char (line-end-position))
-      (core/open-line-below-current-indentation)
+      (scala--open-line-below-current-indentation)
       (insert "* "))
 
      ((or arg (cb-buffers-in-string-or-comment?))
@@ -153,49 +160,49 @@
 
    ;; Insert new type decl case below the current one.
    ((s-matches? (rx bol (* space) "var" eow) (cb-buffers-current-line))
-    (core/open-line-below-current-indentation)
+    (scala--open-line-below-current-indentation)
     (yas-expand-snippet "var ${1:ident} = $0")
     (message "New var binding"))
 
    ;; Insert new type decl case below the current one.
    ((s-matches? (rx bol (* space) (? "lazy" (+ space)) "val" eow) (cb-buffers-current-line))
-    (core/open-line-below-current-indentation)
+    (scala--open-line-below-current-indentation)
     (yas-expand-snippet "val ${1:ident} = $0")
     (message "New val binding"))
 
    ;; Insert new type decl case below the current one.
    ((s-matches? (rx bol (* space) "private" (+ space) (? "lazy" (+ space)) "val" eow) (cb-buffers-current-line))
-    (core/open-line-below-current-indentation)
+    (scala--open-line-below-current-indentation)
     (yas-expand-snippet "private val ${1:ident} = $0")
     (message "New val binding"))
 
    ;; Insert new type decl case below the current one.
    ((s-matches? (rx bol (* space) "protected" (+ space) (? "lazy" (+ space)) "val" eow) (cb-buffers-current-line))
-    (core/open-line-below-current-indentation)
+    (scala--open-line-below-current-indentation)
     (yas-expand-snippet "protected val ${1:ident} = $0")
     (message "New val binding"))
 
    ;; Insert new case class.
    ((or (scala/at-case-class?) (scala/at-sealed-trait?) (scala/at-abstract-sealed-class?))
-    (core/open-line-below-current-indentation)
+    (scala--open-line-below-current-indentation)
     (yas-expand-snippet "case class ${1:Case}(${2:params...})")
     (message "New case class"))
 
    ;; Insert new case object.
    ((scala/at-case-object?)
-    (core/open-line-below-current-indentation)
+    (scala--open-line-below-current-indentation)
     (yas-expand-snippet "case object ${1:Name}")
     (message "New case object"))
 
    ;; Insert new type decl case below the current one.
    ((s-matches? (rx bol (* space) "case") (cb-buffers-current-line))
-    (core/open-line-below-current-indentation)
+    (scala--open-line-below-current-indentation)
     (yas-expand-snippet "case ${1:binding} => $0")
     (message "New data case"))
 
    ;; Insert new import statement
    ((s-matches? (rx bol (* space) "import" eow) (cb-buffers-current-line))
-    (core/open-line-below-current-indentation)
+    (scala--open-line-below-current-indentation)
     (insert "import ")
     (message "New import statement"))
 

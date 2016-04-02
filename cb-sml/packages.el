@@ -46,8 +46,8 @@
 
       (font-lock-add-keywords
        'sml-mode
-       `(,(core/font-lock-replace-match (rx space (group "->") space) 1 "→")
-         ,(core/font-lock-replace-match (rx space (group "=>") space) 1 "⇒")))
+       `(,(cb-core-font-lock-replace-match (rx space (group "->") space) 1 "→")
+         ,(cb-core-font-lock-replace-match (rx space (group "=>") space) 1 "⇒")))
 
       ;; Advice to work around super-aggressive SML indentation.
 

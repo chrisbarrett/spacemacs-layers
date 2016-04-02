@@ -35,6 +35,28 @@
 
       (evil-global-set-key 'normal (kbd "\\") 'evil-repeat-find-char-reverse)
 
+      ;; Window management
+
+      (spacemacs/set-leader-keys "wo" 'delete-other-windows)
+      (spacemacs/set-leader-keys "|" 'cb-core-toggle-window-split)
+
+      (evil-global-set-key 'normal (kbd "C-w |") 'cb-core-toggle-window-split)
+      (evil-global-set-key 'normal (kbd "C-w -") 'split-window-below)
+      (evil-global-set-key 'normal (kbd "C-w /") 'evil-window-vsplit)
+      (evil-global-set-key 'emacs (kbd "C-w -") 'next-multiframe-window)
+      (evil-global-set-key 'emacs (kbd "C-w /") 'evil-window-vsplit)
+
+      ;; Frame navigation
+
+      (global-set-key (kbd "<f2>") 'next-multiframe-window)
+      (global-set-key (kbd "S-<f2>") 'previous-multiframe-window)
+
+      (evil-global-set-key 'normal (kbd "C-w k") 'next-multiframe-window)
+      (evil-global-set-key 'normal (kbd "C-w j") 'previous-multiframe-window)
+      (evil-global-set-key 'emacs (kbd "C-w k") 'next-multiframe-window)
+      (evil-global-set-key 'emacs (kbd "C-w j") 'previous-multiframe-window)
+
+
       ;; Make window management work for all modes
 
       (bind-keys*

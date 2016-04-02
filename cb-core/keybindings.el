@@ -15,13 +15,13 @@
 (when (fboundp 'cycle-spacing)
   (global-set-key (kbd "M-SPC") 'cycle-spacing))
 
-(evil-global-set-key 'normal (kbd "C-<up>") 'core/move-line-up)
-(evil-global-set-key 'normal (kbd "C-<down>") 'core/move-line-down)
+(evil-global-set-key 'normal (kbd "C-<up>") 'cb-core-move-line-up)
+(evil-global-set-key 'normal (kbd "C-<down>") 'cb-core-move-line-down)
 
 ;;; Exiting Emacs
 
-(bind-key (kbd "C-c k k") 'core/exit-emacs)
-(bind-key (kbd "C-x C-c") 'core/warn-exit-emacs-rebound)
+(bind-key (kbd "C-c k k") 'cb-core-exit-emacs)
+(bind-key (kbd "C-x C-c") 'cb-core-warn-exit-emacs-rebound)
 
 ;;; Personal config
 
@@ -41,12 +41,12 @@
 ;;; Insertion
 
 (spacemacs/set-leader-keys "iF" 'insert-file)
-(spacemacs/set-leader-keys "iT" 'core/insert-timestamp)
+(spacemacs/set-leader-keys "iT" 'cb-core-insert-timestamp)
 (spacemacs/set-leader-keys "iu" 'insert-char)
-(spacemacs/set-leader-keys "iU" 'core/insert-uuid)
+(spacemacs/set-leader-keys "iU" 'cb-core-insert-uuid)
 (spacemacs/set-leader-keys "iV" 'add-file-local-variable)
 (spacemacs/set-leader-keys "iP" 'add-file-local-variable-prop-line)
-(spacemacs/set-leader-keys "i#" 'core/insert-shebang)
+(spacemacs/set-leader-keys "i#" 'cb-core-insert-shebang)
 
 (spacemacs/set-leader-keys "Fo" 'other-frame)
 
@@ -75,26 +75,5 @@
 (spacemacs/set-leader-keys "oo" 'helm-occur)
 (spacemacs/set-leader-keys "om" 'helm-multi-occur)
 (spacemacs/set-leader-keys "O" 'occur)
-
-;;; Window management
-
-(spacemacs/set-leader-keys "wo" 'delete-other-windows)
-(spacemacs/set-leader-keys "|" 'core/toggle-window-split)
-
-(evil-global-set-key 'normal (kbd "C-w |") 'core/toggle-window-split)
-(evil-global-set-key 'normal (kbd "C-w -") 'split-window-below)
-(evil-global-set-key 'normal (kbd "C-w /") 'evil-window-vsplit)
-(evil-global-set-key 'emacs (kbd "C-w -") 'next-multiframe-window)
-(evil-global-set-key 'emacs (kbd "C-w /") 'evil-window-vsplit)
-
-;;; Frame navigation
-
-(global-set-key (kbd "<f2>") 'next-multiframe-window)
-(global-set-key (kbd "S-<f2>") 'previous-multiframe-window)
-
-(evil-global-set-key 'normal (kbd "C-w k") 'next-multiframe-window)
-(evil-global-set-key 'normal (kbd "C-w j") 'previous-multiframe-window)
-(evil-global-set-key 'emacs (kbd "C-w k") 'next-multiframe-window)
-(evil-global-set-key 'emacs (kbd "C-w j") 'previous-multiframe-window)
 
 (spacemacs/set-leader-keys (kbd "ww") 'ace-window)
