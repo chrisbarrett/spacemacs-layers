@@ -1,14 +1,6 @@
-;;; packages.el --- cb-ocaml Layer packages File for Spacemacs
-;;
-;; Copyright (c) 2012-2014 Sylvain Benner
-;; Copyright (c) 2014-2015 Sylvain Benner & Contributors
-;;
-;; Author: Sylvain Benner <sylvain.benner@gmail.com>
-;; URL: https://github.com/syl20bnr/spacemacs
-;;
-;; This file is not part of GNU Emacs.
-;;
-;;; License: GPLv3
+;;; packages.el --- cb-ocaml Layer packages File for Spacemacs  -*- lexical-binding: t; -*-
+;;; Commentary:
+;;; Code:
 
 (defconst cb-ocaml-packages
   '(merlin
@@ -17,7 +9,8 @@
     flycheck-ocaml
     aggressive-indent
     (merlin-eldoc :location local)
-    (smart-ops :location local)))
+    (smart-ops :location local)
+    (ocaml-autoinsert :location local)))
 
 (eval-when-compile
   (require 'dash)
@@ -132,3 +125,10 @@
                  :action
                  (lambda (&rest _)
                    (call-interactively 'utop-eval-input))))))
+
+(defun cb-ocaml/init-ocaml-autoinsert ()
+  (use-package ocaml-autoinsert
+    :functions (ocaml-autoinsert-init)
+    :config (ocaml-autoinsert-init)))
+
+;;; packages.el ends here
