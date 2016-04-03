@@ -41,12 +41,6 @@
                         (f-ext buffer-file-name)))
                "#ifndef " str n "#define " str "\n\n" _ "\n\n#endif")
 
-              ((org-mode . "Org file")
-               nil
-               "#+TITLE: " (cb-autoinsert/org-title) "\n"
-               "#+AUTHOR: " user-full-name           "\n"
-               "\n")
-
               ((csharp-mode . "C# Src File")
                nil
                "using System;"                       "\n"

@@ -31,7 +31,8 @@
     ox
     ox-texinfo
     org-present
-    (cb-org-latex-preview-retina :location local)))
+    (cb-org-latex-preview-retina :location local)
+    (org-autoinsert :location local)))
 
 ;; HACK: Set aliases for incorrectly-prefixed outline functions required by org.
 (defalias 'outline-show-children 'show-children)
@@ -705,8 +706,8 @@ exported file's name. The PDF will be created at DEST."
     (defun cb-org/read-url-for-capture ()
       "Return a capture template string for a URL org-capture."
       (let* ((url (cb-org/read-string-with-default "URL" (or
-                                                           (thing-at-point-url-at-point)
-                                                           (cb-org/last-url-kill))))
+                                                          (thing-at-point-url-at-point)
+                                                          (cb-org/last-url-kill))))
              (title (cb-org/parse-html-title (cb-org/url-retrieve-html url))))
         (format "* [[%s][%s]]" url (or title url))))
 
@@ -777,5 +778,10 @@ exported file's name. The PDF will be created at DEST."
              :clock-keep t)
 
             ))))
+
+(defun cb-org/init-org-autoinsert ()
+  (use-package org-autoinsert
+    :functions (org-autoinsert-init)
+    :config (org-autoinsert-init)))
 
 ;;; packages.el ends here
