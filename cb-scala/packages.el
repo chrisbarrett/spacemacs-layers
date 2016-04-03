@@ -23,7 +23,8 @@
     (scala-pretty-sbt :location local)
     (scala-yasnippet :location local)
     (ensime-flycheck-integration :location local)
-    (ensime-diminished-modeline :location local)))
+    (ensime-diminished-modeline :location local)
+    (scala-autoinsert :location local)))
 
 (defun cb-scala/post-init-aggressive-indent ()
   (use-package aggressive-indent
@@ -314,5 +315,10 @@ A prefix argument will add the type to the kill ring."
   (use-package ensime-flycheck-integration
     :after (ensime flycheck)
     :config (ensime-flycheck-integration-init)))
+
+(defun cb-scala/init-scala-autoinsert ()
+  (use-package scala-autoinsert
+    :functions (scala-autoinsert-init)
+    :config (scala-autoinsert-init)))
 
 ;;; packages.el ends here

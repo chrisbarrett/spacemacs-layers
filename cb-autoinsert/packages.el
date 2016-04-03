@@ -66,10 +66,6 @@
                > _                                   "\n"
                "}"                                   "\n")
 
-              ((scala-mode . "Scala Src File")
-               nil
-               (cb-autoinsert/scala-package))
-
               ((emacs-lisp-mode . "Emacs Lisp")
                nil
                "\;;; " (f-filename (buffer-file-name)) " --- <enter description here>  "
