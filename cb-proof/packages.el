@@ -5,6 +5,9 @@
 (require 'use-package)
 (require 'f)
 
+(autoload 'evil-define-key "evil-core")
+(autoload 'core/remap-face "config")
+
 (defconst cb-proof-packages
   '(flycheck
     smart-ops
@@ -12,14 +15,18 @@
     (proof-site :location local)
     (coq :location local)
     (proof-script :location local)
-    (coq-meta-ret :location local)))
+    (coq-meta-ret :location local)
+    (coq-unicode :location local)))
 
-(add-to-list 'load-path (f-join user-layers-directory "cb-proof/local/PG/generic"))
+(add-to-list 'load-path (f-join (with-no-warnings user-layers-directory)
+                                "cb-proof/local/PG/generic"))
 
 (defun cb-proof/init-proof-site ()
   (require 'proof-site)
 
-  (setq proof-splash-enable nil)
+
+  (with-no-warnings
+    (setq proof-splash-enable nil))
 
   (custom-set-faces
    '(proof-eager-annotation-face
@@ -44,24 +51,22 @@
     :defer t
     :config
     (progn
-      (setq coq-compile-before-require t)
+      (with-no-warnings
+        (setq coq-compile-before-require t))
 
       (custom-set-faces
        '(coq-cheat-face
          ((((background light)) :background "#fee8e5")
           (((background dark))  :background "#51202b")))
        `(coq-solve-tactics-face
-         ((t (:italic t :foreground ,solarized-hl-orange)))))
+         ((t (:italic t :foreground ,(with-no-warnings solarized-hl-orange))))))
 
-      (defun coq/configure-coq-buffer ()
+      (defun cb-proof--configure-coq-buffer ()
         (setq-local compile-command (concat "coqc " (buffer-name))))
 
-      (add-hook 'coq-mode-hook #'coq/configure-coq-buffer)
+      (add-hook 'coq-mode-hook #'cb-proof--configure-coq-buffer)
 
-      ;; Advices
-
-      (defadvice coq-insert-match (after format-period activate)
-        "Delete trailing whitespace until we find a period character."
+      (defun cb-proof--delete-trailing-whitespace (&rest _)
         (save-excursion
           (when (search-forward "end" nil t)
             (when (search-forward-regexp (rx (group (* (or space eol)))
@@ -69,32 +74,25 @@
                                          nil t)
               (replace-match "" nil nil nil 1)))))
 
-      (defadvice coq-smie-backward-token (around ignore-errors activate)
-        "Ignore bug in Coq SMIE lexer."
+      (advice-add 'coq-insert-match :after #'cb-proof--delete-trailing-whitespace)
+
+      (defun cb-proof--ignore-smie-error (oldfn &rest args)
         (condition-case _
-            ad-do-it
+            (apply oldfn args)
           (wrong-type-argument nil)))
 
-      (evil-define-key 'normal coq-mode-map
-        (kbd "S-<return>")  'proof-undo-last-successful-command
-        (kbd "C-<return>")  'proof-assert-next-command-interactive
-        (kbd "RET")         'proof-assert-next-command-interactive)
+      (advice-add 'coq-smie-backward-token :around #'cb-proof--ignore-smie-error)
 
-      (define-key coq-mode-map (kbd "S-<return>")  'proof-undo-last-successful-command)
-      (define-key coq-mode-map (kbd "C-<return>")   'proof-assert-next-command-interactive)
-      (define-key coq-mode-map (kbd "C-c C-m") 'coq-insert-match)
-      (define-key coq-mode-map (kbd "RET")     'newline-and-indent)
+      (let ((map (with-no-warnings coq-mode-map)))
+        (evil-define-key 'normal map
+          (kbd "S-<return>") #'proof-undo-last-successful-command
+          (kbd "C-<return>") #'proof-assert-next-command-interactive
+          (kbd "RET")        #'proof-assert-next-command-interactive)
 
-      (dolist (mode '(coq-mode coq-response-mode coq-goals-mode))
-        (font-lock-add-keywords
-         mode
-         (list
-          (cb-core-font-lock-replace-match (rx (and (or bol (any "," ":" "(" "[" ">")) (* space)) bow (group "forall") eow) 1 (string-to-char "∀"))
-          (cb-core-font-lock-replace-match (rx (and (or bol (any "," ":" "(" "[" ">")) (* space)) bow (group "exists") eow) 1 (string-to-char "∃"))
-          (cb-core-font-lock-replace-match (rx (or space eow) (group "->")  (or space eol bow)) 1 (string-to-char "→"))
-          (cb-core-font-lock-replace-match (rx (or space eow) (group "=>")  (or space eol bow)) 1 (string-to-char "⇒"))
-          (cb-core-font-lock-replace-match (rx (or space eow) (group ">=")  (or space eol bow)) 1 (string-to-char "≥"))
-          (cb-core-font-lock-replace-match (rx (or space eow) (group "<=")  (or space eol bow)) 1 (string-to-char "≤"))))))))
+        (define-key map (kbd "S-<return>") #'proof-undo-last-successful-command)
+        (define-key map (kbd "C-<return>") #'proof-assert-next-command-interactive)
+        (define-key map (kbd "C-c C-m")    #'coq-insert-match)
+        (define-key map (kbd "RET")        #'newline-and-indent)))))
 
 (defun cb-proof/init-proof-script ()
   (use-package proof-script
@@ -157,13 +155,18 @@
     :defer t
     :config
     (progn
-      (defun cb-proof/disable-coq-checker ()
+      (defun cb-proof--disable-coq-checker ()
         (add-to-list 'flycheck-disabled-checkers 'coq))
-      (add-hook 'flycheck-mode-hook #'cb-proof/disable-coq-checker))))
+      (add-hook 'flycheck-mode-hook #'cb-proof--disable-coq-checker))))
 
 (defun cb-proof/init-coq-meta-ret ()
   (use-package coq-meta-ret
     :functions (coq-meta-ret-init)
     :config (coq-meta-ret-init)))
+
+(defun cb-proof/init-coq-unicode ()
+  (use-package coq-unicode
+    :functions (coq-unicode-init)
+    :config (coq-unicode-init)))
 
 ;;; packages.el ends here
