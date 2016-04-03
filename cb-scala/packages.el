@@ -17,6 +17,7 @@
     indent-dwim
     aggressive-indent
     flycheck
+    popwin
 
     (sbt-file-mode :location local)
     (scala-errors :location local)
@@ -279,6 +280,13 @@ A prefix argument will add the type to the kill ring."
                     (forward-char -1)
                     (cb-scala/at-repl-prompt?)))
         cb-scala/common-ops))))
+
+(defun cb-scala/post-init-popwin ()
+  (use-package popwin
+    :config
+    (progn
+      (push '("^\\*sbt\\*" :regexp t :dedicated t :position bottom :stick t :noselect nil :height 33)
+            popwin:special-display-config))))
 
 (defun cb-scala/init-scala-errors ()
   (use-package scala-errors))
