@@ -13,14 +13,6 @@
     :init (setq auto-insert-alist nil)
     :config
     (progn
-      (add-to-list 'auto-insert-alist
-                   '(("\\.\\([Hh]\\|hh\\|hpp\\)\\'" . "C / C++ header")
-                     (upcase
-                      (concat (f-filename (f-no-ext (buffer-file-name)))
-                              "_"
-                              (f-ext buffer-file-name)))
-                     "#ifndef " str n "#define " str "\n\n" _ "\n\n#endif"))
-
       (add-to-list auto-insert-alist
                    '((html-mode . "HTML file")
                      nil

@@ -24,7 +24,8 @@
     helm-gtags
     cc-mode
     flyspell
-    smart-ops))
+    smart-ops
+    (cpp-autoinsert :location local)))
 
 (defun cb-cpp/init-irony ()
   (use-package irony
@@ -173,5 +174,10 @@
     (smart-op "<>"
               :pad-before nil :pad-after nil
               :action (lambda (&rest _) (search-backward ">")))))
+
+(defun cb-cpp/init-cpp-autoinsert ()
+  (use-package cpp-autoinsert
+    :functions (cpp-autoinsert-init)
+    :config (cpp-autoinsert-init)))
 
 ;;; packages.el ends here
