@@ -6,11 +6,13 @@
 (require 'f)
 
 (defconst cb-proof-packages
-  '((proof-site :location local)
+  '(flycheck
+    smart-ops
+    aggressive-indent
+    (proof-site :location local)
     (coq :location local)
     (proof-script :location local)
-    flycheck
-    smart-ops))
+    (coq-meta-ret :location local)))
 
 (add-to-list 'load-path (f-join user-layers-directory "cb-proof/local/PG/generic"))
 
@@ -18,6 +20,7 @@
   (require 'proof-site)
 
   (setq proof-splash-enable nil)
+
   (custom-set-faces
    '(proof-eager-annotation-face
      ((t (:inherit default :background nil :underline "darkgoldenrod"))))
@@ -29,6 +32,12 @@
   (core/remap-face 'proof-warning-face 'flycheck-warning)
   (core/remap-face 'proof-script-sticky-error-face 'flycheck-error)
   (core/remap-face 'proof-script-highlight-error-face 'flycheck-error))
+
+(defun cb-proof/post-init-aggressive-indent ()
+  (use-package aggressive-indent
+    :config
+    (with-eval-after-load 'aggressive-indent
+      (add-to-list 'aggressive-indent-excluded-modes 'coq-mode))))
 
 (defun cb-proof/init-coq ()
   (use-package coq
@@ -44,10 +53,10 @@
        `(coq-solve-tactics-face
          ((t (:italic t :foreground ,solarized-hl-orange)))))
 
-      (add-hook 'coq-mode-hook 'coq/configure-coq-buffer)
+      (defun coq/configure-coq-buffer ()
+        (setq-local compile-command (concat "coqc " (buffer-name))))
 
-      (with-eval-after-load 'aggressive-indent
-        (add-to-list 'aggressive-indent-excluded-modes 'coq-mode))
+      (add-hook 'coq-mode-hook #'coq/configure-coq-buffer)
 
       ;; Advices
 
@@ -73,8 +82,6 @@
 
       (define-key coq-mode-map (kbd "S-<return>")  'proof-undo-last-successful-command)
       (define-key coq-mode-map (kbd "C-<return>")   'proof-assert-next-command-interactive)
-
-      (define-key coq-mode-map (kbd "M-RET")   'coq/meta-ret)
       (define-key coq-mode-map (kbd "C-c C-m") 'coq-insert-match)
       (define-key coq-mode-map (kbd "RET")     'newline-and-indent)
 
@@ -153,5 +160,10 @@
       (defun cb-proof/disable-coq-checker ()
         (add-to-list 'flycheck-disabled-checkers 'coq))
       (add-hook 'flycheck-mode-hook #'cb-proof/disable-coq-checker))))
+
+(defun cb-proof/init-coq-meta-ret ()
+  (use-package coq-meta-ret
+    :functions (coq-meta-ret-init)
+    :config (coq-meta-ret-init)))
 
 ;;; packages.el ends here
