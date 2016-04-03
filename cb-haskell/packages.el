@@ -33,7 +33,8 @@
     (haskell-ret :location local)
     (haskell-unicode :location local)
     (haskell-snippets :excluded t)
-    (haskell-smart-commands :location local)))
+    (haskell-smart-commands :location local)
+    (haskell-autoinsert :location local)))
 
 (defun cb-haskell/init-llvm-mode ()
   (use-package llvm-mode))
@@ -321,33 +322,28 @@
 
 (defun cb-haskell/init-haskell-ctrl-c-ctrl-c ()
   (use-package haskell-ctrl-c-ctrl-c
-    :commands haskell-ctrl-c-ctrl-c-init
-    :init
-    (add-hook 'haskell-mode-hook #'haskell-ctrl-c-ctrl-c-init)))
+    :functions (haskell-ctrl-c-ctrl-c-init)
+    :init (add-hook 'haskell-mode-hook #'haskell-ctrl-c-ctrl-c-init)))
 
 (defun cb-haskell/init-haskell-flyspell ()
   (use-package haskell-flyspell
-    :commands haskell-flyspell-init
-    :init
-    (add-hook 'haskell-mode-hook #'haskell-flyspell-init)))
+    :functions (haskell-flyspell-init)
+    :init (add-hook 'haskell-mode-hook #'haskell-flyspell-init)))
 
 (defun cb-haskell/init-haskell-ghc-opts ()
   (use-package haskell-ghc-opts
-    :commands haskell-ghc-opts-init
-    :init
-    (add-hook 'haskell-mode-hook #'haskell-ghc-opts-init)))
+    :functions (haskell-ghc-opts-init)
+    :init (add-hook 'haskell-mode-hook #'haskell-ghc-opts-init)))
 
 (defun cb-haskell/init-haskell-imports ()
   (use-package haskell-imports
-    :commands haskell-imports-init
-    :init
-    (add-hook 'haskell-mode-hook #'haskell-imports-init)))
+    :functions (haskell-imports-init)
+    :init (add-hook 'haskell-mode-hook #'haskell-imports-init)))
 
 (defun cb-haskell/init-haskell-meta-ret ()
   (use-package haskell-meta-ret
-    :commands haskell-meta-ret-init
-    :init
-    (add-hook 'haskell-mode-hook #'haskell-meta-ret-init)))
+    :functions (haskell-meta-ret-init)
+    :init (add-hook 'haskell-mode-hook #'haskell-meta-ret-init)))
 
 (defun cb-haskell/init-haskell-parser ()
   (with-eval-after-load 'haskell-mode
@@ -355,28 +351,30 @@
 
 (defun cb-haskell/init-haskell-pragmas ()
   (use-package haskell-pragmas
-    :commands haskell-pragmas-init
-    :init
-    (add-hook 'haskell-mode-hook #'haskell-pragmas-init)))
+    :functions (haskell-pragmas-init)
+    :init (add-hook 'haskell-mode-hook #'haskell-pragmas-init)))
 
 (defun cb-haskell/init-haskell-ret ()
   (use-package haskell-ret
-    :commands haskell-ret-init
-    :init
-    (add-hook 'haskell-mode-hook #'haskell-ret-init)))
+    :functions haskell-ret-init
+    :init (add-hook 'haskell-mode-hook #'haskell-ret-init)))
 
 (defun cb-haskell/init-haskell-unicode ()
   (use-package haskell-unicode
-    :commands haskell-unicode-init
-    :init
-    (add-hook 'haskell-mode-hook #'haskell-unicode-init)))
+    :functions haskell-unicode-init
+    :init (add-hook 'haskell-mode-hook #'haskell-unicode-init)))
 
 (defun cb-haskell/init-haskell-smart-commands ()
   (use-package haskell-smart-commands
-    :commands (haskell-smart-commands-init)
+    :functions (haskell-smart-commands-init)
     :init
     (progn
       (add-hook 'haskell-interactive-mode-hook #'haskell-smart-commands-init)
       (add-hook 'haskell-mode-hook #'haskell-smart-commands-init))))
+
+(defun cb-haskell/init-haskell-autoinsert ()
+  (use-package haskell-autoinsert
+    :functions (haskell-autoinsert-init)
+    :config (haskell-autoinsert-init)))
 
 ;;; packages.el ends here

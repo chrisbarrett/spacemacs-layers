@@ -5,7 +5,6 @@
 (require 's)
 (require 'dash)
 (require 'f)
-(autoload 'projectile-project-p "projectile")
 
 (defun cb-autoinsert/org-title ()
   "Format the title to use for the given FILENAME."
@@ -16,22 +15,6 @@
 
 (defun cb-autoinsert/idris-module ()
   (s-capitalize (file-name-base)))
-
-(defun cb-autoinsert/haskell-module ()
-  (-if-let (root (and (buffer-file-name) (projectile-project-p)))
-
-      (->> (f-no-ext (buffer-file-name))
-           (s-chop-prefix root)
-           (s-chop-prefix "app/")
-           (s-chop-prefix "src/")
-           (s-chop-prefix "test/")
-           f-split
-           (--map (let ((x (substring it 0 1))
-                        (xs (substring it 1)))
-                    (concat (s-upcase x) xs)))
-           (s-join "."))
-
-    (s-upper-camel-case (file-name-base))))
 
 (defun cb-autoinsert/csharp-type-decl ()
   (let ((name (s-upper-camel-case (file-name-base))))

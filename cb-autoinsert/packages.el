@@ -28,14 +28,7 @@
     :config
     (progn
       (setq auto-insert-alist
-            '(((haskell-mode . "Haskell Src File")
-               nil
-               "module " (cb-autoinsert/haskell-module) " where" "\n"
-               "\n"
-               _
-               "\n")
-
-              (("\\.ml\\'" . "OCaml Src File")
+            '((("\\.ml\\'" . "OCaml Src File")
                nil
                "open Core.Std" "\n\n"
                _
