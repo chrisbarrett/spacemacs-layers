@@ -26,6 +26,8 @@
 (require 's)
 (require 'dash)
 
+(autoload 'evil-global-set-key "evil-core")
+
 (defun cb-evil-ispell--add-to-dict (word)
   "Add WORD to the user's dictionary."
   (ispell-send-string (concat "*" word "\n"))
@@ -119,6 +121,15 @@ errors forward of POS."
     (goto-char pos)
     (when (= pos (point-max))
       (message "No more spelling errors"))))
+
+(defun cb-evil-ispell-init ()
+  (with-eval-after-load 'evil
+    (evil-global-set-key 'normal (kbd "[s")  #'cb-evil-ispell-previous-spelling-error)
+    (evil-global-set-key 'normal (kbd "]s")  #'cb-evil-ispell-next-spelling-error)
+    (evil-global-set-key 'normal (kbd "z g") #'cb-evil-ispell-mark-word-as-good)
+    (evil-global-set-key 'normal (kbd "z G") #'cb-evil-ispell-mark-word-as-locally-good)
+    (evil-global-set-key 'normal (kbd "z =") #'cb-evil-ispell-correct-word)
+    (evil-global-set-key 'normal (kbd "z u") #'flyspell-auto-correct-word)))
 
 (provide 'cb-evil-ispell)
 
