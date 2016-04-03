@@ -1,13 +1,39 @@
-;;; funcs.el --- Functions supporting git config  -*- lexical-binding: t; -*-
+;;; magit-browse-repo.el --- Command to browse online page corresponing to a git repo.  -*- lexical-binding: t; -*-
+
+;; Copyright (C) 2016  Chris Barrett
+
+;; Author: Chris Barrett <chris.d.barrett@me.com>
+
+;; Package-Requires: ((s "1.10.0") (dash "2.12.1") (magit "20160320.152") (projectile "0.13.0"))
+
+;; This program is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 ;;; Commentary:
+
 ;;; Code:
 
-(eval-when-compile
-  (require 'dash nil t)
-  (require 's nil t)
-  )
+(require 'dash)
+(require 'magit)
+(require 's)
 
-(defun git/browse-repo (dir)
+(autoload 'projectile-project-p "projectile")
+(autoload 'projectile-completing-read "projectile")
+(autoload 'projectile-relevant-known-projects "projectile")
+
+;;;###autoload
+(defun magit-browse-repo (dir)
+  "Open project page for the repo at DIR."
   (interactive
    (list (or (projectile-project-p)
              (projectile-completing-read "Project: " (projectile-relevant-known-projects)))))
@@ -41,3 +67,7 @@
              (host
               (error "Don't know how to browse URL for host: %s" host)))))
     (browse-url url)))
+
+(provide 'magit-browse-repo)
+
+;;; magit-browse-repo.el ends here

@@ -9,7 +9,8 @@
   '(magit
     vc
     git-auto-commit-mode
-    (git-commit-jira-prefix :location local)))
+    (git-commit-jira-prefix :location local)
+    (magit-browse-repo :location local)))
 
 (defun cb-git/init-vc ()
   (setq vc-follow-symlinks t))
@@ -28,8 +29,7 @@
 
   (with-eval-after-load 'magit
     (define-key magit-mode-map (kbd "SPC") nil)
-    (define-key magit-status-mode-map (kbd "S-SPC") #'helm-M-x)
-    (define-key magit-status-mode-map (kbd "&") #'git/browse-repo)))
+    (define-key magit-status-mode-map (kbd "S-SPC") #'helm-M-x)))
 
 (defun cb-git/init-git-auto-commit-mode ()
   (use-package git-auto-commit-mode
@@ -42,3 +42,10 @@
     :after git-commit
     :commands git-commit-jira-prefix-init
     :config (git-commit-jira-prefix-init)))
+
+(defun cb-git/init-magit-browse-repo ()
+  (use-package magit-browse-repo
+    :commands (magit-browse-repo)
+    :after (magit)
+    :config
+    (define-key magit-status-mode-map (kbd "&") #'magit-browse-repo)))
