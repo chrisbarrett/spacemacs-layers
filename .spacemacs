@@ -45,7 +45,7 @@ values."
      (haskell
       :variables
       haskell-enable-ghc-mod-support nil
-      haskell-enable-ghci-ng-support t
+      haskell-enable-ghci-ng-support nil
       haskell-enable-hindent-style "gibiansky"
       haskell-enable-shm-support nil)
      (ibuffer
