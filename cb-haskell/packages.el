@@ -128,29 +128,32 @@
 
     (evil-define-key 'normal haskell-mode-map (kbd "<backtab>") #'haskell-indentation-indent-backwards)
     (evil-define-key 'normal haskell-mode-map (kbd "TAB") #'haskell-indentation-indent-line)
-    (define-key haskell-mode-map (kbd "<backtab>") #'haskell-indentation-indent-backwards)
-    (define-key haskell-mode-map (kbd "TAB") #'haskell-indentation-indent-line)
 
-    (define-key haskell-mode-map (kbd "M-,")          #'pop-tag-mark)
-    (define-key haskell-mode-map (kbd "M-P")          #'flymake-goto-prev-error)
-    (define-key haskell-mode-map (kbd "M-N")          #'flymake-goto-next-error)
-    (define-key haskell-mode-map (kbd "C-,")          #'haskell-move-nested-left)
-    (define-key haskell-mode-map (kbd "C-.")          #'haskell-move-nested-right)
-    (define-key haskell-mode-map (kbd "C-c C-d")      #'haskell-w3m-open-haddock)
-    (define-key haskell-mode-map (kbd "C-c C-f")      #'haskell-cabal-visit-file)
-    (define-key haskell-mode-map (kbd "C-c C-h")      #'haskell-hoogle)
-    (define-key haskell-mode-map (kbd "C-c C-k")      #'haskell-interactive-mode-clear)
-    (define-key haskell-mode-map (kbd "C-c i") 'shm-reformat-decl))
+    (define-key haskell-mode-map (kbd "<backtab>") #'haskell-indentation-indent-backwards)
+    (define-key haskell-mode-map (kbd "TAB")       #'haskell-indentation-indent-line)
+    (define-key haskell-mode-map (kbd "M-,")       #'pop-tag-mark)
+    (define-key haskell-mode-map (kbd "M-P")       #'flymake-goto-prev-error)
+    (define-key haskell-mode-map (kbd "M-N")       #'flymake-goto-next-error)
+    (define-key haskell-mode-map (kbd "C-,")       #'haskell-move-nested-left)
+    (define-key haskell-mode-map (kbd "C-.")       #'haskell-move-nested-right)
+    (define-key haskell-mode-map (kbd "C-c C-d")   #'haskell-w3m-open-haddock)
+    (define-key haskell-mode-map (kbd "C-c C-f")   #'haskell-cabal-visit-file)
+    (define-key haskell-mode-map (kbd "C-c C-h")   #'haskell-hoogle)
+    (define-key haskell-mode-map (kbd "C-c i")     #'shm-reformat-decl))
+
+  (with-eval-after-load 'haskell
+    (let ((map (with-no-warnings interactive-haskell-mode-map)))
+      (define-key map (kbd "C-c C-k") #'haskell-interactive-mode-clear)
+      (evil-define-key 'normal map (kbd "<return>") #'haskell-process-do-info)
+      (evil-define-key 'normal map (kbd "M-.") #'haskell-mode-goto-loc)
+      (evil-define-key 'normal map (kbd ",t") #'haskell-mode-show-type-at)))
 
   (with-eval-after-load 'haskell-presentation-mode
     (evil-define-key 'normal (with-no-warnings haskell-presentation-mode-map) (kbd "q") #'quit-window))
 
   (with-eval-after-load 'haskell-interactive-mode
     (define-key (with-no-warnings haskell-interactive-mode-map) (kbd "C-c C-h") #'haskell-hoogle)
-    (evil-define-key 'normal (with-no-warnings haskell-error-mode-map) (kbd "q") #'quit-window)
-    (evil-define-key 'normal haskell-mode-map (kbd "<return>") #'haskell-process-do-info)
-    (evil-define-key 'normal (with-no-warnings interactive-haskell-mode-map) (kbd "M-.") #'haskell-mode-goto-loc)
-    (evil-define-key 'normal (with-no-warnings interactive-haskell-mode-map) (kbd ",t") #'haskell-mode-show-type-at))
+    (evil-define-key 'normal (with-no-warnings haskell-error-mode-map) (kbd "q") #'quit-window))
 
   (with-eval-after-load 'haskell-cabal-mode
     (define-key haskell-cabal-mode-map (kbd "C-c C-k") #'haskell-interactive-mode-clear)))
