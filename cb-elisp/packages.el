@@ -17,7 +17,8 @@
     smart-ops
     checkdoc
     flycheck-cask
-    nameless))
+    nameless
+    (elisp-autoinsert :location local)))
 
 (use-package lisp-mode
   :config
@@ -149,3 +150,10 @@
         (push '(?\` . ("`" . "'")) evil-surround-pairs-alist))
 
       (add-hook 'emacs-lisp-mode-hook #'cb-elisp/init-evil-surround-pairs))))
+
+(defun cb-elisp/init-elisp-autoinsert ()
+  (use-package elisp-autoinsert
+    :functions (elisp-autoinsert-init)
+    :config (elisp-autoinsert-init)))
+
+;;; packages.el ends here
