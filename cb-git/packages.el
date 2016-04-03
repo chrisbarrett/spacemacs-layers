@@ -22,8 +22,8 @@
   ;; Remove broken Spacemacs customisation
   (remove-hook 'git-commit-mode-hook 'fci-mode)
 
-  (core/remap-face 'magit-section-highlight 'core/bg-hl-ok)
-  (core/remap-face 'magit-diff-context-highlight 'core/bg-hl-ok)
+  (core/remap-face 'magit-section-highlight 'cb-faces-bg-hl-ok)
+  (core/remap-face 'magit-diff-context-highlight 'cb-faces-bg-hl-ok)
 
   (evil-set-initial-state 'git-commit-mode 'insert)
 

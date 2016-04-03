@@ -40,7 +40,7 @@
       (setq yas-verbosity 0)
       (setq yas-triggers-in-field nil)
 
-      (core/remap-face 'yas-field-highlight-face 'core/bg-hl-template)
+      (core/remap-face 'yas-field-highlight-face 'cb-faces-bg-hl-template)
 
       (add-hook 'snippet-mode-hook (lambda () (setq-local require-final-newline nil)))
 

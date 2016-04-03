@@ -8,7 +8,8 @@
 (defconst cb-cosmetic-packages
   '(paren-face
     whitespace
-    (lambda-mode :location local)))
+    (lambda-mode :location local)
+    (cb-faces :location local)))
 
 (defun cb-cosmetic/init-paren-face ()
   (use-package paren-face
@@ -54,3 +55,8 @@
       (add-hook 'lisp-mode-hook          'lambda-mode)
       (add-hook 'emacs-lisp-mode-hook    'lambda-mode)
       (add-hook 'python-mode-hook        'lambda-mode))))
+
+(defun cb-cosmetic/init-cb-faces ()
+  (use-package cb-faces))
+
+;;; packages.el ends here

@@ -63,7 +63,7 @@
 
 (defun cb-ocaml/post-init-merlin ()
   (with-eval-after-load 'merlin
-    (core/remap-face 'merlin-type-face 'core/bg-hl-ok)
+    (core/remap-face 'merlin-type-face 'cb-faces-bg-hl-ok)
     (evil-define-key 'normal merlin-mode-map (kbd "M-.") 'merlin-locate)
     (define-key merlin-mode-map (kbd "M-.") 'merlin-locate))
   (with-eval-after-load 'tuareg

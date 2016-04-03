@@ -3,12 +3,13 @@
 ;;; Code:
 
 (eval-when-compile
-  (require 'cb-vars nil t)
-  (require 'use-package nil t)
-  (require 's nil t)
-  (require 'dash nil t)
-  (require 'f nil t)
-  (require 'noflet nil t))
+  (require 'cb-vars nil t))
+
+(require 'use-package)
+(require 's)
+(require 'dash)
+(require 'f)
+(require 'noflet)
 
 (defconst cb-core-packages
   '(dash-functional
@@ -28,6 +29,7 @@
     ido
     recentf
     neotree
+    time
 
     (cb-buffers :location local)
     (locate-key-binding :location local)
@@ -115,8 +117,8 @@
   (setq helm-gtags-suggested-key-mapping t)
 
   (with-eval-after-load 'pulse
-    (core/remap-face 'pulse-highlight-face 'core/bg-flash)
-    (core/remap-face 'pulse-highlight-start-face 'core/bg-flash))
+    (core/remap-face 'pulse-highlight-face 'cb-faces-bg-flash)
+    (core/remap-face 'pulse-highlight-start-face 'cb-faces-bg-flash))
 
   (with-eval-after-load 'helm-gtags
     (dolist (state '(normal insert))
@@ -245,5 +247,12 @@
   (use-package indent-dwim
     :functions (indent-dwim-init)
     :config (indent-dwim-init)))
+
+(defun cb-core/init-time ()
+  (use-package time
+    :config
+    (progn
+      (setq display-time-default-load-average nil)
+      (display-time-mode +1))))
 
 ;;; packages.el ends here

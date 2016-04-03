@@ -71,10 +71,10 @@ Each entry is either:
         (define-key map (kbd "C-h") 'company-show-doc-buffer)
         (define-key map (kbd "C-w") nil))
 
-      (defun cb-company/set-company-vars ()
+      (defun cb-company--set-company-vars ()
         (setq company-minimum-prefix-length 3)
         (setq company-tooltip-align-annotations t))
 
-      (add-hook 'company-mode-hook #'cb-company/set-company-vars))))
+      (add-hook 'company-mode-hook #'cb-company--set-company-vars))))
 
 ;;; packages.el ends here

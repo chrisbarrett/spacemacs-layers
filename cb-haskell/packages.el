@@ -162,8 +162,8 @@
 (defun cb-haskell/post-init-shm ()
   (setq shm-auto-insert-skeletons nil)
 
-  (core/remap-face 'shm-current-face 'core/bg-hl-ok)
-  (core/remap-face 'shm-quarantine-face 'core/bg-hl-red)
+  (core/remap-face 'shm-current-face 'cb-faces-bg-hl-ok)
+  (core/remap-face 'shm-quarantine-face 'cb-faces-bg-hl-red)
 
   ;; Disable most shm bindings
   (defconst shm-repl-map (make-sparse-keymap))

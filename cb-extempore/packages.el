@@ -24,8 +24,8 @@
         (setq extempore-tab-completion nil)
         (setq user-extempore-directory "/usr/local/Cellar/extempore/0.59"))
 
-      (core/remap-face 'extempore-blink-face 'core/bg-hl-ok)
-      (core/remap-face 'extempore-sb-blink-face 'core/bg-hl-ok)
+      (core/remap-face 'extempore-blink-face 'cb-faces-bg-hl-ok)
+      (core/remap-face 'extempore-sb-blink-face 'cb-faces-bg-hl-ok)
 
       (with-no-warnings
         (define-key extempore-mode-map (kbd "C-c C-.") #'extempore-stop)

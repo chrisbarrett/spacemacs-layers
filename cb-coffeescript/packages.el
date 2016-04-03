@@ -11,3 +11,5 @@
 (defun cb-coffeescript/init-coffee-mode ()
   (use-package coffee-mode
     :defer t))
+
+;;; packages.el ends here

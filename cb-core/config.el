@@ -1,3 +1,7 @@
+;;; config.el --- Basic configuration options.  -*- lexical-binding: t; -*-
+;;; Commentary:
+;;; Code:
+
 ;; Menu-bar looks acceptable in OS X. Otherwise it adds clutter.
 (when (fboundp 'menu-bar-mode)
   (if (and (eq system-type 'darwin)
@@ -31,11 +35,12 @@
 
 ;;; Set variables
 
-(setq abbrev-file-name (concat spacemacs-cache-directory "abbrev_defs"))
+(setq abbrev-file-name (concat (with-no-warnings spacemacs-cache-directory) "abbrev_defs"))
 (setq backup-directory-alist `((".*" . ,spacemacs-autosaves-directory)))
 (setq version-control t)
-(setq bookmark-default-file (concat spacemacs-cache-directory "bookmarks"))
-(setq comint-prompt-read-only t)
+
+(with-no-warnings (setq bookmark-default-file (concat spacemacs-cache-directory "bookmarks")))
+(with-no-warnings (setq comint-prompt-read-only t))
 (setq confirm-nonexistent-file-or-buffer  nil)
 (setq default-input-method "TeX")
 (setq delete-by-moving-to-trash nil)
@@ -45,25 +50,25 @@
 (setq require-final-newline t)
 (setq sentence-end-double-space nil)
 (setq x-select-enable-clipboard t)
-(setq compilation-scroll-output 'first-error)
+(with-no-warnings (setq compilation-scroll-output 'first-error))
 (setq mac-pass-control-to-system nil)
 
 (setq-default fill-column 80)
 (setq-default tab-width 4)
 (setq-default evil-shift-width 2)
 
-(add-hook 'compilation-filter-hook 'cb-core-ansi-colourise-compilation)
+(add-hook 'compilation-filter-hook #'cb-core-ansi-colourise-compilation)
 
 ;;; Colours
 
-(defvar solarized-hl-yellow    "#b58900")
-(defvar solarized-hl-orange    "#cb4b16")
-(defvar solarized-hl-red       "#dc322f")
-(defvar solarized-hl-magenta   "#d33682")
-(defvar solarized-hl-violet    "#6c71c4")
-(defvar solarized-hl-blue      "#268bd2")
-(defvar solarized-hl-cyan      "#2aa198")
-(defvar solarized-hl-green     "#859900")
+(defconst solarized-hl-yellow    "#b58900")
+(defconst solarized-hl-orange    "#cb4b16")
+(defconst solarized-hl-red       "#dc322f")
+(defconst solarized-hl-magenta   "#d33682")
+(defconst solarized-hl-violet    "#6c71c4")
+(defconst solarized-hl-blue      "#268bd2")
+(defconst solarized-hl-cyan      "#2aa198")
+(defconst solarized-hl-green     "#859900")
 
 ;;; Customise spacemacs face.
 
@@ -94,39 +99,6 @@ Work around spacemacs' aggressive manipulation of `face-remapping-alist'."
 
 (defadvice spacemacs//helm-before-initialize (after restore-face-remappings activate)
   (setq face-remapping-alist (-concat face-remapping-alist core/face-remapping-alist)))
-
-;;; Custom faces
-
-(defface core/bg-hl-ok
-  '((((background dark))  :background "#01304b")
-    (((background light)) :background "#e9f2c5"))
-  "Face for highlighting regions that represent an 'OK' state."
-  :group 'cb-faces)
-
-(defface core/bg-hl-template
-  '((((background dark))  :background "#3f4d91")
-    (((background light)) :background "thistle"))
-  "Face for active template fields."
-  :group 'cb-faces)
-
-(defface core/bg-hl-red
-  '((((background dark))  :background "#51202b")
-    (((background light)) :background "#fee8e5"))
-  "Face for highlighting regions that represent an error state."
-  :group 'cb-faces)
-
-(defface core/bg-flash
-  '((((class color) (background light))
-     :background "darkseagreen2")
-    (((class color) (background dark))
-     :background "royalblue4"))
-  "Face for flashing with a green background."
-  :group 'cb-faces)
-
-(defface core/bg-flash-red
-  '((t (:background "rosybrown1")))
-  "Face for flashing with a red background."
-  :group 'cb-faces)
 
 ;;; Saving behaviour
 
@@ -177,17 +149,6 @@ Work around spacemacs' aggressive manipulation of `face-remapping-alist'."
 
 (add-to-list 'auto-mode-alist (cons (rx ".zsh" eos) 'shell-script-mode))
 
-
-;;; Highlight TODO keywords in all modes.
-
-(defun core/set-todo-font-lock ()
-  "Highlight todos in programming language modes."
-  (font-lock-add-keywords
-   nil `((,(rx (or "//" (syntax comment-start)) (* nonl) bow (group (or "FIX" "TODO" "FIXME" "HACK" "REFACTOR")) ":")
-          1 font-lock-warning-face t))))
-
-(add-hook 'prog-mode-hook 'core/set-todo-font-lock)
-
 ;;; Hide DOS EOL
 
 (defun core/hide-dos-eol ()
@@ -202,20 +163,13 @@ Work around spacemacs' aggressive manipulation of `face-remapping-alist'."
 
 ;;; Misc config
 
-(add-hook 'diff-auto-refine-mode-hook (lambda () (aggressive-indent-mode -1)))
+(defun cb-core--font-lock-all-buffers (&rest _)
+  (dolist (buf (buffer-list))
+    (with-current-buffer buf
+      (when font-lock-mode
+        (font-lock-fontify-buffer)))))
 
-(defadvice dotspacemacs/sync-configuration-layers (after font-lock-fontify activate)
-  "Apply font-lock to buffer after reloading Spacemacs."
-  (font-lock-fontify-buffer))
+(advice-add 'spacemacs/cycle-spacemacs-theme :after #'cb-core--font-lock-all-buffers)
+(advice-add 'dotspacemacs/sync-configuration-layers :after #'cb-core--font-lock-all-buffers)
 
-(defadvice spacemacs/cycle-spacemacs-theme (after font-lock-fontify-all activate)
-  "Reapply font lock for all buffers."
-  (--each (buffer-list) (with-current-buffer it
-                          (when font-lock-mode
-                            (font-lock-fontify-buffer)))))
-
-
-;;: Show time in the modeline
-
-(setq display-time-default-load-average nil)
-(display-time-mode +1)
+;;; config.el ends here

@@ -34,8 +34,8 @@
    '(proof-error-face
      ((t (:background nil)))))
 
-  (core/remap-face 'proof-queue-face 'core/bg-flash)
-  (core/remap-face 'proof-locked-face 'core/bg-hl-ok)
+  (core/remap-face 'proof-queue-face 'cb-faces-bg-flash)
+  (core/remap-face 'proof-locked-face 'cb-faces-bg-hl-ok)
   (core/remap-face 'proof-warning-face 'flycheck-warning)
   (core/remap-face 'proof-script-sticky-error-face 'flycheck-error)
   (core/remap-face 'proof-script-highlight-error-face 'flycheck-error))
