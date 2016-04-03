@@ -89,7 +89,6 @@ values."
      cb-core
      cb-cosmetic
      cb-crontab
-     ;; cb-csharp
      cb-dash-docs
      cb-diff
      cb-elisp

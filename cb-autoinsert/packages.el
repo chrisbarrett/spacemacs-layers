@@ -41,16 +41,6 @@
                         (f-ext buffer-file-name)))
                "#ifndef " str n "#define " str "\n\n" _ "\n\n#endif")
 
-              ((csharp-mode . "C# Src File")
-               nil
-               "using System;"                       "\n"
-               "using System.Linq;"                  "\n"
-               "using System.Collections.Generic;"   "\n"
-               "\n"
-               (cb-autoinsert/csharp-type-decl) " {" "\n"
-               > _                                   "\n"
-               "}"                                   "\n")
-
               ((emacs-lisp-mode . "Emacs Lisp")
                nil
                "\;;; " (f-filename (buffer-file-name)) " --- <enter description here>  "
