@@ -17,3 +17,5 @@
 
 (defun cb-flycheck/post-init-flycheck-pos-tip ()
   (setq flycheck-pos-tip-timeout 60))
+
+;;; packages.el ends here

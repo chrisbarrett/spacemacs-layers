@@ -47,3 +47,5 @@
              flycheck-dedent-error-messages
              cb-flycheck-strip-files-in-messages
              flycheck-sanitize-errors))))
+
+;;; config.el ends here
