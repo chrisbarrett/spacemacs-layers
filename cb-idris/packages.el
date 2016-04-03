@@ -7,7 +7,8 @@
 
 (defconst cb-idris-packages
   '(idris-mode
-    smart-ops))
+    smart-ops
+    (idris-autoinsert :location local)))
 
 (defun cb-idris/init-idris-mode ()
   (use-package idris-mode
@@ -146,3 +147,8 @@
 
   (define-smart-ops-for-mode 'idris-mode cb-idris/smart-ops)
   (define-smart-ops-for-mode 'idris-repl-mode cb-idris/smart-ops))
+
+(defun cb-idris/init-idris-autoinsert ()
+  (use-package idris-autoinsert
+    :functions (idris-autoinsert-init)
+    :config (idris-autoinsert-init)))

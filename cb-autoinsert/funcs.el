@@ -13,9 +13,6 @@
        (-map 's-capitalized-words)
        (s-join " ")))
 
-(defun cb-autoinsert/idris-module ()
-  (s-capitalize (file-name-base)))
-
 (defun cb-autoinsert/csharp-type-decl ()
   (let ((name (s-upper-camel-case (file-name-base))))
     (if (s-starts-with? "I" name)
