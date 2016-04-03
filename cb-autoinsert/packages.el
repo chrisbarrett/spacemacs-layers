@@ -13,7 +13,7 @@
     :init (setq auto-insert-alist nil)
     :config
     (progn
-      (add-to-list auto-insert-alist
+      (add-to-list 'auto-insert-alist
                    '((html-mode . "HTML file")
                      nil
                      "<!DOCTYPE html>"          "\n"
