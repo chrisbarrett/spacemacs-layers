@@ -244,15 +244,16 @@
         (advice-add fn :around #'cb-haskell/hacky-sp-preserve-indent-level)))))
 
 (defun cb-haskell/post-init-smart-ops ()
+
   (defun cb-haskell/reformat-comment-at-point ()
     (-when-let ((&plist :beg beg :end end :op op) (sp-get-enclosing-sexp))
       (when (and (equal op "{")
                  (s-matches? (rx bos "{" (* (any "-" space)) "}" eos)
-                             (buffer-substring beg end))))
-      (goto-char beg)
-      (delete-region beg end)
-      (insert "{- ")
-      (save-excursion (insert " -}"))))
+                             (buffer-substring beg end)))
+        (goto-char beg)
+        (delete-region beg end)
+        (insert "{- ")
+        (save-excursion (insert " -}")))))
 
   (defun cb-haskell/reformat-pragma-at-point ()
     (-when-let ((&plist :beg beg :end end :op op) (sp-get-enclosing-sexp))
