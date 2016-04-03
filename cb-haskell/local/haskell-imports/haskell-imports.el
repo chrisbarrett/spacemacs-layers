@@ -42,11 +42,44 @@
   "Make a reasonable name for MODULE for use in a qualified import."
   (-last-item (s-split (rx ".") module)))
 
+(defun haskell-imports--exposed-modules (pkg-entry)
+  (with-temp-buffer
+    (insert pkg-entry)
+    (goto-char (point-min))
+    (when (search-forward-regexp (rx bol "exposed-modules:") nil t)
+      (forward-line 1)
+      (let ((start (line-beginning-position)))
+        (while (s-matches? (rx bol (+ space)) (buffer-substring (line-beginning-position)(line-end-position)))
+          (forward-line 1))
+
+        (let ((section (buffer-substring-no-properties start (line-beginning-position))))
+          (s-split (rx (any " \n")) section t))))))
+
+(defun haskell-imports--package-cache-outdated? ()
+  (-when-let ((line-1) (s-lines (shell-command-to-string "ghc-pkg dump")))
+    (s-starts-with? "WARNING: cache is out of date" line-1)))
+
+(defun haskell-imports--maybe-recache-packages ()
+  (when (and (haskell-imports--package-cache-outdated?)
+             (y-or-n-p "Package cache is outdated.  Update cache? "))
+    (message "Updating...")
+    (shell-command "ghc-pkg recache")))
+
+(defun haskell-imports--module-listing ()
+  "Get a list of all Haskell modules known to the current project or GHC."
+  (haskell-imports--maybe-recache-packages)
+  (let ((cached-packages (->> (shell-command-to-string "ghc-pkg dump")
+                              (s-split "---")
+                              (-mapcat #'haskell-imports--exposed-modules))))
+    (-if-let (session (haskell-session-maybe))
+        (-union cached-packages (haskell-session-all-modules session t))
+      cached-packages)))
+
 ;;;###autoload
 (defun haskell-imports-insert-qualified (module name)
   "Insert a qualified Haskell import statement for MODULE with short NAME."
   (interactive
-   (let ((m (s-trim (completing-read "Module: " (haskell-imports--module-listing)))))
+   (let ((m (completing-read "Module: " (haskell-imports--module-listing))))
      (list m (s-trim (read-string "As: " (haskell-imports--module-to-qualified-name m)
                                   t)))))
 
@@ -57,28 +90,6 @@
         (message "Module '%s' is already imported" module))
 
     (haskell-imports--insert-at-imports (format "import qualified %s as %s" module name))))
-
-(defun haskell-imports--parse-module (str)
-  (with-temp-buffer
-    (insert str)
-    (goto-char (point-min))
-    (when (search-forward-regexp (rx bol "exposed-modules: ") nil t)
-      (let (start end)
-        (setq start (point))
-        (setq end (if (search-forward ":" nil t)
-                      (progn (beginning-of-line) (point))
-                    (point-max)))
-        (s-split " " (buffer-substring-no-properties start end) t)))))
-
-(defun haskell-imports--module-listing ()
-  "Get a list of all Haskell modules known to the current project or GHC."
-  (-union '("Control.Applicative")
-          (-if-let (session (haskell-session-maybe))
-              (haskell-session-all-modules session t)
-            (->> (shell-command-to-string "ghc-pkg dump")
-                 (s-split "---")
-                 (-mapcat #'haskell-imports--parse-module)
-                 (-map #'s-trim)))))
 
 ;;;###autoload
 (defun haskell-imports-insert-unqualified (module)
