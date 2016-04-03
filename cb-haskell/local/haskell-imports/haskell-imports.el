@@ -36,7 +36,8 @@
   (save-excursion
     (open-line 1)
     (haskell-navigate-imports-go)
-    (insert str)))
+    (insert str)
+    (newline)))
 
 (defun haskell-imports--module-to-qualified-name (module)
   "Make a reasonable name for MODULE for use in a qualified import."
