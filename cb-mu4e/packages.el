@@ -95,7 +95,7 @@
       (setq message-kill-buffer-on-exit t)
       (setq mu4e-compose-signature-auto-include t)
 
-      (setq mu4e-get-mail-command "mbsync -a")
+      (setq mu4e-get-mail-command "mbsync -a -q")
       (setq mu4e-change-filenames-when-moving t)
 
       (setq smtpmail-queue-mail nil)
