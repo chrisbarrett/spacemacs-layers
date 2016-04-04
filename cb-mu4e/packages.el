@@ -111,11 +111,10 @@
       (setq message-citation-line-function 'message-insert-formatted-citation-line)
       (setq message-citation-line-format "On %a, %b %d %Y, %f wrote:\n")
 
-      ;; Update every 2 minutes.
-      (setq mu4e-update-interval 120)
+      ;; Update every 5 minutes.
+      (setq mu4e-update-interval (* 60 5))
 
       ;; Disable autofill in compose buffers
-
       (add-hook 'mu4e-compose-mode-hook #'turn-off-auto-fill)
 
       ;; use imagemagick, if available
