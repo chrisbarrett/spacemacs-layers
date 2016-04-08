@@ -36,6 +36,8 @@
      ("s-l" . projectile-switch-project))
     :config
     (progn
+      (setq projectile-enable-caching t)
+
       ;;; Define a command that switches between test and impl, optionally in
       ;;; another window.
 
