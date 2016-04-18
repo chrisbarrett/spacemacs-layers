@@ -30,9 +30,6 @@ values."
       :variables
       c-c++-default-mode-for-headers 'c++-mode
       c-c++-enable-clang-support t)
-     (clojure
-      :variables
-      clojure-enable-fancify-symbols t)
      dockerfile
      elm
      emacs-lisp
