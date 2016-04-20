@@ -41,7 +41,6 @@
     (insert-timestamp :location local)
     (insert-shebang :location local)
     (insert-variable-value :location local)
-    (insert-guid :location local)
     (helm-http-status :location local)
     (indent-dwim :location local)))
 
@@ -233,11 +232,6 @@
 (defun cb-core/init-insert-variable-value ()
   (use-package insert-variable-value
     :commands (insert-variable-value)))
-
-(defun cb-core/init-insert-guid ()
-  (use-package insert-guid
-    :commands (insert-guid)
-    :init (spacemacs/set-leader-keys "iU" 'insert-guid)))
 
 (defun cb-core/init-helm-http-status ()
   (use-package helm-http-status
