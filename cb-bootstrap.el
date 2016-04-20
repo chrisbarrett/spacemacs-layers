@@ -30,6 +30,8 @@
 
 (defconst cb-bootstrap-packages
   '(s
+    use-package
+    evil
     dash
     dash-functional
     noflet
