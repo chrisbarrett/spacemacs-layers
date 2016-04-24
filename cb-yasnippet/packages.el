@@ -20,17 +20,19 @@
   (use-package yasnippet
     :defer t
     :init
-    (progn
-      (spacemacs/declare-prefix "Y" "yasnippet")
-      (spacemacs/set-leader-keys "Yf" #'yas-visit-snippet-file)
-      (spacemacs/set-leader-keys "Ye" #'yas-expand)
-      (spacemacs/set-leader-keys "Yn" #'yas-new-snippet)
-      (spacemacs/set-leader-keys "Yy" #'yas-insert-snippet)
-      (spacemacs/set-leader-keys "Yr" #'cb-yas/reload-all)
-
-      (setq yas-snippet-dirs cb-yasnippet/yas-dirs))
+    (add-hook 'prog-mode-hook (lambda () (require 'yasnippet)))
     :config
     (progn
+      (spacemacs/declare-prefix "y" "yasnippet")
+      (spacemacs/set-leader-keys "yf" #'yas-visit-snippet-file)
+      (spacemacs/set-leader-keys "ye" #'yas-expand)
+      (spacemacs/set-leader-keys "yn" #'yas-new-snippet)
+      (spacemacs/set-leader-keys "yy" #'yas-insert-snippet)
+      (spacemacs/set-leader-keys "yr" #'cb-yas/reload-all)
+
+      (setq yas-snippet-dirs cb-yasnippet/yas-dirs)
+
+      (spacemacs|diminish yas-minor-mode " ⓨ" " y")
 
       (cb-yas/register-snippets-dir cb-yasnippet/main-snippets-dir)
 
