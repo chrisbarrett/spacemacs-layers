@@ -29,13 +29,28 @@
 
 (autoload 'projectile-project-p "projectile")
 
-(defconst haskell-autoinsert-form
-  '((haskell-mode . "Haskell Src File")
-    nil
-    "module " (haskell-autoinsert--module-name) " where" "\n"
-    "\n"
-    _
-    "\n"))
+(defconst haskell-autoinsert-forms
+  '(((haskell-mode . "Haskell Src File")
+     nil
+     "module " (haskell-autoinsert--module-name) " where" "\n"
+     "\n"
+     _
+     "\n")
+
+    (("Spec\\.hs\\'" . "Haskell Test Spec")
+     nil
+     "module " (haskell-autoinsert--module-name) " where" "\n"
+     "\n"
+     "import           " (s-chop-suffix "Spec" (haskell-autoinsert--module-name)) "\n"
+     "import           Test.Hspec" "\n"
+     "\n"
+     "main :: IO ()" "\n"
+     "main = hspec spec" "\n"
+     "\n"
+     "spec :: Spec" "\n"
+     "spec = do" "\n"
+     "    describe " "\"" _ "\""
+     "\n")))
 
 (defun haskell-autoinsert--module-name ()
   (-if-let (root (and (buffer-file-name) (projectile-project-p)))
@@ -54,8 +69,9 @@
 ;;;###autoload
 (defun haskell-autoinsert-init ()
   (with-eval-after-load 'autoinsert
-    (with-no-warnings
-      (add-to-list 'auto-insert-alist haskell-autoinsert-form))))
+    (dolist (form haskell-autoinsert-forms)
+      (with-no-warnings
+        (add-to-list 'auto-insert-alist form)))))
 
 (provide 'haskell-autoinsert)
 
