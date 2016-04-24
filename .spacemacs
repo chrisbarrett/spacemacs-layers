@@ -34,7 +34,7 @@ values."
      dockerfile
      elm
      emacs-lisp
-     eyebrowse
+     spacemacs-layouts
      finance
      (git
       :variables
