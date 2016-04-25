@@ -42,7 +42,8 @@
     (insert-shebang :location local)
     (insert-variable-value :location local)
     (helm-http-status :location local)
-    (indent-dwim :location local)))
+    (indent-dwim :location local)
+    (replace-smart-quotes :location local)))
 
 (defun cb-core/user-config ()
   "This procedure should be called in `dotspacemacs/user-config'."
@@ -248,5 +249,10 @@
     (progn
       (setq display-time-default-load-average nil)
       (display-time-mode +1))))
+
+(defun cb-core/init-replace-smart-quotes ()
+  (use-package replace-smart-quotes
+    :commands (replace-smart-quotes-region
+               replace-smart-quotes-buffer)))
 
 ;;; packages.el ends here
