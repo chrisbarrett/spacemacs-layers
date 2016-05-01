@@ -37,6 +37,7 @@
     :config
     (progn
       (setq projectile-enable-caching t)
+      (setq projectile-switch-project-action #'magit-status)
 
       ;;; Define a command that switches between test and impl, optionally in
       ;;; another window.
@@ -183,6 +184,7 @@
 
 (defun cb-project/init-cb-project-show-project ()
   (use-package cb-project-show-project
+    :disabled t
     :after projectile
     :config (cb-project-show-project-init)))
 
