@@ -276,7 +276,6 @@ Do not scheduled items or repeating todos."
     (define-key flyspell-mode-map (kbd "C-c $") nil))
 
   (spacemacs/set-leader-keys "oh" #'helm-org-agenda-files-headings)
-  (spacemacs/set-leader-keys-for-major-mode 'org-mode "mP" #'org-plot/gnuplot)
 
   (with-eval-after-load 'org
     (define-key org-mode-map (kbd "C-c C-.") #'org-time-stamp-inactive)
@@ -286,7 +285,6 @@ Do not scheduled items or repeating todos."
     (define-key org-mode-map (kbd "C-c C-k") #'cb-org/ctrl-c-ctrl-k)
     (define-key org-mode-map (kbd "C-c RET") #'cb-org/ctrl-c-ret)
     (define-key org-mode-map (kbd "C-c ;")   nil)
-    (define-key org-mode-map (kbd "M-C-g")   #'org-plot/gnuplot)
 
     (evil-define-key 'normal org-mode-map (kbd "RET") #'org-return))
 
