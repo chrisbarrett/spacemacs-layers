@@ -19,3 +19,6 @@
 [submodule "cb-proof/local/PG"]
 	path = cb-proof/local/PG
 	url = https://github.com/ProofGeneral/PG.git
+[submodule "cb-haskell/local/flycheck-stack"]
+	path = cb-haskell/local/flycheck-stack
+	url = git@github.com:chrisdone/flycheck-stack.git

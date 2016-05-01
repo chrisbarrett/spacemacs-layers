@@ -34,7 +34,8 @@
     (haskell-unicode :location local)
     (haskell-snippets :excluded t)
     (haskell-smart-commands :location local)
-    (haskell-autoinsert :location local)))
+    (haskell-autoinsert :location local)
+    (flycheck-stack :location local)))
 
 (defun cb-haskell/init-llvm-mode ()
   (use-package llvm-mode))
@@ -376,5 +377,16 @@
   (use-package haskell-autoinsert
     :functions (haskell-autoinsert-init)
     :config (haskell-autoinsert-init)))
+
+(defun cb-haskell/init-flycheck-stack ()
+  (use-package flycheck-stack
+    :after flycheck
+    :config
+    (progn
+      (defun haskell-mode-flycheck-stack ()
+        (flycheck-select-checker 'stack)
+        (flycheck-mode))
+
+      (add-hook 'haskell-mode-hook #'haskell-mode-flycheck-stack))))
 
 ;;; packages.el ends here
