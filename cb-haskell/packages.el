@@ -402,6 +402,11 @@
   (use-package company-ghci
     :after company
     :config
-    (push '(company-ghci company-dabbrev-code company-yasnippet) company-backends-haskell-mode)))
+    (push '(company-ghci company-dabbrev-code company-yasnippet) company-backends-haskell-mode)
+
+    (defun cb-haskell/configure-flycheck ()
+      (setq-local flycheck-check-syntax-automatically '(save mode-enabled)))
+
+    (add-hook 'haskell-mode-hook #'cb-haskell/configure-flycheck)))
 
 ;;; packages.el ends here
