@@ -52,7 +52,7 @@
   (when (derived-mode-p 'scala-mode)
     (--each scala/unicode-mapping-alist
       (-let* (((ascii . unicode) it)
-              (match-ascii  (rx-to-string `(and space (group ,ascii) space)
+              (match-ascii  (rx-to-string `(and space (group ,ascii) (or space eol))
                                           nil)))
         (save-excursion
           (goto-char (point-min))
