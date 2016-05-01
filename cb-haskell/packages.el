@@ -21,6 +21,7 @@
     llvm-mode
     cb-buffers
     indent-dwim
+    company-ghci
 
     (ghc-dump :location local)
     (haskell-ctrl-c-ctrl-c :location local)
@@ -395,5 +396,11 @@
     :functions cb-haskell-alignment-init
     :config
     (add-hook 'haskell-mode-hook #'cb-haskell-alignment-init)))
+
+(defun cb-haskell/init-company-ghci ()
+  (use-package company-ghci
+    :after company
+    :config
+    (push '(company-ghci company-dabbrev-code company-yasnippet) company-backends-haskell-mode)))
 
 ;;; packages.el ends here
