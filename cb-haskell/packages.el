@@ -35,7 +35,8 @@
     (haskell-snippets :excluded t)
     (haskell-smart-commands :location local)
     (haskell-autoinsert :location local)
-    (flycheck-stack :location local)))
+    (flycheck-stack :location local)
+    (cb-haskell-alignment :location local)))
 
 (defun cb-haskell/init-llvm-mode ()
   (use-package llvm-mode))
@@ -388,5 +389,11 @@
         (flycheck-mode))
 
       (add-hook 'haskell-mode-hook #'haskell-mode-flycheck-stack))))
+
+(defun cb-haskell/init-cb-haskell-alignment ()
+  (use-package cb-haskell-alignment
+    :functions cb-haskell-alignment-init
+    :config
+    (add-hook 'haskell-mode-hook #'cb-haskell-alignment-init)))
 
 ;;; packages.el ends here
