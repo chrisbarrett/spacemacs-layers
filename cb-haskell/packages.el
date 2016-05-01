@@ -132,9 +132,11 @@
 
     (evil-define-key 'normal haskell-mode-map (kbd "<backtab>") #'haskell-indentation-indent-backwards)
     (evil-define-key 'normal haskell-mode-map (kbd "TAB") #'haskell-indentation-indent-line)
+    (evil-define-key 'normal haskell-mode-map  (kbd "M-.") #'evil-jump-to-tag)
 
     (define-key haskell-mode-map (kbd "<backtab>") #'haskell-indentation-indent-backwards)
     (define-key haskell-mode-map (kbd "TAB")       #'haskell-indentation-indent-line)
+    (define-key haskell-mode-map (kbd "M-.")       #'evil-jump-to-tag)
     (define-key haskell-mode-map (kbd "M-,")       #'pop-tag-mark)
     (define-key haskell-mode-map (kbd "M-P")       #'flymake-goto-prev-error)
     (define-key haskell-mode-map (kbd "M-N")       #'flymake-goto-next-error)
@@ -149,7 +151,6 @@
     (let ((map (with-no-warnings interactive-haskell-mode-map)))
       (define-key map (kbd "C-c C-k") #'haskell-interactive-mode-clear)
       (evil-define-key 'normal map (kbd "<return>") #'haskell-process-do-info)
-      (evil-define-key 'normal map (kbd "M-.") #'haskell-mode-goto-loc)
       (evil-define-key 'normal map (kbd ",t") #'haskell-mode-show-type-at)))
 
   (with-eval-after-load 'haskell-presentation-mode
