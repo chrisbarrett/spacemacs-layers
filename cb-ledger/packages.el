@@ -4,7 +4,8 @@
 
 (defconst cb-ledger-packages
   '(ledger-mode
-    (cb-ledger-reports :location local))
+    (cb-ledger-reports :location local)
+    (cb-ledger-format :location local))
   "List of all packages to install and/or initialize. Built-in packages
 which require an initialization must be listed explicitly in the list.")
 
@@ -80,13 +81,13 @@ which require an initialization must be listed explicitly in the list.")
 
       (define-key ledger-mode-map (kbd "C-c C-c") #'ledger-report)
       (define-key ledger-mode-map (kbd "M-RET")   #'ledger-toggle-current-transaction)
-      (define-key ledger-mode-map (kbd "M-q")     #'cb-ledger-format-buffer)
       (define-key ledger-mode-map (kbd "C-c C-.") #'cb-ledger-insert-timestamp)
 
       (evil-define-key 'normal ledger-report-mode-map (kbd "q") #'kill-buffer-and-window))))
 
 (defun cb-ledger/init-cb-ledger-reports ()
   (use-package cb-ledger-reports
+    :after ledger-mode
     :config
     (progn
       (setq cb-ledger-reports-income-payee-name "Income:Movio")
@@ -112,3 +113,9 @@ which require an initialization must be listed explicitly in the list.")
               ("this month" "ledger -f %(ledger-file) -p 'this month' -r %(report-type) 'checking' --invert")
               ("since payday" "ledger -f %(ledger-file) -b %(last-payday) -r %(report-type) 'checking' --invert")
               ("previous pay period" "ledger -f %(ledger-file) -p %(prev-pay-period) -r %(report-type) 'checking' --invert"))))))
+
+(defun cb-ledger/init-cb-ledger-format ()
+  (use-package cb-ledger-format
+    :after ledger-mode
+    :config
+    (define-key ledger-mode-map (kbd "M-q") #'cb-ledger-format-buffer)))
