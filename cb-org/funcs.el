@@ -100,11 +100,18 @@
    ((org-at-table-p) (call-interactively 'org-table-hline-and-move))
    (t (call-interactively 'org-insert-todo-heading))))
 
+(defconst cb-org/show-agenda-work-start-hour 8)
+(defconst cb-org/show-agenda-work-end-hour 6)
+
 (defun cb-org/show-agenda ()
   "Show the agenda fullscreen."
   (interactive)
-  (org-agenda current-prefix-arg "A")
-  (delete-other-windows))
+  (-let [(_s _m h) (decode-time)]
+    (if (and (<= cb-org/show-agenda-work-start-hour h)
+             (<= cb-org/show-agenda-work-end-hour h))
+        (org-agenda current-prefix-arg "w")
+      (org-agenda current-prefix-arg "A"))
+    (delete-other-windows)))
 
 
 ;;; Diary utils
