@@ -148,34 +148,33 @@
      `(org-scheduled-previously ((,class (:background nil :height 1.0))))
      ))
 
-  ;; Advice
+  ;; Enter evil insert state when creating new headings.
 
-  (defadvice org-add-log-note (before exit-minibuffer activate)
-    "If the minibuffer is active, exit before prompting for a note."
+  (defun cb-org/ad-evil-insert-state (&rest _)
+    (when (called-interactively-p nil)
+      (evil-insert-state)))
+
+  (advice-add 'org-insert-heading :after #'cb-org/ad-evil-insert-state)
+  (advice-add 'org-insert-heading-respect-content :after #'cb-org/ad-evil-insert-state)
+  (advice-add 'org-insert-todo-heading :after #'cb-org/ad-evil-insert-state)
+  (advice-add 'org-insert-todo-heading-respect-content :after #'cb-org/ad-evil-insert-state)
+
+  ;; Exit minibuffer before adding notes.
+
+  (defun cb-org/ad-exit-minibuffer (&rest _)
     (when (minibufferp (window-buffer (selected-window)))
       (other-window 1)))
 
-  (defadvice org-insert-heading (after insert-state activate)
-    (when (called-interactively-p nil)
-      (evil-insert-state)))
+  (advice-add 'org-add-log-note :before #'cb-org/ad-exit-minibuffer)
 
-  (defadvice org-insert-heading-respect-content (after insert-state activate)
-    (when (called-interactively-p nil)
-      (evil-insert-state)))
+  ;; Prevent point from moving to BOL when toggling headings.
 
-  (defadvice org-insert-todo-heading (after insert-state activate)
-    (when (called-interactively-p nil)
-      (evil-insert-state)))
-
-  (defadvice org-insert-todo-heading-respect-content (after insert-state activate)
-    (when (called-interactively-p nil)
-      (evil-insert-state)))
-
-  (defadvice org-toggle-heading (after goto-line-end activate)
-    "Prevent point from being moved to the line beginning."
-    (when (s-matches? (rx bol (+ "*") (* space) eol) (cb-buffers-current-line))
+  (defun cb-org/ad-toggle-heading-goto-eol (&rest _)
+    (when (s-matches? (rx bol (+ "*") (* space) eol)
+                      (buffer-substring (line-beginning-position) (line-end-position)))
       (goto-char (line-end-position))))
 
+  (advice-add 'org-toggle-heading :after #'cb-org/ad-toggle-heading-goto-eol)
 
   ;; Hooks
 
@@ -298,10 +297,15 @@ Do not scheduled items or repeating todos."
       (setq gnuplot-inline-image-mode 'dedicated)
       (add-hook 'gnuplot-mode-hook #'page-break-lines-mode)
 
-      (defadvice org-plot/gnuplot (around display-buffer activate)
-        (ignore-errors ad-do-it)
+      ;; Show the gnuplot buffer after rendering.
+
+      (defun cb-org/ad-gnuplot-display-buffer (fn &rest _)
+        (ignore-errors
+          (funcall fn))
         (-when-let (buf (get-buffer gnuplot-image-buffer-name))
-          (display-buffer buf))))))
+          (display-buffer buf)))
+
+      (advice-add 'org-plot/gnuplot :around #'cb-org/ad-gnuplot-display-buffer))))
 
 (defun cb-org/init-cb-org-latex-preview-retina ()
   (use-package cb-org-latex-preview-retina
@@ -445,8 +449,12 @@ Do not scheduled items or repeating todos."
 
     (setq org-archive-default-command 'cb-org/archive-done-tasks)
 
-    (defadvice org-archive-subtree (before apply-inherited-tags activate)
-      (org-set-tags-to (org-get-tags-at)))))
+    ;; Apply inherited tags when archiving.
+
+    (defun cb-org/ad-apply-inherited-tags (&rest _)
+      (org-set-tags-to (org-get-tags-at)))
+
+    (advice-add 'org-archive-subtree :before #'cb-org/ad-apply-inherited-tags)))
 
 (use-package org-table
   :after org
