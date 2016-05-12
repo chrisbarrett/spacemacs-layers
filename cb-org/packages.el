@@ -521,10 +521,7 @@ Do not scheduled items or repeating todos."
              org-drill-directory
              org-drill-again)
   :config
-  (progn
-    (setq org-drill-save-buffers-after-drill-sessions-p nil)
-    (defadvice org-drill (after save-buffers activate)
-      (org-save-all-org-buffers))))
+  (setq org-drill-save-buffers-after-drill-sessions-p t))
 
 (use-package ox
   :after org
