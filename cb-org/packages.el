@@ -352,6 +352,7 @@ Do not scheduled items or repeating todos."
     (setq org-agenda-text-search-extra-files '(agenda-archives))
     (setq org-agenda-use-time-grid nil)
     (setq org-agenda-inhibit-startup t)
+    (setq org-agenda-tags-column -100)
 
     (setq org-agenda-clockreport-parameter-plist
           (list
