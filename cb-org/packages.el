@@ -327,7 +327,7 @@ Do not scheduled items or repeating todos."
 
     (setq org-agenda-include-diary nil)
     (setq org-agenda-start-on-weekday nil)
-    (setq org-agenda-auto-exclude-function 'cb-org/exclude-tasks-on-hold)
+    (setq org-agenda-auto-exclude-function #'cb-org/exclude-tasks-on-hold)
     (setq org-agenda-files (f-files org-directory (lambda (f) (f-ext? f "org"))))
     (setq org-agenda-diary-file (f-join org-directory "diary.org"))
     (setq org-agenda-hide-tags-regexp (rx (or "noexport" "someday")))
