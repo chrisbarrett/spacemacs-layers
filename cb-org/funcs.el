@@ -159,19 +159,6 @@ are between the current date (DATE) and Easter Sunday."
   (calendar-gregorian-from-absolute (+ n (calendar-easter-date year))))
 
 
-;;; Config support
-
-(defun cb-org/display-links ()
-  (interactive)
-  (let ((bufname "*Org Links*"))
-    (-if-let (buf (get-buffer bufname))
-        (display-buffer buf)
-      (with-current-buffer (find-file-noselect org-default-notes-file)
-        (-when-let (mark (save-excursion (org-find-exact-headline-in-buffer "Links")))
-          (clone-indirect-buffer bufname t)
-          (goto-char (marker-position mark))
-          (org-narrow-to-subtree)
-          (org-content))))))
 
 ;; HACK: override `org-clocktable-steps' to customise clocktable appearance.
 (with-eval-after-load 'org-clock
