@@ -68,14 +68,14 @@
    (t (call-interactively 'org-insert-todo-heading))))
 
 (defconst cb-org/show-agenda-work-start-hour 8)
-(defconst cb-org/show-agenda-work-end-hour 6)
+(defconst cb-org/show-agenda-work-end-hour 18)
 
 (defun cb-org/show-agenda ()
   "Show the agenda fullscreen."
   (interactive)
   (-let [(_s _m h) (decode-time)]
     (if (and (<= cb-org/show-agenda-work-start-hour h)
-             (<= cb-org/show-agenda-work-end-hour h))
+             (>= cb-org/show-agenda-work-end-hour h))
         (org-agenda current-prefix-arg "w")
       (org-agenda current-prefix-arg "A"))
     (delete-other-windows)))
