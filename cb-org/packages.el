@@ -350,6 +350,7 @@ Do not scheduled items or repeating todos."
             (search category-keep)))
     (setq org-agenda-text-search-extra-files '(agenda-archives))
     (setq org-agenda-use-time-grid nil)
+    (setq org-agenda-inhibit-startup t)
 
     (setq org-agenda-clockreport-parameter-plist
           (list
@@ -372,7 +373,8 @@ Do not scheduled items or repeating todos."
               (stuck "")
               (tags-todo "media|study/NEXT"
                          ((org-agenda-overriding-header "Media & Study"))))
-             ((org-agenda-tag-filter-preset '( "-ignore"))))
+             ((org-agenda-tag-filter-preset '( "-ignore"))
+              (org-agenda-archives-mode nil)))
 
             ("n" "Next actions"
              ((tags-todo "-study-someday/NEXT"))
@@ -407,7 +409,22 @@ Do not scheduled items or repeating todos."
              ((org-agenda-tag-filter-preset
                '("-drill" "-gtd" "-ignore"))
               (org-agenda-include-inactive-timestamps t)
-              (org-agenda-dim-blocked-tasks nil)))))
+              (org-agenda-archives-mode nil)
+              (org-agenda-dim-blocked-tasks nil)))
+
+            ("w" "Work actions"
+             ((tags-todo "-study-someday-media/NEXT"
+                         ((org-agenda-overriding-header "Next Actions")))
+              (todo "WAITING"
+                    ((org-agenda-overriding-header "Waiting")))
+              (stuck "")
+              (agenda ""))
+             ((org-agenda-tag-filter-preset '( "-ignore"))
+              (org-agenda-files (list cb-org-work-file org-agenda-diary-file))
+              (org-agenda-dim-blocked-tasks nil)
+              (org-agenda-use-tag-inheritance nil)
+              (org-agenda-archives-mode nil)
+              (org-agenda-ignore-drawer-properties '(effort appt))))))
 
     (define-key org-agenda-mode-map (kbd "J") 'org-agenda-goto-date)
 
