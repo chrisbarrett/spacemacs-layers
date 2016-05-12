@@ -158,8 +158,27 @@
 
   (advice-add 'org-insert-heading :after #'cb-org/ad-evil-insert-state)
   (advice-add 'org-insert-heading-respect-content :after #'cb-org/ad-evil-insert-state)
-  (advice-add 'org-insert-todo-heading :after #'cb-org/ad-evil-insert-state)
   (advice-add 'org-insert-todo-heading-respect-content :after #'cb-org/ad-evil-insert-state)
+  (advice-add 'org-insert-todo-heading :after #'cb-org/ad-evil-insert-state)
+
+  ;; Add a blank line of padding below new headings.
+
+  (defun cb-org/ad-blank-line-after-heading (&rest _)
+    (when (and (called-interactively-p nil)
+               (org-at-heading-p))
+      (let ((next-line-blank?
+             (save-excursion
+               (forward-line)
+               (s-blank? (buffer-substring (line-beginning-position) (line-end-position))))))
+        (unless next-line-blank?
+          (save-excursion
+            (goto-char (line-end-position))
+            (open-line 1))))))
+
+  (advice-add 'org-insert-heading :after #'cb-org/ad-blank-line-after-heading)
+  (advice-add 'org-insert-heading-respect-content :after #'cb-org/ad-blank-line-after-heading)
+  (advice-add 'org-insert-todo-heading-respect-content :after #'cb-org/ad-blank-line-after-heading)
+  (advice-add 'org-insert-todo-heading :after #'cb-org/ad-blank-line-after-heading)
 
   ;; Exit minibuffer before adding notes.
 
