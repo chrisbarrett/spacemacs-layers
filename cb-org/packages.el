@@ -22,7 +22,6 @@
     org-agenda
     org-indent
     org-archive
-    org-table
     org-src
     org-clock
     org-crypt
