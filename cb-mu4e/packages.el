@@ -124,10 +124,10 @@
       ;; Render html emails using something reasonable.
       (setq mu4e-html2text-command
             (cond
-             ((executable-find "textutil")
-              "textutil -stdin -format html -convert txt -stdout")
              ((executable-find "w3m")
               "w3m -dump -cols 80 -T text/html")
+             ((executable-find "textutil")
+              "textutil -stdin -format html -convert txt -stdout")
              (t
               'html2text)))
 
