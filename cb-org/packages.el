@@ -387,8 +387,11 @@ Do not scheduled items or repeating todos."
               (stuck "")
               (tags-todo "media|study/NEXT"
                          ((org-agenda-overriding-header "Media & Study"))))
-             ((org-agenda-tag-filter-preset '( "-ignore"))
-              (org-agenda-archives-mode nil)))
+             ((org-agenda-tag-filter-preset '( "-ignore" "-@work"))
+              (org-agenda-files (list org-default-notes-file org-agenda-diary-file))
+              (org-agenda-dim-blocked-tasks nil)
+              (org-agenda-archives-mode nil)
+              (org-agenda-ignore-drawer-properties '(effort appt))))
 
             ("n" "Next actions"
              ((tags-todo "-study-someday/NEXT"))
