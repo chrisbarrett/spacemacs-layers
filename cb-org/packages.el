@@ -32,7 +32,8 @@
     ox-texinfo
     org-present
     (cb-org-latex-preview-retina :location local)
-    (org-autoinsert :location local)))
+    (org-autoinsert :location local)
+    (cb-org-clock-cascade :location local)))
 
 (defun cb-org/post-init-org-present ()
   (use-package org-present
@@ -486,53 +487,6 @@ Do not scheduled items or repeating todos."
   :after org
   :config
   (progn
-
-    (defun cb-org/project? ()
-      "Any task with a todo keyword subtask"
-      (save-restriction
-        (widen)
-        (let ((has-subtask)
-              (subtree-end (save-excursion (org-end-of-subtree t)))
-              (is-a-task (member (nth 2 (org-heading-components)) org-todo-keywords-1)))
-          (save-excursion
-            (forward-line 1)
-            (while (and (not has-subtask)
-                        (< (point) subtree-end)
-                        (re-search-forward "^\*+ " subtree-end t))
-              (when (member (org-get-todo-state) org-todo-keywords-1)
-                (setq has-subtask t))))
-          (and is-a-task has-subtask))))
-
-    (defun cb-org/task? ()
-      "Any task with a todo keyword and no subtask"
-      (save-restriction
-        (widen)
-        (let ((has-subtask)
-              (subtree-end (save-excursion (org-end-of-subtree t)))
-              (is-a-task (member (nth 2 (org-heading-components)) org-todo-keywords-1)))
-          (save-excursion
-            (forward-line 1)
-            (while (and (not has-subtask)
-                        (< (point) subtree-end)
-                        (re-search-forward "^\*+ " subtree-end t))
-              (when (member (org-get-todo-state) org-todo-keywords-1)
-                (setq has-subtask t))))
-          (and is-a-task (not has-subtask)))))
-
-    (defun cb-org/clock-in-to-next-state (_kw)
-      "Move a task from TODO to NEXT when clocking in.
-Skips capture tasks, projects, and subprojects.
-Switch projects and subprojects from NEXT back to TODO."
-      (unless (and (boundp 'org-capture-mode) org-capture-mode)
-        (cond
-         ((and (-contains? '("TODO") (org-get-todo-state))
-               (cb-org/task?))
-          "NEXT")
-         ((and (-contains? '("NEXT") (org-get-todo-state))
-               (cb-org/project?))
-          "TODO"))))
-
-    (setq org-clock-in-switch-to-state 'cb-org/clock-in-to-next-state)
     (setq org-clock-persist t)
     (setq org-clock-persist-query-resume nil)
     (setq org-clock-history-length 20)
@@ -786,5 +740,11 @@ exported file's name. The PDF will be created at DEST."
   (use-package org-autoinsert
     :functions (org-autoinsert-init)
     :config (org-autoinsert-init)))
+
+(defun cb-org/init-cb-org-clock-cascade ()
+  (use-package cb-org-clock-cascade
+    :after org
+    :config
+    (add-hook 'org-mode-hook #'cb-org-clock-cascade-init)))
 
 ;;; packages.el ends here
