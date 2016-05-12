@@ -33,7 +33,12 @@
     org-present
     (cb-org-latex-preview-retina :location local)
     (org-autoinsert :location local)
-    (cb-org-clock-cascade :location local)))
+    (cb-org-clock-cascade :location local)
+    (cb-org-export-koma-letter :location local)
+    (cb-org-subtree :location local)
+    (cb-org-pgp-decrpyt :location local)
+    (cb-org-recalculate-whole-table :location local)
+    (cb-org-capture-url :location local)))
 
 (defun cb-org/post-init-org-present ()
   (use-package org-present
@@ -456,24 +461,6 @@ Do not scheduled items or repeating todos."
 
     (advice-add 'org-archive-subtree :before #'cb-org/ad-apply-inherited-tags)))
 
-(use-package org-table
-  :after org
-  :config
-  (progn
-
-    (defun cb-org/recalculate-whole-table ()
-      "Recalculate the current table using `org-table-recalculate'."
-      (interactive "*")
-      (when (org-at-table-p)
-        (let ((before (buffer-substring (org-table-begin) (org-table-end))))
-          (org-table-recalculate '(16))
-          (let ((after (buffer-substring (org-table-begin) (org-table-end))))
-            (if (equal before after)
-                (message "Table up-to-date")
-              (message "Table updated"))))))
-
-    (add-hook 'org-ctrl-c-ctrl-c-hook #'cb-org/recalculate-whole-table)))
-
 (use-package org-src
   :after org
   :config
@@ -516,26 +503,6 @@ Do not scheduled items or repeating todos."
   :after org
   :config
   (progn
-
-    (defun cb-org/looking-at-pgp-section?? ()
-      (unless (org-before-first-heading-p)
-        (save-excursion
-          (org-back-to-heading t)
-          (let ((heading-point (point))
-                (heading-was-invisible-p
-                 (save-excursion
-                   (outline-end-of-heading)
-                   (outline-invisible-p))))
-            (forward-line)
-            (looking-at "-----BEGIN PGP MESSAGE-----")))))
-
-    (defun cb-org/decrypt-entry ()
-      (when (cb-org/looking-at-pgp-section??)
-        (org-decrypt-entry)
-        t))
-
-    (add-hook 'org-ctrl-c-ctrl-c-hook #'cb-org/decrypt-entry)
-
     (setq org-crypt-disable-auto-save 'encypt)
     (org-crypt-use-before-save-magic)
     (add-to-list 'org-tags-exclude-from-inheritance "crypt")))
@@ -590,159 +557,74 @@ table tr.tr-even td {
 </style>
 ")))
 
-(use-package ox-texinfo
-  :after org
-  :config
-  (progn
-
-    (defun cb-org-export/koma-letter-at-subtree (dest)
-      "Define a command to export the koma letter subtree at point to PDF.
-With a prefix arg, prompt for the output destination. Otherwise
-generate use the name of the current file to generate the
-exported file's name. The PDF will be created at DEST."
-      (interactive
-       (list (if current-prefix-arg
-                 (ido-read-file-name "Destination: " nil nil nil ".pdf")
-               (concat (f-no-ext (buffer-file-name)) ".pdf"))))
-
-      (let ((tmpfile (make-temp-file "org-export-" nil ".org")))
-        (cb-org-write-subtree-content tmpfile)
-        (with-current-buffer (find-file-noselect tmpfile)
-          (unwind-protect
-              (-if-let (exported (org-koma-letter-export-to-pdf))
-                  (f-move exported dest)
-                (error "Export failed"))
-            (kill-buffer)))
-        (async-shell-command (format "open %s" (shell-quote-argument dest)))
-        (message "opening %s..." dest)))
-
-    (defun cb-org/C-c-C-c-export-koma-letter ()
-      "Export the koma letter at point."
-      (when (ignore-errors
-              (s-matches? (rx "latex_class:" (* space) "koma")
-                          (cb-org-subtree-content)))
-        (call-interactively 'org-export-koma-letter-at-subtree)
-        'export-koma-letter))
-
-    (add-hook 'org-ctrl-c-ctrl-c-hook #'cb-org/C-c-C-c-export-koma-letter t)
-
-    (add-to-list 'org-latex-classes '("koma-letter" "
-\\documentclass[paper=A4,pagesize,fromalign=right,
-               fromrule=aftername,fromphone,fromemail,
-               version=last]{scrlttr2}
-\\usepackage[english]{babel}
-\\usepackage[utf8]{inputenc}
-\\usepackage[normalem]{ulem}
-\\usepackage{booktabs}
-\\usepackage{graphicx}
-[NO-DEFAULT-PACKAGES]
-[EXTRA]
-[PACKAGES]"))))
-
 (use-package org-capture
   :after org
   :config
-  (progn
+  (setq org-capture-templates
+        `(
+          ("t" "Todo" entry
+           (file+olp org-default-notes-file "Tasks")
+           "* TODO %?"
+           :clock-keep t)
 
-    (defun cb-org/parse-html-title (html)
-      "Extract the title from an HTML document."
-      (-let (((_ title) (s-match (rx "<title>" (group (* nonl)) "</title>") html))
-             ((_ charset) (-map 'intern (s-match (rx "charset=" (group (+ (any "-" alnum)))) html))))
-        (if (-contains? coding-system-list charset)
-            (decode-coding-string title charset)
-          title)))
-
-    (defun cb-org/url-retrieve-html (url)
-      "Download the resource at URL and attempt to extract an HTML title."
-      (unless (s-matches? (rx "." (or "pdf" "mov" "mp4" "m4v" "aiff" "wav" "mp3") eol) url)
-        (with-current-buffer (url-retrieve-synchronously url t)
-          (buffer-string))))
-
-    (defun cb-org/last-url-kill ()
-      "Return the most recent URL in the kill ring or X pasteboard."
-      (--first (s-matches? (rx bos (or "http" "https" "www")) it)
-               (cons (current-kill 0 t) kill-ring)))
-
-    (defun cb-org/read-string-with-default (prompt default &optional initial-input history)
-      "Read a string from the user with a default value added to the prompt."
-      (read-string (concat (if default (format "%s (default %s)" prompt default) prompt) ": ")
-                   initial-input history default))
-
-    (defun cb-org/read-url-for-capture ()
-      "Return a capture template string for a URL org-capture."
-      (let* ((url (cb-org/read-string-with-default "URL" (or
-                                                          (thing-at-point-url-at-point)
-                                                          (cb-org/last-url-kill))))
-             (title (cb-org/parse-html-title (cb-org/url-retrieve-html url))))
-        (format "* [[%s][%s]]" url (or title url))))
-
-    (setq org-capture-templates
-          `(
-            ("t" "Todo" entry
-             (file+olp org-default-notes-file "Tasks")
-             "* TODO %?"
-             :clock-keep t)
-
-            ("T" "Todo (work)" entry
-             (file+olp cb-org-work-file "Tasks")
-             "* TODO %?"
-             :clock-keep t)
+          ("T" "Todo (work)" entry
+           (file+olp cb-org-work-file "Tasks")
+           "* TODO %?"
+           :clock-keep t)
 
 
-            ("n" "Next Action" entry
-             (file+olp org-default-notes-file "Tasks")
-             "* NEXT %?"
-             :clock-keep t)
+          ("n" "Next Action" entry
+           (file+olp org-default-notes-file "Tasks")
+           "* NEXT %?"
+           :clock-keep t)
 
-            ("N" "Next Action (work)" entry
-             (file+olp cb-org-work-file "Tasks")
-             "* NEXT %?"
-             :clock-keep t)
+          ("N" "Next Action (work)" entry
+           (file+olp cb-org-work-file "Tasks")
+           "* NEXT %?"
+           :clock-keep t)
 
 
-            ("d" "Diary" entry
-             (file+datetree org-agenda-diary-file)
-             "* %?\n%^t"
-             :clock-keep t)
+          ("d" "Diary" entry
+           (file+datetree org-agenda-diary-file)
+           "* %?\n%^t"
+           :clock-keep t)
 
-            ("D" "Diary (work)" entry
-             (file+datetree cb-org-work-file)
-             "* %?\n%^t"
-             :clock-keep t)
+          ("D" "Diary (work)" entry
+           (file+datetree cb-org-work-file)
+           "* %?\n%^t"
+           :clock-keep t)
 
-            ("l" "Link" entry
-             (file+olp org-default-notes-file "Links")
-             (function cb-org/read-url-for-capture)
-             :immediate-finish t
-             :clock-keep t)
+          ("l" "Link" entry
+           (file+olp org-default-notes-file "Links")
+           (function cb-org-capture-url-read-url)
+           :immediate-finish t
+           :clock-keep t)
 
-            ("L" "Link (work)" entry
-             (file+olp cb-org-work-file "Links")
-             (function cb-org/read-url-for-capture)
-             :immediate-finish t
-             :clock-keep t)
+          ("L" "Link (work)" entry
+           (file+olp cb-org-work-file "Links")
+           (function cb-org-capture-url-read-url)
+           :immediate-finish t
+           :clock-keep t)
 
-            ("s" "Someday" entry
-             (file+olp org-default-notes-file "Someday")
-             "* SOMEDAY %?"
-             :clock-keep t)
+          ("s" "Someday" entry
+           (file+olp org-default-notes-file "Someday")
+           "* SOMEDAY %?"
+           :clock-keep t)
 
-            ("m" "Listening" entry
-             (file+olp org-default-notes-file "Media" "Listening")
-             "* MAYBE Listen to %i%?"
-             :clock-keep t)
+          ("m" "Listening" entry
+           (file+olp org-default-notes-file "Media" "Listening")
+           "* MAYBE Listen to %i%?"
+           :clock-keep t)
 
-            ("v" "Viewing" entry
-             (file+olp org-default-notes-file "Media" "Viewing")
-             "* MAYBE Watch %i%?"
-             :clock-keep t)
+          ("v" "Viewing" entry
+           (file+olp org-default-notes-file "Media" "Viewing")
+           "* MAYBE Watch %i%?"
+           :clock-keep t)
 
-            ("r" "Reading" entry
-             (file+olp org-default-notes-file "Media" "Reading")
-             "* MAYBE Read %i%?"
-             :clock-keep t)
-
-            ))))
+          ("r" "Reading" entry
+           (file+olp org-default-notes-file "Media" "Reading")
+           "* MAYBE Read %i%?"
+           :clock-keep t))))
 
 (defun cb-org/init-org-autoinsert ()
   (use-package org-autoinsert
@@ -754,5 +636,33 @@ exported file's name. The PDF will be created at DEST."
     :after org
     :config
     (add-hook 'org-mode-hook #'cb-org-clock-cascade-init)))
+
+(defun cb-org/init-cb-org-export-koma-letter ()
+  (use-package cb-org-export-koma-letter
+    :after org
+    :config
+    (add-hook 'org-mode-hook #'cb-org-export-koma-letter-init)))
+
+(defun cb-org/init-cb-org-subtree ()
+  (use-package cb-org-subtree
+    :commands (cb-org-subtree-narrow-to-content
+               cb-org-subtree-write-content
+               cb-org-subtree-copy)))
+
+(defun cb-org/init-cb-org-pgp-decrpyt ()
+  (use-package cb-org-pgp-decrpyt
+    :after org
+    :config
+    (add-hook 'org-mode-hook #'cb-org-pgp-decrpyt-init)))
+
+(defun cb-org/init-cb-org-recalculate-whole-table ()
+  (use-package cb-org-recalculate-whole-table
+    :after org
+    :config
+    (add-hook 'org-mode-hook #'cb-org-recalculate-whole-table-init)))
+
+(defun cb-org/init-cb-org-capture-url ()
+  (use-package cb-org-capture-url
+    :after org))
 
 ;;; packages.el ends here

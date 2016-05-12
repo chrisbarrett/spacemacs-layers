@@ -51,39 +51,6 @@
   (org-tags-view nil))
 
 
-;;; Tree editing
-
-(defun cb-org-narrow-to-subtree-content ()
-  "Narrow to the content of the subtree.  Excludes the heading line."
-  (widen)
-  (unless (org-at-heading-p) (org-back-to-heading))
-  (org-narrow-to-subtree)
-  (forward-line)
-  (narrow-to-region (line-beginning-position) (point-max)))
-
-(defun cb-org-subtree-content ()
-  "Return the content of the subtree at point as a string."
-  (save-excursion
-    (save-restriction
-      (org-narrow-to-subtree)
-      (buffer-substring-no-properties (point-min) (point-max)))))
-
-(defun cb-org-write-subtree-content (dest)
-  "Write the contents of the subtree at point to a file at DEST."
-  (interactive (list (ido-read-file-name "Write subtree to: " nil nil nil ".org")))
-  (f-write-text (cb-org-subtree-content) 'utf-8 dest)
-  (when (called-interactively-p nil)
-    (message "Subtree written to %s" dest)))
-
-(defun cb-org-copy-subtree-to ()
-  "Create a duplicate of the current subtree at the given heading."
-  (interactive "*")
-  (atomic-change-group
-    (org-copy-subtree)
-    (org-clone-subtree-with-time-shift 1 '(16))
-    (call-interactively 'org-refile)))
-
-
 ;;; Custom keyboard commands
 
 (defun cb-org/ctrl-c-ctrl-k (&optional n)

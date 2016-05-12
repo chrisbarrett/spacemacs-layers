@@ -141,6 +141,7 @@
                                       ("Europe/Berlin" "Germany")
                                       ("America/Los_Angeles" "Los Angeles")
                                       ("America/New_York" "New York")
+                                      ("America/Denver" "Mountain Time")
                                       ("Australia/Sydney" "Sydney")))
 
       (evil-define-key 'normal world-time-table-mode-map (kbd "q") 'quit-window)
