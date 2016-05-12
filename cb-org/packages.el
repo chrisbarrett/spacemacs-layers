@@ -467,16 +467,19 @@ Do not scheduled items or repeating todos."
   (progn
     (setq org-src-fontify-natively t)
 
-    (defvar org-edit-src-before-exit-hook nil
-      "Hook run before exiting a code block.")
+    ;; Remove trailing newline in src blocks.
 
-    (defadvice org-edit-src-exit (before run-hook activate)
-      "Run a hook when exiting src block."
-      (run-hooks 'org-edit-src-before-exit-hook))
+    (defun cb-org/suppress-final-newline ()
+      (setq-local require-final-newline nil))
 
-    (add-hook 'org-edit-src-before-exit-hook #'delete-trailing-whitespace)
-    (add-hook 'org-src-mode-hook
-              (lambda () (setq-local require-final-newline nil)))))
+    (add-hook 'org-src-mode-hook #'cb-org/suppress-final-newline)
+
+    ;; Delete trailing whitespace when exiting src blocks.
+
+    (defun cb-org/ad-org-src-delete-trailing-space (&rest _)
+      (delete-trailing-whitespace))
+
+    (advice-add 'org-edit-src-exit :before #'cb-org/ad-org-src-delete-trailing-space)))
 
 (use-package org-clock
   :after org
