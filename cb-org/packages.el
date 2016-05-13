@@ -37,7 +37,8 @@
     (cb-org-subtree :location local)
     (cb-org-pgp-decrpyt :location local)
     (cb-org-recalculate-whole-table :location local)
-    (cb-org-capture-url :location local)))
+    (cb-org-capture-url :location local)
+    (cb-org-gdrive :location local)))
 
 (defun cb-org/post-init-org-present ()
   (use-package org-present
@@ -545,10 +546,9 @@ Do not scheduled items or repeating todos."
 
 (use-package ox
   :after org
-  :init
-  (setq org-export-backends '(ascii html latex md koma-letter))
   :config
   (progn
+    (setq org-export-backends '(ascii html latex gfm koma-letter odt))
     (setq org-export-exclude-tags '("noexport" "crypt"))
     (setq org-html-html5-fancy t)
     (setq org-html-postamble nil)
@@ -683,5 +683,11 @@ table tr.tr-even td {
 (defun cb-org/init-cb-org-capture-url ()
   (use-package cb-org-capture-url
     :after org))
+
+(defun cb-org/init-cb-org-gdrive ()
+  (use-package cb-org-gdrive
+    :after org
+    :config
+    (add-hook 'org-mode-hook #'cb-org-gdrive-init)))
 
 ;;; packages.el ends here
