@@ -70,7 +70,7 @@
 
 (defconst cb-org-gdrive--document-url-base "https://docs.google.com/document/d/")
 
-(defun cb-org-gdrive--mk-upload-sentinel (file delete-original?)
+(defun cb-org-gdrive--mk-upload-sentinel (file delete-original? cont)
   (lambda (proc _)
     (let ((proc (get-process proc)))
       (pcase (process-exit-status proc)
@@ -82,7 +82,8 @@
                  (f-delete file t))
                (message "Upload to drive completed successfully."))
            (error
-            (error "File uploaded, but deleting intermediate file failed"))))
+            (error "File uploaded, but deleting intermediate file failed")))
+         (funcall cont file))
 
         (status
          (let ((note (with-current-buffer (process-buffer proc)
@@ -99,18 +100,20 @@ successful upload."
   (interactive "fFile: ")
   (let ((proc (start-process cb-org-gdrive--proc-name cb-org-gdrive--proc-buffer cb-org-gdrive-program "upload" "--recursive" file)))
     (message "Uploading to Drive...")
-    (set-process-sentinel proc (cb-org-gdrive--mk-upload-sentinel file delete-original?))))
+    (set-process-sentinel proc (cb-org-gdrive--mk-upload-sentinel file delete-original? #'ignore))))
 
 ;;;###autoload
-(defun cb-org-gdrive-import (file &optional delete-original?)
+(defun cb-org-gdrive-import (file cont &optional delete-original?)
   "Import FILE into Google Drive, converting it to a Google Doc.
 
 If DELETE-ORIGINAL? is set, delete the source file after a
-successful upload."
+successful upload.
+
+CONT is executed on success and is passed the path of the uploaded file."
   (interactive "fFile: ")
   (let ((proc (start-process cb-org-gdrive--proc-name cb-org-gdrive--proc-buffer cb-org-gdrive-program "import" file)))
     (message "Uploading to Drive...")
-    (set-process-sentinel proc (cb-org-gdrive--mk-upload-sentinel file delete-original?))))
+    (set-process-sentinel proc (cb-org-gdrive--mk-upload-sentinel file delete-original? cont))))
 
 (defun cb-org-gdrive--export-to-odt-and-import (&optional _async subtreep visible-only ext-plist)
   "Export the current buffer and upload it to Google Drive.
@@ -144,9 +147,12 @@ Return a plist with the following keys:
   :file    -- The path to the intermediate ODT file
   :delete? -- Whether the intermediate file will be deleted after upload."
   (interactive)
+  (run-exporter #'ignore subtreep visible-only ext-plist))
+
+(defun cb-org-gdrive--run-exporter (callback &optional subtreep visible-only ext-plist)
   (-if-let (file (save-excursion (org-odt-export-to-odt nil subtreep visible-only)))
       (let ((delete? (not cb-org-gdrive-leave-source-after-import)))
-        (list :proc (cb-org-gdrive-import file delete?)
+        (list :proc (cb-org-gdrive-import file callback delete?)
               :file file
               :delete? delete?))
     (error "Exporting to ODT failed")))
@@ -157,13 +163,14 @@ Return a plist with the following keys:
                ((id) (s-split (rx space) match t)))
     (concat cb-org-gdrive--document-url-base id)))
 
-(defun cb-org-gdrive--export-to-odt-and-open (&rest args)
+(defun cb-org-gdrive--export-to-odt-and-open (&optional _async subtreep visible-only ext-plist)
   "See `cb-org-gdrive--export-to-odt-and-import'."
   (interactive)
-  (-if-let* (((&plist :file file) (apply #'cb-org-gdrive--export-to-odt-and-import args))
-             (url (cb-org-gdrive--find-file-url file)))
-      (browse-url url)
-    (error "Could not determine Drive URL for exported file")))
+  (let ((cont (lambda (file)
+                (-if-let (url (cb-org-gdrive--find-file-url file))
+                    (browse-url url)
+                  (error "Could not determine Drive URL for exported file")))))
+    (cb-org-gdrive--run-exporter cont subtreep visible-only ext-plist)))
 
 (org-export-define-derived-backend 'gdrive 'odt
   :export-block '("GDRIVE" "GOOGLE DRIVE")
