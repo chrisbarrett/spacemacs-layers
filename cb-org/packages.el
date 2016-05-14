@@ -102,9 +102,9 @@
   (setq org-log-repeat nil)
   (setq org-blank-before-new-entry '((heading . always) (plain-list-item . nil)))
 
-  (setq org-todo-keywords '((type "MAYBE(m)" "TODO(t)" "NEXT(n)" "WAITING(w@/!)" "|" "DONE(d!)" "CANCELLED(c@)")
+  (setq org-todo-keywords '((type "MAYBE(m)" "TODO(t)" "NEXT(n)" "WAITING(w!)" "|" "DONE(d!)" "CANCELLED(c!)")
                             (type "PROJECT(p)" "|")
-                            (type "SOMEDAY(S)" "|")))
+                            (type "SOMEDAY(s)" "|")))
 
   ;; Faces
 
