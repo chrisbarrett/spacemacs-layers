@@ -272,6 +272,8 @@ Do not scheduled items or repeating todos."
   (spacemacs/set-leader-keys "oc" #'org-clock-goto)
   (spacemacs/set-leader-keys "od" #'cb-org/goto-diary)
   (spacemacs/set-leader-keys "ok" #'org-capture)
+  (spacemacs/set-leader-keys "ol" #'org-store-link)
+  (spacemacs/set-leader-keys "oL" #'org-insert-link)
   (spacemacs/set-leader-keys "os" #'org-search-view)
   (spacemacs/set-leader-keys "on" #'cb-org/goto-notes)
   (spacemacs/set-leader-keys "ow" #'cb-org/goto-work)
