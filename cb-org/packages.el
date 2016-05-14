@@ -535,7 +535,12 @@ Do not scheduled items or repeating todos."
              org-drill-directory
              org-drill-again)
   :config
-  (setq org-drill-save-buffers-after-drill-sessions-p t))
+  (progn
+    (setq org-drill-scope (f-files (f-join org-directory "drill")))
+    (setq org-drill-learn-fraction 0.25)
+    (setq org-drill-adjust-intervals-for-early-and-late-repetitions-p t)
+    (setq org-drill-add-random-noise-to-intervals-p t)
+    (setq org-drill-save-buffers-after-drill-sessions-p t)))
 
 (use-package ox
   :after org
