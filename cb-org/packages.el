@@ -579,71 +579,73 @@ table tr.tr-even td {
 (use-package org-capture
   :after org
   :config
-  (setq org-capture-templates
-        `(
-          ("t" "Todo" entry
-           (file+olp org-default-notes-file "Tasks")
-           "* TODO %?"
-           :clock-keep t)
+  (progn
+    (defun cb-org/capture-template-entry (key label form template &rest kws)
+      (-concat
+       (list key label 'entry form template :clock-keep t :empty-lines 1)
+       kws))
 
-          ("T" "Todo (work)" entry
-           (file+olp cb-org-work-file "Tasks")
-           "* TODO %?"
-           :clock-keep t)
+    (setq org-capture-templates
+          (list
+           (cb-org/capture-template-entry
+            "t" "Todo"
+            '(file+olp org-default-notes-file "Tasks") "* TODO %?"
+            :prepend t)
 
+           (cb-org/capture-template-entry
+            "T" "Todo (work)"
+            '(file cb-org-work-file) "* TODO %?"
+            :prepend t)
 
-          ("n" "Next Action" entry
-           (file+olp org-default-notes-file "Tasks")
-           "* NEXT %?"
-           :clock-keep t)
+           (cb-org/capture-template-entry
+            "t" "Next"
+            '(file+olp org-default-notes-file "Tasks") "* NEXT %?"
+            :prepend t)
 
-          ("N" "Next Action (work)" entry
-           (file+olp cb-org-work-file "Tasks")
-           "* NEXT %?"
-           :clock-keep t)
+           (cb-org/capture-template-entry
+            "T" "Next (work)"
+            '(file cb-org-work-file) "* NEXT %?"
+            :prepend t)
 
+           (cb-org/capture-template-entry
+            "d" "Diary"
+            '(file+datetree org-agenda-diary-file) "* %?\n%^t")
 
-          ("d" "Diary" entry
-           (file+datetree org-agenda-diary-file)
-           "* %?\n%^t"
-           :clock-keep t)
+           (cb-org/capture-template-entry
+            "D" "Diary (work)"
+            '(file+datetree cb-org-work-file) "* %?\n%^t")
 
-          ("D" "Diary (work)" entry
-           (file+datetree cb-org-work-file)
-           "* %?\n%^t"
-           :clock-keep t)
+           (cb-org/capture-template-entry
+            "l" "Link"
+            '(file+olp org-default-notes-file "Links")
+            '(function cb-org-capture-url-read-url)
+            :immediate-finish t)
 
-          ("l" "Link" entry
-           (file+olp org-default-notes-file "Links")
-           (function cb-org-capture-url-read-url)
-           :immediate-finish t
-           :clock-keep t)
+           (cb-org/capture-template-entry
+            "L" "Link (work)"
+            '(file+olp cb-org-work-file "Links")
+            '(function cb-org-capture-url-read-url)
+            :immediate-finish t)
 
-          ("L" "Link (work)" entry
-           (file+olp cb-org-work-file "Links")
-           (function cb-org-capture-url-read-url)
-           :immediate-finish t
-           :clock-keep t)
+           (cb-org/capture-template-entry
+            "s" "Someday"
+            '(file+olp org-default-notes-file "Someday")
+            "* SOMEDAY %?")
 
-          ("s" "Someday" entry
-           (file+olp org-default-notes-file "Someday")
-           "* SOMEDAY %?"
-           :clock-keep t)
+           (cb-org/capture-template-entry
+            "m" "Listening"
+            '(file+olp org-default-notes-file "Media" "Listening")
+            "* MAYBE Listen to %i%?")
 
-          ("m" "Listening" entry
-           (file+olp org-default-notes-file "Media" "Listening")
-           "* MAYBE Listen to %i%?"
-           :clock-keep t)
+           (cb-org/capture-template-entry
+            "v" "Viewing"
+            '(file+olp org-default-notes-file "Media" "Viewing")
+            "* MAYBE Watch %i%?")
 
-          ("v" "Viewing" entry
-           (file+olp org-default-notes-file "Media" "Viewing")
-           "* MAYBE Watch %i%?"
-           :clock-keep t)
-
-          ("r" "Reading" entry
-           (file+olp org-default-notes-file "Media" "Reading")
-           "* MAYBE Read %i%?"
-           :clock-keep t))))
+           (cb-org/capture-template-entry
+            "r" "Reading"
+            '(file+olp org-default-notes-file "Media" "Reading")
+            "* MAYBE Read %i%?")))))
 
 (defun cb-org/init-org-autoinsert ()
   (use-package org-autoinsert
