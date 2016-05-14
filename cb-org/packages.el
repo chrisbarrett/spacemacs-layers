@@ -607,23 +607,19 @@ table tr.tr-even td {
           (list
            (cb-org/capture-template-entry
             "t" "Todo"
-            '(file+olp org-default-notes-file "Tasks") "* TODO %?"
-            :prepend t)
+            '(file org-default-notes-file) "* TODO %?")
 
            (cb-org/capture-template-entry
             "T" "Todo (work)"
-            '(file cb-org-work-file) "* TODO %?"
-            :prepend t)
+            '(file cb-org-work-file) "* TODO %?")
 
            (cb-org/capture-template-entry
             "t" "Next"
-            '(file+olp org-default-notes-file "Tasks") "* NEXT %?"
-            :prepend t)
+            '(file org-default-notes-file) "* NEXT %?")
 
            (cb-org/capture-template-entry
             "T" "Next (work)"
-            '(file cb-org-work-file) "* NEXT %?"
-            :prepend t)
+            '(file cb-org-work-file) "* NEXT %?")
 
            (cb-org/capture-template-entry
             "d" "Diary"
@@ -672,7 +668,7 @@ table tr.tr-even td {
 
 %?
 "
-            :prepend t)
+            :jump-to-captured t)
 
            (cb-org/capture-template-entry
             "1" "Drill (question)"
@@ -683,7 +679,7 @@ table tr.tr-even td {
 
 ** Answer
 "
-            :prepend t)
+            :jump-to-captured t)
 
            (cb-org/capture-template-entry
             "2" "Drill (two-sided)"
@@ -699,7 +695,15 @@ table tr.tr-even td {
 
 ** Side 2
 "
-            :prepend t)))))
+            :jump-to-captured t)
+
+           (cb-org/capture-template-entry
+            "e" "Email task"
+            '(file org-default-notes-file) "* TODO %?\n%a")
+
+           (cb-org/capture-template-entry
+            "E" "Email task (work)"
+            '(file cb-org-work-file) "* TODO %?\n%a")))))
 
 (defun cb-org/init-org-autoinsert ()
   (use-package org-autoinsert
