@@ -547,7 +547,10 @@ Do not scheduled items or repeating todos."
   (defconst cb-org-drill-file (f-join org-directory "drill" "drill.org"))
   :config
   (progn
-    (setq org-drill-scope (f-files (f-join org-directory "drill")))
+    (defun cb-org/org-drill-files ()
+      (f-files (f-join org-directory "drill")))
+    (setq org-drill-scope (cb-org/org-drill-files))
+
     (add-to-list 'org-refile-targets '(cb-org/org-drill-files :maxlevel . 3))
 
     (setq org-drill-learn-fraction 0.25)
