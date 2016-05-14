@@ -17,7 +17,6 @@
 
 (defconst cb-org-packages
   '(org
-    org-drill-table
     gnuplot
     org-agenda
     org-indent
@@ -303,12 +302,6 @@ Do not scheduled items or repeating todos."
     (define-key auto-highlight-symbol-mode-map (kbd "M-<right>") nil)
     (define-key auto-highlight-symbol-mode-map (kbd "M-S-<left>") nil)
     (define-key auto-highlight-symbol-mode-map (kbd "M-S-<right>") nil)))
-
-(defun cb-org/init-org-drill-table ()
-  (use-package org-drill-table
-    :after org
-    :config
-    (add-hook 'org-ctrl-c-ctrl-c-hook #'org-drill-table-update)))
 
 (defun cb-org/post-init-gnuplot ()
   (use-package gnuplot
