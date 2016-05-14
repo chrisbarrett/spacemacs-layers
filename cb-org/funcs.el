@@ -70,15 +70,20 @@
 (defconst cb-org/show-agenda-work-start-hour 8)
 (defconst cb-org/show-agenda-work-end-hour 18)
 
+(defun cb-org/is-work-time?  (time)
+  (-let* (((_s _m h d m y) time)
+          (day-of-week (calendar-day-of-week (list m d y))))
+    (and (<= cb-org/show-agenda-work-start-hour h)
+         (>= cb-org/show-agenda-work-end-hour h)
+         (<= 1 day-of-week)
+         (>= 5 day-of-week))))
+
 (defun cb-org/show-agenda ()
   "Show the agenda fullscreen."
   (interactive)
-  (-let [(_s _m h) (decode-time)]
-    (if (and (<= cb-org/show-agenda-work-start-hour h)
-             (>= cb-org/show-agenda-work-end-hour h))
-        (org-agenda current-prefix-arg "w")
-      (org-agenda current-prefix-arg "A"))
-    (delete-other-windows)))
+  (let ((agenda-key (if (cb-org/is-work-time? (decode-time)) "w" "A")))
+    (org-agenda current-prefix-arg agenda-key))
+  (delete-other-windows))
 
 
 ;;; Diary utils
