@@ -80,8 +80,10 @@
         :mode mu4e-view-mode
         :bindings
         (kbd "J") #'mu4e~view-headers-jump-to-maildir
-        (kbd "j") #'mu4e-view-headers-next
-        (kbd "k") #'mu4e-view-headers-prev)
+        (kbd "n") #'mu4e-view-headers-next
+        (kbd "p") #'mu4e-view-headers-prev
+        (kbd "C-j") #'mu4e-view-headers-next
+        (kbd "C-k") #'mu4e-view-headers-prev)
 
       ;; Set variables
 
