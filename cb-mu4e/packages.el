@@ -49,8 +49,8 @@
                   (message "Delivering message to %s...done" ,to)
                 (message "Delivering message to %s...FAILED. Error: %s" ,to err))))))
 
-      (setq send-mail-function 'cb-async-smtpmail-send-it)
-      (setq message-send-mail-function 'cb-async-smtpmail-send-it))))
+      (setq send-mail-function #'cb-async-smtpmail-send-it)
+      (setq message-send-mail-function #'cb-async-smtpmail-send-it))))
 
 (defun cb-mu4e/init-mu4e ()
   (use-package mu4e
@@ -67,21 +67,21 @@
       (evilified-state-evilify-map mu4e-main-mode-map
         :mode mu4e-main-mode
         :bindings
-        (kbd "j") 'mu4e~headers-jump-to-maildir)
+        (kbd "j") #'mu4e~headers-jump-to-maildir)
 
       (evilified-state-evilify-map mu4e-headers-mode-map
         :mode mu4e-headers-mode
         :bindings
-        (kbd "J") 'mu4e~headers-jump-to-maildir
-        (kbd "j") 'mu4e-headers-next
-        (kbd "k") 'mu4e-headers-prev)
+        (kbd "J") #'mu4e~headers-jump-to-maildir
+        (kbd "j") #'mu4e-headers-next
+        (kbd "k") #'mu4e-headers-prev)
 
       (evilified-state-evilify-map mu4e-view-mode-map
         :mode mu4e-view-mode
         :bindings
-        (kbd "J") 'mu4e~view-headers-jump-to-maildir
-        (kbd "j") 'mu4e-view-headers-next
-        (kbd "k") 'mu4e-view-headers-prev)
+        (kbd "J") #'mu4e~view-headers-jump-to-maildir
+        (kbd "j") #'mu4e-view-headers-next
+        (kbd "k") #'mu4e-view-headers-prev)
 
       ;; Set variables
 
@@ -108,7 +108,7 @@
       (setq message-forward-before-signature nil)
 
       ;; Use standard citation style.
-      (setq message-citation-line-function 'message-insert-formatted-citation-line)
+      (setq message-citation-line-function #'message-insert-formatted-citation-line)
       (setq message-citation-line-format "On %a, %b %d %Y, %f wrote:\n")
 
       ;; Update every 5 minutes.
@@ -137,7 +137,7 @@
       ;; View html message in external browser. `a&` in view to activate
 
       (defun cb-mu4e-action-view-in-external-browser (msg)
-        (let ((browse-url-browser-function 'browse-url-default-browser))
+        (let ((browse-url-browser-function #'browse-url-default-browser))
           (mu4e-action-view-in-browser msg)))
 
       (add-to-list 'mu4e-view-actions '("&viewInExternalBrowser" . cb-mu4e-action-view-in-external-browser) t)
@@ -157,8 +157,8 @@
                      :action      cb-mu4e--read-and-archive-action))
       (mu4e~headers-defun-mark-for read-and-archive)
       (mu4e~view-defun-mark-for read-and-archive)
-      (define-key mu4e-headers-mode-map (kbd "r") 'mu4e-headers-mark-for-read-and-archive)
-      (define-key mu4e-view-mode-map (kbd "r") 'mu4e-view-mark-for-read-and-archive))))
+      (define-key mu4e-headers-mode-map (kbd "r") #'mu4e-headers-mark-for-read-and-archive)
+      (define-key mu4e-view-mode-map (kbd "r") #'mu4e-view-mark-for-read-and-archive))))
 
 (defun cb-mu4e/init-mu4e-unread-messages ()
   (use-package mu4e-unread-messages
@@ -166,5 +166,5 @@
     :config
     (progn
       (setq display-time-use-mail-icon t)
-      (setq display-time-mail-function 'mu4e-unread-messages?)
+      (setq display-time-mail-function #'mu4e-unread-messages?)
       (display-time-mode +1))))
