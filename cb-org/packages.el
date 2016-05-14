@@ -597,7 +597,10 @@ table tr.tr-even td {
   (progn
     (defun cb-org/capture-template-entry (key label form template &rest kws)
       (-concat
-       (list key label 'entry form template :clock-keep t :empty-lines 1)
+       (list key label 'entry form template
+             :clock-keep t
+             :empty-lines 1
+             :prepend t)
        kws))
 
     (setq org-capture-templates
