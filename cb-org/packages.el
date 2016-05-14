@@ -128,13 +128,8 @@
       (((background dark))  :background nil))))
 
   (setq org-todo-keyword-faces
-        `(("NEXT" . ,solarized-hl-orange)
-          ("ORGANISE_IN" . ,solarized-hl-orange)
-          ("ORGANISE_OUT" . ,solarized-hl-orange)
-          ("TODO_OUT" . ,solarized-hl-orange)
-          ("READY" . ,solarized-hl-blue)
-          ("ON-HOL" . ,solarized-hl-magenta)
-          ("OPEN" . font-lock-comment-face)
+        `(("NEXT" . ,solarized-hl-yellow)
+          ("PROJECT" . ,solarized-hl-blue)
           ("WAITING" . ,solarized-hl-magenta)))
 
   ;; Override themes which set weird headline properties.
