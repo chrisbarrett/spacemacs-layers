@@ -224,4 +224,89 @@ are between the current date (DATE) and Easter Sunday."
         (end-of-line 0))))
   )
 
+;; HACK: Fix screen redraw issue that prevents org-drill from displaying
+;; content.
+;;
+;; https://bitbucket.org/eeeickythump/org-drill/issues/28/org-drill-randomly-shows-nothing
+
+(with-eval-after-load 'org
+  (defun org-toggle-latex-fragment (&optional arg)
+    "Preview the LaTeX fragment at point, or all locally or globally.
+
+If the cursor is on a LaTeX fragment, create the image and overlay
+it over the source code, if there is none.  Remove it otherwise.
+If there is no fragment at point, display all fragments in the
+current section.
+
+With prefix ARG, preview or clear image for all fragments in the
+current subtree or in the whole buffer when used before the first
+headline.  With a double prefix ARG \\[universal-argument] \
+\\[universal-argument] preview or clear images
+for all fragments in the buffer."
+    (interactive "P")
+    (unless (buffer-file-name (buffer-base-buffer))
+      (user-error "Can't preview LaTeX fragment in a non-file buffer"))
+    (when (display-graphic-p)
+      (catch 'exit
+        (save-excursion
+          (let ((window-start (window-start)) msg)
+            (save-restriction
+              (cond
+               ((or (equal arg '(16))
+                    (and (equal arg '(4))
+                         (org-with-limited-levels (org-before-first-heading-p))))
+                (if (org-remove-latex-fragment-image-overlays)
+                    (progn (message "LaTeX fragments images removed from buffer")
+                           (throw 'exit nil))
+                  (setq msg "Creating images for buffer...")))
+               ((equal arg '(4))
+                (org-with-limited-levels (org-back-to-heading t))
+                (let ((beg (point))
+                      (end (progn (org-end-of-subtree t) (point))))
+                  (if (org-remove-latex-fragment-image-overlays beg end)
+                      (progn
+                        (message "LaTeX fragment images removed from subtree")
+                        (throw 'exit nil))
+                    (setq msg "Creating images for subtree...")
+                    (narrow-to-region beg end))))
+               ((let ((datum (org-element-context)))
+                  (when (memq (org-element-type datum)
+                              '(latex-environment latex-fragment))
+                    (let* ((beg (org-element-property :begin datum))
+                           (end (org-element-property :end datum)))
+                      (if (org-remove-latex-fragment-image-overlays beg end)
+                          (progn (message "LaTeX fragment image removed")
+                                 (throw 'exit nil))
+                        (narrow-to-region beg end)
+                        (setq msg "Creating image..."))))))
+               (t
+                (org-with-limited-levels
+                 (let ((beg (if (org-at-heading-p) (line-beginning-position)
+                              (outline-previous-heading)
+                              (point)))
+                       (end (progn (outline-next-heading) (point))))
+                   (if (org-remove-latex-fragment-image-overlays beg end)
+                       (progn
+                         (message "LaTeX fragment images removed from section")
+                         (throw 'exit nil))
+                     (setq msg "Creating images for section...")
+                     (narrow-to-region beg end))))))
+              (let ((file (buffer-file-name (buffer-base-buffer))))
+                (org-format-latex
+                 (concat org-latex-preview-ltxpng-directory
+                         (file-name-sans-extension (file-name-nondirectory file)))
+                 ;; Emacs cannot overlay images from remote hosts.
+                 ;; Create it in `temporary-file-directory' instead.
+                 (if (file-remote-p file) temporary-file-directory
+                   default-directory)
+                 'overlays msg 'forbuffer
+                 org-latex-create-formula-image-program)))
+            ;; Work around a bug that doesn't restore window's start
+            ;; when widening back the buffer.
+
+            ;; HACK: commented out. See note above.
+            ;; (set-window-start nil window-start)
+
+            (message (concat msg "done"))))))))
+
 ;;; funcs.el ends here
