@@ -26,6 +26,7 @@
     org-crypt
     org-drill
     org-capture
+    org-download
     ox
     ox-texinfo
     org-present
@@ -701,6 +702,11 @@ table tr.tr-even td {
            (cb-org/capture-template-entry
             "E" "Email task (work)"
             '(file cb-org-work-file) "* TODO %?\n%a")))))
+
+(use-package org-download
+  :after org
+  :config
+  (setq org-download-method 'attach))
 
 (defun cb-org/init-org-autoinsert ()
   (use-package org-autoinsert
