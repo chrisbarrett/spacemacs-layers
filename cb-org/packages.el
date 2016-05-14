@@ -60,7 +60,7 @@
 
 (defun cb-org/post-init-org ()
   (defconst cb-org/default-stuck-projects
-    '("-ignore-3_years+TODO={TODO_OUT\\|PROJECT}/-MAYBE-DONE-CANCELLED" ("NEXT") nil "SCHEDULED:\\|\\<IGNORE\\>"))
+    '("-ignore-3_years+TODO=PROJECT/-MAYBE-DONE-CANCELLED" ("NEXT") nil "SCHEDULED:\\|\\<IGNORE\\>"))
 
   (add-hook 'org-mode-hook #'auto-revert-mode)
   (add-hook 'org-mode-hook #'abbrev-mode)
