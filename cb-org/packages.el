@@ -85,7 +85,11 @@
   (setq org-pretty-entities t)
   (setq org-refile-allow-creating-parent-nodes 'confirm)
   (setq org-refile-target-verify-function (lambda () (not (member (nth 2 (org-heading-components)) org-done-keywords))))
-  (setq org-refile-targets '((nil :maxlevel . 9) (org-agenda-files :maxlevel . 9)))
+
+  (add-to-list 'org-refile-targets '(nil :maxlevel . 3))
+  (add-to-list 'org-refile-targets '(org-default-notes-file :maxlevel . 3))
+  (add-to-list 'org-refile-targets '(cb-org-work-file :maxlevel . 3))
+
   (setq org-refile-use-outline-path t)
   (setq org-return-follows-link t)
   (setq org-reverse-note-order nil)
@@ -544,6 +548,8 @@ Do not scheduled items or repeating todos."
   :config
   (progn
     (setq org-drill-scope (f-files (f-join org-directory "drill")))
+    (add-to-list 'org-refile-targets '(cb-org/org-drill-files :maxlevel . 3))
+
     (setq org-drill-learn-fraction 0.25)
     (setq org-drill-adjust-intervals-for-early-and-late-repetitions-p t)
     (setq org-drill-add-random-noise-to-intervals-p t)
