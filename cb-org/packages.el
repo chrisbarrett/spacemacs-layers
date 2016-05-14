@@ -534,6 +534,8 @@ Do not scheduled items or repeating todos."
              org-drill-entry
              org-drill-directory
              org-drill-again)
+  :init
+  (defconst cb-org-drill-file (f-join org-directory "drill" "drill.org"))
   :config
   (progn
     (setq org-drill-scope (f-files (f-join org-directory "drill")))
@@ -643,7 +645,43 @@ table tr.tr-even td {
            (cb-org/capture-template-entry
             "r" "Reading"
             '(file+olp org-default-notes-file "Media" "Reading")
-            "* MAYBE Read %i%?")))))
+            "* MAYBE Read %i%?")
+
+           (cb-org/capture-template-entry
+            "0" "Drill (item)"
+            '(file+olp cb-org-drill-file "Uncategorised")
+            "* Item                :drill:
+
+%?
+"
+            :prepend t)
+
+           (cb-org/capture-template-entry
+            "1" "Drill (question)"
+            '(file+olp cb-org-drill-file "Uncategorised")
+            "* Question                :drill:
+
+%?
+
+** Answer
+"
+            :prepend t)
+
+           (cb-org/capture-template-entry
+            "2" "Drill (two-sided)"
+            '(file+olp cb-org-drill-file "Uncategorised")
+            "* Question                :drill:
+:PROPERTIES:
+:DRILL_CARD_TYPE: twosided
+:END:
+
+%?
+
+** Side 1
+
+** Side 2
+"
+            :prepend t)))))
 
 (defun cb-org/init-org-autoinsert ()
   (use-package org-autoinsert
