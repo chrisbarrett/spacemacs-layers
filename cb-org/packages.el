@@ -294,6 +294,11 @@ Do not scheduled items or repeating todos."
     (define-key org-mode-map (kbd "C-c RET") #'cb-org/ctrl-c-ret)
     (define-key org-mode-map (kbd "C-c ;")   nil)
 
+    (defun cb-org/fold-all ()
+      (interactive)
+      (org-cycle '(16)))
+
+    (evil-define-key 'normal org-mode-map (kbd "zm") #'cb-org/fold-all)
     (evil-define-key 'normal org-mode-map (kbd "RET") #'org-return))
 
   ;; Remove ahs keys that override org keybindings
