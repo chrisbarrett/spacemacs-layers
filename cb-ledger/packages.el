@@ -96,11 +96,7 @@ which require an initialization must be listed explicitly in the list.")
             '(("ledger-file" . ledger-report-ledger-file-format-specifier)
               ("last-payday" . cb-ledger-reports-last-payday)
               ("prev-pay-period" . cb-ledger-reports-previous-pay-period)
-              ("payee" . ledger-report-payee-format-specifier)
               ("account" . ledger-report-account-format-specifier)
-              ("tagname" . ledger-report-tagname-format-specifier)
-              ("tagvalue" . ledger-report-tagvalue-format-specifier)
-              ("by-payee-p" . (lambda () (if (y-or-n-p "Break down by payee? ") "--by-payee" " ")))
               ("report-type" .  (lambda () (completing-read "Report type: " '("balance" "register"))))))
 
       (setq ledger-reports
