@@ -402,8 +402,7 @@ Do not scheduled items or repeating todos."
              ((agenda ""
                       ((org-agenda-overriding-header "Review Previous Week")
                        (org-agenda-ndays 7)
-                       (org-agenda-start-day "-7d")
-                       (org-agenda-show-log t)))
+                       (org-agenda-start-day "-7d")))
               (agenda ""
                       ((org-agenda-overriding-header "Review Upcoming Events")
                        (org-agenda-ndays 14)))
