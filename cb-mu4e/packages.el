@@ -53,6 +53,9 @@
       (setq message-send-mail-function #'cb-async-smtpmail-send-it))))
 
 (defun cb-mu4e/init-mu4e ()
+  (use-package org-mu4e
+    :after org)
+
   (use-package mu4e
     :load-path "/usr/local/share/emacs/site-lisp/mu4e/"
     :commands (mu4e mu4e-compose-new)
@@ -61,9 +64,6 @@
     (spacemacs/set-leader-keys "am" 'mu4e)
     :config
     (progn
-      (with-eval-after-load 'org
-        (require 'org-mu4e))
-
       (evilified-state-evilify-map mu4e-main-mode-map
         :mode mu4e-main-mode
         :bindings
