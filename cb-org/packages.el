@@ -612,11 +612,11 @@ table tr.tr-even td {
             '(file cb-org-work-file) "* TODO %?")
 
            (cb-org/capture-template-entry
-            "t" "Next"
+            "n" "Next"
             '(file org-default-notes-file) "* NEXT %?")
 
            (cb-org/capture-template-entry
-            "T" "Next (work)"
+            "N" "Next (work)"
             '(file cb-org-work-file) "* NEXT %?")
 
            (cb-org/capture-template-entry
