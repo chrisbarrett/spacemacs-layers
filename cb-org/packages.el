@@ -61,7 +61,8 @@
 
 (defun cb-org/post-init-org ()
   (defconst cb-org/default-stuck-projects
-    '("-ignore-3_years+TODO={PROJECT}/-MAYBE-DONE-CANCELLED" ("NEXT") nil "SCHEDULED:\\|\\<IGNORE\\>"))
+    '("-ignore+project" ("NEXT") nil "SCHEDULED:\\|\\<IGNORE\\>")
+    "Match projects that do not have a scheduled action or NEXT action.")
 
   (add-hook 'org-mode-hook #'auto-revert-mode)
   (add-hook 'org-mode-hook #'abbrev-mode)
@@ -104,7 +105,6 @@
   (setq org-blank-before-new-entry '((heading . always) (plain-list-item . nil)))
 
   (setq org-todo-keywords '((type "MAYBE(m)" "TODO(t)" "NEXT(n)" "WAITING(w!)" "|" "DONE(d!)" "CANCELLED(c!)")
-                            (type "PROJECT(p)" "|")
                             (type "SOMEDAY(s)" "|")))
 
   ;; Faces
@@ -130,7 +130,6 @@
 
   (setq org-todo-keyword-faces
         `(("NEXT" . ,solarized-hl-yellow)
-          ("PROJECT" . ,solarized-hl-blue)
           ("WAITING" . ,solarized-hl-magenta)))
 
   ;; Override themes which set weird headline properties.
@@ -378,6 +377,8 @@ Do not scheduled items or repeating todos."
           (list :hours "%d" :require-hours t
                 :minutes ":%02d" :require-minutes t))
 
+    (add-to-list 'org-tags-exclude-from-inheritance "project")
+
     (setq org-agenda-custom-commands
           '(("A" "Agenda and next actions"
              ((tags-todo "-study-someday-media/NEXT"
@@ -411,13 +412,13 @@ Do not scheduled items or repeating todos."
               (todo "WAITING"
                     ((org-agenda-overriding-header "Review Tasks on Hold")))
 
-              (tags-todo "-@work-someday-media/NEXT"
+              (tags-todo "-someday-media/NEXT"
                          ((org-agenda-overriding-header "Next Actions")))
-              (tags-todo "-@work+goals+3_months/PROJECT|NEXT"
+              (tags-todo "+goals+3_months+project/NEXT"
                          ((org-agenda-overriding-header "Review 3 Month Goals")))
-              (tags-todo "-@work+goals+1_year/PROJECT|NEXT"
+              (tags-todo "+goals+1_year+project/NEXT"
                          ((org-agenda-overriding-header "Review 1 Year Goals")))
-              (tags-todo "-@work+goals+3_years/MAYBE|SOMEDAY|PROJECT|NEXT"
+              (tags-todo "+goals+3_years+project/MAYBE|SOMEDAY|NEXT"
                          ((org-agenda-overriding-header "Review 3 Year Goals")))
               (tags-todo "someday-skill/MAYBE|NEXT"
                          ((org-agenda-overriding-header "Decide whether to promote any SOMEDAY items to NEXT actions")))
@@ -440,7 +441,6 @@ Do not scheduled items or repeating todos."
              ((org-agenda-tag-filter-preset '("-ignore"))
               (org-agenda-files (list cb-org-work-file org-agenda-diary-file))
               (org-agenda-dim-blocked-tasks nil)
-              (org-agenda-use-tag-inheritance nil)
               (org-agenda-archives-mode nil)
               (org-agenda-ignore-drawer-properties '(effort appt))))))
 
