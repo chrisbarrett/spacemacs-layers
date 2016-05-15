@@ -427,6 +427,7 @@ Do not scheduled items or repeating todos."
              ((org-agenda-tag-filter-preset
                '("-drill" "-gtd" "-ignore"))
               (org-agenda-include-inactive-timestamps t)
+              (org-agenda-files (list org-default-notes-file cb-org-work-file org-agenda-diary-file))
               (org-agenda-archives-mode nil)
               (org-agenda-dim-blocked-tasks nil)))
 
