@@ -60,10 +60,6 @@
       (add-hook 'org-present-mode-quit-hook #'spacemacs/toggle-mode-line-off))))
 
 (defun cb-org/post-init-org ()
-  (defconst cb-org/default-stuck-projects
-    '("-ignore+project" ("NEXT") nil "SCHEDULED:\\|\\<IGNORE\\>")
-    "Match projects that do not have a scheduled action or NEXT action.")
-
   (add-hook 'org-mode-hook #'auto-revert-mode)
   (add-hook 'org-mode-hook #'abbrev-mode)
 
@@ -98,7 +94,12 @@
   (setq org-confirm-elisp-link-function nil)
   (setq org-startup-indented t)
   (setq org-startup-with-inline-images t)
-  (setq org-stuck-projects cb-org/default-stuck-projects)
+
+  ;; Match projects that do not have a scheduled action or NEXT action.
+  (setq org-stuck-projects '("+project-ignore-maybe-done"
+                             ("NEXT") nil
+                             "SCHEDULED:"))
+
   (setq org-hierarchical-todo-statistics nil)
   (setq org-checkbox-hierarchical-statistics t)
   (setq org-log-repeat nil)
