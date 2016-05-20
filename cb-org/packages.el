@@ -100,6 +100,8 @@
                              ("NEXT") nil
                              "SCHEDULED:"))
 
+  (add-to-list 'org-tags-exclude-from-inheritance "project")
+
   (setq org-hierarchical-todo-statistics nil)
   (setq org-checkbox-hierarchical-statistics t)
   (setq org-log-repeat nil)
@@ -348,7 +350,7 @@ Do not scheduled items or repeating todos."
     (setq org-agenda-auto-exclude-function #'cb-org/exclude-tasks-on-hold)
     (setq org-agenda-files (f-files org-directory (lambda (f) (f-ext? f "org"))))
     (setq org-agenda-diary-file (f-join org-directory "diary.org"))
-    (setq org-agenda-hide-tags-regexp (rx (or "noexport" "someday")))
+    (setq org-agenda-hide-tags-regexp (rx (or "noexport" "someday" "project")))
     (setq org-agenda-insert-diary-extract-time t)
     (setq org-agenda-span 'week)
     (setq org-agenda-search-view-always-boolean t)
@@ -377,8 +379,6 @@ Do not scheduled items or repeating todos."
     (setq org-time-clocksum-format
           (list :hours "%d" :require-hours t
                 :minutes ":%02d" :require-minutes t))
-
-    (add-to-list 'org-tags-exclude-from-inheritance "project")
 
     (setq org-agenda-custom-commands
           '(("A" "Agenda and next actions"
@@ -440,6 +440,7 @@ Do not scheduled items or repeating todos."
               (stuck "")
               (agenda ""))
              ((org-agenda-tag-filter-preset '("-ignore"))
+              (org-agenda-use-tag-inheritance nil)
               (org-agenda-files (list cb-org-work-file org-agenda-diary-file))
               (org-agenda-dim-blocked-tasks nil)
               (org-agenda-archives-mode nil)
