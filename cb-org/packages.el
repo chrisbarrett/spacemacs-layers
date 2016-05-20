@@ -438,7 +438,9 @@ Do not scheduled items or repeating todos."
               (todo "WAITING"
                     ((org-agenda-overriding-header "Waiting")))
               (stuck "")
-              (agenda ""))
+              (agenda "")
+              (tags "+standup"
+                    ((org-agenda-overriding-header "Standup"))))
              ((org-agenda-tag-filter-preset '("-ignore"))
               (org-agenda-use-tag-inheritance nil)
               (org-agenda-files (list cb-org-work-file org-agenda-diary-file))
