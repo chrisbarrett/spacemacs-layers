@@ -22,6 +22,7 @@
     cb-buffers
     indent-dwim
     company-ghci
+    flycheck-stack
 
     (ghc-dump :location local)
     (haskell-ctrl-c-ctrl-c :location local)
@@ -36,7 +37,6 @@
     (haskell-snippets :excluded t)
     (haskell-smart-commands :location local)
     (haskell-autoinsert :location local)
-    (flycheck-stack :location local)
     (cb-haskell-alignment :location local)))
 
 (defun cb-haskell/init-llvm-mode ()
@@ -388,7 +388,7 @@
     (progn
       (defun haskell-mode-flycheck-stack ()
         (flycheck-select-checker 'stack)
-        (flycheck-mode))
+        (flycheck-mode +1))
 
       (add-hook 'haskell-mode-hook #'haskell-mode-flycheck-stack))))
 
