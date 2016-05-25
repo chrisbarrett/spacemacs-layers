@@ -75,6 +75,12 @@ positive or backward if negative."
   (car (-difference (s-split (rx (? ">") space) (cb-buffers-current-line) t)
                     haskell-meta-ret--haskell-keywords)))
 
+(defun haskell-meta-ret--snippet-text-for-typesig (fname parsed-typesig)
+  (-if-let* (((&plist :args args) parsed-typesig)
+             (as (--map-indexed (format "${%s:x%s}" (1+ it-index) it-index) args)))
+      (format "%s %s = ${%s:undefined}" fname (s-join " " as) (1+ (length as)))
+    (format "%s $0" fname)))
+
 (defun haskell-meta-ret--insert-function-template (fname parsed-typesig)
   (back-to-indentation)
   (when (thing-at-point-looking-at "where")
@@ -88,21 +94,9 @@ positive or backward if negative."
     (newline)
     (when (s-ends-with? ".lhs" (buffer-file-name))
       (insert "> "))
-
-    (indent-to col)
-    (-let [(&plist :args args) parsed-typesig]
-      (cond
-       (args
-        (let ((args-fmt
-               (->> args
-                    (-map-indexed (lambda (idx _) (format "${%s:x%s}" (1+ idx) idx)))
-                    (s-join " "))))
-          (yas-expand-snippet (format "%s %s = ${%s:undefined}"
-                                      fname
-                                      args-fmt
-                                      (1+ (length args))))))
-       (t
-        (yas-expand-snippet (format "%s $0" fname)))))))
+    (let ((snippet (haskell-meta-ret--snippet-text-for-typesig fname parsed-typesig)))
+      (indent-to col)
+      (yas-expand-snippet snippet nil nil '((yas/indent-line 'fixed))))))
 
 (defun haskell-meta-ret--at-decl-for-function? (fname)
   (when fname
