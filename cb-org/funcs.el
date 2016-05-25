@@ -62,7 +62,7 @@
    (t (call-interactively 'org-insert-todo-heading))))
 
 (defconst cb-org/show-agenda-work-start-hour 8)
-(defconst cb-org/show-agenda-work-end-hour 18)
+(defconst cb-org/show-agenda-work-end-hour 17)
 
 (defun cb-org/is-work-time?  (time)
   (-let* (((_s _m h d m y) time)
