@@ -277,9 +277,10 @@
   (defconst cb-haskell/smart-ops
     (-flatten-n 1
                 (list
+                 (smart-ops "." :bypass? t)
                  (smart-ops "->" "=>")
                  (smart-ops "$" "=" "~" "^" ":" "?")
-                 (smart-ops "^~" :pad-before nil :pad-after nil)
+                 (smart-ops "^." ".~" "^~" "%~" :pad-before t :pad-after t)
                  (smart-op ";"
                            :pad-before nil :pad-after t)
                  (smart-ops ","
