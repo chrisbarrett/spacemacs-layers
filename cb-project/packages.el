@@ -33,7 +33,7 @@
     :bind
     (("s-f" . projectile-find-file)
      ("s-d" . projectile-find-dir)
-     ("s-l" . projectile-switch-project))
+     ("s-l" . spacemacs/helm-persp-switch-project))
     :config
     (progn
       (setq projectile-enable-caching t)
