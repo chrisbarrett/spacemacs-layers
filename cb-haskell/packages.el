@@ -147,6 +147,17 @@
     (define-key haskell-mode-map (kbd "C-c C-h")   #'haskell-hoogle)
     (define-key haskell-mode-map (kbd "C-c i")     #'shm-reformat-decl))
 
+  (add-hook 'haskell-debug-mode-hook #'flyspell-mode-off)
+
+  (with-eval-after-load 'haskell-debug
+    (evilified-state-evilify-map haskell-debug-mode-map
+      :mode haskell-debug-mode
+      :bindings
+      (kbd "n") #'haskell-debug/next
+      (kbd "N") #'haskell-debug/previous
+      (kbd "p") #'haskell-debug/previous
+      (kbd "q") #'quit-window))
+
   (with-eval-after-load 'haskell
     (let ((map (with-no-warnings interactive-haskell-mode-map)))
       (define-key map (kbd "C-c C-k") #'haskell-interactive-mode-clear)
