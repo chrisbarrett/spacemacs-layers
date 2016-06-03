@@ -172,7 +172,17 @@
     (evil-define-key 'normal (with-no-warnings haskell-error-mode-map) (kbd "q") #'quit-window))
 
   (with-eval-after-load 'haskell-cabal-mode
-    (define-key haskell-cabal-mode-map (kbd "C-c C-k") #'haskell-interactive-mode-clear)))
+    (define-key haskell-cabal-mode-map (kbd "C-c C-k") #'haskell-interactive-mode-clear))
+
+  ;; Use eww for hoogle searches
+
+  (setq haskell-hoogle-command nil)
+
+  (defun cb-haskell/bind-browser-to-eww (f &rest args)
+    (let ((browse-url-browser-function #'eww-browse-url))
+      (apply f args)))
+
+  (advice-add 'haskell-hoogle :around #'cb-haskell/bind-browser-to-eww))
 
 (defun cb-haskell/post-init-shm ()
   (setq shm-auto-insert-skeletons nil)
