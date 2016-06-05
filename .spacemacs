@@ -54,12 +54,6 @@ values."
       :variables
       git-magit-status-fullscreen t)
      gtags
-     (haskell
-      :variables
-      haskell-enable-ghc-mod-support nil
-      haskell-enable-ghci-ng-support nil
-      haskell-enable-hindent-style "gibiansky"
-      haskell-enable-shm-support nil)
      (ibuffer
       :variables
       ibuffer-group-buffers-by nil)
@@ -110,7 +104,8 @@ values."
      cb-flycheck
      cb-git
      cb-groovy
-     cb-haskell
+     ;;cb-haskell
+     cb-new-haskell
      cb-ibuffer
      cb-idris
      cb-js
