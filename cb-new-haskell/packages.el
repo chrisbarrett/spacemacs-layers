@@ -193,7 +193,8 @@ Each entry is either:
       (evil-define-key 'normal intero-mode-map (kbd "M-.") #'intero-goto-definition)
       (evil-define-key 'normal intero-mode-map (kbd "M-,") #'pop-global-mark)
       (define-key intero-mode-map (kbd "M-.") #'intero-goto-definition)
-      (define-key intero-mode-map (kbd "M-,") #'pop-global-mark))))
+      (define-key intero-mode-map (kbd "M-,") #'pop-global-mark)
+      (spacemacs/set-leader-keys-for-major-mode 'haskell-mode "t" #'intero-targets))))
 
 (defun cb-new-haskell/post-init-smart-ops ()
 
