@@ -15,7 +15,6 @@
     hindent
     ghc
     smartparens
-    flycheck
     smart-ops
     aggressive-indent
     llvm-mode
@@ -48,21 +47,6 @@
     (progn
       (spacemacs/set-leader-keys-for-major-mode 'haskell-mode "D" #'ghc-dump-popup)
       (bind-key "q" #'cb-buffers-maybe-kill ghc-dump-popup-mode-map))))
-
-(defun cb-haskell/post-init-flycheck ()
-  (with-eval-after-load 'flycheck
-
-    ;;; HACK: shouldn't have to do this.
-    (defun cb-haskell/update-flycheck-ghc-language-extensions ()
-      (when (derived-mode-p 'haskell-mode)
-        (let ((exts (haskell-pragmas-in-file)))
-          (with-no-warnings
-            (setq-local flycheck-ghc-language-extensions exts)
-            (setq-local flycheck-hlint-language-extensions exts)))))
-
-    (add-hook 'haskell-mode-hook #'cb-haskell/update-flycheck-ghc-language-extensions)
-    (add-hook 'after-save-hook #'cb-haskell/update-flycheck-ghc-language-extensions)
-    (add-hook 'haskell-interactive-mode-hook (lambda () (flycheck-mode -1)))))
 
 (defun cb-haskell/post-init-haskell-mode ()
   (setq haskell-process-suggest-add-package t)
