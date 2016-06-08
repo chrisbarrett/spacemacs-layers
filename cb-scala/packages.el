@@ -10,7 +10,7 @@
 (require 'f)
 
 (defconst cb-scala-packages
-  '(scala-mode2
+  '(scala-mode
     sbt-mode
     ensime
     smart-ops
@@ -34,8 +34,8 @@
       (add-to-list 'aggressive-indent-excluded-modes 'scala-mode)
       (add-to-list 'aggressive-indent-excluded-modes 'sbt-file-mode))))
 
-(defun cb-scala/post-init-scala-mode2 ()
-  (use-package scala-mode2
+(defun cb-scala/post-init-scala-mode ()
+  (use-package scala-mode
     :defer t
     :mode (("/conf/routes$" . conf-mode))
     :config
@@ -181,7 +181,7 @@ A prefix argument will add the type to the kill ring."
 
 (defun cb-scala/post-init-smart-ops ()
   (use-package smart-ops
-    :after scala-mode2
+    :after scala-mode
     :config
     (progn
 
@@ -297,7 +297,7 @@ A prefix argument will add the type to the kill ring."
 
 (defun cb-scala/init-scala-yasnippet ()
   (use-package scala-yasnippet
-    :after scala-mode2
+    :after scala-mode
     :config
     (cb-yas/register-snippets-dir (f-join scala-yasnippet--root "snippets"))))
 
