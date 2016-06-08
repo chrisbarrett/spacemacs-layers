@@ -35,7 +35,6 @@
 (defconst cb-new-haskell-packages
   '(haskell-mode
     smart-ops
-    aggressive-indent
     indent-dwim
     intero
     llvm-mode
@@ -82,12 +81,10 @@ Each entry is either:
     :defer t
     :config
     (progn
+      (add-hook 'intero-mode-hook #'eldoc-mode)
+
       (setq haskell-process-type 'stack-ghci)
       (setq haskell-process-use-presentation-mode t)
-      (setq haskell-interactive-mode-eval-mode 'haskell-mode)
-      (setq haskell-interactive-mode-scroll-to-bottom t)
-      (setq haskell-interactive-popup-errors t)
-      (setq haskell-interactive-prompt "\nλ> ")
       (setq haskell-process-show-debug-tips t)
       (setq haskell-stylish-on-save t)
 
@@ -117,19 +114,9 @@ Each entry is either:
       (add-to-list 'completion-ignored-extensions ".hi")
       (add-to-list 'completion-ignored-extensions ".gm")
 
-
-      ;; Disable haskell-interactive-mode for org src blocks.
-
-      (defun cb-new-haskell/maybe-haskell-interactive-mode ()
-        (unless (bound-and-true-p org-src-mode)
-          (interactive-haskell-mode)))
-
-      (add-hook 'haskell-mode-hook #'cb-new-haskell/maybe-haskell-interactive-mode)
-
       ;; Disable some faces.
 
       (custom-set-faces
-       '(haskell-interactive-face-compile-error ((t (:foreground nil))))
        '(haskell-operator-face ((t :italic nil))))
 
       ;; Set keybindings.
@@ -145,18 +132,6 @@ Each entry is either:
       (define-key haskell-mode-map (kbd "C-c C-d")   #'haskell-w3m-open-haddock)
       (define-key haskell-mode-map (kbd "C-c C-f")   #'haskell-cabal-visit-file)
       (define-key haskell-mode-map (kbd "C-c C-h")   #'haskell-hoogle)))
-
-  (use-package haskell-interactive-mode
-    :after haskell-mode
-    :config
-    (progn
-      (define-key haskell-interactive-mode-map (kbd "C-c C-h") #'haskell-hoogle)
-      (evil-define-key 'normal haskell-error-mode-map (kbd "q") #'quit-window)))
-
-  (use-package haskell-cabal
-    :after haskell-mode
-    :config
-    (define-key haskell-cabal-mode-map (kbd "C-c C-k") #'haskell-interactive-mode-clear))
 
   (use-package haskell-debug
     :after haskell-mode
@@ -178,22 +153,15 @@ Each entry is either:
     :config
     (evil-define-key 'normal haskell-presentation-mode-map (kbd "q") #'quit-window)))
 
-(defun cb-new-haskell/post-init-aggressive-indent ()
-  (with-eval-after-load 'aggressive-indent
-    (with-no-warnings
-      (add-to-list 'aggressive-indent-excluded-modes 'haskell-interactive-mode))))
-
 (defun cb-new-haskell/init-intero ()
   (use-package intero
     :after haskell-mode
     :config
     (progn
-      (add-hook 'haskell-mode-hook #'intero-mode)
-
       (evil-define-key 'normal intero-mode-map (kbd "M-.") #'intero-goto-definition)
-      (evil-define-key 'normal intero-mode-map (kbd "M-,") #'pop-global-mark)
+      (evil-define-key 'normal intero-mode-map (kbd "M-,") #'pop-tag-mark)
       (define-key intero-mode-map (kbd "M-.") #'intero-goto-definition)
-      (define-key intero-mode-map (kbd "M-,") #'pop-global-mark)
+      (define-key intero-mode-map (kbd "M-,") #'pop-tag-mark)
       (spacemacs/set-leader-keys-for-major-mode 'haskell-mode "t" #'intero-targets))))
 
 (defun cb-new-haskell/post-init-smart-ops ()
@@ -243,10 +211,6 @@ Each entry is either:
                  (smart-ops-default-ops))))
 
   (define-smart-ops-for-mode 'haskell-mode
-    cb-new-haskell/smart-ops)
-
-  (define-smart-ops-for-mode 'haskell-interactive-mode
-    (smart-op ":" :pad-unless (lambda (_) (haskell-interactive-at-prompt)))
     cb-new-haskell/smart-ops)
 
   ;; HACK: Enable smart ops for `haskell-mode' manually, since it is not derived
