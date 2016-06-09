@@ -1,7 +1,7 @@
 ;;; sbt-file-mode.el --- <enter description here>  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2016  Chris Barrett
-;; Package-Requires: ((scala-mode2 "20151226.1048"))
+;; Package-Requires: ((scala-mode "20151226.1048"))
 
 ;; Author: Chris Barrett <chris.d.barrett@me.com>
 
@@ -22,7 +22,7 @@
 
 ;;; Code:
 
-(autoload 'scala-mode "scala-mode2")
+(autoload 'scala-mode "scala-mode")
 
 ;;;###autoload
 (define-derived-mode sbt-file-mode scala-mode "SBT"
