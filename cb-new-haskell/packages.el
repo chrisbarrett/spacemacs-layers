@@ -81,8 +81,6 @@ Each entry is either:
     :defer t
     :config
     (progn
-      (add-hook 'intero-mode-hook #'eldoc-mode)
-
       (setq haskell-process-type 'stack-ghci)
       (setq haskell-process-use-presentation-mode t)
       (setq haskell-process-show-debug-tips t)
@@ -158,6 +156,7 @@ Each entry is either:
     :after haskell-mode
     :config
     (progn
+      (add-hook 'haskell-mode-hook #'intero-mode)
       (evil-define-key 'normal intero-mode-map (kbd "M-.") #'intero-goto-definition)
       (evil-define-key 'normal intero-mode-map (kbd "M-,") #'pop-tag-mark)
       (define-key intero-mode-map (kbd "M-.") #'intero-goto-definition)
