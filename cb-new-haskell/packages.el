@@ -226,7 +226,6 @@ Each entry is either:
       (defun cb-new-haskell/format-dwim ()
         "Reformat the buffer."
         (interactive "*")
-        (hindent/reformat-decl)
         (haskell-mode-stylish-buffer)
         (haskell-unicode-apply-to-buffer))
 
