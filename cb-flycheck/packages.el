@@ -15,10 +15,10 @@
     :defer t
     :config
     (progn
+      (setq flycheck-global-modes t)
       (setq flycheck-display-errors-function 'flycheck-display-error-messages-unless-error-list)
       (setq flycheck-display-errors-delay 0.5)
-      (setq flycheck-check-syntax-automatically '(mode-enabled idle-change save))
-      (global-flycheck-mode +1))))
+      (setq flycheck-check-syntax-automatically '(mode-enabled idle-change save)))))
 
 (defun cb-flycheck/post-init-flycheck-pos-tip ()
   (use-package flycheck-pos-tip
