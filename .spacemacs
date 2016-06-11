@@ -142,7 +142,7 @@ values."
    ;; used packages but won't delete them if they become unused. `all' will
    ;; download all the packages regardless if they are used or not and packages
    ;; won't be deleted by Spacemacs. (default is `used')
-   dotspacemacs-download-packages 'used))
+   dotspacemacs-download-packages 'used-but-keep-unused))
 
 (defun dotspacemacs/init ()
   "Initialization function.
