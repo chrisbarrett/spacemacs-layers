@@ -297,7 +297,8 @@ OPERATOR-RULES define operators in terms of formatting rules. Use
 `smart-op' and `smart-ops' to define these."
   (let ((updated (cons (cons mode (-flatten-n 1 op-rules))
                        (assq-delete-all mode smart-ops--alist))))
-    (setq smart-ops--alist updated)))
+    (setq smart-ops--alist updated)
+    mode))
 
 ;;;###autoload
 (defun smart-ops (&rest settings)
