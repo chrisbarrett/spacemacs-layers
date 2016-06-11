@@ -14,6 +14,15 @@
 
 (defvar spacemacs-autosaves-directory (concat user-emacs-directory "autosaves/"))
 
+;; Show file or buffer name in the title bar.
+
+(defun core/frame-title-string ()
+  (if (buffer-file-name)
+      (abbreviate-file-name (buffer-file-name))
+    (buffer-name)))
+
+(setq frame-title-format `(:eval (core/frame-title-string)))
+
 ;;; Compatibility
 
 (defalias 'make-local-hook 'ignore)
