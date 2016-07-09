@@ -13,7 +13,8 @@
     smartparens
     flycheck
     emmet-mode
-    smart-ops))
+    smart-ops
+    (cb-flow-checker :location local)))
 
 (defun cb-js/init-js2-mode ()
   (use-package js2-mode
@@ -134,5 +135,12 @@
             (goto-char end))))
 
       (advice-add 'emmet-expand-yas :before #'cb-js/forward-char))))
+
+(defun cb-js/init-cb-flow-checker ()
+  (use-package cb-flow-checker
+    :defer t
+    :after flycheck
+    :config
+    (flycheck-add-next-checker 'javascript-eslint 'javascript-flow)))
 
 ;;; packages.el ends here
