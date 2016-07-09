@@ -115,11 +115,13 @@
       (add-to-list 'flycheck-disabled-checkers 'json-jsonlint)
       (flycheck-add-mode 'javascript-eslint 'web-mode))))
 
-(defun cb-js/init-emmet-mode ()
+(defun cb-js/post-init-emmet-mode ()
   (use-package emmet-mode
     :defer t
     :config
     (progn
+      (setq emmet-expand-jsx-className? t)
+
       ;; Expand emmet snippets correctly when completing from inside a props
       ;; declaration, such that
       ;;
