@@ -55,34 +55,33 @@
                 (lambda ()
                   (smart-ops-mode +1)))
 
-      (let* ((inside-tags?
-              (lambda (&rest _)
-                (-when-let ((&plist :op op) (sp-get-enclosing-sexp))
-                  (equal op "<"))))
+      (defun cb-js/inside-angles? (&rest _)
+        (-when-let ((&plist :op op) (sp-get-enclosing-sexp))
+          (equal op "<")))
 
-             (inside-squares?
-              (lambda (&rest _)
-                (-when-let ((&plist :op op) (sp-get-enclosing-sexp))
-                  (equal op "["))))
+      (defun cb-js/inside-squares? (&rest _)
+        (-when-let ((&plist :op op) (sp-get-enclosing-sexp))
+          (equal op "[")))
 
-             (ops
-              (list
-               ;; Place point between empty angles and insert close marker.
-               (smart-op "<>"
-                         :pad-before nil :pad-after nil
-                         :action (lambda (&rest _)
-                                   (when (smart-ops-after-match? (rx "<" (* space) ">"))
-                                     (search-backward ">")
-                                     (delete-horizontal-space)
-                                     (save-excursion
-                                       (insert " /")))))
+      (let ((ops
+             (list
+              ;; Place point between empty angles and insert close marker.
+              (smart-op "<>"
+                        :pad-before nil :pad-after nil
+                        :action (lambda (&rest _)
+                                  (when (smart-ops-after-match? (rx "<" (* space) ">"))
+                                    (search-backward ">")
+                                    (delete-horizontal-space)
+                                    (save-excursion
+                                      (insert " /")))))
 
-               (smart-ops "<" ">" :pad-unless inside-tags?)
-               (smart-ops "=" "/" :pad-unless (-orfn inside-squares? inside-tags?))
-               (smart-ops ";" ":" "," :pad-before nil)
-               (smart-ops "=>" ">=")
-               (smart-op "!" :bypass? t)
-               (smart-ops-default-ops))))
+              (smart-ops "<" ">" :pad-unless #'cb-js/inside-angles?)
+              (smart-ops "=" "/" :pad-unless (-orfn #'cb-js/inside-squares?
+                                                    #'cb-js/inside-angles?))
+              (smart-ops ";" ":" "," :pad-before nil)
+              (smart-ops "=>" ">=")
+              (smart-op "!" :bypass? t)
+              (smart-ops-default-ops :pad-unless #'cb-js/inside-angles?))))
 
         (apply' define-smart-ops-for-mode 'js-mode ops)
         (apply' define-smart-ops-for-mode 'js2-mode ops)
