@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: let
+# key: l
+# condition: (and (yas/bol?) (-contains? '("jsx" "javascript") web-mode-content-type))
+# --
+let $1 = $0;

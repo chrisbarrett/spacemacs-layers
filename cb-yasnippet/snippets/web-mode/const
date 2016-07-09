@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: const
+# key: co
+# condition: (and (yas/bol?) (-contains? '("jsx" "javascript") web-mode-content-type))
+# --
+const $1 = $0;
