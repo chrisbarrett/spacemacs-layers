@@ -1,4 +1,4 @@
-;;; packages.el --- cb-js Layer packages File for Spacemacs
+;;; packages.el --- cb-js Layer packages File for Spacemacs  -*- lexical-binding: t; -*-
 ;;; Commentary:
 ;;; Code:
 
@@ -8,8 +8,11 @@
 
 (defconst cb-js-packages
   '(js2-mode
+    web-mode
     js
     smartparens
+    flycheck
+    emmet-mode
     smart-ops))
 
 (defun cb-js/init-js2-mode ()
@@ -38,24 +41,84 @@
   (use-package smartparens
     :defer t
     :config
-    (sp-with-modes '(js-mode js2-mode)
-      (sp-local-pair "<" ">")
+    (sp-with-modes '(js-mode js2-mode web-mode)
+      (sp-local-pair "<" ">" :actions '(:rem insert))
       (sp-local-pair "{" "}" :post-handlers '(:add sp-internal-and-external-padding)))))
 
 (defun cb-js/post-init-smart-ops ()
   (use-package smart-ops
     :defer t
     :config
-    (let ((default-ops (-mapcat #'smart-op (-difference smart-ops-default-ops '("<" ">" "!")))))
+    (progn
+      (add-hook 'web-mode-hook
+                (lambda ()
+                  (smart-ops-mode +1)))
 
-      (defun cb-js/inside-tags? ()
-        (-when-let ((&plist :op op) (sp-get-enclosing-sexp))
-          (equal op "<")))
+      (let* ((inside-tags?
+              (lambda (&rest _)
+                (-when-let ((&plist :op op) (sp-get-enclosing-sexp))
+                  (equal op "<"))))
 
-      (define-smart-ops-for-mode 'js-mode
-        (smart-ops ";" ":" "," :pad-before nil)
-        default-ops)
+             (inside-squares?
+              (lambda (&rest _)
+                (-when-let ((&plist :op op) (sp-get-enclosing-sexp))
+                  (equal op "["))))
 
-      (define-smart-ops-for-mode 'js2-mode
-        (smart-ops ";" ":" "," :pad-before nil)
-        default-ops))))
+             (ops
+              (list
+               (smart-ops "<" ">" :pad-unless inside-tags?)
+               (smart-ops "=" "/" :pad-unless (-orfn inside-squares? inside-tags?))
+               (smart-ops ";" ":" "," :pad-before nil)
+               (smart-ops "=>" ">=")
+               (smart-ops-default-ops))))
+
+        (apply' define-smart-ops-for-mode 'js-mode ops)
+        (apply' define-smart-ops-for-mode 'js2-mode ops)
+        (apply' define-smart-ops-for-mode 'web-mode ops)))))
+
+(defun cb-js/post-init-web-mode ()
+  (use-package web-mode
+    :mode ("\\.jsx?\\'" . web-mode)
+    :defer t
+    :config
+    (progn
+      (remove-hook 'web-mode-hook #'spacemacs/toggle-smartparens-off)
+
+      ;; Use 2 spaces for indentation
+
+      (defun cb-js/set-local-vars ()
+        (setq web-mode-markup-indent-offset 2)
+        (setq web-mode-css-indent-offset 2)
+        (setq web-mode-code-indent-offset 2))
+
+      (add-hook 'web-mode-hook #'cb-js/set-local-vars))))
+
+(defun cb-js/post-init-flycheck ()
+  (use-package flycheck
+    :defer t
+    :config
+    (progn
+      (add-to-list 'flycheck-disabled-checkers 'javascript-jshint)
+      (add-to-list 'flycheck-disabled-checkers 'json-jsonlint)
+      (flycheck-add-mode 'javascript-eslint 'web-mode))))
+
+(defun cb-js/init-emmet-mode ()
+  (use-package emmet-mode
+    :defer t
+    :config
+    (progn
+      ;; Expand emmet snippets correctly when completing from inside a props
+      ;; declaration, such that
+      ;;
+      ;;     foo[bar=baz|]
+      ;;
+      ;; expands correctly.
+
+      (defun cb-js/forward-char (&rest _)
+        (-when-let ((&plist :op op :end end) (sp-get-enclosing-sexp))
+          (when (equal op "[" )
+            (goto-char end))))
+
+      (advice-add 'emmet-expand-yas :before #'cb-js/forward-char))))
+
+;;; packages.el ends here
