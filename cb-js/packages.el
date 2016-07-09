@@ -19,8 +19,7 @@
 (defun cb-js/init-js2-mode ()
   (use-package js2-mode
     :defer t
-    :mode (("\\.js\\'" . js2-mode)
-           ("\\.json\\'" . js2-mode))
+    :mode ("\\.json\\'" . js2-mode)
     :init
     (progn
       (add-to-list 'interpreter-mode-alist '("node" . js2-mode))
