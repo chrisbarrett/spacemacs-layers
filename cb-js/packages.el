@@ -94,8 +94,12 @@
     (progn
       (remove-hook 'web-mode-hook #'spacemacs/toggle-smartparens-off)
 
+      (setq web-mode-enable-current-element-highlight t)
+      (setq web-mode-enable-auto-pairing nil)
+
       ;; Always treat .js files as JSX.
-      (add-to-list 'web-mode-content-types '(("jsx" . "\\.js[x]?\\'")))
+
+      (add-to-list 'web-mode-content-types '("jsx" . "\\.jsx?\\'"))
 
       ;; Use 2 spaces for indentation
 
