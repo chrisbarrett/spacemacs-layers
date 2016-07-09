@@ -33,10 +33,19 @@
     (setq js-indent-level 2)))
 
 (defun cb-js/post-init-smart-ops ()
-  (define-smart-ops-for-mode 'js-mode
-    (smart-ops ";" ":" "," :pad-before nil)
-    (smart-ops-default-ops))
+  (use-package smart-ops
+    :defer t
+    :config
+    (let ((default-ops (-mapcat #'smart-op (-difference smart-ops-default-ops '("<" ">" "!")))))
 
-  (define-smart-ops-for-mode 'js2-mode
-    (smart-ops ";" ":" "," :pad-before nil)
-    (smart-ops-default-ops)))
+      (defun cb-js/inside-tags? ()
+        (-when-let ((&plist :op op) (sp-get-enclosing-sexp))
+          (equal op "<")))
+
+      (define-smart-ops-for-mode 'js-mode
+        (smart-ops ";" ":" "," :pad-before nil)
+        default-ops)
+
+      (define-smart-ops-for-mode 'js2-mode
+        (smart-ops ";" ":" "," :pad-before nil)
+        default-ops))))
