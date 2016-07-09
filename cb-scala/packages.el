@@ -72,6 +72,7 @@
   (add-hook 'scala-mode-hook #'scala/configure-ensime)
   (add-hook 'ensime-mode-hook #'cb-scala/turn-off-aggressive-indent)
 
+  (setq ensime-startup-snapshot-notification nil)
   (setq ensime-auto-generate-config t)
   (setq ensime-implicit-gutter-icons nil)
   (setq ensime-sem-high-faces
