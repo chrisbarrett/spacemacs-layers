@@ -95,6 +95,9 @@
     (progn
       (remove-hook 'web-mode-hook #'spacemacs/toggle-smartparens-off)
 
+      ;; Always treat .js files as JSX.
+      (add-to-list 'web-mode-content-types '(("jsx" . "\\.js[x]?\\'")))
+
       ;; Use 2 spaces for indentation
 
       (defun cb-js/set-local-vars ()
