@@ -66,10 +66,21 @@
 
              (ops
               (list
+               ;; Place point between empty angles and insert close marker.
+               (smart-op "<>"
+                         :pad-before nil :pad-after nil
+                         :action (lambda (&rest _)
+                                   (when (smart-ops-after-match? (rx "<" (* space) ">"))
+                                     (search-backward ">")
+                                     (delete-horizontal-space)
+                                     (save-excursion
+                                       (insert " /")))))
+
                (smart-ops "<" ">" :pad-unless inside-tags?)
                (smart-ops "=" "/" :pad-unless (-orfn inside-squares? inside-tags?))
                (smart-ops ";" ":" "," :pad-before nil)
                (smart-ops "=>" ">=")
+               (smart-op "!" :bypass? t)
                (smart-ops-default-ops))))
 
         (apply' define-smart-ops-for-mode 'js-mode ops)
