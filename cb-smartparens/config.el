@@ -38,12 +38,6 @@
     (sp-local-pair "(" ")" :post-handlers '(:add sp/scala-format-after-paren))
     )
 
-  ;;; Json/JavaScript
-
-  (sp-with-modes '(js-mode js2-mode)
-    (sp-local-pair "{" "}" :post-handlers '(:add sp-internal-and-external-padding))
-    )
-
   ;;; Haskell
 
   (sp-with-modes '(haskell-mode inf-haskell-mode haskell-interactive-mode)

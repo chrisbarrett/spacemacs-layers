@@ -3,11 +3,13 @@
 ;;; Code:
 
 (eval-when-compile
+  (require 'smartparens nil t)
   (require 'use-package nil t))
 
 (defconst cb-js-packages
   '(js2-mode
     js
+    smartparens
     smart-ops))
 
 (defun cb-js/init-js2-mode ()
@@ -31,6 +33,14 @@
     :defer t
     :config
     (setq js-indent-level 2)))
+
+(defun cb-js/post-init-smartparens ()
+  (use-package smartparens
+    :defer t
+    :config
+    (sp-with-modes '(js-mode js2-mode)
+      (sp-local-pair "<" ">")
+      (sp-local-pair "{" "}" :post-handlers '(:add sp-internal-and-external-padding)))))
 
 (defun cb-js/post-init-smart-ops ()
   (use-package smart-ops
