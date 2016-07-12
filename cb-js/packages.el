@@ -153,6 +153,8 @@
       (define-key cb-web-js-mode-map (kbd "C-c C-z") #'nodejs-repl))
     :config
     (progn
+      (evil-set-initial-state 'nodejs-repl-mode 'insert)
+
       (defun cb-js/switch-to-src ()
         "Pop to the last JS source buffer."
         (interactive)
