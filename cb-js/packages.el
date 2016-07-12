@@ -147,7 +147,20 @@
 
 (defun cb-js/init-nodejs-repl ()
   (use-package nodejs-repl
-    :commands nodejs-repl))
+    :commands nodejs-repl
+    :init
+    (with-eval-after-load 'cb-web-modes
+      (define-key cb-web-js-mode-map (kbd "C-c C-z") #'nodejs-repl))
+    :config
+    (progn
+      (defun cb-js/switch-to-src ()
+        "Pop to the last JS source buffer."
+        (interactive)
+        (-if-let ((buf) (cb-buffers-filtera (derived-mode-p 'cb-web-js-mode)))
+            (pop-to-buffer buf)
+          (error "No JS buffers")))
+
+      (define-key nodejs-repl-mode-map (kbd "C-c C-z") #'cb-js/switch-to-src))))
 
 (defun cb-js/init-cb-web-modes ()
   (use-package cb-web-modes
