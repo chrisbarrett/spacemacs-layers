@@ -14,7 +14,8 @@
     flycheck
     emmet-mode
     smart-ops
-    (cb-flow-checker :location local)))
+    (cb-flow-checker :location local)
+    (cb-web-modes :location local)))
 
 (defun cb-js/init-js2-mode ()
   (use-package js2-mode
@@ -31,19 +32,16 @@
       (setq js2-mode-show-parse-errors nil)
       (setq js2-mode-show-strict-warnings nil))))
 
-(defun cb-js/post-init-js ()
-  (use-package js
-    :defer t
-    :config
-    (setq js-indent-level 2)))
-
 (defun cb-js/post-init-smartparens ()
   (use-package smartparens
     :defer t
     :config
-    (sp-with-modes '(js-mode js2-mode web-mode)
-      (sp-local-pair "<" ">" :actions '(:rem insert))
-      (sp-local-pair "{" "}" :post-handlers '(:add sp-internal-and-external-padding)))))
+    (progn
+      (sp-with-modes 'cb-web-js-mode
+        (sp-local-pair "<" ">" :actions '(:rem insert)))
+
+      (sp-with-modes '(cb-web-js-mode cb-web-json-mode)
+        (sp-local-pair "{" "}" :post-handlers '(:add sp-internal-and-external-padding))))))
 
 (defun cb-js/post-init-smart-ops ()
   (use-package smart-ops
@@ -62,33 +60,41 @@
         (-when-let ((&plist :op op) (sp-get-enclosing-sexp))
           (equal op "[")))
 
-      (let ((ops
-             (list
-              ;; Place point between empty angles and insert close marker.
-              (smart-op "<>"
-                        :pad-before nil :pad-after nil
-                        :action (lambda (&rest _)
-                                  (when (smart-ops-after-match? (rx "<" (* space) ">"))
-                                    (search-backward ">")
-                                    (delete-horizontal-space)
-                                    (save-excursion
-                                      (insert " /")))))
+      (define-smart-ops-for-mode 'cb-web-js-mode
+        ;; Place point between empty angles and insert close marker.
+        (smart-op "<>"
+                  :pad-before nil :pad-after nil
+                  :action (lambda (&rest _)
+                            (when (smart-ops-after-match? (rx "<" (* space) ">"))
+                              (search-backward ">")
+                              (delete-horizontal-space)
+                              (save-excursion
+                                (insert " /")))))
 
-              (smart-ops "<" ">" :pad-unless #'cb-js/inside-angles?)
-              (smart-ops "=" "/" :pad-unless (-orfn #'cb-js/inside-squares?
-                                                    #'cb-js/inside-angles?))
-              (smart-ops ";" ":" "," :pad-before nil)
-              (smart-ops "=>" ">=")
-              (smart-op "!" :bypass? t)
-              (smart-ops-default-ops :pad-unless #'cb-js/inside-angles?))))
+        (smart-ops "<" ">" :pad-unless #'cb-js/inside-angles?)
+        (smart-ops "=" "/" :pad-unless (-orfn #'cb-js/inside-squares?
+                                              #'cb-js/inside-angles?))
+        (smart-ops ";" ":" "," :pad-before nil)
+        (smart-ops "=>" ">=")
+        (smart-op "!" :bypass? t)
+        (smart-ops-default-ops :pad-unless #'cb-js/inside-angles?))
 
-        (apply' define-smart-ops-for-mode 'js-mode ops)
-        (apply' define-smart-ops-for-mode 'js2-mode ops)
-        (apply' define-smart-ops-for-mode 'web-mode ops)))))
+      (define-smart-ops-for-mode 'cb-web-html-mode
+        ;; Place point between empty angles and insert close marker.
+        (smart-op "<>"
+                  :pad-before nil :pad-after nil
+                  :action (lambda (&rest _)
+                            (when (smart-ops-after-match? (rx "<" (* space) ">"))
+                              (search-backward ">")
+                              (delete-horizontal-space)
+                              (save-excursion
+                                (insert " /"))))))
+
+      (define-smart-ops-for-mode 'cb-web-json-mode
+        (smart-ops ":" "," :pad-before nil)))))
 
 (defun cb-js/post-init-web-mode ()
   (use-package web-mode
-    :mode ("\\.jsx?\\'" . web-mode)
     :defer t
     :config
     (progn
@@ -117,7 +123,7 @@
     (progn
       (add-to-list 'flycheck-disabled-checkers 'javascript-jshint)
       (add-to-list 'flycheck-disabled-checkers 'json-jsonlint)
-      (flycheck-add-mode 'javascript-eslint 'web-mode))))
+      (flycheck-add-mode 'javascript-eslint 'cb-web-js-mode))))
 
 (defun cb-js/post-init-emmet-mode ()
   (use-package emmet-mode
@@ -146,5 +152,12 @@
     :after flycheck
     :config
     (flycheck-add-next-checker 'javascript-eslint 'javascript-flow)))
+
+(defun cb-js/init-cb-web-modes ()
+  (use-package cb-web-modes
+    :defer t
+    :mode (("\\.json\\'" . cb-web-json-mode)
+           ("\\.jsx?\\'" . cb-web-js-mode)
+           ("\\.html\\'" . cb-web-html-mode))))
 
 ;;; packages.el ends here

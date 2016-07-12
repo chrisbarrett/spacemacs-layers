@@ -43,7 +43,9 @@
           ":" line
           ":" (minimal-match (one-or-more not-newline))
           ": " (message (minimal-match (and (one-or-more anything) "\n"))) line-end))
-  :modes (js-mode js2-mode web-mode))
+  :modes (js-mode js2-mode cb-web-js-mode)
+  :predicate (lambda ()
+               (locate-dominating-file default-directory ".flowconfig")))
 
 (add-to-list 'flycheck-checkers 'javascript-flow t)
 
