@@ -72,18 +72,24 @@
       (define-smart-ops-for-mode 'cb-web-json-mode
         (smart-ops ":" "," :pad-before nil))
 
-      (define-smart-ops-for-mode 'cb-web-js-mode
-        (smart-op "<>"
-                  :pad-before nil :pad-after nil
-                  :action #'cb-js/move-between-angles-insert-slash)
 
-        (smart-ops "<" ">" :pad-unless #'cb-js/inside-angles?)
-        (smart-ops "=" "/" :pad-unless (-orfn #'cb-js/inside-squares?
-                                              #'cb-js/inside-angles?))
-        (smart-ops ";" ":" "," :pad-before nil)
-        (smart-ops "=>" ">=")
-        (smart-op "!" :bypass? t)
-        (smart-ops-default-ops :pad-unless #'cb-js/inside-angles?)))))
+      (let ((js-ops
+             (list
+              (smart-op "<>"
+                        :pad-before nil :pad-after nil
+                        :action #'cb-js/move-between-angles-insert-slash)
+
+              (smart-ops "<" ">" :pad-unless #'cb-js/inside-angles?)
+              (smart-ops "=" "/" :pad-unless (-orfn #'cb-js/inside-squares?
+                                                    #'cb-js/inside-angles?))
+              (smart-ops ";" ":" "," :pad-before nil)
+              (smart-ops "=>" ">=")
+              (smart-op "!" :bypass? t)
+              (smart-ops-default-ops :pad-unless #'cb-js/inside-angles?))))
+
+        (apply #'define-smart-ops-for-mode 'cb-web-js-mode js-ops)
+        (apply #'define-smart-ops-for-mode 'nodejs-repl-mode js-ops)
+        (add-hook 'nodejs-repl-mode-hook #'smart-ops-mode)))))
 
 (defun cb-js/post-init-web-mode ()
   (use-package web-mode
