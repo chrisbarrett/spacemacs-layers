@@ -83,6 +83,7 @@
               (smart-ops "=" "/" :pad-unless (-orfn #'cb-js/inside-squares?
                                                     #'cb-js/inside-angles?))
               (smart-ops ";" ":" "," :pad-before nil)
+              (smart-ops "++" "--" "++;" "--;" :pad-before nil :pad-after nil)
               (smart-ops "=>" ">=")
               (smart-op "!" :bypass? t)
               (smart-ops-default-ops :pad-unless #'cb-js/inside-angles?))))
