@@ -203,7 +203,11 @@ is a Common Lisp arglist."
   (save-excursion
     (forward-line)
     (back-to-indentation)
-    (thing-at-point-looking-at (rx (* space) "(" (or "cl-defun" "defun" "defvar" "defconst")))))
+    (thing-at-point-looking-at (rx (* space) "("
+                                   (or "cl-defun" "defun" "defvar" "defconst"
+                                       "define-minor-mode"
+                                       "define-globalized-minor-mode"
+                                       "define-derived-mode")))))
 
 
 ;;; Editing commands
