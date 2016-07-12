@@ -14,6 +14,7 @@
     flycheck
     emmet-mode
     smart-ops
+    nodejs-repl
     (cb-flow-checker :location local)
     (cb-web-modes :location local)))
 
@@ -152,6 +153,10 @@
     :after flycheck
     :config
     (flycheck-add-next-checker 'javascript-eslint 'javascript-flow)))
+
+(defun cb-js/init-nodejs-repl ()
+  (use-package nodejs-repl
+    :commands nodejs-repl))
 
 (defun cb-js/init-cb-web-modes ()
   (use-package cb-web-modes
