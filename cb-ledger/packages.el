@@ -172,16 +172,17 @@ which require an initialization must be listed explicitly in the list.")
               (header-1 "Assets")
               "ledger -f %(ledger-file) bal Assets --depth 2"
 
-              (header "Overall Spending Last 7 Days")
-              "ledger -f %(ledger-file) bal 'checking' 'bills' -p 'last 7 days'"
-
               (header "Expenses Last 7 Days")
               "ledger -f %(ledger-file) bal expenses --sort total -p 'last 7 days' --invert"
+              (header "Week-on-week change Last 7 Days")
+              "ledger -f %(ledger-file) bal 'checking' 'bills' -p 'last 7 days'"
 
               (separator)
               (paragraph "Skim the totals below, which are tallied against my budget.
 - Am I meeting my budget?
-- If not, what are the areas that need improvement?")
+- If not, what are the areas that need improvement?
+
+These balances show the remaining available balance for each category.")
 
               (header-1 "Budget Last 7 Days")
               "ledger -f %(ledger-file) bal expenses --sort total -p 'last 7 days' --invert --budget"
@@ -194,8 +195,9 @@ which require an initialization must be listed explicitly in the list.")
 
               (separator)
               (paragraph "The payees below are organised by total spending against the budget.
-- How do my expenses compare to last month?
-- Any opportunity for savings here?")
+- Any places where I tend to spend excessively?
+- Any opportunity for savings?
+- Any habits I could change to spend more wisely?")
 
               (header-1 "Budget Last 7 Days, By Payee")
               "ledger -f %(ledger-file) reg expenses --by-payee --sort total -p 'last 7 days' --invert --budget"
