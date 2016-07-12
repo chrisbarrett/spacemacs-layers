@@ -19,13 +19,9 @@
     (cb-web-modes :location local)))
 
 (defun cb-js/init-js2-mode ()
+  ;; I don't actually use js2-mode much, but a few packages expect to use it.
   (use-package js2-mode
     :defer t
-    :mode ("\\.json\\'" . js2-mode)
-    :init
-    (progn
-      (add-to-list 'interpreter-mode-alist '("node" . js2-mode))
-      (defalias 'json-mode 'js2-mode))
     :config
     (progn
       (setq js2-basic-offset 2)
@@ -61,16 +57,25 @@
         (-when-let ((&plist :op op) (sp-get-enclosing-sexp))
           (equal op "[")))
 
-      (define-smart-ops-for-mode 'cb-web-js-mode
-        ;; Place point between empty angles and insert close marker.
+      (defun cb-js/move-between-angles-insert-slash (&rest _)
+        (when (smart-ops-after-match? (rx "<" (* space) ">"))
+          (search-backward ">")
+          (delete-horizontal-space)
+          (save-excursion
+            (insert " /"))))
+
+      (define-smart-ops-for-mode 'cb-web-html-mode
         (smart-op "<>"
                   :pad-before nil :pad-after nil
-                  :action (lambda (&rest _)
-                            (when (smart-ops-after-match? (rx "<" (* space) ">"))
-                              (search-backward ">")
-                              (delete-horizontal-space)
-                              (save-excursion
-                                (insert " /")))))
+                  :action #'cb-js/move-between-angles-insert-slash))
+
+      (define-smart-ops-for-mode 'cb-web-json-mode
+        (smart-ops ":" "," :pad-before nil))
+
+      (define-smart-ops-for-mode 'cb-web-js-mode
+        (smart-op "<>"
+                  :pad-before nil :pad-after nil
+                  :action #'cb-js/move-between-angles-insert-slash)
 
         (smart-ops "<" ">" :pad-unless #'cb-js/inside-angles?)
         (smart-ops "=" "/" :pad-unless (-orfn #'cb-js/inside-squares?
@@ -78,21 +83,7 @@
         (smart-ops ";" ":" "," :pad-before nil)
         (smart-ops "=>" ">=")
         (smart-op "!" :bypass? t)
-        (smart-ops-default-ops :pad-unless #'cb-js/inside-angles?))
-
-      (define-smart-ops-for-mode 'cb-web-html-mode
-        ;; Place point between empty angles and insert close marker.
-        (smart-op "<>"
-                  :pad-before nil :pad-after nil
-                  :action (lambda (&rest _)
-                            (when (smart-ops-after-match? (rx "<" (* space) ">"))
-                              (search-backward ">")
-                              (delete-horizontal-space)
-                              (save-excursion
-                                (insert " /"))))))
-
-      (define-smart-ops-for-mode 'cb-web-json-mode
-        (smart-ops ":" "," :pad-before nil)))))
+        (smart-ops-default-ops :pad-unless #'cb-js/inside-angles?)))))
 
 (defun cb-js/post-init-web-mode ()
   (use-package web-mode
