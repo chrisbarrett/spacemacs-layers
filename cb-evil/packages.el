@@ -97,8 +97,8 @@
   (use-package evil-numbers
     :config
     (progn
-      (evil-global-set-key 'normal (kbd "+") 'spacemacs/evil-numbers-increase)
-      (evil-global-set-key 'normal (kbd "-") 'spacemacs/evil-numbers-decrease))))
+      (evil-global-set-key 'normal (kbd "+") #'evil-numbers/inc-at-pt)
+      (evil-global-set-key 'normal (kbd "-") #'evil-numbers/dec-at-pt))))
 
 (defun cb-evil/init-cb-evil-visual-defaults ()
   (use-package cb-evil-visual-defaults
