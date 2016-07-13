@@ -132,19 +132,18 @@
     (progn
       (setq emmet-expand-jsx-className? t)
 
-      ;; Expand emmet snippets correctly when completing from inside a props
-      ;; declaration, such that
-      ;;
-      ;;     foo[bar=baz|]
-      ;;
-      ;; expands correctly.
+      (defun cb-js/expand-snippet-then-emmet (f &rest args)
+        (if (yas--templates-for-key-at-point)
+            (call-interactively #'yas-expand)
 
-      (defun cb-js/forward-char (&rest _)
-        (-when-let ((&plist :op op :end end) (sp-get-enclosing-sexp))
-          (when (equal op "[" )
-            (goto-char end))))
+          ;; Move point outside squares before expansion.
+          (-when-let ((&plist :op op :end end) (sp-get-enclosing-sexp))
+            (when (equal op "[" )
+              (goto-char end)))
 
-      (advice-add 'emmet-expand-yas :before #'cb-js/forward-char))))
+          (apply f args)))
+
+      (advice-add 'emmet-expand-yas :around #'cb-js/expand-snippet-then-emmet))))
 
 (defun cb-js/init-cb-flow-checker ()
   (use-package cb-flow-checker
