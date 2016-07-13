@@ -1,6 +1,6 @@
 # -*- mode: snippet -*-
 # name: var
-# key: var
+# key: v
 # condition: (and (yas/bol?) (-contains? '("jsx" "javascript") web-mode-content-type))
 # --
 var $1 = $0;
