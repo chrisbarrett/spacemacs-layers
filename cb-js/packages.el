@@ -37,11 +37,15 @@
     :config
     (progn
       (defun cb-js/format-after-paren (_id action context)
-        "Insert a space after flow control keywords."
+        "Insert a space after some keywords."
         (when (and (equal action 'insert)
                    (equal context 'code)
                    (thing-at-point-looking-at
-                    (rx symbol-start (or "=" "return" "if" "while" "for")
+                    (rx symbol-start (or "=" "for" "of" "in"
+                                         "if" "else" "while"
+                                         "return"
+                                         "yield" "yield*"
+                                         "function" "function*")
                         (* space) "(")))
           (save-excursion
             (search-backward "(")
