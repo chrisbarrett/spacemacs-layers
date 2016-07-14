@@ -86,6 +86,7 @@
 
 (defun cb-bootstrap/user-config ()
   (setq custom-file (concat user-emacs-directory "custom.el"))
+  (add-to-list 'load-path (concat user-dropbox-directory "emacs/"))
   (when (file-exists-p custom-file)
     (load custom-file))
   (with-demoted-errors "Personal config: %S"

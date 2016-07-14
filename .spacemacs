@@ -4,6 +4,7 @@
 
 (eval-and-compile
   (defconst user-layers-directory "~/.spacemacs-layers/")
+  (defconst user-dropbox-directory "~/Dropbox/")
   (require 'cb-bootstrap (concat user-layers-directory "cb-bootstrap")))
 
 (defun dotspacemacs/layers ()
