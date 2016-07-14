@@ -222,7 +222,7 @@ is a Common Lisp arglist."
            (yas--skip-and-clear field)
            (yas-next-field 1))
           (t
-           (insert " ")))))
+           (sp-generic-prog-space)))))
 
 (defun yas/backspace ()
   "Clear the current field if the current snippet is unmodified.
