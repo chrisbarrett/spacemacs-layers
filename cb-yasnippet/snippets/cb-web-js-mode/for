@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: for
+# key: for
+# condition: (yas/bol?)
+# --
+for (const ${1:x} of ${2:xs}) {
+  $0
+}

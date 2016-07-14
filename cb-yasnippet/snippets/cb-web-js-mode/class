@@ -1,0 +1,10 @@
+# -*- mode: snippet -*-
+# name: class
+# key: cl
+# condition: (yas/bol?)
+# --
+class ${1:Name} {
+  constructor($2) {
+    $0
+  }
+}
