@@ -235,7 +235,7 @@ Otherwise delete backwards."
            (yas--skip-and-clear field)
            (yas-next-field 1))
           ((and (boundp 'smartparens-mode) smartparens-mode)
-           (call-interactively 'sp-backward-delete-char))
+           (sp-generic-prog-backspace))
           (t
            (call-interactively 'backward-delete-char)))))
 
