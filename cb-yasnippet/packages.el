@@ -68,7 +68,13 @@
       (advice-add 'yas-prev-field :after #'cb-yasnippet/goto-field-end)
 
       (yas/reload-all)
-      (yas-global-mode +1))))
+      (yas-global-mode +1)
+
+      ;; HACK: Override weird Spacemacs behaviour that disables smartparens in
+      ;; yasnippet.
+      (with-eval-after-load 'smartparens
+        (add-hook 'yas-before-expand-snippet-hook #'turn-on-smartparens-strict-mode t)
+        (add-hook 'yas-after-exit-snippet-hook #'turn-on-smartparens-strict-mode t)))))
 
 (defun cb-yasnippet/post-init-smartparens ()
   (use-package smartparens
