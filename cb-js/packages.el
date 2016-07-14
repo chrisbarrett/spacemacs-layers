@@ -35,7 +35,19 @@
     :defer t
     :config
     (progn
+      (defun cb-js/format-after-paren (_id action context)
+        "Insert a space after flow control keywords."
+        (when (and (equal action 'insert)
+                   (equal context 'code)
+                   (thing-at-point-looking-at
+                    (rx symbol-start (or "=" "return" "if" "while" "for")
+                        (* space) "(")))
+          (save-excursion
+            (search-backward "(")
+            (just-one-space))))
+
       (sp-with-modes 'cb-web-js-mode
+        (sp-local-pair "(" ")" :post-handlers '(:add cb-js/format-after-paren))
         (sp-local-pair "<" ">" :actions '(:rem insert)))
 
       (sp-with-modes '(cb-web-js-mode cb-web-json-mode)
