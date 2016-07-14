@@ -89,6 +89,7 @@
 
       (let ((js-ops
              (list
+              (smart-op "*" :pad-before-unless (smart-ops-after-match? (rx (or "yield" "function"))))
               (smart-op "<>"
                         :pad-before nil :pad-after nil
                         :action #'cb-js/move-between-angles-insert-slash)
