@@ -17,7 +17,8 @@
     nodejs-repl
     autoinsert
     (cb-flow-checker :location local)
-    (cb-web-modes :location local)))
+    (cb-web-modes :location local)
+    (js-yasnippet :location local)))
 
 (defun cb-js/init-js2-mode ()
   ;; I don't actually use js2-mode much, but a few packages expect to use it.
@@ -194,5 +195,9 @@
   (use-package autoinsert
     :config
     (add-to-list 'auto-insert-alist '(cb-web-js-mode nil "'use strict';\n\n"))))
+
+(defun cb-js/init-js-yasnippet ()
+  (use-package js-yasnippet
+    :after yasnippet))
 
 ;;; packages.el ends here

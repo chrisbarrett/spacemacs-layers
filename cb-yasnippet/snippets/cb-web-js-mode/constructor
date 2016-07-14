@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: constructor
+# key: ctor
+# --
+constructor($1) {
+  ${1:$(js-yasnippet--ctor-body yas-text)}
+}
