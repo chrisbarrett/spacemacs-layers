@@ -39,7 +39,7 @@
         (sp-local-pair "<" ">" :actions '(:rem insert)))
 
       (sp-with-modes '(cb-web-js-mode cb-web-json-mode)
-        (sp-local-pair "{" "}" :post-handlers '(:add sp-internal-and-external-padding))))))
+        (sp-local-pair "{" "}" :post-handlers '(:add sp-external-padding))))))
 
 (defun cb-js/post-init-smart-ops ()
   (use-package smart-ops
