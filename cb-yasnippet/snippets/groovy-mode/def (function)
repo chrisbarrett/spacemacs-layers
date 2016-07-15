@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: def (function)
+# key: f
+# condition: (yas/bol?)
+# --
+def ${1:name}($2) {
+  $0
+}

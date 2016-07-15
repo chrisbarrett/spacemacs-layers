@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: import
+# key: im
+# condition: (yas/bol?)
+# --
+import $0
