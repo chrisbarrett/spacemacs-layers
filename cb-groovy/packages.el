@@ -19,7 +19,9 @@
 
 (defun cb-groovy/post-init-smart-ops ()
   (define-smart-ops-for-mode 'groovy-mode
-    (smart-ops ":" "," :pad-before nil))
+    (smart-ops ":" "," :pad-before nil)
+    (smart-ops-default-ops))
 
   (define-smart-ops-for-mode 'inferior-groovy-mode
-    (smart-ops ":" "," :pad-before nil)))
+    (smart-ops ":" "," :pad-before nil)
+    (smart-ops-default-ops)))
