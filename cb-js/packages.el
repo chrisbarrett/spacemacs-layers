@@ -143,17 +143,33 @@
     :defer t
     :config
     (progn
-      (setq emmet-expand-jsx-className? t)
+      (defun cb-js/set-jsx-classname-on ()
+        (setq-local emmet-expand-jsx-className? t))
+
+      (add-hook 'cb-web-js-mode #'cb-js/set-jsx-classname-on)
+
+      (defun cb-js/emmet-move-out-of-squares ()
+        "Move point outside squares before expansion."
+        (cl-flet ((sp-has-op? (op)
+                              (-when-let ((&plist :op o) (sp-get-enclosing-sexp))
+                                (equal op o)))
+                  (move-out-of-sexp ()
+                                    (-when-let ((&plist :end end) (sp-get-enclosing-sexp))
+                                      (goto-char end))))
+          (cond
+           ((sp-has-op? "[")
+            (move-out-of-sexp))
+           ((and (sp-has-op? "\"")
+                 (save-excursion
+                   (sp-up-sexp)
+                   (sp-has-op? "[")))
+            (move-out-of-sexp)
+            (move-out-of-sexp)))))
 
       (defun cb-js/expand-snippet-then-emmet (f &rest args)
         (if (yas--templates-for-key-at-point)
             (call-interactively #'yas-expand)
-
-          ;; Move point outside squares before expansion.
-          (-when-let ((&plist :op op :end end) (sp-get-enclosing-sexp))
-            (when (equal op "[" )
-              (goto-char end)))
-
+          (cb-js/emmet-move-out-of-squares)
           (apply f args)))
 
       (advice-add 'emmet-expand-yas :around #'cb-js/expand-snippet-then-emmet))))
