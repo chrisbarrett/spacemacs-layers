@@ -204,7 +204,10 @@
     :defer t
     :mode (("\\.json\\'" . cb-web-json-mode)
            ("\\.jsx?\\'" . cb-web-js-mode)
-           ("\\.html\\'" . cb-web-html-mode))))
+           ("\\.html\\'" . cb-web-html-mode))
+    :config
+    (with-eval-after-load 'flycheck
+      (flycheck-add-mode 'json-jsonlint 'cb-web-json-mode))))
 
 (defun cb-js/init-js-yasnippet ()
   (use-package js-yasnippet
