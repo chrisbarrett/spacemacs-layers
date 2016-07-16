@@ -46,9 +46,9 @@ values."
       :variables
       c-c++-default-mode-for-headers 'c++-mode
       c-c++-enable-clang-support t)
-     dockerfile
      elm
      emacs-lisp
+     docker
      spacemacs-layouts
      finance
      (git
