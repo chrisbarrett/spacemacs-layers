@@ -30,7 +30,7 @@
     (->> (s-split (rx (or "," ".")) s)
          (-map #'s-trim)
          (-remove #'s-blank?)
-         (--map (format "this.%s;" it))
+         (--map (format "this.%s = %s;" it it))
          (s-join "\n"))))
 
 (provide 'js-yasnippet)
