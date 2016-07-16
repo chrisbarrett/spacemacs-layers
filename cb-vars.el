@@ -57,7 +57,8 @@
     ".pyc"
     ".v.d"
     ".vo"
-    ".glob"))
+    ".glob"
+    ".min.js"))
 
 (defconst cb-vars-ignored-files-regexps
   '("\\.elc\\'"
@@ -81,9 +82,13 @@
     "\\.org-clock-save\\.el\\'"
 
     ;; Elm
-    ".*/elm-stuff/.*"
+    "/elm-stuff/"
     "\\.elmi\\'"
-    "\\.elmo\\'"))
+    "\\.elmo\\'"
+
+    ;; JS
+    "node_modules"
+    "\\.min\\.js\\'"))
 
 (defconst cb-vars-ignored-dirs
   '(".idea"
@@ -127,7 +132,10 @@
     ".ensime_cache"
 
     ;; Elm
-    ".*/elm-stuff"))
+    "elm-stuff"
+
+    ;; JS
+    "node_modules"))
 
 (provide 'cb-vars)
 

@@ -102,13 +102,28 @@
   (use-package ag
     :after projectile
     :config
-    (setq ag-ignore-list (-union ag-ignore-list (cb-core-regexp-quoted-ignored-dirs)))))
+    (setq ag-ignore-list
+          (->> (list
+                ag-ignore-list
+                cb-vars-ignored-files-regexps
+                (cb-core-regexp-quoted-ignored-dirs))
+               -flatten
+               -uniq))))
 
 (defun cb-project/post-init-helm-ag ()
   (use-package helm-ag
     :after projectile
     :config
-    (setq helm-ag-insert-at-point 'symbol)))
+    (progn
+      (setq helm-ag-ignore-patterns
+            (->> (list
+                  helm-ag-ignore-patterns
+                  cb-vars-ignored-files-regexps
+                  (cb-core-regexp-quoted-ignored-dirs))
+                 -flatten
+                 -uniq))
+
+      (setq helm-ag-insert-at-point 'symbol))))
 
 (defun cb-project/init-skeletor ()
   (use-package skeletor
