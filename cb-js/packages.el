@@ -14,7 +14,6 @@
     emmet-mode
     smart-ops
     nodejs-repl
-    autoinsert
     (cb-flow-checker :location local)
     (cb-web-modes :location local)
     (js-yasnippet :location local)))
@@ -206,11 +205,6 @@
     :mode (("\\.json\\'" . cb-web-json-mode)
            ("\\.jsx?\\'" . cb-web-js-mode)
            ("\\.html\\'" . cb-web-html-mode))))
-
-(defun cb-js/post-init-autoinsert ()
-  (use-package autoinsert
-    :config
-    (add-to-list 'auto-insert-alist '(cb-web-js-mode nil "'use strict';\n\n"))))
 
 (defun cb-js/init-js-yasnippet ()
   (use-package js-yasnippet
