@@ -3,7 +3,9 @@
 ;;; Code:
 
 (eval-when-compile
+  (require 'dash nil t)
   (require 'smartparens nil t)
+  (require 'skeletor nil t)
   (require 'use-package nil t))
 
 (defconst cb-js-packages
@@ -14,9 +16,11 @@
     emmet-mode
     smart-ops
     nodejs-repl
+    skeletor
     (cb-flow-checker :location local)
     (cb-web-modes :location local)
-    (js-yasnippet :location local)))
+    (js-yasnippet :location local)
+    (cb-emmet-tolerant-expansion :location local)))
 
 (defun cb-js/post-init-smartparens ()
   (use-package smartparens
@@ -145,33 +149,7 @@
       (defun cb-js/set-jsx-classname-on ()
         (setq-local emmet-expand-jsx-className? t))
 
-      (add-hook 'cb-web-js-mode #'cb-js/set-jsx-classname-on)
-
-      (defun cb-js/emmet-move-out-of-squares ()
-        "Move point outside squares before expansion."
-        (cl-flet ((sp-has-op? (op)
-                              (-when-let ((&plist :op o) (sp-get-enclosing-sexp))
-                                (equal op o)))
-                  (move-out-of-sexp ()
-                                    (-when-let ((&plist :end end) (sp-get-enclosing-sexp))
-                                      (goto-char end))))
-          (cond
-           ((sp-has-op? "[")
-            (move-out-of-sexp))
-           ((and (sp-has-op? "\"")
-                 (save-excursion
-                   (sp-up-sexp)
-                   (sp-has-op? "[")))
-            (move-out-of-sexp)
-            (move-out-of-sexp)))))
-
-      (defun cb-js/expand-snippet-then-emmet (f &rest args)
-        (if (yas--templates-for-key-at-point)
-            (call-interactively #'yas-expand)
-          (cb-js/emmet-move-out-of-squares)
-          (apply f args)))
-
-      (advice-add 'emmet-expand-yas :around #'cb-js/expand-snippet-then-emmet))))
+      (add-hook 'cb-web-js-mode #'cb-js/set-jsx-classname-on))))
 
 (defun cb-js/init-cb-flow-checker ()
   (use-package cb-flow-checker
@@ -199,6 +177,17 @@
 
       (define-key nodejs-repl-mode-map (kbd "C-c C-z") #'cb-js/switch-to-src))))
 
+(defun cb-js/post-init-skeletor ()
+  (use-package skeletor
+    :config
+    (skeletor-define-constructor "JavaScript (Node)"
+      :requires-executables '(("npm" . "https://docs.npmjs.com/getting-started/installing-node"))
+      :initialise
+      (lambda (x)
+        (-let [(&alist 'project-dir dir) x]
+          (skeletor--log-info "Generating project...")
+          (skeletor-shell-command "npm init --yes" dir))))))
+
 (defun cb-js/init-cb-web-modes ()
   (use-package cb-web-modes
     :defer t
@@ -212,5 +201,11 @@
 (defun cb-js/init-js-yasnippet ()
   (use-package js-yasnippet
     :after yasnippet))
+
+(defun cb-js/init-cb-emmet-tolerant-expansion ()
+  (use-package cb-emmet-tolerant-expansion
+    :after emmet-mode
+    :functions cb-emmet-tolerant-expansion-init
+    :config (cb-emmet-tolerant-expansion-init)))
 
 ;;; packages.el ends here
