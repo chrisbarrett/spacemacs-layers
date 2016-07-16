@@ -7,8 +7,7 @@
   (require 'use-package nil t))
 
 (defconst cb-js-packages
-  '(js2-mode
-    web-mode
+  '(web-mode
     js
     smartparens
     flycheck
@@ -19,17 +18,6 @@
     (cb-flow-checker :location local)
     (cb-web-modes :location local)
     (js-yasnippet :location local)))
-
-(defun cb-js/init-js2-mode ()
-  ;; I don't actually use js2-mode much, but a few packages expect to use it.
-  (use-package js2-mode
-    :defer t
-    :config
-    (progn
-      (setq js2-basic-offset 2)
-      ;; Use flycheck for checking.
-      (setq js2-mode-show-parse-errors nil)
-      (setq js2-mode-show-strict-warnings nil))))
 
 (defun cb-js/post-init-smartparens ()
   (use-package smartparens
