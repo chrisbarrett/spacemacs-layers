@@ -100,6 +100,13 @@
         (add-hook 'nodejs-repl-mode-hook #'smart-ops-mode)))))
 
 (defun cb-js/post-init-web-mode ()
+  ;; HACK: Delete web-mode auto-mode config set by Spacemacs so that I can use
+  ;; specialised derived modes instead.
+  (setq auto-mode-alist
+        (-remove (-lambda ((_ . mode))
+                   (equal 'web-mode mode))
+                 auto-mode-alist))
+
   (use-package web-mode
     :defer t
     :config
