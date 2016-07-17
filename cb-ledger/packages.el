@@ -175,6 +175,7 @@ which require an initialization must be listed explicitly in the list.")
               (header "Expenses Last 7 Days")
               "ledger -f %(ledger-file) bal expenses --sort total -p 'last 7 days' --invert"
               (header "Week-on-week change Last 7 Days")
+              (paragraph "How much money went in/out of my accounts?")
               "ledger -f %(ledger-file) bal 'checking' 'bills' -p 'last 7 days'"
 
               (separator)
@@ -206,6 +207,9 @@ These balances show the remaining available balance for each category.")
 
               (separator)
               (paragraph "Read through the payees below from my checking account. Any spending patterns here that could be budgeted?")
+              (header-1 "Unbudgeted Spending, Last 7 Days")
+              "ledger -f %(ledger-file) bal expenses --sort total -p 'last 7 days' --invert --unbudgeted"
+              (header "Register")
               "ledger -f %(ledger-file) reg checking --by-payee --sort total -p 'last 7 days' --invert"))
 
             (expenses
