@@ -46,8 +46,22 @@
         (sp-local-pair "(" ")" :post-handlers '(:add cb-js/format-after-paren))
         (sp-local-pair "<" ">" :actions '(:rem insert)))
 
+      (defun js/sp-braces-external-padding (id action ctx)
+        (when (and (equal action 'insert)
+                   (equal ctx 'code))
+          (-when-let (pos (save-excursion
+                            (search-backward (sp-get-pair id :open)
+                                             (line-beginning-position) t)))
+            (if (s-matches? (rx bol (* space) "<" (*? nonl) "=" (* space) eol)
+                            (buffer-substring (line-beginning-position) pos))
+                (save-excursion
+                  (goto-char pos)
+                  (delete-horizontal-space))
+              (sp-external-padding id action ctx))
+            t)))
+
       (sp-with-modes '(cb-web-js-mode cb-web-json-mode)
-        (sp-local-pair "{" "}" :post-handlers '(:add sp-external-padding))))))
+        (sp-local-pair "{" "}" :post-handlers '(:add js/sp-braces-external-padding))))))
 
 (defun cb-js/post-init-smart-ops ()
   (use-package smart-ops
@@ -109,9 +123,20 @@
                            (just-one-space)
                            (backward-char)))
 
+              ;; KLUDGE: Could be an arrow, but could be inserting an attribute
+              ;; inside a tag.
+              (smart-ops "=>"
+                         :pad-before-unless #'cb-js/inside-angles?
+                         :action
+                         (lambda (&rest _)
+                           (when (cb-js/inside-angles?)
+                             (skip-chars-backward "> ")
+                             (just-one-space)
+                             (backward-char))))
+
               (smart-ops ";" ":" "," :pad-before nil)
               (smart-ops "++" "--" "++;" "--;" :pad-before nil :pad-after nil)
-              (smart-ops "=>" ">=")
+              (smart-ops ">=")
               (smart-op "!" :bypass? t)
               (smart-ops-default-ops :pad-unless #'cb-js/inside-angles?))))
 
