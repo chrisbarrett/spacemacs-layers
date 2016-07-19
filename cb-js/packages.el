@@ -49,15 +49,25 @@
       (defun js/sp-braces-external-padding (id action ctx)
         (when (and (equal action 'insert)
                    (equal ctx 'code))
-          (-when-let (pos (save-excursion
-                            (search-backward (sp-get-pair id :open)
-                                             (line-beginning-position) t)))
-            (if (s-matches? (rx bol (* space) "<" (*? nonl) "=" (* space) eol)
-                            (buffer-substring (line-beginning-position) pos))
-                (save-excursion
-                  (goto-char pos)
-                  (delete-horizontal-space))
-              (sp-external-padding id action ctx))
+          (-when-let* ((end (point))
+                       (beg (save-excursion
+                              (search-backward (sp-get-pair id :open)
+                                               (line-beginning-position) t))))
+            (cond
+             ((s-matches? (rx bol (* space) "<" (*? nonl) "=" (* space) eol)
+                          (buffer-substring (line-beginning-position) beg))
+              ;; Delete leading spaces
+              (save-excursion
+                (goto-char beg)
+                (delete-horizontal-space))
+              ;; Delete trailing spaces before end of tag marker.
+              (save-excursion
+                (forward-char)
+                (skip-chars-forward " ")
+                (when (equal (char-after) ?>)
+                  (delete-horizontal-space))))
+             (t
+              (sp-external-padding id action ctx)))
             t)))
 
       (sp-with-modes '(cb-web-js-mode cb-web-json-mode)
