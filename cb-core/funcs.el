@@ -132,10 +132,17 @@
 
 (defun cb-core-exit-emacs ()
   (interactive)
-  (when (yes-or-no-p "Kill Emacs? ")
-    (if (daemonp)
-        (server-save-buffers-kill-terminal nil)
-      (save-buffers-kill-emacs))))
+  (let* ((emacsclient-frame? (and (not (display-graphic-p))
+                                  (< 1 (length (frame-list)))))
+         (prompt (if emacsclient-frame? "Finish editing? " "Kill Emacs? ")))
+    (when (yes-or-no-p prompt)
+      (cond
+       (emacsclient-frame?
+        (server-done))
+       ((daemonp)
+        (server-save-buffers-kill-terminal nil))
+       (t
+        (save-buffers-kill-emacs))))))
 
 (defun cb-core-warn-exit-emacs-rebound ()
   (interactive)
