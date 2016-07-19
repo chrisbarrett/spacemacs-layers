@@ -149,7 +149,7 @@
       (defun cb-js/set-jsx-classname-on ()
         (setq-local emmet-expand-jsx-className? t))
 
-      (add-hook 'cb-web-js-mode #'cb-js/set-jsx-classname-on))))
+      (add-hook 'cb-web-js-mode-hook #'cb-js/set-jsx-classname-on))))
 
 (defun cb-js/init-cb-flow-checker ()
   (use-package cb-flow-checker
