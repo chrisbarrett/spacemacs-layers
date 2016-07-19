@@ -59,8 +59,13 @@
                   (smart-ops-mode +1)))
 
       (defun cb-js/inside-angles? (&rest _)
-        (-when-let ((&plist :op op) (sp-get-enclosing-sexp))
-          (equal op "<")))
+        ;; HACK: smartparens doesn't always detect angles correctly, so just
+        ;; look for the start of a tag on the current line.
+        (or (s-matches? (rx bol (* space) "<")
+                        (buffer-substring (line-beginning-position)
+                                          (line-end-position)))
+            (-when-let ((&plist :op op) (sp-get-enclosing-sexp))
+              (equal op "<"))))
 
       (defun cb-js/inside-squares? (&rest _)
         (-when-let ((&plist :op op) (sp-get-enclosing-sexp))
@@ -90,8 +95,20 @@
                         :action #'cb-js/move-between-angles-insert-slash)
 
               (smart-ops "<" ">" :pad-unless #'cb-js/inside-angles?)
+
               (smart-ops "=" "/" :pad-unless (-orfn #'cb-js/inside-squares?
                                                     #'cb-js/inside-angles?))
+
+              ;; KLUDGE: This is the pair when inserting <tag attr=|/>
+              (smart-ops "=/>" "=/>,"
+                         :pad-before nil
+                         :pad-after nil
+                         :action
+                         (lambda (&rest _)
+                           (skip-chars-backward ">/ ")
+                           (just-one-space)
+                           (backward-char)))
+
               (smart-ops ";" ":" "," :pad-before nil)
               (smart-ops "++" "--" "++;" "--;" :pad-before nil :pad-after nil)
               (smart-ops "=>" ">=")
@@ -126,6 +143,7 @@
       ;; Use 2 spaces for indentation
 
       (defun cb-js/set-local-vars ()
+        (setq-local web-mode-enable-auto-quoting nil)
         (setq web-mode-markup-indent-offset 2)
         (setq web-mode-css-indent-offset 2)
         (setq web-mode-code-indent-offset 2))
