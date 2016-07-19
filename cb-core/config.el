@@ -2,13 +2,6 @@
 ;;; Commentary:
 ;;; Code:
 
-;; Menu-bar looks acceptable in OS X. Otherwise it adds clutter.
-(when (fboundp 'menu-bar-mode)
-  (if (and (eq system-type 'darwin)
-           (display-graphic-p))
-      (menu-bar-mode +1)
-    (menu-bar-mode -1)))
-
 (when (boundp 'window-numbering-mode)
   (window-numbering-mode -1))
 
