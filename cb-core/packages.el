@@ -43,7 +43,8 @@
     (insert-variable-value :location local)
     (helm-http-status :location local)
     (indent-dwim :location local)
-    (replace-smart-quotes :location local)))
+    (replace-smart-quotes :location local)
+    (cb-transpose-line :location local)))
 
 (defun cb-core/user-config ()
   "This procedure should be called in `dotspacemacs/user-config'."
@@ -67,33 +68,49 @@
   (diminish 'hs-minor-mode))
 
 (defun cb-core/post-init-helm ()
-  (require 'helm)
-  (helm-autoresize-mode +1)
-  (setq helm-buffers-fuzzy-matching t)
-  (setq helm-recentf-fuzzy-match t)
-  (setq helm-imenu-fuzzy-match t)
-
-  (setq helm-locate-command
-        (pcase system-type
-          (`gnu/linux "locate -i -r %s")
-          (`berkeley-unix "locate -i %s")
-          (`windows-nt "es %s")
-          (`darwin "mdfind -name %s %s | egrep -v '/Library/(Caches|Mail)/'")
-          (t "locate %s")))
-
-  (custom-set-faces
-   `(helm-locate-finish
-     ((t (:foreground ,solarized-hl-cyan))))
-   '(helm-selection
-     ((((background light)) :background "gray90" :foreground "black" :underline nil)
-      (((background dark))  :background "black"  :foreground "white" :underline nil)))))
-
-(defun cb-core/post-init-aggressive-indent ()
-  (use-package aggressive-indent
+  (use-package helm
+    :bind
+    (("C-SPC" . helm-for-files)
+     ("C-@" . helm-for-files))
+    :bind*
+    (("S-SPC" . helm-M-x)
+     ("M-x" . helm-M-x)
+     ("s-b" . helm-buffers-list))
+    :bind-keymap
+    (("<tab>" . helm-execute-persistent-action)
+     ("C-i" . helm-execute-persistent-action)
+     ("C-z"  . helm-select-action)
+     ("C-SPC"  . helm-toggle-visible-mark))
     :config
     (progn
-      (add-to-list 'aggressive-indent-excluded-modes 'restclient-mode)
-      (global-aggressive-indent-mode))))
+      (spacemacs/set-leader-keys "oo" #'helm-occur)
+
+      (helm-autoresize-mode +1)
+      (setq helm-buffers-fuzzy-matching t)
+      (setq helm-recentf-fuzzy-match t)
+      (setq helm-imenu-fuzzy-match t)
+
+      (setq helm-locate-command
+            (pcase system-type
+              (`gnu/linux "locate -i -r %s")
+              (`berkeley-unix "locate -i %s")
+              (`windows-nt "es %s")
+              (`darwin "mdfind -name %s %s | egrep -v '/Library/(Caches|Mail)/'")
+              (t "locate %s")))
+
+      (custom-set-faces
+       `(helm-locate-finish
+         ((t (:foreground ,solarized-hl-cyan))))
+       '(helm-selection
+         ((((background light)) :background "gray90" :foreground "black" :underline nil)
+          (((background dark))  :background "black"  :foreground "white" :underline nil))))))
+
+  (defun cb-core/post-init-aggressive-indent ()
+    (use-package aggressive-indent
+      :config
+      (progn
+        (add-to-list 'aggressive-indent-excluded-modes 'restclient-mode)
+        (global-aggressive-indent-mode)))))
 
 (defun cb-core/init-ag ()
   (use-package ag :commands ag))
@@ -255,5 +272,13 @@
   (use-package replace-smart-quotes
     :commands (replace-smart-quotes-region
                replace-smart-quotes-buffer)))
+
+(defun cb-core/init-cb-transpose-line ()
+  (use-package cb-transpose-line
+    :commands (cb-transpose-line-up cb-transpose-line-down)
+    :init
+    (progn
+      (evil-global-set-key 'normal (kbd "C-<up>") #'cb-transpose-line-up)
+      (evil-global-set-key 'normal (kbd "C-<down>") #'cb-transpose-line-down))))
 
 ;;; packages.el ends here

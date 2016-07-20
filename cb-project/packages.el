@@ -95,8 +95,9 @@
 (defun cb-project/post-init-helm-projectile ()
   (use-package helm-projectile
     :after projectile
-    :bind
-    (("s-t" . helm-projectile))))
+    :bind (("s-t" . helm-projectile))
+    :config
+    (spacemacs/set-leader-keys "oo" 'helm-occur)))
 
 (defun cb-project/post-init-ag ()
   (use-package ag

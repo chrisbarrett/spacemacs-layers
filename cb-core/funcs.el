@@ -11,8 +11,6 @@
 
 (autoload 'ansi-color-apply-on-region "ansi-color")
 (autoload 'helm "helm-command")
-(autoload 'org-move-item-down "org-list")
-(autoload 'org-move-item-up "org-list")
 (autoload 'projectile-invalidate-cache "projectile")
 (autoload 'projectile-project-p "projectile")
 (autoload 'recentf-cleanup "recentf")
@@ -106,27 +104,6 @@
     (user-error "No windows to rotate"))
    (t
     (user-error "Too many windows to rotate"))))
-
-(defun cb-core-move-line-up ()
-  "Move the current line up."
-  (interactive)
-  (if (derived-mode-p 'org-mode)
-      (org-move-item-up)
-
-    (transpose-lines 1)
-    (forward-line -2)
-    (indent-according-to-mode)))
-
-(defun cb-core-move-line-down ()
-  "Move the current line up."
-  (interactive)
-  (if (derived-mode-p 'org-mode)
-      (org-move-item-down)
-
-    (forward-line 1)
-    (transpose-lines 1)
-    (forward-line -1)
-    (indent-according-to-mode)))
 
 ;;; Exiting Emacs
 
