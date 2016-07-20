@@ -50,6 +50,7 @@
 ;;; Helm
 
 (bind-key (kbd "C-SPC") 'helm-for-files)
+(bind-key (kbd "C-@") 'helm-for-files)
 
 (bind-key* "S-SPC" 'helm-M-x)
 (bind-key* "M-x" 'helm-M-x)
