@@ -49,10 +49,7 @@
 (defun cb-core/user-config ()
   "This procedure should be called in `dotspacemacs/user-config'."
   (setq recentf-max-saved-items 1000)
-  (setq bookmark-save-flag nil)
-
-  ;; Set ace-window keys for dvorak.
-  (setq aw-keys '(?a ?o ?e ?u ?i ?d ?h ?t ?n)))
+  (setq bookmark-save-flag nil))
 
 (defun cb-core/init-dash-functional ()
   (use-package dash-functional
@@ -71,16 +68,16 @@
   (use-package helm
     :bind
     (("C-SPC" . helm-for-files)
-     ("C-@" . helm-for-files))
+     ("C-@" . helm-for-files)
+     :map helm-map
+     ("<tab>" . helm-execute-persistent-action)
+     ( "C-i" . helm-execute-persistent-action)
+     ( "C-z" . helm-select-action)
+     ( "C-SPC" . helm-toggle-visible-mark))
     :bind*
     (("S-SPC" . helm-M-x)
      ("M-x" . helm-M-x)
      ("s-b" . helm-buffers-list))
-    :bind-keymap
-    (("<tab>" . helm-execute-persistent-action)
-     ("C-i" . helm-execute-persistent-action)
-     ("C-z"  . helm-select-action)
-     ("C-SPC"  . helm-toggle-visible-mark))
     :config
     (progn
       (spacemacs/set-leader-keys "oo" #'helm-occur)
@@ -126,25 +123,27 @@
     (setq alert-default-style 'message)))
 
 (defun cb-core/post-init-helm-gtags ()
-  (setq helm-gtags-ignore-case t)
-  (setq helm-gtags-auto-update t)
-  (setq helm-gtags-use-input-at-cursor t)
-  (setq helm-gtags-pulse-at-cursor t)
-  (setq helm-gtags-prefix-key "\C-cg")
-  (setq helm-gtags-suggested-key-mapping t)
+  (use-package helm-gtags
+    :bind (:map helm-gtags-mode-map
+                ("M-." . helm-gtags-dwim)
+                ("M-," . helm-gtags-pop-stack))
+    :config
+    (progn
+      (setq helm-gtags-ignore-case t)
+      (setq helm-gtags-auto-update t)
+      (setq helm-gtags-use-input-at-cursor t)
+      (setq helm-gtags-pulse-at-cursor t)
+      (setq helm-gtags-prefix-key "\C-cg")
+      (setq helm-gtags-suggested-key-mapping t)
+
+      (dolist (state '(normal insert))
+        (evil-define-key state helm-gtags-mode-map
+          (kbd "M-.") 'helm-gtags-dwim
+          (kbd "M-,") 'helm-gtags-pop-stack))))
 
   (with-eval-after-load 'pulse
     (core/remap-face 'pulse-highlight-face 'cb-faces-bg-flash)
-    (core/remap-face 'pulse-highlight-start-face 'cb-faces-bg-flash))
-
-  (with-eval-after-load 'helm-gtags
-    (dolist (state '(normal insert))
-      (evil-define-key state helm-gtags-mode-map
-        (kbd "M-.") 'helm-gtags-dwim
-        (kbd "M-,") 'helm-gtags-pop-stack))
-
-    (define-key helm-gtags-mode-map (kbd "M-.") 'helm-gtags-dwim)
-    (define-key helm-gtags-mode-map (kbd "M-,") 'helm-gtags-pop-stack)))
+    (core/remap-face 'pulse-highlight-start-face 'cb-faces-bg-flash)))
 
 (defun cb-core/init-world-time-mode ()
   (use-package world-time-mode
@@ -171,8 +170,10 @@
     :config (smart-ops-init)))
 
 (defun cb-core/post-init-iedit ()
-  (custom-set-faces
-   `(iedit-occurrence ((t (:background ,solarized-hl-orange :foreground "white"))))))
+  (use-package iedit
+    :config
+    (custom-set-faces
+     `(iedit-occurrence ((t (:background ,solarized-hl-orange :foreground "white")))))))
 
 (defun cb-core/post-init-hl-line ()
   (global-hl-line-mode -1))
@@ -208,18 +209,21 @@
       (recentf-cleanup))))
 
 (defun cb-core/post-init-ido ()
-  (setq ido-use-filename-at-point 'guess)
-  (add-to-list 'ido-ignore-buffers "\\*helm.*")
-  (add-to-list 'ido-ignore-buffers "\\*Minibuf.*")
-  (dolist (regexp cb-vars-ignored-files-regexps)
-    (add-to-list 'ido-ignore-files regexp)))
+  (use-package ido
+    :config
+    (progn
+      (setq ido-use-filename-at-point 'guess)
+
+      (add-to-list 'ido-ignore-buffers "\\*helm.*")
+      (add-to-list 'ido-ignore-buffers "\\*Minibuf.*")
+
+      (dolist (regexp cb-vars-ignored-files-regexps)
+        (add-to-list 'ido-ignore-files regexp)))))
 
 (defun cb-core/init-cb-buffers ()
   (use-package cb-buffers
-    :config
-    (progn
-      (bind-key* (kbd "C-<backspace>") 'cb-buffers-maybe-kill)
-      (bind-key (kbd "C-c k b") 'cb-buffers-maybe-kill-all))))
+    :bind  (("C-c k b" . cb-buffers-maybe-kill-all))
+    :bind* (("C-<backspace>" . cb-buffers-maybe-kill))))
 
 (defun cb-core/post-init-neotree ()
   (use-package neotree
