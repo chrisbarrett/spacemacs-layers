@@ -54,6 +54,7 @@
 
 (defconst cb-bootstrap-preload-lisp-files
   (list
+   (concat user-layers-directory "cb-use-package-extensions.el")
    (concat user-layers-directory "cb-vars.el")
    (concat user-layers-directory "cb-core/funcs.el")
    (concat user-layers-directory "cb-core/config.el"))
@@ -77,6 +78,7 @@
     (cb-bootstrap--install-package pkg)))
 
 (defun cb-bootstrap/load-preloadable-lisp-files ()
+  (add-to-list 'load-path user-layers-directory)
   (dolist (el cb-bootstrap-preload-lisp-files)
     (load el)))
 

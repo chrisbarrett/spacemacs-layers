@@ -3,9 +3,10 @@
 ;;; Code:
 
 (eval-when-compile
-  (require 'cb-vars nil t))
+  (require 'cb-vars nil t)
+  (require 'use-package)
+  (require 'cb-use-package-extensions))
 
-(require 'use-package)
 (require 's)
 (require 'dash)
 (require 'f)
@@ -124,9 +125,18 @@
 
 (defun cb-core/post-init-helm-gtags ()
   (use-package helm-gtags
-    :bind (:map helm-gtags-mode-map
-                ("M-." . helm-gtags-dwim)
-                ("M-," . helm-gtags-pop-stack))
+    :bind
+    (:map helm-gtags-mode-map
+          ("M-." . helm-gtags-dwim)
+          ("M-," . helm-gtags-pop-stack))
+    :evil-bind
+    (:map helm-gtags-mode-map
+          :state normal
+          ("M-." . helm-gtags-dwim)
+          ("M-," . helm-gtags-pop-stack)
+          :state insert
+          ("M-." . helm-gtags-dwim)
+          ("M-," . helm-gtags-pop-stack))
     :config
     (progn
       (setq helm-gtags-ignore-case t)
@@ -134,12 +144,7 @@
       (setq helm-gtags-use-input-at-cursor t)
       (setq helm-gtags-pulse-at-cursor t)
       (setq helm-gtags-prefix-key "\C-cg")
-      (setq helm-gtags-suggested-key-mapping t)
-
-      (dolist (state '(normal insert))
-        (evil-define-key state helm-gtags-mode-map
-          (kbd "M-.") 'helm-gtags-dwim
-          (kbd "M-,") 'helm-gtags-pop-stack))))
+      (setq helm-gtags-suggested-key-mapping t)))
 
   (with-eval-after-load 'pulse
     (core/remap-face 'pulse-highlight-face 'cb-faces-bg-flash)
@@ -148,6 +153,9 @@
 (defun cb-core/init-world-time-mode ()
   (use-package world-time-mode
     :commands world-time-list
+    :evil-bind
+    (:map world-time-table-mode-map :state normal
+          ("q" . quit-window))
     :init
     (spacemacs/set-leader-keys "at" 'world-time-list)
     :config
@@ -160,7 +168,6 @@
                                       ("America/Denver" "Mountain Time")
                                       ("Australia/Sydney" "Sydney")))
 
-      (evil-define-key 'normal world-time-table-mode-map (kbd "q") 'quit-window)
       (add-hook 'world-time-table-mode-hook 'hl-line-mode))))
 
 (defun cb-core/init-smart-ops ()
@@ -222,8 +229,10 @@
 
 (defun cb-core/init-cb-buffers ()
   (use-package cb-buffers
-    :bind  (("C-c k b" . cb-buffers-maybe-kill-all))
-    :bind* (("C-<backspace>" . cb-buffers-maybe-kill))))
+    :bind
+    (("C-c k b" . cb-buffers-maybe-kill-all))
+    :bind*
+    (("C-<backspace>" . cb-buffers-maybe-kill))))
 
 (defun cb-core/post-init-neotree ()
   (use-package neotree
@@ -279,10 +288,9 @@
 
 (defun cb-core/init-cb-transpose-line ()
   (use-package cb-transpose-line
-    :commands (cb-transpose-line-up cb-transpose-line-down)
-    :init
-    (progn
-      (evil-global-set-key 'normal (kbd "C-<up>") #'cb-transpose-line-up)
-      (evil-global-set-key 'normal (kbd "C-<down>") #'cb-transpose-line-down))))
+    :evil-bind
+    (:state normal
+            ("C-<up>" . cb-transpose-line-up)
+            ("C-<down>" . cb-transpose-line-down))))
 
 ;;; packages.el ends here
