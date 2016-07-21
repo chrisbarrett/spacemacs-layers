@@ -3,7 +3,8 @@
 ;;; Code:
 
 (eval-when-compile
-  (require 'use-package nil t))
+  (require 'use-package nil t)
+  (require 'cb-use-package-extensions))
 
 (require 'dash)
 (require 's)
@@ -38,6 +39,12 @@
   (use-package scala-mode
     :defer t
     :mode (("/conf/routes$" . conf-mode))
+
+    :bind
+    (:map scala-mode-map
+          ("M-RET" . scala/meta-ret)
+          ("C-c C-e" . scala/insert-extends))
+
     :config
     (progn
       (custom-set-faces
@@ -49,10 +56,6 @@
 
       (add-hook 'scala-mode-hook #'cb-scala/set-local-values)
 
-      (define-key scala-mode-map (kbd "M-RET") #'scala/meta-ret)
-
-      (define-key scala-mode-map (kbd "C-c C-e") #'scala/insert-extends)
-
       ;;; HACK: Spacemacs errors when trying to set up ensime for buffers
       ;;; without file names, such as ediff buffers.
 
@@ -63,122 +66,128 @@
       (advice-add #'scala/configure-ensime :around #'cb-scala/ignore-errors))))
 
 (defun cb-scala/post-init-ensime ()
+  (use-package ensime
+    :bind
+    (:map
+     ensime-inf-mode-map
+     ("C-c C-z" . scala/switch-to-src)
+     :map
+     ensime-mode-map
+     ("C-c C-z" . ensime-inf-switch)
+     ("C-c C-l" . scala/load-buffer)
+     ("C-c C-h" . ensime-show-doc-for-symbol-at-point))
+    :evil-bind
+    (:state
+     normal
+     :map ensime-inspector-mode-map
+     ("M-." . ensime-inspector-browse-source)
+     ("K" . ensime-inspector-browse-doc)
+     ("," . ensime-inspector-backward-page)
+     ("." . ensime-inspector-forward-page)
+     ("^" . ensime-inspector-backward-page)
+     :map ensime-mode-map
+     ("RET" . ensime-inspect-type-at-point))
 
-  (defun scala/configure-ensime ()
-    "Ensure the file exists before starting `ensime-mode'."
-    (unless (f-ext? (buffer-file-name) "sbt")
-      (ensime-mode +1)))
+    :init
+    (progn
+      (add-hook 'scala-mode-hook #'scala/configure-ensime)
+      (add-hook 'ensime-mode-hook #'cb-scala/turn-off-aggressive-indent))
 
-  (add-hook 'scala-mode-hook #'scala/configure-ensime)
-  (add-hook 'ensime-mode-hook #'cb-scala/turn-off-aggressive-indent)
+    :config
+    (progn
+      (defun scala/configure-ensime ()
+        "Ensure the file exists before starting `ensime-mode'."
+        (unless (f-ext? (buffer-file-name) "sbt")
+          (ensime-mode +1)))
 
-  (setq ensime-startup-snapshot-notification nil)
-  (setq ensime-auto-generate-config t)
-  (setq ensime-implicit-gutter-icons nil)
-  (setq ensime-sem-high-faces
-        `((var . scala-font-lock:var-face)
-          ;; (val . (:inherit font-lock-constant-face :slant italic))
-          (varField . scala-font-lock:var-face)
-          ;; (valField . (:inherit font-lock-constant-face :slant italic))
-          (functionCall . font-lock-function-name-face)
-          (operator . font-lock-keyword-face)
-          (param . (:slant italic))
-          (class . font-lock-type-face)
-          (trait .  (:inherit font-lock-type-face :slant italic))
-          (object . font-lock-constant-face)
-          (package . font-lock-preprocessor-face)
-          (implicitConversion . (:underline ,solarized-hl-cyan))
-          (implicitParams . (:underline ,solarized-hl-cyan))
-          (deprecated . (:strike-through "dark gray"))))
+      (setq ensime-startup-snapshot-notification nil)
+      (setq ensime-auto-generate-config t)
+      (setq ensime-implicit-gutter-icons nil)
+      (setq ensime-sem-high-faces
+            `((var . scala-font-lock:var-face)
+              ;; (val . (:inherit font-lock-constant-face :slant italic))
+              (varField . scala-font-lock:var-face)
+              ;; (valField . (:inherit font-lock-constant-face :slant italic))
+              (functionCall . font-lock-function-name-face)
+              (operator . font-lock-keyword-face)
+              (param . (:slant italic))
+              (class . font-lock-type-face)
+              (trait .  (:inherit font-lock-type-face :slant italic))
+              (object . font-lock-constant-face)
+              (package . font-lock-preprocessor-face)
+              (implicitConversion . (:underline ,solarized-hl-cyan))
+              (implicitParams . (:underline ,solarized-hl-cyan))
+              (deprecated . (:strike-through "dark gray"))))
 
-  (defconst scala/test-file-template
-    "package %TESTPACKAGE%
-
-import org.scalatest.{ WordSpec, Matchers }
+      (defconst scala/test-file-template
+        "import org.scalatest.{ WordSpec, Matchers }
 
 class %TESTCLASS% extends WordSpec with Matchers {
 
 }
 "
-    "The default value to insert into new scala test buffers.
+        "The default value to insert into new scala test buffers.
 See `ensime-goto-test-config-defaults' for possible template values.")
 
-  (setq ensime-goto-test-config-defaults
-        (list :test-class-names-fn 'ensime-goto-test--test-class-names
-              :test-class-suffixes '("Test" "Tests"
-                                     "IntTest" "IntTests" "IntegrationTest" "IntegrationTests"
-                                     "Spec" "Specs" "Specification" "Specifications"
-                                     "Prop" "Props" "Property" "Properties"
-                                     "Check" "Checks")
-              :impl-class-name-fn 'ensime-goto-test--impl-class-name
-              :impl-to-test-dir-fn 'ensime-goto-test--impl-to-test-dir
-              :is-test-dir-fn 'ensime-goto-test--is-test-dir
-              :test-template-fn (lambda () scala/test-file-template)))
+      (setq ensime-goto-test-config-defaults
+            (list :test-class-names-fn 'ensime-goto-test--test-class-names
+                  :test-class-suffixes '("Test" "Tests"
+                                         "IntTest" "IntTests" "IntegrationTest" "IntegrationTests"
+                                         "Spec" "Specs" "Specification" "Specifications"
+                                         "Prop" "Props" "Property" "Properties"
+                                         "Check" "Checks")
+                  :impl-class-name-fn 'ensime-goto-test--impl-class-name
+                  :impl-to-test-dir-fn 'ensime-goto-test--impl-to-test-dir
+                  :is-test-dir-fn 'ensime-goto-test--is-test-dir
+                  :test-template-fn (lambda () scala/test-file-template))))
 
+    ;; Fix up ensime files before loading
+    (advice-add 'ensime-config-load :before #'scala/fix-ensime-file)
 
-  ;; Fix up ensime files before loading
-  (advice-add 'ensime-config-load :before #'scala/fix-ensime-file)
+    ;; HACK: Prevent ensime from clobbering company settings.
+    (with-eval-after-load 'ensime-company
+      (defun ensime-company-enable ()
+        (set (make-local-variable 'company-backends) '(ensime-company))
+        (company-mode)
+        (yas-minor-mode-on)
+        (set (make-local-variable 'company-idle-delay) 0)))
 
-  (with-eval-after-load 'ensime-inf
-    (define-key ensime-inf-mode-map (kbd "C-c C-z") 'scala/switch-to-src))
-
-  (with-eval-after-load 'ensime
-
-    (define-key ensime-mode-map (kbd "C-c C-z") 'ensime-inf-switch)
-    (define-key ensime-mode-map (kbd "C-c C-l") 'scala/load-buffer)
-    (define-key ensime-mode-map (kbd "C-c C-h") 'ensime-show-doc-for-symbol-at-point)
-
-    (evil-define-key 'normal ensime-inspector-mode-map
-      (kbd "M-.") 'ensime-inspector-browse-source
-      (kbd "K") 'ensime-inspector-browse-doc
-      (kbd ",") 'ensime-inspector-backward-page
-      (kbd ".") 'ensime-inspector-forward-page
-      (kbd "^") 'ensime-inspector-backward-page)
-
-    (evil-define-key 'normal ensime-mode-map (kbd "RET") 'ensime-inspect-type-at-point))
-
-  ;; HACK: Prevent ensime from clobbering company settings.
-  (with-eval-after-load 'ensime-company
-    (defun ensime-company-enable ()
-      (set (make-local-variable 'company-backends) '(ensime-company))
-      (company-mode)
-      (yas-minor-mode-on)
-      (set (make-local-variable 'company-idle-delay) 0)))
-
-  ;; HACK: Fix errors with ensime eldoc function.
-  (with-eval-after-load 'ensime-inspector
-    (defun ensime-type-at-point (&optional arg)
-      "Echo the type at point to the minibuffer.
+    ;; HACK: Fix errors with ensime eldoc function.
+    (with-eval-after-load 'ensime-inspector
+      (defun ensime-type-at-point (&optional arg)
+        "Echo the type at point to the minibuffer.
 A prefix argument will add the type to the kill ring."
-      (interactive "P")
-      (let* ((type (ensime-rpc-get-type-at-point))
-             (fullname (ensime-type-full-name-with-args type)))
-        (when arg
-          (kill-new fullname))
-        (message fullname))))
+        (interactive "P")
+        (let* ((type (ensime-rpc-get-type-at-point))
+               (fullname (ensime-type-full-name-with-args type)))
+          (when arg
+            (kill-new fullname))
+          (message fullname))))
 
-  (spacemacs/set-leader-keys-for-major-mode 'scala-mode "ii" 'ensime-import-type-at-point))
+    (spacemacs/set-leader-keys-for-major-mode 'scala-mode "ii" 'ensime-import-type-at-point)))
 
 (defun cb-scala/post-init-sbt-mode ()
-  (bind-key "<S-f1>" 'scala-sbt/bring)
+  (use-package sbt-mode
+    :bind (("<S-f1>" . scala-sbt/bring))
+    :config
+    (progn
+      (setq sbt:program-name "sbt -Dsbt.log.noformat=true")
+      (setq sbt:prompt-regexp
+            (rx bol (group (? space) (or
+                                      ;; SBT
+                                      (and (+ (any alpha "-")) ">" (+ space))
+                                      ;; Activator
+                                      (and "[" (+ (any alpha "-")) "] $" (+ space)))
+                           ) (* space)))
 
-  (setq sbt:prompt-regexp
-        (rx bol (group (? space) (or
-                                  ;; SBT
-                                  (and (+ (any alpha "-")) ">" (+ space))
-                                  ;; Activator
-                                  (and "[" (+ (any alpha "-")) "] $" (+ space)))
-                       ) (* space)))
-  (setq sbt:program-name "sbt -Dsbt.log.noformat=true")
+      (defun cb-scala/set-up-sbt-mode ()
+        (cb-scala/turn-off-aggressive-indent)
+        (show-smartparens-mode -1)
+        (show-paren-mode -1)
+        (local-set-key (kbd "C-l") #'spacemacs/comint-clear-buffer)
+        (local-set-key (kbd "C-c RET") #'scala/sbt-send-ret))
 
-  (defun cb-scala/set-up-sbt-mode ()
-    (cb-scala/turn-off-aggressive-indent)
-    (show-smartparens-mode -1)
-    (show-paren-mode -1)
-    (local-set-key (kbd "C-l") #'spacemacs/comint-clear-buffer)
-    (local-set-key (kbd "C-c RET") #'scala/sbt-send-ret))
-
-  (add-hook 'sbt-mode-hook #'cb-scala/set-up-sbt-mode))
+      (add-hook 'sbt-mode-hook #'cb-scala/set-up-sbt-mode))))
 
 (defun cb-scala/post-init-smart-ops ()
   (use-package smart-ops
