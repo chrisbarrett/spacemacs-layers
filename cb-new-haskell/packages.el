@@ -30,6 +30,7 @@
 ;;; Code:
 
 (eval-when-compile
+  (require 'cb-use-package-extensions)
   (require 'use-package nil t))
 
 (defconst cb-new-haskell-packages
@@ -78,7 +79,26 @@ Each entry is either:
 
 (defun cb-new-haskell/init-haskell-mode ()
   (use-package haskell-mode
-    :defer t
+    :bind
+    (:map
+     haskell-mode-map
+     ("<backtab>" . haskell-indentation-indent-backwards)
+     ("TAB" . haskell-indentation-indent-line)
+     ("M-P" . flymake-goto-prev-error)
+     ("M-N" . flymake-goto-next-error)
+     ("C-," . haskell-move-nested-left)
+     ("C-." . haskell-move-nested-right)
+     ("C-c C-d" . haskell-w3m-open-haddock)
+     ("C-c C-f" . haskell-cabal-visit-file)
+     ("C-c C-h" . haskell-hoogle))
+
+    :evil-bind
+    (:map
+     haskell-mode-map
+     :state normal
+     ("<backtab>" . haskell-indentation-indent-backwards)
+     ("TAB" . haskell-indentation-indent-line))
+
     :config
     (progn
       (setq haskell-process-type 'stack-ghci)
@@ -115,21 +135,7 @@ Each entry is either:
       ;; Disable some faces.
 
       (custom-set-faces
-       '(haskell-operator-face ((t :italic nil))))
-
-      ;; Set keybindings.
-
-      (evil-define-key 'normal haskell-mode-map (kbd "<backtab>") #'haskell-indentation-indent-backwards)
-      (evil-define-key 'normal haskell-mode-map (kbd "TAB") #'haskell-indentation-indent-line)
-      (define-key haskell-mode-map (kbd "<backtab>") #'haskell-indentation-indent-backwards)
-      (define-key haskell-mode-map (kbd "TAB")       #'haskell-indentation-indent-line)
-      (define-key haskell-mode-map (kbd "M-P")       #'flymake-goto-prev-error)
-      (define-key haskell-mode-map (kbd "M-N")       #'flymake-goto-next-error)
-      (define-key haskell-mode-map (kbd "C-,")       #'haskell-move-nested-left)
-      (define-key haskell-mode-map (kbd "C-.")       #'haskell-move-nested-right)
-      (define-key haskell-mode-map (kbd "C-c C-d")   #'haskell-w3m-open-haddock)
-      (define-key haskell-mode-map (kbd "C-c C-f")   #'haskell-cabal-visit-file)
-      (define-key haskell-mode-map (kbd "C-c C-h")   #'haskell-hoogle)))
+       '(haskell-operator-face ((t :italic nil))))))
 
   (use-package haskell-debug
     :after haskell-mode
@@ -148,19 +154,32 @@ Each entry is either:
 
   (use-package haskell-presentation-mode
     :after haskell-mode
-    :config
-    (evil-define-key 'normal haskell-presentation-mode-map (kbd "q") #'quit-window)))
+    :evil-bind
+    (:state
+     normal
+     :mode haskell-presentation-mode-map
+     ("q" . quit-window))))
 
 (defun cb-new-haskell/init-intero ()
   (use-package intero
     :after haskell-mode
+
+    :bind
+    (:map
+     intero-mode-map
+     ("M-." . intero-goto-definition)
+     ("M-," . pop-tag-mark))
+
+    :evil-bind
+    (:map
+     intero-mode-map
+     :state normal
+     ("M-." . intero-goto-definition)
+     ("M-," . pop-tag-mark))
+
     :config
     (progn
       (add-hook 'haskell-mode-hook #'intero-mode)
-      (evil-define-key 'normal intero-mode-map (kbd "M-.") #'intero-goto-definition)
-      (evil-define-key 'normal intero-mode-map (kbd "M-,") #'pop-tag-mark)
-      (define-key intero-mode-map (kbd "M-.") #'intero-goto-definition)
-      (define-key intero-mode-map (kbd "M-,") #'pop-tag-mark)
       (spacemacs/set-leader-keys-for-major-mode 'haskell-mode "t" #'intero-targets))))
 
 (defun cb-new-haskell/post-init-smart-ops ()
