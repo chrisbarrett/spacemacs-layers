@@ -491,7 +491,11 @@ With prefix argument ARG, always create a new shell."
     (save-excursion
       (goto-char (point-min))
       (while (search-forward-regexp invalid-formatter-rx nil t)
-        (replace-match "_" t t nil 1)))))
+        (replace-match "_" t t nil 1))
+
+      (goto-char (point-min))
+      (while (search-forward-regexp (rx (any "-_") (group "2.4.4") "-" (or "sources" "javadocs") ".jar") nil t)
+        (replace-match "2.4.3" t t nil 1)))))
 
 
 ;;; Test switching
