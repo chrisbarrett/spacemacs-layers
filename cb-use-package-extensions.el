@@ -22,43 +22,64 @@
 
 ;; Adds extra keywords to `use-package'.
 ;;
-;; `:evil-bind' provides a mechanism for setting up evil keybindings, similar to the `:bind' keyword.
+;; 1. `:evil-bind'
 ;;
-;; The value for `:evil-bind' is a list, which should start with the keyword
-;; `:state' followed by a symbol representing the evil state for the
-;; subsequent bindings.
+;;    `:evil-bind' provides a mechanism for setting up evil keybindings, similar
+;;    to the `:bind' keyword.
 ;;
-;;   (use-package foo
-;;     :evil-bind (:state normal
-;;                 ("a" . foo)
-;;                 ("b" . bar)))
+;;    The value for `:evil-bind' is a list, which should start with the keyword
+;;    `:state' followed by a symbol representing the evil state for the
+;;    subsequent bindings.
 ;;
-;; Bindings are specified as `(KEY-SEQUENCE . FUNCTION)' pairs, and can be
-;; interleaved with further `:state' declarations to declare bindings for
-;; different states:
+;;      (use-package foo
+;;        :evil-bind (:state normal
+;;                    ("a" . foo)
+;;                    ("b" . bar)))
 ;;
-;;   (use-package foo
-;;     :evil-bind (:state normal
-;;                 ("a" . foo)
-;;                 :state insert
-;;                 ("b" . bar)))
+;;    Bindings are specified as `(KEY-SEQUENCE . FUNCTION)' pairs, and can be
+;;    interleaved with further `:state' declarations to declare bindings for
+;;    different states:
 ;;
-;; Bindings specified in this way are global evil keybindings, defined using `evil-global-set-key'.
+;;      (use-package foo
+;;        :evil-bind (:state normal
+;;                    ("a" . foo)
+;;                    :state insert
+;;                    ("b" . bar)))
 ;;
-;; It is possible to declare bindings for certain maps, by using the `:map'
-;; keyword followed by the name of a keymap. Subsequent keybinding pairs are defined only
-;; when that keymap is active, using `evil-define-key'.
+;;    Bindings specified in this way are global evil keybindings, defined using
+;;    `evil-global-set-key'.
 ;;
-;; The example below demonstrates setting a global binding in normal state, as
-;; well as a mode-specific binding in insert state:
+;;    It is possible to declare bindings for certain maps, by using the `:map'
+;;    keyword followed by the name of a keymap. Subsequent keybinding pairs are
+;;    defined only when that keymap is active, using `evil-define-key'.
 ;;
-;;   (use-package foo
-;;     :evil-bind (:state normal
-;;                 ("a" . foo)
-;;                 :state insert
-;;                 :map foo-mode-map
-;;                 ("b" . bar)))
+;;    The example below demonstrates setting a global binding in normal state,
+;;    as well as a mode-specific binding in insert state:
 ;;
+;;      (use-package foo
+;;        :evil-bind (:state normal
+;;                    ("a" . foo)
+;;                    :state insert
+;;                    :map foo-mode-map
+;;                    ("b" . bar)))
+;;
+;; 2. `:leader-bind'
+;;
+;;    `:leader-bind' provides a way to declare Spacemacs leader key bindings. It
+;;    takes a list of conses, similar to `:evil-bind'.
+;;
+;;      (use-package foo
+;;        :leader-bind (("a" . foo)
+;;                      ("b" . bar)))
+;;
+;;    By default, bindings are set for all modes. The `:mode' keyword and a
+;;    major-mode name can be inserted into the list to set those bindings for the
+;;    major mode prefix instead.
+;;
+;;      (use-package foo
+;;        :leader-bind (("a" . foo)
+;;                      :mode foo-mode
+;;                      ("b" . bar)))
 
 ;;; Code:
 
@@ -123,6 +144,54 @@
                   (use-package-error (format "Expected :map, :state or (KEY . FN), but got: %s"
                                              fst)))))))))))))
 
+(defun use-package-normalize/:leader-bind (name keyword args)
+  (use-package-as-one (symbol-name keyword) args
+    (lambda (label args)
+      (use-package-normalize-pairs name label args nil t nil))))
+
+(defun use-package-handler/:leader-bind
+    (name _kw args rest state)
+  (let ((commands (-keep #'cdr-safe (-filter #'consp args))))
+    (use-package-concat
+     (use-package-process-keywords name
+       (use-package-sort-keywords (use-package-plist-maybe-put rest :defer t))
+       (use-package-plist-append state :commands commands))
+
+     `((ignore
+        ,@(->>
+           ;; Traverse `args' pairwise to process keyword-value pairs.
+           (-zip-pair args (-snoc (cdr args) nil))
+           (--keep
+            (-let (((&plist :mode mode) state)
+                   ((fst . snd) (when (listp it) it)))
+              (cond
+               ;; Assume the current item is a (:KEYWORD . VALUE) pair.  Update the state based on that value.
+               ((equal :mode fst)
+                (setq state (plist-put state :mode snd))
+                nil)
+
+               ;; Assume the current item is a (VALUE@i . VALUE@i+1) pair.
+               ;; Ignore the second element and just process the first.
+
+               ((and mode (consp fst))
+                (-let [(k . fn) fst]
+                  `(spacemacs/set-leader-keys-for-major-mode ',mode ,k #',fn)))
+
+               ((consp fst)
+                (-let [(k . fn) fst]
+                  `(spacemacs/set-leader-keys ,k #',fn)))
+
+               ;; A symbol is presumed to be the value of a previous kvp.
+
+               ((symbolp fst)
+                nil)
+
+               ;; Anything else is invalid.
+
+               (t
+                (use-package-error (format "Expected :mode or (KEY . FN), but got: %s" fst))))))))))))
+
+(add-to-list 'use-package-keywords :leader-bind t)
 (add-to-list 'use-package-keywords :evil-bind t)
 
 (provide 'cb-use-package-extensions)
