@@ -2,9 +2,7 @@
 # name: React Component
 # key: rc
 # --
-import React from 'react';
-
-export default class ${1:Name} extends React.Component {
+class ${1:Name} extends React.Component {
   render() {
     return (
       $0
