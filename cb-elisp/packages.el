@@ -19,17 +19,17 @@
     checkdoc
     flycheck-cask
     nameless
-    (elisp-autoinsert :location local)))
+    (elisp-autoinsert :location local)
+    (cb-elisp-meta-ret :location local)
+    (cb-elisp-eval-dwim :location local)))
 
 (use-package lisp-mode
   :bind
   (:map
    emacs-lisp-mode-map
    ("C-c C-t" . ert)
-   ("M-RET" . elisp/M-RET)
    ("C-c C-f" . eval-buffer)
    ("C-c C-b" . eval-buffer)
-   ("C-c C-c" . elisp/eval-dwim)
    ("C-x C-e" . pp-eval-last-sexp)
    ("M-." . elisp-slime-nav-find-elisp-thing-at-point))
 
@@ -162,5 +162,13 @@
   (use-package elisp-autoinsert
     :functions (elisp-autoinsert-init)
     :config (elisp-autoinsert-init)))
+
+(defun cb-elisp/init-cb-elisp-meta-ret ()
+  (use-package cb-elisp-meta-ret
+    :bind (:map emacs-lisp-mode-map ("M-RET" . cb-elisp-meta-ret))))
+
+(defun cb-elisp/init-cb-elisp-eval-dwim ()
+  (use-package cb-elisp-eval-dwim
+    :bind (:map emacs-lisp-mode-map ("C-c C-c" . cb-elisp-eval-dwim))))
 
 ;;; packages.el ends here
