@@ -3,24 +3,69 @@
 ;;; Code:
 
 (eval-when-compile
-  (require 'use-package nil t))
+  (require 'dash nil t)
+  (require 'cb-use-package-extensions)
+  (require 'use-package))
 
 (defconst cb-idris-packages
   '(idris-mode
     smart-ops
+    aggressive-indent
     (idris-autoinsert :location local)))
+
+(defun cb-idris/post-init-aggressive-indent ()
+  (use-package aggressive-indent
+    :config
+    (progn
+      (add-to-list 'aggressive-indent-excluded-modes 'idris-repl-mode)
+      (add-to-list 'aggressive-indent-excluded-modes 'idris-mode))))
 
 (defun cb-idris/init-idris-mode ()
   (use-package idris-mode
     :mode "\\.idr\\'"
+
+    :leader-bind
+    (:mode
+     idris-mode
+     ("mr" . idris-load-file)
+     ("mt" . idris-type-at-point)
+     ("md" . idris-add-clause)
+     ("mc" . idris-case-split)
+     ("mw" . idris-make-with-block)
+     ("mm" . idris-add-missing)
+     ("mp" . idris-proof-search)
+     ("mh" . idris-docs-at-point))
+
+    :evil-bind
+    (:state
+     normal
+
+     :map idris-info-mode-map
+     ("q" . quit-window)
+
+     :map idris-hole-list-mode-map
+     ("q" . quit-window)
+
+     :state
+     insert
+     ("RET" . idris/ret)
+     ("SPC" . idris/smart-space)
+     ("<backspace>" . idris/backspace)
+     )
+
+    :bind
+    (:map
+     idris-mode-map
+     ("C-c C-z" . idris-switch-to-output-buffer)
+     ("M-RET" . idris/meta-ret)
+     :map
+     idris-repl-mode-map
+     ("C-c C-z" . idris/switch-to-src))
+
     :init
     (add-to-list 'completion-ignored-extensions ".ibc")
     :config
     (progn
-      (with-eval-after-load 'aggressive-indent
-        (add-to-list 'aggressive-indent-excluded-modes 'idris-repl-mode)
-        (add-to-list 'aggressive-indent-excluded-modes 'idris-mode))
-
       (setq idris-warnings-printing 'warnings-repl)
       (setq idris-repl-prompt-style 'long)
 
@@ -45,32 +90,6 @@
 
       (evil-set-initial-state 'idris-prover-script-mode 'insert)
 
-      ;; Key bindings
-
-      (define-key idris-mode-map (kbd "C-c C-z") 'idris-switch-to-output-buffer)
-      (define-key idris-mode-map (kbd "M-RET") 'idris/meta-ret)
-
-      (evil-define-key 'insert idris-mode-map
-        (kbd "RET") 'idris/ret
-        (kbd "SPC") 'idris/smart-space
-        (kbd "<backspace>") 'idris/backspace)
-
-      (spacemacs/set-leader-keys-for-major-mode 'idris-mode
-        "mr" 'idris-load-file
-        "mt" 'idris-type-at-point
-        "md" 'idris-add-clause
-        "mc" 'idris-case-split
-        "mw" 'idris-make-with-block
-        "mm" 'idris-add-missing
-        "mp" 'idris-proof-search
-        "mh" 'idris-docs-at-point)
-
-      (with-eval-after-load 'idris-repl
-        (define-key idris-repl-mode-map (kbd "C-c C-z") 'idris/switch-to-src))
-
-      (evil-define-key 'normal idris-info-mode-map (kbd "q") 'quit-window)
-      (evil-define-key 'normal idris-hole-list-mode-map (kbd "q") 'quit-window)
-
       ;; Advice
 
       (defadvice idris-mode (before start-process activate)
@@ -90,9 +109,9 @@
            1 'font-lock-comment-face)
 
           ,(cb-core-font-lock-replace-match (rx (or (and space (group-n 1 ".") space)
-                                                 (and "(" (group-n 1 ".") ")")
-                                                 ))
-                                         1 "·")
+                                                    (and "(" (group-n 1 ".") ")")
+                                                    ))
+                                            1 "·")
 
           ,(cb-core-font-lock-replace-match (rx space (group "<-") (or space eol)) 1 "←")
           ,(cb-core-font-lock-replace-match (rx space (group "->") (or space eol)) 1 "→")

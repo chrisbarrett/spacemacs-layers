@@ -31,7 +31,7 @@
   (use-package irony
     :commands (irony-mode irony-install-server)
     :init
-    (add-hook 'c++-mode-hook 'irony-mode)
+    (add-hook 'c++-mode-hook #'irony-mode)
     :config
     (progn
       (setq irony-user-dir (f-slash (f-join user-home-directory "bin" "irony")))
@@ -39,11 +39,11 @@
       (setq irony-additional-clang-options '("-std=c++14"))
 
       (defun cb-cpp/irony-mode-hook ()
-        (define-key irony-mode-map [remap completion-at-point] 'irony-completion-at-point-async)
-        (define-key irony-mode-map [remap complete-symbol] 'irony-completion-at-point-async))
+        (define-key irony-mode-map [remap completion-at-point] #'irony-completion-at-point-async)
+        (define-key irony-mode-map [remap complete-symbol] #'irony-completion-at-point-async))
 
-      (add-hook 'irony-mode-hook 'cb-cpp/irony-mode-hook)
-      (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options))))
+      (add-hook 'irony-mode-hook #'cb-cpp/irony-mode-hook)
+      (add-hook 'irony-mode-hook #'irony-cdb-autosetup-compile-options))))
 
 (defun cb-cpp/init-company-irony ()
   (use-package company-irony
@@ -52,19 +52,19 @@
     :init
     (progn
       (push 'company-irony company-backends-c-mode-common)
-      (add-hook 'irony-mode-hook 'company-irony-setup-begin-commands))))
+      (add-hook 'irony-mode-hook #'company-irony-setup-begin-commands))))
 
 (defun cb-cpp/init-irony-eldoc ()
   (use-package irony-eldoc
     :commands (irony-eldoc)
     :init
-    (add-hook 'irony-mode-hook 'irony-eldoc)))
+    (add-hook 'irony-mode-hook #'irony-eldoc)))
 
 (defun cb-cpp/init-flycheck-irony ()
   (use-package flycheck-irony
     :config
     (with-eval-after-load 'flycheck
-      (add-hook 'flycheck-mode-hook 'flycheck-irony-setup))))
+      (add-hook 'flycheck-mode-hook #'flycheck-irony-setup))))
 
 (defun cb-cpp/init-company-irony-c-headers ()
   (use-package company-irony-c-headers
@@ -78,15 +78,15 @@
     :init
     (progn
       (setq-default clang-format-style "Google")
-      (add-hook 'c-mode-common-hook 'google-set-c-style))))
+      (add-hook 'c-mode-common-hook #'google-set-c-style))))
 
 (defun cb-cpp/post-init-ggtags ()
-  (add-hook 'c++-mode-hook 'ggtags-mode)
+  (add-hook 'c++-mode-hook #'ggtags-mode)
   (with-eval-after-load 'ggtags
     (set-face-underline 'ggtags-highlight nil)))
 
 (defun cb-cpp/post-init-helm-gtags ()
-  (add-hook 'c++-mode-hook 'helm-gtags-mode))
+  (add-hook 'c++-mode-hook #'helm-gtags-mode))
 
 (defun cb-cpp/post-init-aggressive-indent ()
   ;; Aggressive indent is a little too aggressive for C++.
@@ -98,20 +98,20 @@
   ;; sucks. Just clobber that shit.
   (defconst c++-mode-map
     (let ((map (make-sparse-keymap)))
-      (define-key map "#"        'c-electric-pound)
-      (define-key map "\C-c\C-e" 'c-macro-expand)
-      (define-key map (kbd "M-RET") 'cb-cpp/M-RET)
-      (define-key map (kbd "C-<return>") 'cb-cpp/C-RET)
+      (define-key map "#"        #'c-electric-pound)
+      (define-key map "\C-c\C-e" #'c-macro-expand)
+      (define-key map (kbd "M-RET") #'cb-cpp/M-RET)
+      (define-key map (kbd "C-<return>") #'cb-cpp/C-RET)
       map))
 
   (evil-define-key 'insert c++-mode-map
-    (kbd "<backspace>") 'sp-generic-prog-backspace
-    (kbd "SPC") 'sp-generic-prog-space)
+    (kbd "<backspace>") #'sp-generic-prog-backspace
+    (kbd "SPC") #'sp-generic-prog-space)
 
   (defun cb-cpp/set-local-hooks ()
-    (add-hook 'before-save-hook 'indent-dwim-whole-buffer nil t))
+    (add-hook 'before-save-hook #'indent-dwim-whole-buffer nil t))
 
-  (add-hook 'c++-mode-hook 'cb-cpp/set-local-hooks)
+  (add-hook 'c++-mode-hook #'cb-cpp/set-local-hooks)
 
   ;; Font-locking
 

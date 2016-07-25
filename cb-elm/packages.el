@@ -29,9 +29,10 @@
 
 ;;; Code:
 
-(require 'dash nil t)
-(require 'use-package nil t)
 (eval-when-compile
+  (require 'dash nil t)
+  (require 'cb-use-package-extensions)
+  (require 'use-package)
   (require 'smartparens nil t))
 
 (autoload 'evil-define-key "evil-core")
@@ -96,11 +97,10 @@ Each entry is either:
 
 (defun cb-elm/post-init-elm-mode ()
   (use-package elm-mode
-    :defer t
-    :config
-    (progn
-      (define-key elm-mode-map (kbd "RET") #'newline)
-      (evil-define-key 'insert elm-mode-map (kbd "RET") #'newline))))
+    :bind
+    (:map elm-mode-map ("RET" . newline))
+    :evil-bind
+    (:map elm-mode-map :state insert ("RET" . newline))))
 
 (defun cb-elm/post-init-smart-ops ()
   (use-package smart-ops

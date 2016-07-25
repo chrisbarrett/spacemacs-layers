@@ -2,11 +2,13 @@
 ;;; Commentary:
 ;;; Code:
 
-(require 'dash)
-(require 'hydra nil t)
-(require 's)
-(require 'f)
-(require 'use-package)
+(eval-when-compile
+  (require 'dash)
+  (require 'hydra nil t)
+  (require 's)
+  (require 'f)
+  (require 'cb-use-package-extensions)
+  (require 'use-package))
 
 (defconst cb-project-packages
   '(skeletor
@@ -34,6 +36,9 @@
     (("s-f" . projectile-find-file)
      ("s-d" . projectile-find-dir)
      ("s-l" . spacemacs/helm-persp-switch-project))
+    :leader-bind
+    (("pa" . cb-projectile-toggle-between-implementation-and-test)
+     ("pt" . projectile-test-project))
     :config
     (progn
       (setq projectile-enable-caching t)
@@ -49,9 +54,6 @@
           (if arg
               (find-file-other-window file)
             (find-file file))))
-
-      (spacemacs/set-leader-keys "pa" #'cb-projectile-toggle-between-implementation-and-test)
-      (spacemacs/set-leader-keys "pt" #'projectile-test-project)
 
       ;;; Vars
 
@@ -96,8 +98,7 @@
   (use-package helm-projectile
     :after projectile
     :bind (("s-t" . helm-projectile))
-    :config
-    (spacemacs/set-leader-keys "oo" 'helm-occur)))
+    :leader-bind (("oo" . helm-occur))))
 
 (defun cb-project/post-init-ag ()
   (use-package ag

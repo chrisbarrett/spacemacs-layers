@@ -3,10 +3,11 @@
 ;;; Code:
 
 (eval-when-compile
-  (require 'use-package nil t))
-
-(require 's)
-(require 'f)
+  (require 's)
+  (require 'f)
+  (require 'cb-use-package-extensions)
+  (require 'use-package)
+  )
 
 (defconst org-directory
   (let ((in-dropbox (f-join user-dropbox-directory "org/")))
@@ -60,97 +61,141 @@
       (add-hook 'org-present-mode-quit-hook #'spacemacs/toggle-mode-line-off))))
 
 (defun cb-org/post-init-org ()
-  (add-hook 'org-mode-hook #'auto-revert-mode)
-  (add-hook 'org-mode-hook #'abbrev-mode)
+  (use-package org
+    :commands nil
+    :init
+    (progn
+      (setq org-default-notes-file (f-join org-directory "notes.org"))
+      (spacemacs/declare-prefix "o" "org"))
 
-  (setq org-default-notes-file (f-join org-directory "notes.org"))
-  (setq org-M-RET-may-split-line nil)
-  (setq org-attach-directory (f-join org-directory "data"))
-  (setq org-catch-invisible-edits 'smart)
-  (setq org-clock-persist-file (f-join org-directory ".org-clock-save"))
-  (setq org-completion-use-ido t)
-  (setq org-cycle-separator-lines 1)
-  (setq org-enforce-todo-dependencies t)
-  (setq org-footnote-auto-adjust t)
-  (setq org-id-locations-file (f-join spacemacs-cache-directory "org-id-locations"))
-  (setq org-indirect-buffer-display 'current-window)
-  (setq org-insert-heading-respect-content t)
-  (setq org-link-abbrev-alist '(("att" . org-attach-expand-link)))
-  (setq org-log-done 'time)
-  (setq org-log-into-drawer t)
-  (setq org-hide-emphasis-markers t)
-  (setq org-outline-path-complete-in-steps nil)
-  (setq org-pretty-entities t)
-  (setq org-refile-allow-creating-parent-nodes 'confirm)
-  (setq org-refile-target-verify-function (lambda () (not (member (nth 2 (org-heading-components)) org-done-keywords))))
+    :leader-bind
+    (("oa" . cb-org/show-agenda)
+     ("ob" . org-iswitchb)
+     ("oc" . org-clock-goto)
+     ("od" . cb-org/goto-diary)
+     ("ok" . org-capture)
+     ("ol" . org-store-link)
+     ("oL" . org-insert-link)
+     ("os" . org-search-view)
+     ("on" . cb-org/goto-notes)
+     ("ow" . cb-org/goto-work)
+     ("ot" . cb-org/todo-list)
+     ("ov" . cb-org/tags-list)
+     ("oh" . helm-org-agenda-files-headings))
 
-  (add-to-list 'org-refile-targets '(nil :maxlevel . 3))
-  (add-to-list 'org-refile-targets '(org-default-notes-file :maxlevel . 3))
-  (add-to-list 'org-refile-targets '(cb-org-work-file :maxlevel . 3))
+    :bind
+    (:map org-mode-map
+          ("C-c C-." . org-time-stamp-inactive)
+          ("M-p" . org-metaup)
+          ("M-n" . org-metadown)
+          ("C-c c" . org-columns)
+          ("C-c C-k" . cb-org/ctrl-c-ctrl-k)
+          ("C-c RET" . cb-org/ctrl-c-ret)
+          ("C-c ;" . nil))
 
-  (setq org-refile-use-outline-path t)
-  (setq org-return-follows-link t)
-  (setq org-reverse-note-order nil)
-  (setq org-confirm-elisp-link-function nil)
-  (setq org-startup-indented t)
-  (setq org-startup-with-inline-images t)
+    :evil-bind
+    (:map org-mode-map
+          :state normal
+          ("zm" . cb-org/fold-all)
+          ("RET" . org-return))
 
-  ;; Match projects that do not have a scheduled action or NEXT action.
-  (setq org-stuck-projects '("+project-ignore-maybe-done"
-                             ("NEXT") nil
-                             "SCHEDULED:"))
+    :config
+    (progn
+      (defun cb-org/fold-all ()
+        (interactive)
+        (org-cycle '(16)))
 
-  (add-to-list 'org-tags-exclude-from-inheritance "project")
+      (add-hook 'org-mode-hook #'auto-revert-mode)
+      (add-hook 'org-mode-hook #'abbrev-mode)
 
-  (setq org-hierarchical-todo-statistics nil)
-  (setq org-checkbox-hierarchical-statistics t)
-  (setq org-log-repeat nil)
-  (setq org-blank-before-new-entry '((heading . always) (plain-list-item . nil)))
+      (add-to-list 'org-refile-targets '(nil :maxlevel . 3))
+      (add-to-list 'org-refile-targets '(org-default-notes-file :maxlevel . 3))
+      (add-to-list 'org-refile-targets '(cb-org-work-file :maxlevel . 3))
+      (add-to-list 'org-tags-exclude-from-inheritance "project")
 
-  (setq org-todo-keywords '((type "MAYBE(m)" "TODO(t)" "NEXT(n)" "WAITING(w!)" "|" "DONE(d!)" "CANCELLED(c!)")
-                            (type "SOMEDAY(s)" "|")))
+      (setq org-M-RET-may-split-line nil)
+      (setq org-attach-directory (f-join org-directory "data"))
+      (setq org-catch-invisible-edits 'smart)
+      (setq org-clock-persist-file (f-join org-directory ".org-clock-save"))
+      (setq org-completion-use-ido t)
+      (setq org-cycle-separator-lines 1)
+      (setq org-enforce-todo-dependencies t)
+      (setq org-footnote-auto-adjust t)
+      (setq org-id-locations-file (f-join spacemacs-cache-directory "org-id-locations"))
+      (setq org-indirect-buffer-display 'current-window)
+      (setq org-insert-heading-respect-content t)
+      (setq org-link-abbrev-alist '(("att" . org-attach-expand-link)))
+      (setq org-log-done 'time)
+      (setq org-log-into-drawer t)
+      (setq org-hide-emphasis-markers t)
+      (setq org-outline-path-complete-in-steps nil)
+      (setq org-pretty-entities t)
+      (setq org-refile-allow-creating-parent-nodes 'confirm)
+      (setq org-refile-target-verify-function (lambda () (not (member (nth 2 (org-heading-components)) org-done-keywords))))
 
-  ;; Faces
+      (setq org-refile-use-outline-path t)
+      (setq org-return-follows-link t)
+      (setq org-reverse-note-order nil)
+      (setq org-confirm-elisp-link-function nil)
+      (setq org-startup-indented t)
+      (setq org-startup-with-inline-images t)
+
+      ;; Match projects that do not have a scheduled action or NEXT action.
+      (setq org-stuck-projects '("+project-ignore-maybe-done"
+                                 ("NEXT") nil
+                                 "SCHEDULED:"))
 
 
-  (custom-set-faces
-   '(org-hide ((t :background unspecified)))
-   '(org-meta-line ((t :italic nil :inherit font-lock-comment-face)))
-   '(org-document-info-keyword ((t :foreground unspecified :inherit org-meta-line)))
+      (setq org-hierarchical-todo-statistics nil)
+      (setq org-checkbox-hierarchical-statistics t)
+      (setq org-log-repeat nil)
+      (setq org-blank-before-new-entry '((heading . always) (plain-list-item . nil)))
 
-   `(org-block-begin-line
-     ((((background light)) :italic t :foreground ,solarized-hl-cyan :background nil)
-      (((background dark))  :italic t :foreground ,solarized-hl-cyan :background nil)))
-   `(org-block-end-line
-     ((((background light)) :italic t :foreground ,solarized-hl-cyan :background nil)
-      (((background dark))  :italic t :foreground ,solarized-hl-cyan :background nil)))
-   '(org-block
-     ((((background light)) :background nil)
-      (((background dark))  :background nil)))
-   '(org-block-background
-     ((((background light)) :background nil)
-      (((background dark))  :background nil))))
+      (setq org-todo-keywords '((type "MAYBE(m)" "TODO(t)" "NEXT(n)" "WAITING(w!)" "|" "DONE(d!)" "CANCELLED(c!)")
+                                (type "SOMEDAY(s)" "|")))
 
-  (setq org-todo-keyword-faces
-        `(("NEXT" . ,solarized-hl-yellow)
-          ("WAITING" . ,solarized-hl-magenta)))
+      ;; Faces
 
-  ;; Override themes which set weird headline properties.
+      (setq org-todo-keyword-faces
+            `(("NEXT" . ,solarized-hl-yellow)
+              ("WAITING" . ,solarized-hl-magenta)))
 
-  (let ((class '((class color) (min-colors 89))))
-    (custom-set-faces
-     `(org-level-1 ((,class (:background nil :overline nil :height 1.0))))
-     `(org-level-2 ((,class (:background nil :height 1.0))))
-     `(org-level-3 ((,class (:background nil :height 1.0))))
-     `(org-level-4 ((,class (:background nil :height 1.0))))
-     `(org-level-5 ((,class (:background nil :height 1.0))))
-     `(org-level-6 ((,class (:background nil :height 1.0))))
-     `(org-level-7 ((,class (:background nil :height 1.0))))
-     `(org-level-8 ((,class (:background nil :height 1.0))))
+      (custom-set-faces
+       '(org-hide ((t :background unspecified)))
+       '(org-meta-line ((t :italic nil :inherit font-lock-comment-face)))
+       '(org-document-info-keyword ((t :foreground unspecified :inherit org-meta-line)))
 
-     `(org-agenda-done ((,class (:background nil :height 1.0))))
-     `(org-scheduled-today ((,class (:background nil :height 1.0))))
-     `(org-scheduled-previously ((,class (:background nil :height 1.0))))))
+       `(org-block-begin-line
+         ((((background light)) :italic t :foreground ,solarized-hl-cyan :background nil)
+          (((background dark))  :italic t :foreground ,solarized-hl-cyan :background nil)))
+       `(org-block-end-line
+         ((((background light)) :italic t :foreground ,solarized-hl-cyan :background nil)
+          (((background dark))  :italic t :foreground ,solarized-hl-cyan :background nil)))
+       '(org-block
+         ((((background light)) :background nil)
+          (((background dark))  :background nil)))
+       '(org-block-background
+         ((((background light)) :background nil)
+          (((background dark))  :background nil))))
+
+      ;; Override themes which set weird headline properties.
+
+      (let ((class '((class color) (min-colors 89))))
+        (custom-set-faces
+         `(org-level-1 ((,class (:background nil :overline nil :height 1.0))))
+         `(org-level-2 ((,class (:background nil :height 1.0))))
+         `(org-level-3 ((,class (:background nil :height 1.0))))
+         `(org-level-4 ((,class (:background nil :height 1.0))))
+         `(org-level-5 ((,class (:background nil :height 1.0))))
+         `(org-level-6 ((,class (:background nil :height 1.0))))
+         `(org-level-7 ((,class (:background nil :height 1.0))))
+         `(org-level-8 ((,class (:background nil :height 1.0))))
+
+         `(org-agenda-done ((,class (:background nil :height 1.0))))
+         `(org-scheduled-today ((,class (:background nil :height 1.0))))
+         `(org-scheduled-previously ((,class (:background nil :height 1.0))))))
+      ))
+
 
   ;; Enter evil insert state when creating new headings.
 
@@ -267,43 +312,9 @@ Do not scheduled items or repeating todos."
 
   (add-hook 'org-ctrl-c-ctrl-c-hook #'cb-org/latex-preview-fragment-at-pt t)
 
-  ;;; Keybindings
-
-  (spacemacs/declare-prefix "o" "org")
-  (spacemacs/set-leader-keys "oa" #'cb-org/show-agenda)
-  (spacemacs/set-leader-keys "ob" #'org-iswitchb)
-  (spacemacs/set-leader-keys "oc" #'org-clock-goto)
-  (spacemacs/set-leader-keys "od" #'cb-org/goto-diary)
-  (spacemacs/set-leader-keys "ok" #'org-capture)
-  (spacemacs/set-leader-keys "ol" #'org-store-link)
-  (spacemacs/set-leader-keys "oL" #'org-insert-link)
-  (spacemacs/set-leader-keys "os" #'org-search-view)
-  (spacemacs/set-leader-keys "on" #'cb-org/goto-notes)
-  (spacemacs/set-leader-keys "ow" #'cb-org/goto-work)
-  (spacemacs/set-leader-keys "ot" #'cb-org/todo-list)
-  (spacemacs/set-leader-keys "ov" #'cb-org/tags-list)
-
   ;; HACK: Override clashing keybinding
   (with-eval-after-load 'flyspell
     (define-key flyspell-mode-map (kbd "C-c $") nil))
-
-  (spacemacs/set-leader-keys "oh" #'helm-org-agenda-files-headings)
-
-  (with-eval-after-load 'org
-    (define-key org-mode-map (kbd "C-c C-.") #'org-time-stamp-inactive)
-    (define-key org-mode-map (kbd "M-p")     #'org-metaup)
-    (define-key org-mode-map (kbd "M-n")     #'org-metadown)
-    (define-key org-mode-map (kbd "C-c c")   #'org-columns)
-    (define-key org-mode-map (kbd "C-c C-k") #'cb-org/ctrl-c-ctrl-k)
-    (define-key org-mode-map (kbd "C-c RET") #'cb-org/ctrl-c-ret)
-    (define-key org-mode-map (kbd "C-c ;")   nil)
-
-    (defun cb-org/fold-all ()
-      (interactive)
-      (org-cycle '(16)))
-
-    (evil-define-key 'normal org-mode-map (kbd "zm") #'cb-org/fold-all)
-    (evil-define-key 'normal org-mode-map (kbd "RET") #'org-return))
 
   ;; Remove ahs keys that override org keybindings
   (with-eval-after-load 'auto-highlight-symbol
@@ -337,10 +348,13 @@ Do not scheduled items or repeating todos."
 
 (use-package org-agenda
   :after org
+  :bind
+  (:map org-agenda-mode-map
+        ("C-f" . evil-scroll-page-down)
+        ("C-b" . evil-scroll-page-up)
+        ("J" . org-agenda-goto-date))
   :config
   (progn
-    (define-key org-agenda-mode-map (kbd "C-f") 'evil-scroll-page-down)
-    (define-key org-agenda-mode-map (kbd "C-b") 'evil-scroll-page-up)
 
     (defun cb-org/exclude-tasks-on-hold (tag)
       (and (equal tag "hold") (concat "-" tag)))
@@ -379,6 +393,11 @@ Do not scheduled items or repeating todos."
     (setq org-time-clocksum-format
           (list :hours "%d" :require-hours t
                 :minutes ":%02d" :require-minutes t))
+
+    (setq appt-message-warning-time 60)
+    (setq appt-display-interval 5)
+
+    (add-hook 'org-finalize-agenda-hook #'org-agenda-to-appt)
 
     (setq org-agenda-custom-commands
           '(("A" "Agenda and next actions"
@@ -446,16 +465,7 @@ Do not scheduled items or repeating todos."
               (org-agenda-files (list cb-org-work-file org-agenda-diary-file))
               (org-agenda-dim-blocked-tasks nil)
               (org-agenda-archives-mode nil)
-              (org-agenda-ignore-drawer-properties '(effort appt))))))
-
-    (define-key org-agenda-mode-map (kbd "J") 'org-agenda-goto-date)
-
-    (setq appt-message-warning-time 60)
-    (setq appt-display-interval 5)
-
-    (add-hook 'org-finalize-agenda-hook #'org-agenda-to-appt)
-    (add-hook 'org-mode-hook #'visual-line-mode)
-    (add-hook 'org-mode-hook #'turn-off-auto-fill)))
+              (org-agenda-ignore-drawer-properties '(effort appt))))))))
 
 (use-package org-indent
   :after org

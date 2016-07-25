@@ -3,7 +3,8 @@
 ;;; Code:
 
 (eval-when-compile
-  (require 'use-package nil t))
+  (require 'cb-use-package-extensions)
+  (require 'use-package))
 
 (defconst cb-agda-packages
   '(agda-mode
@@ -21,36 +22,35 @@
 
 (defun cb-agda/init-agda-mode ()
   (use-package agda-mode
+
+    :bind
+    (("M-RET" . agda/meta-ret)
+     ("M-N" . agda2-next-goal)
+     ("M-P" . agda2-previous-goal))
+
+    :evil-bind
+    (:state
+     normal
+     :map
+     agda2-mode-map
+     (",l" . agda2-load)
+     (",c" . agda2-make-case)
+     (",n" . agda2-compute-normalised-maybe-toplevel)
+     (", SPC" . agda2-give)
+     (",r" . agda2-refine)
+     (",a" . agda2-auto)
+     (",s" . agda2-solveAll)
+     (",k" . agda2-show-constraints)
+     (",g" . agda2-goal-and-context)
+     (",t" . agda2-infer-type)
+     (",h" . agda2-display-implicit-arguments)
+     (",R" . agda2-restart)
+     ("M-." . agda2-goto-definition-keyboard)
+     ("M-," . agda2-go-back)
+     (",x" . agda2-restart))
+
     :config
     (progn
-
-      ;;; Keybindings
-
-      (define-key agda2-mode-map (kbd "M-RET") #'agda/meta-ret)
-      (define-key agda2-mode-map (kbd "M-N") #'agda2-next-goal)
-      (define-key agda2-mode-map (kbd "M-P") #'agda2-previous-goal)
-
-      (evil-define-key 'normal agda2-mode-map
-        ",l" #'agda2-load
-        ",c" #'agda2-make-case
-        ",n" #'agda2-compute-normalised-maybe-toplevel
-        (kbd ", SPC") #'agda2-give
-        ",r" #'agda2-refine
-
-        ",a" #'agda2-auto
-        ",s" #'agda2-solveAll
-        ",k" #'agda2-show-constraints
-        ",g" #'agda2-goal-and-context
-        ",t" #'agda2-infer-type
-
-        ",h" #'agda2-display-implicit-arguments
-        ",R" #'agda2-restart
-
-        (kbd "M-.") #'agda2-goto-definition-keyboard
-        (kbd "M-,") #'agda2-go-back
-
-        ",x" #'agda2-restart)
-
       (defun cb-agda/configure-agda-mode-hooks ()
         (add-hook 'after-save-hook #'agda2-load nil t)
         (add-hook 'before-save-hook #'agda/rewrite-symbols-in-buffer nil t)
@@ -95,3 +95,5 @@
        `(agda2-highlight-coinductive-constructor-face
          ((t
            (:foreground ,solarized-hl-magenta :italic t))))))))
+
+;;; packages.el ends here

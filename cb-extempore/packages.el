@@ -17,19 +17,19 @@
   (use-package extempore
     :mode (("\\.xtm\\'" . extempore-mode))
     :commands (extempore-mode extempore-repl)
+    :bind
+    (:map
+     extempore-mode-map
+     ("C-c C-." . extempore-stop)
+     ("C-c C-b" . extempore-send-buffer-or-region)
+     ("C-c C-f" . extempore-send-buffer-or-region))
+
     :config
     (progn
-      (with-no-warnings
-        (setq extempore-keydef (kbd "C-c C-c"))
-        (setq extempore-tab-completion nil)
-        (setq user-extempore-directory "/usr/local/Cellar/extempore/0.59"))
-
+      (setq extempore-keydef (kbd "C-c C-c"))
+      (setq extempore-tab-completion nil)
+      (setq user-extempore-directory "/usr/local/Cellar/extempore/0.59")
       (core/remap-face 'extempore-blink-face 'cb-faces-bg-hl-ok)
-      (core/remap-face 'extempore-sb-blink-face 'cb-faces-bg-hl-ok)
-
-      (with-no-warnings
-        (define-key extempore-mode-map (kbd "C-c C-.") #'extempore-stop)
-        (define-key extempore-mode-map (kbd "C-c C-b") #'extempore-send-buffer-or-region)
-        (define-key extempore-mode-map (kbd "C-c C-f") #'extempore-send-buffer-or-region)))))
+      (core/remap-face 'extempore-sb-blink-face 'cb-faces-bg-hl-ok))))
 
 ;;; packages.el ends here

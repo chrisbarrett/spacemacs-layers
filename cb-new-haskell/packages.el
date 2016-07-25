@@ -162,7 +162,8 @@ Each entry is either:
 
 (defun cb-new-haskell/init-intero ()
   (use-package intero
-    :after haskell-mode
+    :init
+    (add-hook 'haskell-mode-hook #'intero-mode)
 
     :bind
     (:map
@@ -177,10 +178,10 @@ Each entry is either:
      ("M-." . intero-goto-definition)
      ("M-," . pop-tag-mark))
 
-    :config
-    (progn
-      (add-hook 'haskell-mode-hook #'intero-mode)
-      (spacemacs/set-leader-keys-for-major-mode 'haskell-mode "t" #'intero-targets))))
+    :leader-bind
+    (:mode
+     haskell-mode
+     ("t" . intero-targets))))
 
 (defun cb-new-haskell/post-init-smart-ops ()
 

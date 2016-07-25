@@ -63,7 +63,7 @@
         (ignore-errors
           (funcall fn)))
 
-      (advice-add #'scala/configure-ensime :around #'cb-scala/ignore-errors))))
+      (advice-add #'scala/configure-ensime :around #'scala/ignore-errors))))
 
 (defun cb-scala/post-init-ensime ()
   (use-package ensime
@@ -88,6 +88,7 @@
      :map ensime-mode-map
      ("RET" . ensime-inspect-type-at-point))
 
+    (spacemacs/set-leader-keys-for-major-mode 'scala-mode "ii" 'ensime-import-type-at-point)
     :init
     (progn
       (add-hook 'scala-mode-hook #'scala/configure-ensime)
@@ -120,9 +121,19 @@
               (deprecated . (:strike-through "dark gray"))))
 
       (defconst scala/test-file-template
-        "import org.scalatest.{ WordSpec, Matchers }
+        "import org.scalatest.{ BeforeAndAfter, BeforeAndAfterAll, Matchers, WordSpec }
 
-class %TESTCLASS% extends WordSpec with Matchers {
+class %TESTCLASS% extends WordSpec with Matchers with BeforeAndAfter with BeforeAndAfterAll {
+
+  override def beforeAll() = {
+  }
+
+  after {
+  }
+
+  \"\" should {
+    \"\" in pending
+  }
 
 }
 "
@@ -150,21 +161,7 @@ See `ensime-goto-test-config-defaults' for possible template values.")
         (set (make-local-variable 'company-backends) '(ensime-company))
         (company-mode)
         (yas-minor-mode-on)
-        (set (make-local-variable 'company-idle-delay) 0)))
-
-    ;; HACK: Fix errors with ensime eldoc function.
-    (with-eval-after-load 'ensime-inspector
-      (defun ensime-type-at-point (&optional arg)
-        "Echo the type at point to the minibuffer.
-A prefix argument will add the type to the kill ring."
-        (interactive "P")
-        (let* ((type (ensime-rpc-get-type-at-point))
-               (fullname (ensime-type-full-name-with-args type)))
-          (when arg
-            (kill-new fullname))
-          (message fullname))))
-
-    (spacemacs/set-leader-keys-for-major-mode 'scala-mode "ii" 'ensime-import-type-at-point)))
+        (set (make-local-variable 'company-idle-delay) 0)))))
 
 (defun cb-scala/post-init-sbt-mode ()
   (use-package sbt-mode

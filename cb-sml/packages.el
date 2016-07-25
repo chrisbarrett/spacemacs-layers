@@ -2,8 +2,11 @@
 ;;; Commentary:
 ;;; Code:
 
-(require 'use-package)
-(require 'dash)
+(eval-when-compile
+  (require 'dash)
+  (require 'cb-use-package-extensions)
+  (require 'use-package))
+
 (autoload 'evil-local-set-key "evil-core")
 (autoload 'flycheck-buffer "flycheck")
 
@@ -22,20 +25,24 @@
   (use-package sml-mode
     :mode ("\\.\\(sml\\|sig\\)\\'" . sml-mode)
     :commands (run-sml sml-mode)
+
+    :bind
+    (:map
+     sml-mode-map
+     ("M-RET" . cb-sml/m-ret)
+     ("S-TAB" . sml-back-to-outer-indent)
+     ("<return>" . cb-sml/ret)
+     ("M-SPC" . nil)
+     :map
+     inferior-sml-mode-map
+     ("M-RET" . cb-sml/inf-sml-m-ret))
+
+    :evil-bind
+    (:map sml-mode-map :state normal (",ct" . flycheck-buffer))
+
     :config
     (progn
       (setq sml-indent-level 2)
-
-      (define-key inferior-sml-mode-map (kbd "M-RET") 'cb-sml/inf-sml-m-ret)
-      (define-key sml-mode-map (kbd "M-RET") 'cb-sml/m-ret)
-      (define-key sml-mode-map (kbd "S-TAB") 'sml-back-to-outer-indent)
-      (define-key sml-mode-map (kbd "<return>") 'cb-sml/ret)
-      (define-key sml-mode-map (kbd "M-SPC") nil)
-
-      (defun cb-sml/set-local-bindings ()
-        (evil-local-set-key 'normal ",ct" #'flycheck-buffer))
-
-      (add-hook 'sml-mode-hook 'cb-sml/set-local-bindings)
 
       (defadvice sml-prog-proc-switch-to (after append-buffer activate)
         (goto-char (point-max))
@@ -51,20 +58,15 @@
 
       ;; Advice to work around super-aggressive SML indentation.
 
-      (defadvice evil-open-below (around sml-indent activate)
+      (defun cb-sml/reindent-for-evil-open (f &rest args)
         (let ((col (current-indentation)))
-          ad-do-it
+          (apply f args)
           (when (and (derived-mode-p 'sml-mode) (s-blank? (s-trim (cb-buffers-current-line))))
             (delete-horizontal-space)
             (indent-to col))))
 
-      (defadvice evil-open-above (around sml-indent activate)
-        (let ((col (current-indentation)))
-          ad-do-it
-          (when (and (derived-mode-p 'sml-mode) (s-blank? (s-trim (cb-buffers-current-line))))
-            (delete-horizontal-space)
-            (indent-to col))))
-
+      (advice-add 'evil-open-below :around #'cb-sml/reindent-for-evil-open)
+      (advice-add 'evil-open-above :around #'cb-sml/reindent-for-evil-open)
 
       ;; Hack SMIE indentation so that structures are indented.
 
@@ -73,9 +75,7 @@
           (`(:after . "struct") 2)
           (_ (funcall orig kind token))))
 
-      (add-hook 'sml-mode-hook
-                (lambda ()
-                  (add-function :around (symbol-function 'sml-smie-rules) #'cb-sml/smie-rules))))))
+      (advice-add 'sml-smie-rules :around #'cb-sml/smie-rules))))
 
 (defun cb-sml/post-init-smart-ops ()
   (require 'smart-ops)
@@ -87,7 +87,7 @@
     (define-smart-ops-for-mode 'lazy-sml-mode ops)
     (define-smart-ops-for-mode 'inferior-sml-mode ops))
 
-  (add-hook 'inferior-sml-mode-hook 'smart-ops-mode))
+  (add-hook 'inferior-sml-mode-hook #'smart-ops-mode))
 
 (defun cb-sml/init-flycheck-sml ()
   (use-package flycheck-sml))

@@ -2,8 +2,10 @@
 ;;; Commentary:
 ;;; Code:
 
-(require 'use-package)
-(require 'f)
+(eval-when-compile
+  (require 'f)
+  (require 'cb-use-package-extensions)
+  (require 'use-package))
 
 (autoload 'evil-define-key "evil-core")
 (autoload 'core/remap-face "config")
@@ -22,37 +24,47 @@
                                 "cb-proof/local/PG/generic"))
 
 (defun cb-proof/init-proof-site ()
-  (require 'proof-site)
+  (use-package proof-site
+    :config
+    (progn
+      (setq proof-splash-enable nil)
 
+      (custom-set-faces
+       '(proof-eager-annotation-face
+         ((t (:inherit default :background nil :underline "darkgoldenrod"))))
+       '(proof-error-face
+         ((t (:background nil)))))
 
-  (with-no-warnings
-    (setq proof-splash-enable nil))
-
-  (custom-set-faces
-   '(proof-eager-annotation-face
-     ((t (:inherit default :background nil :underline "darkgoldenrod"))))
-   '(proof-error-face
-     ((t (:background nil)))))
-
-  (core/remap-face 'proof-queue-face 'cb-faces-bg-flash)
-  (core/remap-face 'proof-locked-face 'cb-faces-bg-hl-ok)
-  (core/remap-face 'proof-warning-face 'flycheck-warning)
-  (core/remap-face 'proof-script-sticky-error-face 'flycheck-error)
-  (core/remap-face 'proof-script-highlight-error-face 'flycheck-error))
+      (core/remap-face 'proof-queue-face 'cb-faces-bg-flash)
+      (core/remap-face 'proof-locked-face 'cb-faces-bg-hl-ok)
+      (core/remap-face 'proof-warning-face 'flycheck-warning)
+      (core/remap-face 'proof-script-sticky-error-face 'flycheck-error)
+      (core/remap-face 'proof-script-highlight-error-face 'flycheck-error))))
 
 (defun cb-proof/post-init-aggressive-indent ()
   (use-package aggressive-indent
     :config
-    (with-eval-after-load 'aggressive-indent
-      (add-to-list 'aggressive-indent-excluded-modes 'coq-mode))))
+    (add-to-list 'aggressive-indent-excluded-modes 'coq-mode)))
 
 (defun cb-proof/init-coq ()
   (use-package coq
-    :defer t
+    :bind
+    (:map coq-mode-map
+          ("S-<return>" . proof-undo-last-successful-command)
+          ("C-<return>" . proof-assert-next-command-interactive)
+          ("C-c C-m" . coq-insert-match)
+          ("RET" . newline-and-indent))
+
+    :evil-bind
+    (:map coq-mode-map
+          :state normal
+          ("S-<return>" . proof-undo-last-successful-command)
+          ("C-<return>" . proof-assert-next-command-interactive)
+          ("RET" . proof-assert-next-command-interactive))
+
     :config
     (progn
-      (with-no-warnings
-        (setq coq-compile-before-require t))
+      (setq coq-compile-before-require t)
 
       (custom-set-faces
        '(coq-cheat-face
@@ -81,57 +93,46 @@
             (apply oldfn args)
           (wrong-type-argument nil)))
 
-      (advice-add 'coq-smie-backward-token :around #'cb-proof--ignore-smie-error)
+      (advice-add 'coq-smie-backward-token :around #'cb-proof--ignore-smie-error)))
 
-      (let ((map (with-no-warnings coq-mode-map)))
-        (evil-define-key 'normal map
-          (kbd "S-<return>") #'proof-undo-last-successful-command
-          (kbd "C-<return>") #'proof-assert-next-command-interactive
-          (kbd "RET")        #'proof-assert-next-command-interactive)
-
-        (define-key map (kbd "S-<return>") #'proof-undo-last-successful-command)
-        (define-key map (kbd "C-<return>") #'proof-assert-next-command-interactive)
-        (define-key map (kbd "C-c C-m")    #'coq-insert-match)
-        (define-key map (kbd "RET")        #'newline-and-indent)))))
-
-(defun cb-proof/init-proof-script ()
-  (use-package proof-script
-    :defer t
-    :config
-    (progn
-      (define-key proof-mode-map (kbd "C-<return>") nil)
-
-      ;; HACK: Redefine `proof-mode' to derive from `prog-mode'.
-      (define-derived-mode proof-mode prog-mode
-        proof-general-name
-        "Proof General major mode class for proof scripts.
+  (defun cb-proof/init-proof-script ()
+    (use-package proof-script
+      :defer t
+      :bind
+      (:map proof-mode-map ("C-<return>" . nil))
+      :config
+      (progn
+        ;; HACK: Redefine `proof-mode' to derive from `prog-mode'.
+        (define-derived-mode proof-mode prog-mode
+          proof-general-name
+          "Proof General major mode class for proof scripts.
 \\{proof-mode-map}"
 
-        (setq proof-buffer-type 'script)
+          (setq proof-buffer-type 'script)
 
-        ;; Set default indent function (can be overriden in derived modes)
-        (make-local-variable 'indent-line-function)
-        (setq indent-line-function 'proof-indent-line)
+          ;; Set default indent function (can be overriden in derived modes)
+          (make-local-variable 'indent-line-function)
+          (setq indent-line-function 'proof-indent-line)
 
-        ;; During write-file it can happen that we re-set the mode for the
-        ;; currently active scripting buffer.  The user might also do this
-        ;; for some reason.  We could maybe let this pass through, but it
-        ;; seems safest to treat it as a kill buffer operation (retract and
-        ;; clear spans).  NB: other situations cause double calls to proof-mode.
-        (if (eq (current-buffer) proof-script-buffer)
+          ;; During write-file it can happen that we re-set the mode for the
+          ;; currently active scripting buffer.  The user might also do this
+          ;; for some reason.  We could maybe let this pass through, but it
+          ;; seems safest to treat it as a kill buffer operation (retract and
+          ;; clear spans).  NB: other situations cause double calls to proof-mode.
+          (when (eq (current-buffer) proof-script-buffer)
             (proof-script-kill-buffer-fn))
 
-        ;; We set hook functions here rather than in proof-config-done so
-        ;; that they can be adjusted by prover specific code if need be.
-        (proof-script-set-buffer-hooks)
+          ;; We set hook functions here rather than in proof-config-done so
+          ;; that they can be adjusted by prover specific code if need be.
+          (proof-script-set-buffer-hooks)
 
-        ;; Set after change functions
-        (proof-script-set-after-change-functions)
+          ;; Set after change functions
+          (proof-script-set-after-change-functions)
 
-        (add-hook 'after-set-visited-file-name-hooks
-                  'proof-script-set-visited-file-name nil t)
+          (add-hook 'after-set-visited-file-name-hooks
+                    #'proof-script-set-visited-file-name nil t)
 
-        (add-hook 'proof-activate-scripting-hook 'proof-cd-sync nil t)))))
+          (add-hook 'proof-activate-scripting-hook #'proof-cd-sync nil t))))))
 
 (defun cb-proof/post-init-smart-ops ()
   (define-smart-ops-for-mode 'coq-mode
@@ -152,12 +153,8 @@
 
 (defun cb-proof/post-init-flycheck ()
   (use-package flycheck
-    :defer t
     :config
-    (progn
-      (defun cb-proof--disable-coq-checker ()
-        (add-to-list 'flycheck-disabled-checkers 'coq))
-      (add-hook 'flycheck-mode-hook #'cb-proof--disable-coq-checker))))
+    (add-to-list 'flycheck-disabled-checkers 'coq)))
 
 (defun cb-proof/init-coq-meta-ret ()
   (use-package coq-meta-ret

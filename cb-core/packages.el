@@ -79,10 +79,10 @@
     (("S-SPC" . helm-M-x)
      ("M-x" . helm-M-x)
      ("s-b" . helm-buffers-list))
+    :leader-bind
+    (("oo" . helm-occur))
     :config
     (progn
-      (spacemacs/set-leader-keys "oo" #'helm-occur)
-
       (helm-autoresize-mode +1)
       (setq helm-buffers-fuzzy-matching t)
       (setq helm-recentf-fuzzy-match t)
@@ -126,17 +126,19 @@
 (defun cb-core/post-init-helm-gtags ()
   (use-package helm-gtags
     :bind
-    (:map helm-gtags-mode-map
-          ("M-." . helm-gtags-dwim)
-          ("M-," . helm-gtags-pop-stack))
+    (:map
+     helm-gtags-mode-map
+     ("M-." . helm-gtags-dwim)
+     ("M-," . helm-gtags-pop-stack))
     :evil-bind
-    (:map helm-gtags-mode-map
-          :state normal
-          ("M-." . helm-gtags-dwim)
-          ("M-," . helm-gtags-pop-stack)
-          :state insert
-          ("M-." . helm-gtags-dwim)
-          ("M-," . helm-gtags-pop-stack))
+    (:map
+     helm-gtags-mode-map
+     :state normal
+     ("M-." . helm-gtags-dwim)
+     ("M-," . helm-gtags-pop-stack)
+     :state insert
+     ("M-." . helm-gtags-dwim)
+     ("M-," . helm-gtags-pop-stack))
     :config
     (progn
       (setq helm-gtags-ignore-case t)
@@ -154,10 +156,12 @@
   (use-package world-time-mode
     :commands world-time-list
     :evil-bind
-    (:map world-time-table-mode-map :state normal
-          ("q" . quit-window))
-    :init
-    (spacemacs/set-leader-keys "at" 'world-time-list)
+    (:map
+     world-time-table-mode-map
+     :state normal
+     ("q" . quit-window))
+    :leader-bind
+    (("at" . world-time-list))
     :config
     (progn
       (setq display-time-world-list '(("Pacific/Auckland" "NZT")

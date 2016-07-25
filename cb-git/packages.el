@@ -22,13 +22,19 @@
 (defun cb-git/post-init-magit ()
   (use-package magit
     :defer t
+
+    :bind
+    (:map
+     magit-mode-map
+     ("SPC" . nil)
+     :map
+     magit-status-mode-map
+     ("S-SPC" . helm-M-x))
+
     :config
     (progn
       (core/remap-face 'magit-section-highlight 'cb-faces-bg-hl-ok)
-      (core/remap-face 'magit-diff-context-highlight 'cb-faces-bg-hl-ok)
-
-      (define-key magit-mode-map (kbd "SPC") nil)
-      (define-key magit-status-mode-map (kbd "S-SPC") #'helm-M-x))))
+      (core/remap-face 'magit-diff-context-highlight 'cb-faces-bg-hl-ok))))
 
 (defun cb-git/post-init-git-commit ()
   (use-package git-commit
@@ -53,7 +59,5 @@
 
 (defun cb-git/init-magit-browse-repo ()
   (use-package magit-browse-repo
-    :commands (magit-browse-repo)
-    :after (magit)
-    :config
-    (define-key magit-status-mode-map (kbd "&") #'magit-browse-repo)))
+    :after magit
+    :bind (:map magit-status-mode-map ("&" . magit-browse-repo))))

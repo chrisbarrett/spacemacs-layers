@@ -3,13 +3,22 @@
 ;;; Code:
 
 (eval-when-compile
-  (require 'use-package nil t))
+  (require 'use-package))
 
 (defconst cb-sunrise-commander-packages
   '((sunrise-commander :location local)))
 
 (defun cb-sunrise-commander/init-sunrise-commander ()
   (use-package sunrise-commander
+    :bind
+    (("C-x d" . sr-dired)
+     :map sr-mode-map
+     ("J" . sr-goto-dir)
+     ("j" . dired-next-line)
+     ("k" . dired-previous-line)
+     ("n" . sr-goto-dir)
+     ("C-k" . dired-do-kill-lines))
+
     :config
     (progn
       (setq sr-windows-locked nil)
@@ -22,12 +31,5 @@
         (interactive)
         (sr-dired default-directory))
 
-      (evil-ex-define-cmd "sr" 'sunrise)
-      (evil-ex-define-cmd "sd" 'cb-sunrise-commander/dired-this-dir)
-
-      (global-set-key (kbd "C-x d") 'sr-dired)
-      (define-key sr-mode-map (kbd "J") 'sr-goto-dir)
-      (define-key sr-mode-map (kbd "j") 'dired-next-line)
-      (define-key sr-mode-map (kbd "k") 'dired-previous-line)
-      (define-key sr-mode-map (kbd "n") 'sr-goto-dir)
-      (define-key sr-mode-map (kbd "C-k") 'dired-do-kill-lines))))
+      (evil-ex-define-cmd "sr" #'sunrise)
+      (evil-ex-define-cmd "sd" #'cb-sunrise-commander/dired-this-dir))))

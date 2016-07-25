@@ -3,7 +3,8 @@
 ;;; Code:
 
 (eval-when-compile
-  (require 'use-package nil t)
+  (require 'cb-use-package-extensions)
+  (require 'use-package)
   (require 's nil t)
   (require 'dash nil t))
 
@@ -21,24 +22,30 @@
     (elisp-autoinsert :location local)))
 
 (use-package lisp-mode
-  :config
-  (progn
-    (define-key emacs-lisp-mode-map (kbd "C-c C-t") #'ert)
-    (define-key emacs-lisp-mode-map (kbd "M-RET")   #'elisp/M-RET)
-    (define-key emacs-lisp-mode-map (kbd "C-c C-f") #'eval-buffer)
-    (define-key emacs-lisp-mode-map (kbd "C-c C-b") #'eval-buffer)
-    (define-key emacs-lisp-mode-map (kbd "C-c C-c") #'elisp/eval-dwim)
-    (define-key emacs-lisp-mode-map (kbd "C-x C-e") #'pp-eval-last-sexp)
+  :bind
+  (:map
+   emacs-lisp-mode-map
+   ("C-c C-t" . ert)
+   ("M-RET" . elisp/M-RET)
+   ("C-c C-f" . eval-buffer)
+   ("C-c C-b" . eval-buffer)
+   ("C-c C-c" . elisp/eval-dwim)
+   ("C-x C-e" . pp-eval-last-sexp)
+   ("M-." . elisp-slime-nav-find-elisp-thing-at-point))
 
-    (define-key emacs-lisp-mode-map (kbd "M-.") #'elisp-slime-nav-find-elisp-thing-at-point)
-    (evil-define-key 'normal emacs-lisp-mode-map (kbd "M-.") #'elisp-slime-nav-find-elisp-thing-at-point)
-    (evil-define-key 'normal emacs-lisp-mode-map (kbd "K") #'elisp-slime-nav-describe-elisp-thing-at-point)
+  :evil-bind
+  (:state
+   normal
+   :map emacs-lisp-mode-map
+   ("M-." . elisp-slime-nav-find-elisp-thing-at-point)
+   ("K" . elisp-slime-nav-describe-elisp-thing-at-point))
 
-    (spacemacs/set-leader-keys "ee" #'toggle-debug-on-error)
-    (spacemacs/set-leader-keys "Fl" #'find-library)
-    (spacemacs/set-leader-keys "Ff" #'find-function)
-    (spacemacs/set-leader-keys "Fv" #'find-variable)
-    (spacemacs/set-leader-keys "FF" #'find-face-definition)))
+  :leader-bind
+  (("ee" . toggle-debug-on-error)
+   ("Fl" . find-library)
+   ("Ff" . find-function)
+   ("Fv" . find-variable)
+   ("FF" . find-face-definition)))
 
 (defun cb-elisp/post-init-eldoc ()
   (add-hook 'emacs-lisp-mode-hook #'eldoc-mode))

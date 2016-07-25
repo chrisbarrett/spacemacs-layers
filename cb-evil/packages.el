@@ -4,7 +4,8 @@
 
 (eval-when-compile
   (require 'evil nil t)
-  (require 'use-package nil t))
+  (require 'cb-use-package-extensions)
+  (require 'use-package))
 
 (evil-ex-define-cmd "nospell"
                     (lambda ()
@@ -27,35 +28,37 @@
 
 (defun cb-evil/post-init-evil ()
   (use-package evil
+
+    :bind
+    (("<f2>" . next-multiframe-window)
+     ("S-<f2>" . previous-multiframe-window))
+
+    :evil-bind
+    (:state
+     normal
+     ("\\" . evil-repeat-find-char-reverse)
+
+     ("C-w |" . cb-core-toggle-window-split)
+     ("C-w -" . split-window-below)
+     ("C-w /" . evil-window-vsplit)
+     ("C-w k" . next-multiframe-window)
+     ("C-w j" . previous-multiframe-window)
+
+     :state emacs
+     ("C-w -" . next-multiframe-window)
+     ("C-w /" . evil-window-vsplit)
+     ("C-w k" . next-multiframe-window)
+     ("C-w j" . previous-multiframe-window))
+
+    :leader-bind
+    (("wo" . delete-other-windows)
+     ("|" . cb-core-toggle-window-split))
+
     :config
     (progn
       (setq evil-want-visual-char-semi-exclusive t)
       (setq evil-shift-width 2)
       (setq evil-symbol-word-search 'symbol)
-
-      (evil-global-set-key 'normal (kbd "\\") 'evil-repeat-find-char-reverse)
-
-      ;; Window management
-
-      (spacemacs/set-leader-keys "wo" 'delete-other-windows)
-      (spacemacs/set-leader-keys "|" 'cb-core-toggle-window-split)
-
-      (evil-global-set-key 'normal (kbd "C-w |") 'cb-core-toggle-window-split)
-      (evil-global-set-key 'normal (kbd "C-w -") 'split-window-below)
-      (evil-global-set-key 'normal (kbd "C-w /") 'evil-window-vsplit)
-      (evil-global-set-key 'emacs (kbd "C-w -") 'next-multiframe-window)
-      (evil-global-set-key 'emacs (kbd "C-w /") 'evil-window-vsplit)
-
-      ;; Frame navigation
-
-      (global-set-key (kbd "<f2>") 'next-multiframe-window)
-      (global-set-key (kbd "S-<f2>") 'previous-multiframe-window)
-
-      (evil-global-set-key 'normal (kbd "C-w k") 'next-multiframe-window)
-      (evil-global-set-key 'normal (kbd "C-w j") 'previous-multiframe-window)
-      (evil-global-set-key 'emacs (kbd "C-w k") 'next-multiframe-window)
-      (evil-global-set-key 'emacs (kbd "C-w j") 'previous-multiframe-window)
-
 
       ;; Make window management work for all modes
 
@@ -95,10 +98,11 @@
 
 (defun cb-evil/post-init-evil-numbers ()
   (use-package evil-numbers
-    :config
-    (progn
-      (evil-global-set-key 'normal (kbd "+") #'evil-numbers/inc-at-pt)
-      (evil-global-set-key 'normal (kbd "-") #'evil-numbers/dec-at-pt))))
+    :evil-bind
+    (:state
+     normal
+     ("+" . evil-numbers/inc-at-pt)
+     ("-" . evil-numbers/dec-at-pt))))
 
 (defun cb-evil/init-cb-evil-visual-defaults ()
   (use-package cb-evil-visual-defaults

@@ -3,8 +3,10 @@
 ;;; Code:
 
 (eval-when-compile
-  (require 'use-package nil t)
-  (require 'f nil t))
+  (require 'cb-use-package-extensions)
+  (require 'use-package)
+  (require 'f nil t)
+  (require 'pcomplete nil t))
 
 (defconst cb-eshell-packages
   '(eshell
@@ -16,10 +18,17 @@
 
 (defun cb-eshell/post-init-eshell ()
   (use-package eshell
-    :defer t
+    :leader-bind
+    (:mode
+     eshell-mode
+     ("ib" . eshell-insert-buffer-name)
+     ("ii" . eshell-insert-process)
+     ("iv" . eshell-insert-envvar))
+
     :init
     (progn
-      (global-set-key (kbd "<f1>") 'cb-eshell-bring))
+      (global-set-key (kbd "<f1>") #'cb-eshell-bring))
+
     :config
     (progn
       (setq eshell-directory-name (f-join user-dropbox-directory "emacs/eshell/"))
@@ -41,24 +50,20 @@
 
       (evil-set-initial-state 'eshell-mode 'insert)
 
-      (spacemacs/set-leader-keys-for-major-mode 'eshell-mode "ib" 'eshell-insert-buffer-name)
-      (spacemacs/set-leader-keys-for-major-mode 'eshell-mode "ii" 'eshell-insert-process)
-      (spacemacs/set-leader-keys-for-major-mode 'eshell-mode "iv" 'eshell-insert-envvar)
-
       (defun cb-eshell/ret ()
         "Do not send input if the command is empty."
         (interactive)
         (let ((empty-command? (s-matches? (concat eshell-prompt-regexp " *$") (cb-buffers-current-line))))
           (unless empty-command?
-            (call-interactively 'eshell-send-input))))
+            (call-interactively #'eshell-send-input))))
 
       (defun cb-eshell/setup ()
         (vi-tilde-fringe-mode -1)
-        (local-set-key (kbd "RET") 'cb-eshell/ret)
-        (local-set-key (kbd "C-c RET") 'eshell-toggle-direct-send))
+        (local-set-key (kbd "RET") #'cb-eshell/ret)
+        (local-set-key (kbd "C-c RET") #'eshell-toggle-direct-send))
 
-      (add-hook 'eshell-mode-hook 'cb-eshell/setup)
-      (add-hook 'eshell-mode-hook 'smartparens-strict-mode)
+      (add-hook 'eshell-mode-hook #'cb-eshell/setup)
+      (add-hook 'eshell-mode-hook #'smartparens-strict-mode)
 
       (defun pcomplete/sudo ()
         (let ((prec (pcomplete-arg 'last -1)))

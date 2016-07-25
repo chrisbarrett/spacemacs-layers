@@ -15,7 +15,10 @@
     (add-to-list 'aggressive-indent-excluded-modes 'sql-mode)))
 
 (defun cb-sql/init-sql ()
-  (setq sql-product 'postgres)
-  (add-hook 'sql-mode-hook 'sql-highlight-product)
-  (with-eval-after-load 'sql
-    (define-key sql-mode-map (kbd "C-c C-z") 'sql-product-interactive)))
+  (use-package sql
+    :bind
+    (:map sql-mode-map ("C-c C-z" . sql-product-interactive))
+    :config
+    (progn
+      (setq sql-product 'postgres)
+      (add-hook 'sql-mode-hook 'sql-highlight-product))))

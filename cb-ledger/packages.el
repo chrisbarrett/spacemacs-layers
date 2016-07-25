@@ -2,6 +2,11 @@
 ;;; Commentary:
 ;;; Code:
 
+(eval-when-compile
+  (require 'dash nil t)
+  (require 'cb-use-package-extensions)
+  (require 'use-package nil t))
+
 (defconst cb-ledger-packages
   '(ledger-mode
     (cb-ledger-reports :location local)
@@ -13,13 +18,24 @@ which require an initialization must be listed explicitly in the list.")
   ;; Set this keybinding late so that Spacemacs does not clobber it.
   (spacemacs/set-leader-keys "o$" #'cb-ledger-goto-ledger-file))
 
-(eval-when-compile
-  (require 'dash nil t)
-  (require 'use-package nil t))
-
 (defun cb-ledger/post-init-ledger-mode ()
   (use-package ledger-mode
     :mode ("\.ledger$" . ledger-mode)
+
+    :bind
+    (:map
+     ledger-mode-map
+     ("C-c C-c" . ledger-report)
+     ("M-RET" . ledger-toggle-current-transaction)
+     ("C-c C-." . cb-ledger-insert-timestamp))
+
+    :evil-bind
+    (:state
+     normal
+     :map
+     ledger-report-mode-map
+     ("q" . kill-buffer-and-window))
+
     :config
     (progn
       (setq ledger-master-file (f-join org-directory "accounts.ledger"))
@@ -78,13 +94,6 @@ which require an initialization must be listed explicitly in the list.")
       ;; Fix font lock issue in ledger reports
       (add-hook 'ledger-report-mode-hook 'font-lock-fontify-buffer)
 
-      ;;; Keybindings
-
-      (define-key ledger-mode-map (kbd "C-c C-c") #'ledger-report)
-      (define-key ledger-mode-map (kbd "M-RET")   #'ledger-toggle-current-transaction)
-      (define-key ledger-mode-map (kbd "C-c C-.") #'cb-ledger-insert-timestamp)
-
-
       (defun cb-ledger/report-from-report-buffer ()
         (interactive)
         (let ((buf (--first (with-current-buffer it
@@ -94,7 +103,6 @@ which require an initialization must be listed explicitly in the list.")
           (call-interactively #'ledger-report)))
 
       (define-key ledger-report-mode-map (kbd "C-c C-c") #'cb-ledger/report-from-report-buffer)
-      (evil-define-key 'normal ledger-report-mode-map (kbd "q") #'kill-buffer-and-window)
 
       ;; Hide command name from reports.
 
@@ -236,5 +244,4 @@ These balances show the remaining available balance for each category.")
 (defun cb-ledger/init-cb-ledger-format ()
   (use-package cb-ledger-format
     :after ledger-mode
-    :config
-    (define-key ledger-mode-map (kbd "M-q") #'cb-ledger-format-buffer)))
+    :bind (:map ledger-mode-map ("M-q" . cb-ledger-format-buffer))))

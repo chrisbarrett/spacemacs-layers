@@ -159,11 +159,11 @@ Each entry is either:
 (defun cb-circe/init-circe-show-channels ()
   (use-package circe-show-channels
     :after circe
-    :commands circe-show-channels
+    :bind
+    (:map
+     circe-mode-map
+     ("C-c C-s" . circe-show-channels))
     :config
-    (progn
-      (setq circe-show-channels-priority '(("#haskell" . 1)))
-      (with-eval-after-load 'circe
-        (define-key circe-mode-map (kbd "C-c C-s") #'circe-show-channels)))))
+    (setq circe-show-channels-priority '(("#haskell" . 1)))))
 
 ;;; packages.el ends here
