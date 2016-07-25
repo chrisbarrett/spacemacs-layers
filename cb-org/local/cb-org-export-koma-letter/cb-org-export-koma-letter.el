@@ -28,7 +28,9 @@
 (require 'f)
 (require 'org)
 (require 'ox-latex)
-(require 'cb-org-subtree)
+
+(autoload 'cb-org-subtree-content "cb-org-subtree")
+(autoload 'cb-org-subtree-write-content "cb-org-subtree")
 
 (defconst cb-org-export-koma-letter-latex-class "
 \\documentclass[paper=A4,pagesize,fromalign=right,

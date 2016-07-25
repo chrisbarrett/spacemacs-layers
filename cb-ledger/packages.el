@@ -5,7 +5,7 @@
 (eval-when-compile
   (require 'dash nil t)
   (require 'cb-use-package-extensions)
-  (require 'use-package nil t))
+  (require 'use-package))
 
 (defconst cb-ledger-packages
   '(ledger-mode
@@ -39,6 +39,9 @@ which require an initialization must be listed explicitly in the list.")
     :config
     (progn
       (setq ledger-master-file (f-join org-directory "accounts.ledger"))
+      (with-eval-after-load 'cb-org-directory
+        (setq ledger-master-file (f-join (cb-org-directory) "accounts.ledger")))
+
       (setq ledger-post-account-alignment-column 2)
       (setq ledger-post-use-completion-engine :ido)
       (setq ledger-fontify-xact-state-overrides nil)

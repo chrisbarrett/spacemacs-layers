@@ -64,7 +64,7 @@ Each entry is either:
     :binding "a"
     :body
     (progn
-      (cb-org/show-agenda)
+      (cb-org-goto-agenda)
       (let ((win (selected-window)))
         (select-window (split-window-sensibly))
         (mu4e)

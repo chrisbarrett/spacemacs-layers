@@ -1,4 +1,4 @@
-;;; cb-org-subtree.el --- <enter description here>  -*- lexical-binding: t; -*-
+;;; cb-org-subtree.el --- Utilities for working with subtrees in org buffers. -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2016  Chris Barrett
 

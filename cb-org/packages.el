@@ -6,30 +6,13 @@
   (require 's)
   (require 'f)
   (require 'cb-use-package-extensions)
-  (require 'use-package)
-  )
+  (require 'use-package))
 
-(defconst org-directory
-  (let ((in-dropbox (f-join user-dropbox-directory "org/")))
-    (if (f-exists? in-dropbox) in-dropbox "~/org/")))
-
-(defvar cb-org-work-file (f-join org-directory "work.org")
-  "Defines the path to file for work-related todos, etc.")
+(autoload 'cb-org-directory "cb-org-directory")
 
 (defconst cb-org-packages
   '(org
     gnuplot
-    org-agenda
-    org-indent
-    org-archive
-    org-src
-    org-clock
-    org-crypt
-    org-drill
-    org-capture
-    org-download
-    ox
-    ox-texinfo
     org-present
     (cb-org-latex-preview-retina :location local)
     (org-autoinsert :location local)
@@ -39,59 +22,44 @@
     (cb-org-pgp-decrpyt :location local)
     (cb-org-recalculate-whole-table :location local)
     (cb-org-capture-url :location local)
-    (cb-org-gdrive :location local)))
+    (cb-org-gdrive :location local)
+    (cb-org-goto :location local)
+    (cb-org-work :location local)
+    (cb-org-directory :location local)
+    (cb-org-ctrl-c-ret :location local)
+    (cb-org-ctrl-c-ctrl-k :location local)))
 
-(defun cb-org/post-init-org-present ()
-  (use-package org-present
-    :after org
+
+(defun cb-org/init-cb-org-directory ()
+  (use-package cb-org-directory
     :config
-    (progn
-      (setq org-present-text-scale 4)
+    (setq org-directory (cb-org-directory))))
 
-      ;; Disable flyspell during presentations.
-      (defvar-local cb-org/use-flyspell? nil)
-      (defun cb-org/set-use-flyspell () (setq cb-org/use-flyspell? t))
-      (defun cb-org/maybe-reenable-flyspell () (when cb-org/use-flyspell? (flyspell-mode +1)))
-
-      (add-hook 'flyspell-mode-hook #'cb-org/set-use-flyspell)
-      (add-hook 'org-present-mode-hook #'turn-off-flyspell)
-      (add-hook 'org-present-mode-quit-hook #'cb-org/maybe-reenable-flyspell)
-
-      (add-hook 'org-present-mode-hook #'spacemacs/toggle-mode-line-on)
-      (add-hook 'org-present-mode-quit-hook #'spacemacs/toggle-mode-line-off))))
+(defun cb-org/init-cb-org-work ()
+  (use-package cb-org-work
+    :after cb-org-directory))
 
 (defun cb-org/post-init-org ()
   (use-package org
-    :commands nil
+    :demand 5
+    :after cb-org-directory
     :init
-    (progn
-      (setq org-default-notes-file (f-join org-directory "notes.org"))
-      (spacemacs/declare-prefix "o" "org"))
+    (spacemacs/declare-prefix "o" "org")
 
     :leader-bind
-    (("oa" . cb-org/show-agenda)
-     ("ob" . org-iswitchb)
+    (("ob" . org-iswitchb)
      ("oc" . org-clock-goto)
-     ("od" . cb-org/goto-diary)
      ("ok" . org-capture)
      ("ol" . org-store-link)
      ("oL" . org-insert-link)
-     ("os" . org-search-view)
-     ("on" . cb-org/goto-notes)
-     ("ow" . cb-org/goto-work)
-     ("ot" . cb-org/todo-list)
-     ("ov" . cb-org/tags-list)
-     ("oh" . helm-org-agenda-files-headings))
+     ("os" . org-search-view))
 
     :bind
     (:map org-mode-map
           ("C-c C-." . org-time-stamp-inactive)
           ("M-p" . org-metaup)
           ("M-n" . org-metadown)
-          ("C-c c" . org-columns)
-          ("C-c C-k" . cb-org/ctrl-c-ctrl-k)
-          ("C-c RET" . cb-org/ctrl-c-ret)
-          ("C-c ;" . nil))
+          ("C-c c" . org-columns))
 
     :evil-bind
     (:map org-mode-map
@@ -101,6 +69,8 @@
 
     :config
     (progn
+      (setq org-default-notes-file (f-join (cb-org-directory) "notes.org"))
+
       (defun cb-org/fold-all ()
         (interactive)
         (org-cycle '(16)))
@@ -114,9 +84,9 @@
       (add-to-list 'org-tags-exclude-from-inheritance "project")
 
       (setq org-M-RET-may-split-line nil)
-      (setq org-attach-directory (f-join org-directory "data"))
+      (setq org-attach-directory (f-join (cb-org-directory) "data"))
       (setq org-catch-invisible-edits 'smart)
-      (setq org-clock-persist-file (f-join org-directory ".org-clock-save"))
+      (setq org-clock-persist-file (f-join (cb-org-directory) ".org-clock-save"))
       (setq org-completion-use-ido t)
       (setq org-cycle-separator-lines 1)
       (setq org-enforce-todo-dependencies t)
@@ -193,39 +163,7 @@
 
          `(org-agenda-done ((,class (:background nil :height 1.0))))
          `(org-scheduled-today ((,class (:background nil :height 1.0))))
-         `(org-scheduled-previously ((,class (:background nil :height 1.0))))))
-      ))
-
-
-  ;; Enter evil insert state when creating new headings.
-
-  (defun cb-org/ad-evil-insert-state (&rest _)
-    (when (called-interactively-p nil)
-      (evil-insert-state)))
-
-  (advice-add 'org-insert-heading :after #'cb-org/ad-evil-insert-state)
-  (advice-add 'org-insert-heading-respect-content :after #'cb-org/ad-evil-insert-state)
-  (advice-add 'org-insert-todo-heading-respect-content :after #'cb-org/ad-evil-insert-state)
-  (advice-add 'org-insert-todo-heading :after #'cb-org/ad-evil-insert-state)
-
-  ;; Add a blank line of padding below new headings.
-
-  (defun cb-org/ad-blank-line-after-heading (&rest _)
-    (when (and (called-interactively-p nil)
-               (org-at-heading-p))
-      (let ((next-line-blank?
-             (save-excursion
-               (forward-line)
-               (s-blank? (buffer-substring (line-beginning-position) (line-end-position))))))
-        (unless next-line-blank?
-          (save-excursion
-            (goto-char (line-end-position))
-            (open-line 1))))))
-
-  (advice-add 'org-insert-heading :after #'cb-org/ad-blank-line-after-heading)
-  (advice-add 'org-insert-heading-respect-content :after #'cb-org/ad-blank-line-after-heading)
-  (advice-add 'org-insert-todo-heading-respect-content :after #'cb-org/ad-blank-line-after-heading)
-  (advice-add 'org-insert-todo-heading :after #'cb-org/ad-blank-line-after-heading)
+         `(org-scheduled-previously ((,class (:background nil :height 1.0))))))))
 
   ;; Exit minibuffer before adding notes.
 
@@ -310,18 +248,76 @@ Do not scheduled items or repeating todos."
       (org-toggle-latex-fragment)
       t))
 
-  (add-hook 'org-ctrl-c-ctrl-c-hook #'cb-org/latex-preview-fragment-at-pt t)
+  (add-hook 'org-ctrl-c-ctrl-c-hook #'cb-org/latex-preview-fragment-at-pt t))
 
+(use-package flyspell
+  :defer t
+  :config
   ;; HACK: Override clashing keybinding
-  (with-eval-after-load 'flyspell
-    (define-key flyspell-mode-map (kbd "C-c $") nil))
+  (define-key flyspell-mode-map (kbd "C-c $") nil))
 
-  ;; Remove ahs keys that override org keybindings
-  (with-eval-after-load 'auto-highlight-symbol
+(use-package auto-highlight-symbol
+  :defer t
+  :config
+  (progn
+    ;; Remove ahs keys that override org keybindings
     (define-key auto-highlight-symbol-mode-map (kbd "M-<left>") nil)
     (define-key auto-highlight-symbol-mode-map (kbd "M-<right>") nil)
     (define-key auto-highlight-symbol-mode-map (kbd "M-S-<left>") nil)
     (define-key auto-highlight-symbol-mode-map (kbd "M-S-<right>") nil)))
+
+
+(use-package evil
+  :config
+  (progn
+    ;; Enter evil insert state when creating new headings.
+
+    (defun cb-org/ad-evil-insert-state (&rest _)
+      (when (called-interactively-p nil)
+        (evil-insert-state)))
+
+    (advice-add 'org-insert-heading :after #'cb-org/ad-evil-insert-state)
+    (advice-add 'org-insert-heading-respect-content :after #'cb-org/ad-evil-insert-state)
+    (advice-add 'org-insert-todo-heading-respect-content :after #'cb-org/ad-evil-insert-state)
+    (advice-add 'org-insert-todo-heading :after #'cb-org/ad-evil-insert-state)
+
+    ;; Add a blank line of padding below new headings.
+
+    (defun cb-org/ad-blank-line-after-heading (&rest _)
+      (when (and (called-interactively-p nil)
+                 (org-at-heading-p))
+        (let ((next-line-blank?
+               (save-excursion
+                 (forward-line)
+                 (s-blank? (buffer-substring (line-beginning-position) (line-end-position))))))
+          (unless next-line-blank?
+            (save-excursion
+              (goto-char (line-end-position))
+              (open-line 1))))))
+
+    (advice-add 'org-insert-heading :after #'cb-org/ad-blank-line-after-heading)
+    (advice-add 'org-insert-heading-respect-content :after #'cb-org/ad-blank-line-after-heading)
+    (advice-add 'org-insert-todo-heading-respect-content :after #'cb-org/ad-blank-line-after-heading)
+    (advice-add 'org-insert-todo-heading :after #'cb-org/ad-blank-line-after-heading)))
+
+(defun cb-org/post-init-org-present ()
+  (use-package org-present
+    :after org
+    :config
+    (progn
+      (setq org-present-text-scale 4)
+
+      ;; Disable flyspell during presentations.
+      (defvar-local cb-org/use-flyspell? nil)
+      (defun cb-org/set-use-flyspell () (setq cb-org/use-flyspell? t))
+      (defun cb-org/maybe-reenable-flyspell () (when cb-org/use-flyspell? (flyspell-mode +1)))
+
+      (add-hook 'flyspell-mode-hook #'cb-org/set-use-flyspell)
+      (add-hook 'org-present-mode-hook #'turn-off-flyspell)
+      (add-hook 'org-present-mode-quit-hook #'cb-org/maybe-reenable-flyspell)
+
+      (add-hook 'org-present-mode-hook #'spacemacs/toggle-mode-line-on)
+      (add-hook 'org-present-mode-quit-hook #'spacemacs/toggle-mode-line-off))))
 
 (defun cb-org/post-init-gnuplot ()
   (use-package gnuplot
@@ -348,13 +344,11 @@ Do not scheduled items or repeating todos."
 
 (use-package org-agenda
   :after org
-  :bind
-  (:map org-agenda-mode-map
-        ("C-f" . evil-scroll-page-down)
-        ("C-b" . evil-scroll-page-up)
-        ("J" . org-agenda-goto-date))
+  :bind (:map org-agenda-mode-map ("J" . org-agenda-goto-date))
   :config
   (progn
+    (define-key org-agenda-mode-map (kbd "C-f" ) #'evil-scroll-page-down)
+    (define-key org-agenda-mode-map (kbd "C-b") #'evil-scroll-page-up)
 
     (defun cb-org/exclude-tasks-on-hold (tag)
       (and (equal tag "hold") (concat "-" tag)))
@@ -362,8 +356,8 @@ Do not scheduled items or repeating todos."
     (setq org-agenda-include-diary nil)
     (setq org-agenda-start-on-weekday nil)
     (setq org-agenda-auto-exclude-function #'cb-org/exclude-tasks-on-hold)
-    (setq org-agenda-files (f-files org-directory (lambda (f) (f-ext? f "org"))))
-    (setq org-agenda-diary-file (f-join org-directory "diary.org"))
+    (setq org-agenda-files (f-files (cb-org-directory) (lambda (f) (f-ext? f "org"))))
+    (setq org-agenda-diary-file (f-join (cb-org-directory) "diary.org"))
     (setq org-agenda-hide-tags-regexp (rx (or "noexport" "someday" "project")))
     (setq org-agenda-insert-diary-extract-time t)
     (setq org-agenda-span 'week)
@@ -545,7 +539,7 @@ Do not scheduled items or repeating todos."
     (add-to-list 'org-tags-exclude-from-inheritance "crypt")))
 
 (use-package org-drill
-  :after org
+  :after (org cb-org-directory)
   :commands (org-drill
              org-drill-strip-all-data
              org-drill-cram
@@ -555,12 +549,13 @@ Do not scheduled items or repeating todos."
              org-drill-entry
              org-drill-directory
              org-drill-again)
-  :init
-  (defconst cb-org-drill-file (f-join org-directory "drill" "drill.org"))
   :config
   (progn
+    (defconst cb-org-drill-file (f-join (cb-org-directory) "drill" "drill.org"))
+
     (defun cb-org/org-drill-files ()
-      (f-files (f-join org-directory "drill")))
+      (f-files (f-join (cb-org-directory) "drill")))
+
     (setq org-drill-scope (cb-org/org-drill-files))
 
     (add-to-list 'org-refile-targets '(cb-org/org-drill-files :maxlevel . 3))
@@ -766,5 +761,23 @@ table tr.tr-even td {
     :after org
     :config
     (add-hook 'org-mode-hook #'cb-org-gdrive-init)))
+
+(defun cb-org/init-cb-org-goto ()
+  (use-package cb-org-goto
+    :leader-bind
+    (("oa" . cb-org-goto-agenda)
+     ("od" . cb-org-goto-diary)
+     ("on" . cb-org-goto-notes)
+     ("ow" . cb-org-goto-work)
+     ("ot" . cb-org-goto-todo-list)
+     ("ov" . cb-org-goto-tags-list))))
+
+(defun cb-org/init-cb-org-ctrl-c-ret ()
+  (use-package cb-org-ctrl-c-ret
+    :bind (:map org-mode-map ("C-c RET" . cb-org-ctrl-c-ret))))
+
+(defun cb-org/init-cb-org-ctrl-c-ctrl-k ()
+  (use-package cb-org-ctrl-c-ctrl-k
+    :bind (:map org-mode-map ("C-c C-k" . cb-org-ctrl-c-ctrl-k))))
 
 ;;; packages.el ends here

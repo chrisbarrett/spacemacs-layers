@@ -7,79 +7,14 @@
 (require 'f)
 (require 's)
 
-(autoload 'org-agenda-filter-apply "org-agenda")
 (autoload 'org-at-heading-p "org")
-(autoload 'org-at-table-p "org")
 (autoload 'org-back-to-heading "org")
 (autoload 'org-clock-special-range "org-clock")
-(autoload 'org-cut-subtree "org")
 (autoload 'org-dblock-write:clocktable "org-clock")
 (autoload 'org-float-time "org-compat")
-(autoload 'org-kill-note-or-show-branches "org")
 (autoload 'org-parse-time-string "org")
 (autoload 'org-time-stamp-format "org")
 
-;; Leader commands
-
-(defun cb-org/goto-diary ()
-  (interactive)
-  (find-file org-agenda-diary-file))
-
-(defun cb-org/goto-notes ()
-  (interactive)
-  (find-file org-default-notes-file))
-
-(defun cb-org/goto-work ()
-  (interactive)
-  (find-file cb-org-work-file))
-
-(defun cb-org/todo-list ()
-  "Show the todo list."
-  (interactive)
-  (org-agenda prefix-arg "t")
-  (org-agenda-filter-apply '("-someday") 'tag))
-
-(defun cb-org/tags-list ()
-  "Show all tagged items."
-  (interactive)
-  (org-tags-view nil))
-
-
-;;; Custom keyboard commands
-
-(defun cb-org/ctrl-c-ctrl-k (&optional n)
-  "Kill subtrees, unless we're in a special buffer where it should cancel."
-  (interactive "p")
-  (if (s-starts-with? "*Org" (buffer-name))
-      (org-kill-note-or-show-branches)
-    (org-cut-subtree n)))
-
-(defun cb-org/ctrl-c-ret ()
-  "Call `org-table-hline-and-move' or `org-insert-todo-heading'."
-  (interactive)
-  (cond
-   ((org-at-table-p) (call-interactively 'org-table-hline-and-move))
-   (t (call-interactively 'org-insert-todo-heading))))
-
-(defconst cb-org/show-agenda-work-start-hour 8)
-(defconst cb-org/show-agenda-work-end-hour 17)
-
-(defun cb-org/is-work-time?  (time)
-  (-let* (((_s _m h d m y) time)
-          (day-of-week (calendar-day-of-week (list m d y))))
-    (and (<= cb-org/show-agenda-work-start-hour h)
-         (>= cb-org/show-agenda-work-end-hour h)
-         (<= 1 day-of-week)
-         (>= 5 day-of-week))))
-
-(defun cb-org/show-agenda ()
-  "Show the agenda fullscreen."
-  (interactive)
-  (let ((agenda-key (if (cb-org/is-work-time? (decode-time)) "w" "A")))
-    (org-agenda current-prefix-arg agenda-key))
-  (delete-other-windows))
-
-
 ;;; Diary utils
 
 (defun calendar-nearest-to (target-dayname target-day target-month)

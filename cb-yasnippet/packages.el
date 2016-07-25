@@ -31,13 +31,11 @@
      ("yr" . cb-yas/reload-all))
 
     :bind
-    (()
-     :map prog-mode-map ("TAB" . yas-expand)
+    (:map prog-mode-map ("TAB" . yas-expand)
      :map yas-keymap ("<backspace>" . yas/backspace))
 
     :evil-bind
-    (()
-     :state insert
+    (:state insert
      :map yas-minor-mode-map ("TAB" . yas-expand)
      :map yas-keymap ("SPC" . yas/space))
 
