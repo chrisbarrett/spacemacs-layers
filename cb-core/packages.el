@@ -72,9 +72,9 @@
      ("C-@" . helm-for-files)
      :map helm-map
      ("<tab>" . helm-execute-persistent-action)
-     ( "C-i" . helm-execute-persistent-action)
-     ( "C-z" . helm-select-action)
-     ( "C-SPC" . helm-toggle-visible-mark))
+     ("C-i" . helm-execute-persistent-action)
+     ("C-z" . helm-select-action)
+     ("C-SPC" . helm-toggle-visible-mark))
     :bind*
     (("S-SPC" . helm-M-x)
      ("M-x" . helm-M-x)
