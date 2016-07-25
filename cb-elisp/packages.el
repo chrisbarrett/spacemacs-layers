@@ -9,7 +9,9 @@
   (require 'dash nil t))
 
 (defconst cb-elisp-packages
-  '(eldoc
+  '(lisp-mode
+    eldoc
+    aggressive-indent
     eval-sexp-fu
     evil-surround
     dash
@@ -17,35 +19,93 @@
     highlight-defined
     smart-ops
     checkdoc
+    flycheck
     flycheck-cask
     nameless
     (elisp-autoinsert :location local)
     (cb-elisp-meta-ret :location local)
     (cb-elisp-eval-dwim :location local)))
 
-(use-package lisp-mode
-  :bind
-  (:map
-   emacs-lisp-mode-map
-   ("C-c C-t" . ert)
-   ("C-c C-f" . eval-buffer)
-   ("C-c C-b" . eval-buffer)
-   ("C-x C-e" . pp-eval-last-sexp)
-   ("M-." . elisp-slime-nav-find-elisp-thing-at-point))
+(defun cb-elisp/init-lisp-mode ()
+  (use-package lisp-mode
+    :mode ("Cask$" . emacs-lisp-mode)
 
-  :evil-bind
-  (:state
-   normal
-   :map emacs-lisp-mode-map
-   ("M-." . elisp-slime-nav-find-elisp-thing-at-point)
-   ("K" . elisp-slime-nav-describe-elisp-thing-at-point))
+    :bind
+    (:map
+     emacs-lisp-mode-map
+     ("C-c C-t" . ert)
+     ("C-c C-f" . eval-buffer)
+     ("C-c C-b" . eval-buffer)
+     ("C-x C-e" . pp-eval-last-sexp)
+     ("M-." . elisp-slime-nav-find-elisp-thing-at-point))
 
-  :leader-bind
-  (("ee" . toggle-debug-on-error)
-   ("Fl" . find-library)
-   ("Ff" . find-function)
-   ("Fv" . find-variable)
-   ("FF" . find-face-definition)))
+    :evil-bind
+    (:state
+     normal
+     :map emacs-lisp-mode-map
+     ("M-." . elisp-slime-nav-find-elisp-thing-at-point)
+     ("K" . elisp-slime-nav-describe-elisp-thing-at-point))
+
+    :leader-bind
+    (("ee" . toggle-debug-on-error)
+     ("Fl" . find-library)
+     ("Ff" . find-function)
+     ("Fv" . find-variable)
+     ("FF" . find-face-definition))
+
+    :config
+    (progn
+      (advice-add 'eval-buffer :after
+                  (lambda (&rest _)
+                    (when (called-interactively-p nil)
+                      (message "Buffer evaluated."))))
+
+      (font-lock-add-keywords
+       'emacs-lisp-mode
+       `(
+         ;; Cl keywords
+         (,(rx "(" (group (or "cl-destructuring-bind"
+                              "cl-case")
+                          symbol-end))
+          (1 font-lock-keyword-face))
+
+         ;; Macros and functions
+         (,(rx bol (* space) "("
+               (group-n 1 (or "cl-defun" "cl-defmacro"
+                              "cl-defstruct"
+                              "cl-defsubst"
+                              "cl-deftype"))
+               (+ space)
+               (? "(")
+               (group-n 2 (+? anything) symbol-end))
+          (1 font-lock-keyword-face)
+          (2 font-lock-function-name-face))
+
+         ;; General keywords
+         (,(rx "(" (group (or "until"
+                              "let-alist"
+                              "noflet"
+                              "ert-deftest"
+                              "evil-global-set-keys"
+                              "flycheck-declare-checker"
+                              "flycheck-define-checker")
+                          symbol-end))
+          (1 font-lock-keyword-face))
+
+         ;; definition forms
+         (,(rx bol (* space) "("
+               (group-n 1
+                        symbol-start
+                        (* (not (any "(" space)))
+                        (or "declare" "define" "extend" "gentest")
+                        (+ (not space))
+                        symbol-end)
+               (+ space)
+               (* (any "("))
+               (group-n 2 (+ (regex "\[^ )\n\]"))
+                        symbol-end))
+          (1 font-lock-keyword-face)
+          (2 font-lock-function-name-face)))))))
 
 (defun cb-elisp/post-init-eldoc ()
   (add-hook 'emacs-lisp-mode-hook #'eldoc-mode))
@@ -158,10 +218,28 @@
 
       (add-hook 'emacs-lisp-mode-hook #'cb-elisp/init-evil-surround-pairs))))
 
+(defun cb-elisp/post-init-flycheck ()
+  (use-package flycheck
+    :defer t
+    :config
+    (setq flycheck-emacs-lisp-load-path 'inherit)))
+
 (defun cb-elisp/init-elisp-autoinsert ()
   (use-package elisp-autoinsert
     :functions (elisp-autoinsert-init)
     :config (elisp-autoinsert-init)))
+
+(defun cb-elisp/post-init-aggressive-indent ()
+  (use-package aggressive-indent
+    :defer t
+    :config
+    (progn
+      (defun cb-elisp/maybe-enable-aggressive-indent ()
+        (if (equal ".ensime" (f-filename (buffer-name)))
+            (aggressive-indent-mode -1)
+          (aggressive-indent-mode +1)))
+
+      (add-hook 'emacs-lisp-mode-hook #'cb-elisp/maybe-enable-aggressive-indent))))
 
 (defun cb-elisp/init-cb-elisp-meta-ret ()
   (use-package cb-elisp-meta-ret
