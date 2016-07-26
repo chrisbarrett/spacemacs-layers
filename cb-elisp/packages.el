@@ -9,8 +9,13 @@
   (require 'dash nil t))
 
 (defconst cb-elisp-packages
-  '(lisp-mode
-    eldoc
+  '((lisp-mode :location built-in)
+    (pp :location built-in)
+    (eldoc :location built-in)
+    (checkdoc :location built-in)
+    (ert :location built-in)
+    (find-func :location built-in)
+    elisp-slime-nav
     aggressive-indent
     eval-sexp-fu
     evil-surround
@@ -18,13 +23,44 @@
     hl-sexp
     highlight-defined
     smart-ops
-    checkdoc
     flycheck
     flycheck-cask
     nameless
     (elisp-autoinsert :location local)
     (cb-elisp-meta-ret :location local)
     (cb-elisp-eval-dwim :location local)))
+
+(defun cb-elisp/init-pp ()
+  (use-package pp
+    :bind
+    (:map emacs-lisp-mode-map
+          ("C-x C-e" . pp-eval-last-sexp))))
+
+(defun cb-elisp/init-find-func ()
+  (use-package find-func
+    :leader-bind
+    (("Fl" . find-library)
+     ("Ff" . find-function)
+     ("Fv" . find-variable)
+     ("FF" . find-face-definition))))
+
+(defun cb-elisp/post-init-elisp-slime-nav ()
+  (use-package elisp-slime-nav
+    :bind
+    (:map emacs-lisp-mode-map
+          ("M-." . elisp-slime-nav-find-elisp-thing-at-point))
+
+    :evil-bind
+    (:map emacs-lisp-mode-map
+          :state normal
+          ("M-." . elisp-slime-nav-find-elisp-thing-at-point)
+          ("K" . elisp-slime-nav-describe-elisp-thing-at-point))))
+
+(defun cb-elisp/init-ert ()
+  (use-package ert
+    :bind
+    (:map emacs-lisp-mode-map
+          ("C-c C-t" . ert))))
 
 (defun cb-elisp/init-lisp-mode ()
   (use-package lisp-mode
@@ -33,25 +69,11 @@
     :bind
     (:map
      emacs-lisp-mode-map
-     ("C-c C-t" . ert)
      ("C-c C-f" . eval-buffer)
-     ("C-c C-b" . eval-buffer)
-     ("C-x C-e" . pp-eval-last-sexp)
-     ("M-." . elisp-slime-nav-find-elisp-thing-at-point))
-
-    :evil-bind
-    (:state
-     normal
-     :map emacs-lisp-mode-map
-     ("M-." . elisp-slime-nav-find-elisp-thing-at-point)
-     ("K" . elisp-slime-nav-describe-elisp-thing-at-point))
+     ("C-c C-b" . eval-buffer))
 
     :leader-bind
-    (("ee" . toggle-debug-on-error)
-     ("Fl" . find-library)
-     ("Ff" . find-function)
-     ("Fv" . find-variable)
-     ("FF" . find-face-definition))
+    (("ee" . toggle-debug-on-error))
 
     :config
     (progn
@@ -124,7 +146,8 @@
        (cons beg end)))))
 
 (defun cb-elisp/post-init-dash ()
-  (dash-enable-font-lock))
+  (with-eval-after-load 'dash
+    (dash-enable-font-lock)))
 
 (defun cb-elisp/init-flycheck-cask ()
   (use-package flycheck-cask
@@ -169,31 +192,33 @@
                  (thing-at-point-looking-at (rx digit "."))))))
 
 (defun cb-elisp/init-checkdoc ()
-  (setq checkdoc-force-docstrings-flag nil)
-  (setq checkdoc-arguments-in-order-flag nil)
+  (use-package checkdoc
+    :config
+    (progn
+      (setq checkdoc-force-docstrings-flag nil)
+      (setq checkdoc-arguments-in-order-flag nil)
+      ;; HACK: Apply the above checkdoc settings for flycheck.
+      (with-eval-after-load 'flycheck
+        (setq flycheck-emacs-lisp-checkdoc-form
+              (flycheck-prepare-emacs-lisp-form
+                (require 'checkdoc)
+                (setq checkdoc-force-docstrings-flag nil)
+                (setq checkdoc-arguments-in-order-flag nil)
 
-  ;;; HACK: Apply the above checkdoc settings for flycheck.
-  (with-eval-after-load 'flycheck
-    (setq flycheck-emacs-lisp-checkdoc-form
-          (flycheck-prepare-emacs-lisp-form
-            (require 'checkdoc)
-            (setq checkdoc-force-docstrings-flag nil)
-            (setq checkdoc-arguments-in-order-flag nil)
-
-            (let ((source (car command-line-args-left))
-                  ;; Remember the default directory of the process
-                  (process-default-directory default-directory))
-              (with-temp-buffer
-                (insert-file-contents source 'visit)
-                (setq buffer-file-name source)
-                ;; And change back to the process default directory to make file-name
-                ;; back-substutition work
-                (setq default-directory process-default-directory)
-                (with-demoted-errors "Error in checkdoc: %S"
-                  (checkdoc-current-buffer t)
-                  (with-current-buffer checkdoc-diagnostic-buffer
-                    (princ (buffer-substring-no-properties (point-min) (point-max)))
-                    (kill-buffer)))))))))
+                (let ((source (car command-line-args-left))
+                      ;; Remember the default directory of the process
+                      (process-default-directory default-directory))
+                  (with-temp-buffer
+                    (insert-file-contents source 'visit)
+                    (setq buffer-file-name source)
+                    ;; And change back to the process default directory to make file-name
+                    ;; back-substutition work
+                    (setq default-directory process-default-directory)
+                    (with-demoted-errors "Error in checkdoc: %S"
+                      (checkdoc-current-buffer t)
+                      (with-current-buffer checkdoc-diagnostic-buffer
+                        (princ (buffer-substring-no-properties (point-min) (point-max)))
+                        (kill-buffer)))))))))))
 
 (defun cb-elisp/init-nameless ()
   (use-package nameless
@@ -243,10 +268,14 @@
 
 (defun cb-elisp/init-cb-elisp-meta-ret ()
   (use-package cb-elisp-meta-ret
-    :bind (:map emacs-lisp-mode-map ("M-RET" . cb-elisp-meta-ret))))
+    :bind
+    (:map emacs-lisp-mode-map
+          ("M-RET" . cb-elisp-meta-ret))))
 
 (defun cb-elisp/init-cb-elisp-eval-dwim ()
   (use-package cb-elisp-eval-dwim
-    :bind (:map emacs-lisp-mode-map ("C-c C-c" . cb-elisp-eval-dwim))))
+    :bind
+    (:map emacs-lisp-mode-map
+          ("C-c C-c" . cb-elisp-eval-dwim))))
 
 ;;; packages.el ends here
