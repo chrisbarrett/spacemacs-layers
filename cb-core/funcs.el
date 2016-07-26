@@ -27,6 +27,8 @@
         (dest-path (f-join dest-dir dest-filename)))
     (or (cb-core--try-move-file-with-vc src dest-path)
         (cb-core--try-rename-file src dest-path))
+    (when (and (fboundp 'projectile-project-p) (projectile-project-p))
+      (call-interactively #'projectile-invalidate-cache))
     (message "File '%s' moved to '%s'" (f-short (f-filename src)) (f-short dest-path))))
 
 (defun cb-core--assert-file-exists-for-buffer (&optional buf)
