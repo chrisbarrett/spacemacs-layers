@@ -8,7 +8,9 @@
   (require 'cb-use-package-extensions)
   (require 'use-package))
 
-(autoload 'cb-org-directory "cb-org-directory")
+(autoload 'cb-org-directory "cb-org-directory"
+  (let ((this-dir (f-dirname (or load-file-name (buffer-file-name)))))
+    (format "%s/local/cb-org-directory/cb-org-directory.el" this-dir)))
 
 (defconst cb-org-packages
   '(org
