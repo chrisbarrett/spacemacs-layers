@@ -766,6 +766,7 @@ table tr.tr-even td {
 
 (defun cb-org/init-cb-org-goto ()
   (use-package cb-org-goto
+    :after org
     :leader-bind
     (("oa" . cb-org-goto-agenda)
      ("od" . cb-org-goto-diary)
@@ -776,10 +777,12 @@ table tr.tr-even td {
 
 (defun cb-org/init-cb-org-ctrl-c-ret ()
   (use-package cb-org-ctrl-c-ret
+    :after org
     :bind (:map org-mode-map ("C-c RET" . cb-org-ctrl-c-ret))))
 
 (defun cb-org/init-cb-org-ctrl-c-ctrl-k ()
   (use-package cb-org-ctrl-c-ctrl-k
+    :after org
     :bind (:map org-mode-map ("C-c C-k" . cb-org-ctrl-c-ctrl-k))))
 
 ;;; packages.el ends here
