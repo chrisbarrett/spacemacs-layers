@@ -135,7 +135,11 @@
     "elm-stuff"
 
     ;; JS
-    "node_modules"))
+    "node_modules"
+
+    ;; Rust
+    ".cargo"
+    ))
 
 (provide 'cb-vars)
 
