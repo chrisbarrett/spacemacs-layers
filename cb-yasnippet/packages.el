@@ -32,12 +32,12 @@
 
     :bind
     (:map prog-mode-map ("TAB" . yas-expand)
-     :map yas-keymap ("<backspace>" . yas/backspace))
+          :map yas-keymap ("<backspace>" . yas/backspace))
 
     :evil-bind
     (:state insert
-     :map yas-minor-mode-map ("TAB" . yas-expand)
-     :map yas-keymap ("SPC" . yas/space))
+            :map yas-minor-mode-map ("TAB" . yas-expand)
+            :map yas-keymap ("SPC" . yas/space))
 
     :config
     (progn
