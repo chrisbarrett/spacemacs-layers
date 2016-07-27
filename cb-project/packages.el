@@ -44,8 +44,11 @@
       (setq projectile-enable-caching t)
       (setq projectile-switch-project-action #'magit-status)
 
-      ;;; Define a command that switches between test and impl, optionally in
-      ;;; another window.
+      ;; HACK: Fix missing or undefined internal function. :/
+      (defalias #'projectile-go-function #'projectile-go)
+
+      ;; Define a command that switches between test and impl, optionally in
+      ;; another window.
 
       (defun cb-projectile-toggle-between-implementation-and-test (&optional arg)
         "Toggle between an implementation file and its test file."
