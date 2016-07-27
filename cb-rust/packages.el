@@ -118,12 +118,10 @@
                               (just-one-space))))))
 
     ;; Position point inside template braces.
-    (smart-op "<>"
-              :pad-before nil :pad-after nil
-              :action (lambda (&rest _)
-                        (when (smart-ops-after-match? (rx "<" (* space) ">"))
-                          (search-backward ">")
-                          (delete-horizontal-space))))
+    (smart-ops "<>" "<>>" "<>>>" "<>>>>" "<>>>>>"
+               :pad-before nil :pad-after nil
+               :action (lambda (&rest _)
+                         (skip-chars-backward " >")))
 
     ;; Dereferencing
 
