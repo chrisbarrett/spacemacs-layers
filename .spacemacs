@@ -351,6 +351,7 @@ executes.
 before packages are loaded. If you are unsure, you should try in setting them in
 `dotspacemacs/user-config' first."
   (cb-bootstrap/enable-debugging)
+  (setq exec-path-from-shell-check-startup-files nil)
   (cb-bootstrap/initialize-packages)
   (cb-bootstrap/initialize-exec-path)
   (cb-bootstrap/load-preloadable-lisp-files))
