@@ -21,7 +21,7 @@
 
 ;;; Code:
 
-(defvar cb-vars-prompt-modes
+(defconst cb-vars-prompt-modes
   '(comint-mode
     inf-ruby-mode
     inferior-python-mode
@@ -34,7 +34,7 @@
     inferior-haskell-mode
     sclang-post-buffer-mode))
 
-(defvar cb-vars-lisp-modes
+(defconst cb-vars-lisp-modes
   '(cider-repl-mode
     clojure-mode
     clojurescript-mode
