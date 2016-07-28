@@ -13,9 +13,16 @@
     company
     racer
     rust-mode
+    flycheck
     skeletor
     smartparens
     aggressive-indent))
+
+(defun cb-rust/post-init-flycheck ()
+  (use-package flycheck
+    :after rust-mode
+    :config
+    (setq flycheck-rust-cargo-executable "~/.cargo/bin/cargo")))
 
 (defun cb-rust/post-init-company ()
   (with-eval-after-load 'rust-mode
