@@ -10,11 +10,25 @@
 
 (defconst cb-rust-packages
   '(smart-ops
+    company
     racer
     rust-mode
     skeletor
     smartparens
     aggressive-indent))
+
+(defun cb-rust/post-init-company ()
+  (with-eval-after-load 'rust-mode
+    (use-package company
+      :bind
+      (:map rust-mode-map ("TAB" . company-indent-or-complete-common))
+      :evil-bind
+      (:map rust-mode-map
+            :state normal ("TAB" . company-indent-or-complete-common)
+            :state insert ("TAB" . company-indent-or-complete-common))
+      :config
+      (add-hook 'rust-mode-hook (lambda ()
+                                  (setq company-minimum-prefix-length 2))))))
 
 (defun cb-rust/post-init-rust-mode ()
   (use-package rust-mode
