@@ -119,9 +119,26 @@
 
     ;; Position point inside template braces.
     (smart-ops "<>" "<>>" "<>>>" "<>>>>" "<>>>>>"
-               :pad-before nil :pad-after nil
+               :pad-before nil
+               :pad-after-if
+               (lambda (end)
+                 (s-matches? (rx (* space) "{")
+                             (buffer-substring end (line-end-position))))
                :action (lambda (&rest _)
                          (skip-chars-backward " >")))
+    (smart-ops "<," "<>," "<>>," "<>>>," "<>>>>," "<>>>>>,"
+               "<;" "<>;" "<>>;" "<>>>;" "<>>>>;" "<>>>>>;"
+               "<::" "<>::" "<>>::" "<>>>::" "<>>>>::" "<>>>>>::"
+               :pad-before nil :pad-after t
+               :action (lambda (&rest _)
+                         (skip-chars-backward " >")))
+    (smart-ops ",>," ",>>," ",>>>," ",>>>>," ",>>>>>,"
+               ",>;" ",>>;" ",>>>;" ",>>>>;" ",>>>>>;"
+               ",>::" ",>>::" ",>>>::" ",>>>>::" ",>>>>>::"
+               :pad-before nil :pad-after t
+               :action (lambda (&rest _)
+                         (skip-chars-backward " >")
+                         (just-one-space)))
 
     ;; Dereferencing
 
