@@ -24,11 +24,6 @@
      ("ib" . eshell-insert-buffer-name)
      ("ii" . eshell-insert-process)
      ("iv" . eshell-insert-envvar))
-
-    :init
-    (progn
-      (global-set-key (kbd "<f1>") #'cb-eshell-bring))
-
     :config
     (progn
       (setq eshell-directory-name (f-join user-dropbox-directory "emacs/eshell/"))
