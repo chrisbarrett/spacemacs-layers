@@ -44,9 +44,6 @@
       (setq projectile-enable-caching t)
       (setq projectile-switch-project-action #'magit-status)
 
-      ;; HACK: Fix missing or undefined internal function. :/
-      (defalias #'projectile-go-function #'projectile-go)
-
       ;; Define a command that switches between test and impl, optionally in
       ;; another window.
 
