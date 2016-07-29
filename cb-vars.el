@@ -58,7 +58,12 @@
     ".v.d"
     ".vo"
     ".glob"
-    ".min.js"))
+    ".min.js"
+    ".cfe"
+    ".cfs"
+    ".si"
+    ".gen"
+    ".lock"))
 
 (defconst cb-vars-ignored-files-regexps
   '("\\.elc\\'"
