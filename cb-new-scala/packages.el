@@ -29,7 +29,7 @@
     (cb-scala-yasnippet :location local)
     (cb-scala-autoinsert :location local)
     (cb-scala-eldoc :location local)
-    (cb-scala-meta-ret :location local)
+    (cb-scala-ret :location local)
     (ensime-flycheck-integration :location local)
     (ensime-diminished-modeline :location local)
     (sbt-file-mode :location local)
@@ -356,8 +356,8 @@ See `ensime-goto-test-config-defaults' for possible template values.")
     :after scala-mode
     :config (cb-scala-eldoc-init)))
 
-(defun cb-new-scala/init-cb-scala-meta-ret ()
-  (use-package cb-scala-meta-ret
+(defun cb-new-scala/init-cb-scala-ret ()
+  (use-package cb-scala-ret
     :after scala-mode
     :evil-bind
     (:map
