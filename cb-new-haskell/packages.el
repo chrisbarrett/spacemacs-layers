@@ -49,7 +49,8 @@
     (haskell-unicode :location local)
     (haskell-autoinsert :location local)
     (cb-haskell-alignment :location local)
-    (haskell-flycheck-holes :location local))
+    (haskell-flycheck-holes :location local)
+    (cb-hasklig :location local))
   "The list of Lisp packages required by the cb-new-haskell layer.
 
 Each entry is either:
@@ -306,5 +307,10 @@ Each entry is either:
     :after (haskell-mode flycheck)
     :config
     (add-hook 'haskell-mode-hook #'haskell-flycheck-holes-init)))
+
+(defun cb-new-haskell/init-cb-hasklig ()
+  (use-package cb-hasklig
+    :after haskell-mode
+    :config (cb-hasklig-init)))
 
 ;;; packages.el ends here
