@@ -108,17 +108,17 @@
           (,(rx (not (any "(")) (group ",") (not (any ")")))
            1 'font-lock-comment-face)
 
-          ,(cb-core-font-lock-replace-match (rx (or (and space (group-n 1 ".") space)
-                                                    (and "(" (group-n 1 ".") ")")
-                                                    ))
-                                            1 "·")
+          ,(cb-font-lock-replace-match (rx (or (and space (group-n 1 ".") space)
+                                               (and "(" (group-n 1 ".") ")")
+                                               ))
+                                       1 "·")
 
-          ,(cb-core-font-lock-replace-match (rx space (group "<-") (or space eol)) 1 "←")
-          ,(cb-core-font-lock-replace-match (rx space (group "->") (or space eol)) 1 "→")
-          ,(cb-core-font-lock-replace-match (rx space (group "=>") (or space eol)) 1 "⇒")
+          ,(cb-font-lock-replace-match (rx space (group "<-") (or space eol)) 1 "←")
+          ,(cb-font-lock-replace-match (rx space (group "->") (or space eol)) 1 "→")
+          ,(cb-font-lock-replace-match (rx space (group "=>") (or space eol)) 1 "⇒")
 
           ;; Lambda forms
-          ,(cb-core-font-lock-replace-match
+          ,(cb-font-lock-replace-match
             (rx (group "\\") (and (* space)
                                   (or word "_" (and "(" (* nonl) ")"))
                                   (*? nonl))

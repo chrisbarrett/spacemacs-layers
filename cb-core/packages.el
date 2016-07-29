@@ -50,7 +50,8 @@
     (cb-core-rename-file-and-buffer :location local)
     (cb-rotate-window-split :location local)
     (cb-exit-emacs :location local)
-    (cb-generate-password :location local)))
+    (cb-generate-password :location local)
+    (cb-font-lock-replace-match :location local)))
 
 (defun cb-core/user-config ()
   "This procedure should be called in `dotspacemacs/user-config'."
@@ -334,5 +335,8 @@
 (defun cb-core/init-cb-generate-password ()
   (use-package cb-generate-password
     :commands cb-generate-password))
+
+(defun cb-core/init-cb-font-lock-replace-match ()
+  (use-package cb-font-lock-replace-match))
 
 ;;; packages.el ends here

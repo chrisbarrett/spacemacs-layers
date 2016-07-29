@@ -33,7 +33,7 @@
 
       (font-lock-add-keywords
        'tuareg-mode
-       `(,(cb-core-font-lock-replace-match (rx space (group "->") space) 1 "→")
+       `(,(cb-font-lock-replace-match (rx space (group "->") space) 1 "→")
          ("->" . font-lock-keyword-face)
          (,(rx (or bol space) "|" (or eol space)) . font-lock-keyword-face)
          )))))

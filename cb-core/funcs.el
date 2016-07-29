@@ -16,20 +16,6 @@
 (defun cb-core-regexp-quoted-ignored-dirs ()
   (--map (format "/%s/" (regexp-quote it)) cb-vars-ignored-dirs))
 
-(defun cb-core-font-lock-replace-match (regex group replacement)
-  "Return a font-lock replacement spec for.
-
-REGEX surrounds the text to be replaced with a group.
-
-GROUP is the number of the group.
-
-REPLACEMENT is the string to substitute for the match in REGEX."
-  (list regex
-        `(0 (progn (compose-region (match-beginning ,group) (match-end ,group)
-                                   ,replacement 'decompose-region)
-                   nil))))
-
-
 ;;; HACK: override Spacemacs function to prevent M-RET from being bound.
 
 (defun spacemacs/activate-major-mode-leader ()
