@@ -125,13 +125,18 @@
                   (unless s
                     (use-package-error (format "No evil state declared before: %s" fst)))
                   (-let [(k . fn) fst]
-                    `(evil-define-key ',s ,keymap (kbd ,k) #',fn)))
+                    `(evil-define-key ',s
+                       ,keymap
+                       ,(if (stringp k) `(kbd ,k) k)
+                       #',fn)))
 
                  ((consp fst)
                   (unless s
                     (use-package-error (format "No evil state declared before: %s" fst)))
                   (-let [(k . fn) fst]
-                    `(evil-global-set-key ',s (kbd ,k) #',fn)))
+                    `(evil-global-set-key ',s
+                                          ,(if (stringp k) `(kbd ,k) k)
+                                          #',fn)))
 
                  ;; A symbol is presumed to be the value of a previous kvp.
 
