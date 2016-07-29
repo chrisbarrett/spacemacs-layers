@@ -18,11 +18,6 @@
 
 (global-set-key (kbd "M-SPC") 'cycle-spacing)
 
-;;; Exiting Emacs
-
-(bind-key (kbd "C-c k k") 'cb-core-exit-emacs)
-(bind-key (kbd "C-x C-c") 'cb-core-warn-exit-emacs-rebound)
-
 ;;; Personal config
 
 (defun cb-core/goto-personal-config ()

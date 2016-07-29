@@ -13,24 +13,6 @@
 
 ;;; Exiting Emacs
 
-(defun cb-core-exit-emacs ()
-  (interactive)
-  (let* ((emacsclient-frame? (and (not (display-graphic-p))
-                                  (< 1 (length (frame-list)))))
-         (prompt (if emacsclient-frame? "Finish editing? " "Kill Emacs? ")))
-    (when (yes-or-no-p prompt)
-      (cond
-       (emacsclient-frame?
-        (server-done))
-       ((daemonp)
-        (server-save-buffers-kill-terminal nil))
-       (t
-        (save-buffers-kill-emacs))))))
-
-(defun cb-core-warn-exit-emacs-rebound ()
-  (interactive)
-  (user-error "Type <C-c k k> to exit Emacs"))
-
 (defun cb-core-regexp-quoted-ignored-dirs ()
   (--map (format "/%s/" (regexp-quote it)) cb-vars-ignored-dirs))
 
@@ -47,12 +29,6 @@ REPLACEMENT is the string to substitute for the match in REGEX."
                                    ,replacement 'decompose-region)
                    nil))))
 
-;;; Global insertion commands
-
-(defun cb-core-generate-password ()
-  (interactive)
-  (kill-new (s-trim (shell-command-to-string "gpg --gen-random --armor 1 30")))
-  (message "Password copied to kill-ring."))
 
 ;;; HACK: override Spacemacs function to prevent M-RET from being bound.
 

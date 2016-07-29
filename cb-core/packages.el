@@ -48,7 +48,9 @@
     (replace-smart-quotes :location local)
     (cb-transpose-line :location local)
     (cb-core-rename-file-and-buffer :location local)
-    (cb-rotate-window-split :location local)))
+    (cb-rotate-window-split :location local)
+    (cb-exit-emacs :location local)
+    (cb-generate-password :location local)))
 
 (defun cb-core/user-config ()
   "This procedure should be called in `dotspacemacs/user-config'."
@@ -322,5 +324,15 @@
     :evil-bind
     (:state normal ("C-w |" . cb-rotate-window-split))
     :leader-bind (("|" . cb-rotate-window-split))))
+
+(defun cb-core/init-cb-exit-emacs ()
+  (use-package cb-exit-emacs
+    :bind
+    (("C-c k k" . cb-exit-emacs)
+     ("C-x C-c" . cb-exit-emacs-warn-rebound))))
+
+(defun cb-core/init-cb-generate-password ()
+  (use-package cb-generate-password
+    :commands cb-generate-password))
 
 ;;; packages.el ends here
