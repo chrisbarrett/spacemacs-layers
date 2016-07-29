@@ -99,7 +99,7 @@
   (let-alist table
     (insert-text-button
      .name
-     'face (list :foreground solarized-hl-blue)
+     'face (list :foreground cb-vars-solarized-hl-blue)
      'action 'sql/button-ret
      'buffer .buffer
      'position .pos

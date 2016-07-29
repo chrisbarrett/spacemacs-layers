@@ -82,18 +82,18 @@
       (custom-set-faces
        `(agda2-highlight-number-face
          ((t
-           (:foreground ,solarized-hl-magenta))))
+           (:foreground ,cb-vars-solarized-hl-magenta))))
 
        `(agda2-highlight-field-face
          ((t
-           (:foreground ,solarized-hl-cyan))))
+           (:foreground ,cb-vars-solarized-hl-cyan))))
 
        `(agda2-highlight-inductive-constructor-face
          ((t
-           (:foreground ,solarized-hl-violet :italic t))))
+           (:foreground ,cb-vars-solarized-hl-violet :italic t))))
 
        `(agda2-highlight-coinductive-constructor-face
          ((t
-           (:foreground ,solarized-hl-magenta :italic t))))))))
+           (:foreground ,cb-vars-solarized-hl-magenta :italic t))))))))
 
 ;;; packages.el ends here

@@ -21,6 +21,15 @@
 
 ;;; Code:
 
+(defconst cb-vars-solarized-hl-yellow    "#b58900")
+(defconst cb-vars-solarized-hl-orange    "#cb4b16")
+(defconst cb-vars-solarized-hl-red       "#dc322f")
+(defconst cb-vars-solarized-hl-magenta   "#d33682")
+(defconst cb-vars-solarized-hl-violet    "#6c71c4")
+(defconst cb-vars-solarized-hl-blue      "#268bd2")
+(defconst cb-vars-solarized-hl-cyan      "#2aa198")
+(defconst cb-vars-solarized-hl-green     "#859900")
+
 (defconst cb-vars-prompt-modes
   '(comint-mode
     inf-ruby-mode

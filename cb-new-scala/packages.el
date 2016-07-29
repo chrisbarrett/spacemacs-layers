@@ -245,8 +245,8 @@ See `ensime-goto-test-config-defaults' for possible template values.")
               (trait .  (:inherit font-lock-type-face :slant italic))
               (object . font-lock-constant-face)
               (package . font-lock-preprocessor-face)
-              (implicitConversion . (:underline ,(with-no-warnings solarized-hl-cyan)))
-              (implicitParams . (:underline ,(with-no-warnings solarized-hl-cyan)))
+              (implicitConversion . (:underline ,(with-no-warnings cb-vars-solarized-hl-cyan)))
+              (implicitParams . (:underline ,(with-no-warnings cb-vars-solarized-hl-cyan)))
               (deprecated . (:strike-through "dark gray"))))
 
       (setq ensime-goto-test-config-defaults
@@ -324,7 +324,7 @@ See `ensime-goto-test-config-defaults' for possible template values.")
 
       (custom-set-faces
        `(scala-font-lock:var-face
-         ((t (:foreground ,(with-no-warnings solarized-hl-orange) :underline nil))))))))
+         ((t (:foreground ,(with-no-warnings cb-vars-solarized-hl-orange) :underline nil))))))))
 
 (defun cb-new-scala/init-cb-scala-flyspell ()
   (use-package cb-scala-flyspell

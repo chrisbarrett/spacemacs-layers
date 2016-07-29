@@ -172,7 +172,7 @@
        `(highlight-defined-function-name-face
          ((((background dark))  (:foreground "#708784"))
           (((background light)) (:foreground "#708784"))))
-       `(highlight-defined-builtin-function-name-face ((t (:foreground ,solarized-hl-cyan))))
+       `(highlight-defined-builtin-function-name-face ((t (:foreground ,cb-vars-solarized-hl-cyan))))
        `(highlight-defined-special-form-name-face ((t (:italic t))))
        `(highlight-defined-face-name-face
          ((((background dark))  (:foreground "#8D88AE"))

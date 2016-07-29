@@ -196,8 +196,8 @@
     :config
     (progn
       (core/remap-face 'neo-dir-link-face 'default)
-      (set-face-foreground neo-file-link-face solarized-hl-orange)
-      (set-face-foreground neo-root-dir-face solarized-hl-blue))))
+      (set-face-foreground neo-file-link-face cb-vars-solarized-hl-orange)
+      (set-face-foreground neo-root-dir-face cb-vars-solarized-hl-blue))))
 
 (defun cb-project/init-cb-project-show-project ()
   (use-package cb-project-show-project

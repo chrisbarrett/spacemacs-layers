@@ -71,10 +71,10 @@ Each entry is either:
     :config
     (progn
       (set-face-background 'circe-prompt-face nil)
-      (set-face-foreground 'circe-prompt-face solarized-hl-magenta)
+      (set-face-foreground 'circe-prompt-face cb-vars-solarized-hl-magenta)
 
       (defface cb-circe-self-say-face
-        `((t (:weight bold :foreground ,solarized-hl-blue)))
+        `((t (:weight bold :foreground ,cb-vars-solarized-hl-blue)))
         "The face for the Circe prompt.")
 
       (setq circe-reduce-lurker-spam t)

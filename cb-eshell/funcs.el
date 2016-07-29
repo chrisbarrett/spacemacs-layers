@@ -105,7 +105,7 @@ With prefix argument ARG, always create a new shell."
       (t
        (concat "\n" (cb-eshell--render-header cb-eshell--last-prompt plist))))
 
-     (let ((colour (if last-command-success? solarized-hl-cyan solarized-hl-red)))
+     (let ((colour (if last-command-success? cb-vars-solarized-hl-cyan cb-vars-solarized-hl-red)))
        (concat
         (propertize "λ" 'face `(:foreground ,colour))
         (propertize (if root-user? "#" ">") 'face `(:foreground ,colour))))
@@ -160,7 +160,7 @@ With prefix argument ARG, always create a new shell."
                    (concat
                     (propertize "branch:" 'face font-lock-comment-face)
                     (propertize git-branch 'face 'magit-branch-remote))
-                 (propertize "DETACHED" 'face `(:foreground ,solarized-hl-orange)))
+                 (propertize "DETACHED" 'face `(:foreground ,cb-vars-solarized-hl-orange)))
 
                (when git-tag
                  (concat
@@ -172,10 +172,10 @@ With prefix argument ARG, always create a new shell."
 
                (-when-let (statuses
                            (-non-nil (list
-                                      (when git-staged? (propertize "staged" 'face `(:foreground ,solarized-hl-green)))
-                                      (when git-unstaged? (propertize "unstaged" 'face `(:foreground ,solarized-hl-cyan)))
-                                      (when git-unmerged? (propertize "unmerged" 'face `(:foreground ,solarized-hl-magenta)))
-                                      (when git-modified? (propertize "modified" 'face `(:foreground ,solarized-hl-red)))
+                                      (when git-staged? (propertize "staged" 'face `(:foreground ,cb-vars-solarized-hl-green)))
+                                      (when git-unstaged? (propertize "unstaged" 'face `(:foreground ,cb-vars-solarized-hl-cyan)))
+                                      (when git-unmerged? (propertize "unmerged" 'face `(:foreground ,cb-vars-solarized-hl-magenta)))
+                                      (when git-modified? (propertize "modified" 'face `(:foreground ,cb-vars-solarized-hl-red)))
                                       (when git-untracked? (propertize "untracked" 'face 'default)))))
                  (concat
                   (propertize " state:[" 'face font-lock-comment-face)
@@ -196,7 +196,7 @@ With prefix argument ARG, always create a new shell."
                   (_ git-root)
                   (proj-name (f-filename git-root)))
        (concat (propertize "@ " 'face font-lock-comment-face)
-               (propertize proj-name 'face `(:foreground ,solarized-hl-cyan))))
+               (propertize proj-name 'face `(:foreground ,cb-vars-solarized-hl-cyan))))
      sections
 
      (let ((empty-sections? (and sections (s-blank? sections))))
@@ -208,7 +208,7 @@ With prefix argument ARG, always create a new shell."
      "\n")))
 
 (defun cb-eshell--propertize-dir (dir)
-  (let* ((parts (--map (propertize it 'face `(:foreground ,solarized-hl-blue))
+  (let* ((parts (--map (propertize it 'face `(:foreground ,cb-vars-solarized-hl-blue))
                        (f-split dir)))
          (str (s-join (propertize (f-path-separator) 'face font-lock-comment-face)
                       parts))

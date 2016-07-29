@@ -129,8 +129,8 @@
       ;; Faces
 
       (setq org-todo-keyword-faces
-            `(("NEXT" . ,solarized-hl-yellow)
-              ("WAITING" . ,solarized-hl-magenta)))
+            `(("NEXT" . ,cb-vars-solarized-hl-yellow)
+              ("WAITING" . ,cb-vars-solarized-hl-magenta)))
 
       (custom-set-faces
        '(org-hide ((t :background unspecified)))
@@ -138,11 +138,11 @@
        '(org-document-info-keyword ((t :foreground unspecified :inherit org-meta-line)))
 
        `(org-block-begin-line
-         ((((background light)) :italic t :foreground ,solarized-hl-cyan :background nil)
-          (((background dark))  :italic t :foreground ,solarized-hl-cyan :background nil)))
+         ((((background light)) :italic t :foreground ,cb-vars-solarized-hl-cyan :background nil)
+          (((background dark))  :italic t :foreground ,cb-vars-solarized-hl-cyan :background nil)))
        `(org-block-end-line
-         ((((background light)) :italic t :foreground ,solarized-hl-cyan :background nil)
-          (((background dark))  :italic t :foreground ,solarized-hl-cyan :background nil)))
+         ((((background light)) :italic t :foreground ,cb-vars-solarized-hl-cyan :background nil)
+          (((background dark))  :italic t :foreground ,cb-vars-solarized-hl-cyan :background nil)))
        '(org-block
          ((((background light)) :background nil)
           (((background dark))  :background nil)))

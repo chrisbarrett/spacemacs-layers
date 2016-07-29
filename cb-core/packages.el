@@ -101,7 +101,7 @@
 
       (custom-set-faces
        `(helm-locate-finish
-         ((t (:foreground ,solarized-hl-cyan))))
+         ((t (:foreground ,cb-vars-solarized-hl-cyan))))
        '(helm-selection
          ((((background light)) :background "gray90" :foreground "black" :underline nil)
           (((background dark))  :background "black"  :foreground "white" :underline nil))))))
@@ -187,7 +187,7 @@
   (use-package iedit
     :config
     (custom-set-faces
-     `(iedit-occurrence ((t (:background ,solarized-hl-orange :foreground "white")))))))
+     `(iedit-occurrence ((t (:background ,cb-vars-solarized-hl-orange :foreground "white")))))))
 
 (defun cb-core/post-init-hl-line ()
   (global-hl-line-mode -1))

@@ -49,22 +49,22 @@ which require an initialization must be listed explicitly in the list.")
       ;; Faces and font-locking
 
       (defface ledger-date
-        `((t :inherit org-date :underline nil :foreground ,solarized-hl-cyan))
+        `((t :inherit org-date :underline nil :foreground ,cb-vars-solarized-hl-cyan))
         "Face for dates at start of transactions."
         :group 'ledger-faces)
 
       (defface ledger-periodic-header
-        `((t :foreground ,solarized-hl-violet :bold t))
+        `((t :foreground ,cb-vars-solarized-hl-violet :bold t))
         "Face for the header for periodic transactions."
         :group 'ledger-faces)
 
       (defface ledger-year-line
-        `((t :foreground ,solarized-hl-violet))
+        `((t :foreground ,cb-vars-solarized-hl-violet))
         "Face for year declarations."
         :group 'ledger-faces)
 
       (defface ledger-report-negative-amount
-        `((t (:foreground ,solarized-hl-red)))
+        `((t (:foreground ,cb-vars-solarized-hl-red)))
         "Face for negative amounts in ledger reports."
         :group 'ledger-faces)
 
@@ -84,13 +84,13 @@ which require an initialization must be listed explicitly in the list.")
          ((((background dark))  :background "#073642")
           (((background light)) :background "#eee8d5")))
        `(ledger-font-pending-face
-         ((t (:foreground ,solarized-hl-orange))))
+         ((t (:foreground ,cb-vars-solarized-hl-orange))))
        `(ledger-font-payee-cleared-face
-         ((t (:foreground ,solarized-hl-green))))
+         ((t (:foreground ,cb-vars-solarized-hl-green))))
        `(ledger-font-payee-uncleared-face
-         ((t (:foreground ,solarized-hl-orange))))
+         ((t (:foreground ,cb-vars-solarized-hl-orange))))
        `(ledger-font-posting-account-face
-         ((t (:foreground ,solarized-hl-blue)))))
+         ((t (:foreground ,cb-vars-solarized-hl-blue)))))
 
       (core/remap-face 'ledger-font-comment-face 'font-lock-comment-face)
 

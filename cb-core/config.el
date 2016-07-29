@@ -55,17 +55,6 @@
 (setq-default tab-width 4)
 (setq-default evil-shift-width 2)
 
-;;; Colours
-
-(defconst solarized-hl-yellow    "#b58900")
-(defconst solarized-hl-orange    "#cb4b16")
-(defconst solarized-hl-red       "#dc322f")
-(defconst solarized-hl-magenta   "#d33682")
-(defconst solarized-hl-violet    "#6c71c4")
-(defconst solarized-hl-blue      "#268bd2")
-(defconst solarized-hl-cyan      "#2aa198")
-(defconst solarized-hl-green     "#859900")
-
 ;;; Customise spacemacs face.
 
 (custom-set-faces

@@ -49,7 +49,7 @@
     (progn
       (custom-set-faces
        `(scala-font-lock:var-face
-         ((t (:foreground ,solarized-hl-orange :underline nil)))))
+         ((t (:foreground ,cb-vars-solarized-hl-orange :underline nil)))))
 
       (defun cb-scala/set-local-values ()
         (add-hook 'evil-insert-state-exit-hook #'scala/unicode-buffer))
@@ -116,8 +116,8 @@
               (trait .  (:inherit font-lock-type-face :slant italic))
               (object . font-lock-constant-face)
               (package . font-lock-preprocessor-face)
-              (implicitConversion . (:underline ,solarized-hl-cyan))
-              (implicitParams . (:underline ,solarized-hl-cyan))
+              (implicitConversion . (:underline ,cb-vars-solarized-hl-cyan))
+              (implicitParams . (:underline ,cb-vars-solarized-hl-cyan))
               (deprecated . (:strike-through "dark gray"))))
 
       (defconst scala/test-file-template

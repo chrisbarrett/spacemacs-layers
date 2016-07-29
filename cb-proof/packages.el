@@ -71,7 +71,7 @@
          ((((background light)) :background "#fee8e5")
           (((background dark))  :background "#51202b")))
        `(coq-solve-tactics-face
-         ((t (:italic t :foreground ,(with-no-warnings solarized-hl-orange))))))
+         ((t (:italic t :foreground ,(with-no-warnings cb-vars-solarized-hl-orange))))))
 
       (defun cb-proof--configure-coq-buffer ()
         (setq-local compile-command (concat "coqc " (buffer-name))))
