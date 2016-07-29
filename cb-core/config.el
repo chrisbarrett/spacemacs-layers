@@ -68,14 +68,6 @@
 
 ;;; Editing advice
 
-(defadvice ido-find-file (after find-file-sudo activate)
-  "Find file as root if necessary."
-  (let ((dir (f-dirname (buffer-file-name)))
-        (file (buffer-file-name)))
-    (unless (and file (f-writable? file))
-      (when (and (f-exists? dir) (not (f-writable? dir)))
-        (find-alternate-file (concat "/sudo:root@localhost:" buffer-file-name))))))
-
 (defadvice save-buffers-kill-emacs (around no-query-kill-emacs activate)
   "Do not prompt for confirmation for active processes."
   (noflet ((process-list () nil))

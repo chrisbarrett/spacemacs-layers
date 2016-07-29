@@ -236,7 +236,12 @@
       (add-to-list 'ido-ignore-buffers "\\*Minibuf.*")
 
       (dolist (regexp cb-vars-ignored-files-regexps)
-        (add-to-list 'ido-ignore-files regexp)))))
+        (add-to-list 'ido-ignore-files regexp))
+
+      (defun cb-core/ido-find-file-as-root (&rest _)
+        (spacemacs/sudo-edit))
+
+      (advice-add #'ido-find-file :after #'cb-core/ido-find-file-as-root))))
 
 (defun cb-core/init-cb-buffers ()
   (use-package cb-buffers
