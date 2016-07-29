@@ -9,7 +9,6 @@
 (require 'f)
 (require 's)
 
-(autoload 'ansi-color-apply-on-region "ansi-color")
 (autoload 'helm "helm-command")
 
 ;;; Exiting Emacs
@@ -34,9 +33,6 @@
 
 (defun cb-core-regexp-quoted-ignored-dirs ()
   (--map (format "/%s/" (regexp-quote it)) cb-vars-ignored-dirs))
-
-(defun cb-core-ansi-colourise-compilation ()
-  (ansi-color-apply-on-region compilation-filter-start (point)))
 
 (defun cb-core-font-lock-replace-match (regex group replacement)
   "Return a font-lock replacement spec for.

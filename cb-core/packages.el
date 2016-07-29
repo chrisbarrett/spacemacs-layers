@@ -31,6 +31,7 @@
     recentf
     neotree
     time
+    (compile :location built-in)
 
     (cb-buffers :location local)
     (locate-key-binding :location local)
@@ -286,6 +287,15 @@
     (progn
       (setq display-time-default-load-average nil)
       (display-time-mode +1))))
+
+(defun cb-core/init-compile ()
+  (use-package compile
+    :defer t
+    :config
+    (progn
+      (defun cb-core-ansi-colourise-compilation ()
+        (ansi-color-apply-on-region compilation-filter-start (point)))
+      (add-hook 'compilation-filter-hook #'cb-core-ansi-colourise-compilation))))
 
 (defun cb-core/init-replace-smart-quotes ()
   (use-package replace-smart-quotes
