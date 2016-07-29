@@ -46,7 +46,8 @@
     (indent-dwim :location local)
     (replace-smart-quotes :location local)
     (cb-transpose-line :location local)
-    (cb-core-rename-file-and-buffer :location local)))
+    (cb-core-rename-file-and-buffer :location local)
+    (cb-rotate-window-split :location local)))
 
 (defun cb-core/user-config ()
   "This procedure should be called in `dotspacemacs/user-config'."
@@ -305,5 +306,11 @@
       (defalias 'rfb #'cb-core-rename-file-and-buffer)
       (defalias 'rbf #'cb-core-rename-file-and-buffer)
       (defalias 'mv  #'cb-core-rename-file-and-buffer-mv))))
+
+(defun cb-core/init-cb-rotate-window-split ()
+  (use-package cb-rotate-window-split
+    :evil-bind
+    (:state normal ("C-w |" . cb-rotate-window-split))
+    :leader-bind (("|" . cb-rotate-window-split))))
 
 ;;; packages.el ends here

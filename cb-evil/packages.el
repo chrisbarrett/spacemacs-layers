@@ -37,8 +37,6 @@
     (:state
      normal
      ("\\" . evil-repeat-find-char-reverse)
-
-     ("C-w |" . cb-core-toggle-window-split)
      ("C-w -" . split-window-below)
      ("C-w /" . evil-window-vsplit)
      ("C-w k" . next-multiframe-window)
@@ -51,8 +49,7 @@
      ("C-w j" . previous-multiframe-window))
 
     :leader-bind
-    (("wo" . delete-other-windows)
-     ("|" . cb-core-toggle-window-split))
+    (("wo" . delete-other-windows))
 
     :config
     (progn

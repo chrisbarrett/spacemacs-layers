@@ -12,43 +12,6 @@
 (autoload 'ansi-color-apply-on-region "ansi-color")
 (autoload 'helm "helm-command")
 
-;;; File utils
-
-;;; Window management
-
-(defun cb-core--rotate-window-layout ()
-  (let* ((this-win-buffer (window-buffer))
-         (next-win-buffer (window-buffer (next-window)))
-         (this-win-edges (window-edges (selected-window)))
-         (next-win-edges (window-edges (next-window)))
-         (this-win-2nd (not (and (<= (car this-win-edges)
-                                     (car next-win-edges))
-                                 (<= (cadr this-win-edges)
-                                     (cadr next-win-edges)))))
-         (splitter
-          (if (= (car this-win-edges)
-                 (car (window-edges (next-window))))
-              'split-window-horizontally
-            'split-window-vertically)))
-    (delete-other-windows)
-    (let ((first-win (selected-window)))
-      (funcall splitter)
-      (when this-win-2nd (other-window 1))
-      (set-window-buffer (selected-window) this-win-buffer)
-      (set-window-buffer (next-window) next-win-buffer)
-      (select-window first-win)
-      (when this-win-2nd (other-window 1)))))
-
-(defun cb-core-toggle-window-split ()
-  (interactive)
-  (cond
-   ((= (count-windows) 2)
-    (cb-core--rotate-window-layout))
-   ((= 1 (count-windows))
-    (user-error "No windows to rotate"))
-   (t
-    (user-error "Too many windows to rotate"))))
-
 ;;; Exiting Emacs
 
 (defun cb-core-exit-emacs ()
