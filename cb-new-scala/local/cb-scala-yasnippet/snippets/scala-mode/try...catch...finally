@@ -1,0 +1,11 @@
+# key: tcf
+# name: try...catch...finally
+# condition: (yas/bol?)
+# --
+try {
+  $1$0
+} catch {
+  case ${2:_}: $3Exception => $4
+} finally {
+  $5
+}

@@ -1,0 +1,6 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: val
+# key: v
+# condition: (yas/bol?)
+# --
+val ${1:ident} = $0

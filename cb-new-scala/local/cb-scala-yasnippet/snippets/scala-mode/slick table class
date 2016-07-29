@@ -1,0 +1,15 @@
+# key: cl
+# name: slick table class
+# condition: (yas/bol?)
+# --
+case class ${1:Name}(${2:attrs})
+
+object $1 {
+  class $1Table(tag: Tag) extends Table[$1](tag, "${3:tablename}") {
+    ${2:$(cb-scala-yasnippet-slick-column-defs yas-text)}
+    $0
+    def * = (${2:$(cb-scala-yasnippet-slick-star-fields yas-text)}) <> (($1.apply _).tupled, $1.unapply)
+  }
+
+  val table = TableQuery[$1Table]
+}

@@ -1,0 +1,10 @@
+# key: cl
+# name: scalatest class (FunSpec)
+# condition: (yas/bol?)
+# --
+import org.scalatest.{ FunSpec, Matchers }
+
+class ${1:Name}Test extends FunSpec with Matchers {
+
+  $0
+}

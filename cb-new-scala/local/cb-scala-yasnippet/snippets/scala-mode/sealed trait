@@ -1,0 +1,7 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: sealed trait
+# key: st
+# binding: direct-keybinding
+# condition: (yas/bol?)
+# --
+sealed trait $0

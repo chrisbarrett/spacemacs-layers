@@ -1,0 +1,9 @@
+# key: tf
+# name: try...finally
+# condition: (yas/bol?)
+# --
+try {
+  $1$0
+} finally {
+  $2
+}

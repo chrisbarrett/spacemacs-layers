@@ -1,0 +1,7 @@
+# key: main
+# name: main
+# condition: (yas/bol?)
+# --
+def main(args: Array[String]): Unit = {
+  $0
+}

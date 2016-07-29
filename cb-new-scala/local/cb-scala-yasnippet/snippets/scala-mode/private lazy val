@@ -1,0 +1,4 @@
+# key: plv
+# name: private lazy val
+# --
+private lazy val ${1:name} = $0

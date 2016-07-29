@@ -1,0 +1,9 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: def apply
+# key: da
+# binding: direct-keybinding
+# condition: (yas/bol?)
+# --
+def apply() = {
+  $0
+}

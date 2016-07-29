@@ -1,0 +1,7 @@
+# key: od
+# name: override def
+# condition: (yas/bol?)
+# --
+override def ${1:fname}${2:(${3:params...})${4:: ${5:Type}}} = ${6:{
+  $0
+}}

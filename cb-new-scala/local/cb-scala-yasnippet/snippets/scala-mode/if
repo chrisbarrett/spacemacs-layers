@@ -1,0 +1,9 @@
+# key: i
+# name: if
+# --
+if (${1:test}) {
+  ${2:expr}
+}
+else {
+  ${3:expr}
+}

@@ -1,0 +1,12 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: scalatest fixture with helper (FunSpec)
+# key: it
+# binding: direct-keybinding
+# condition: (yas/bol?)
+# --
+it("${1:desc}") {
+  new Fixture {
+    $0
+    true shouldBe false
+  }
+}

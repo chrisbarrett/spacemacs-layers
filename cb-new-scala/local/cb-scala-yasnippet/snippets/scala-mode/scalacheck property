@@ -1,0 +1,9 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: scalacheck property
+# key: prop
+# binding: direct-keybinding
+# condition: (yas/bol?)
+# --
+property("$1") = Prop.forAll { ($2) =>
+  $0
+}
