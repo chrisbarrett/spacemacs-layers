@@ -10,12 +10,15 @@
 
 (defconst cb-eshell-packages
   '(eshell
+    company
     (eshell-prompt-extras :excluded t)
     (cb-eshell-prompt :location local)))
 
-;; Disable company for eshell.
-(with-eval-after-load 'company
-  (setq company-global-modes '(not eshell-mode)))
+(defun cb-eshell/post-init-company ()
+  (use-package company
+    :config
+    ;; Disable company for eshell.
+    (setq company-global-modes '(not eshell-mode))))
 
 (defun cb-eshell/post-init-eshell ()
   (use-package eshell
