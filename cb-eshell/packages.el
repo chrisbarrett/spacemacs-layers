@@ -10,7 +10,8 @@
 
 (defconst cb-eshell-packages
   '(eshell
-    (eshell-prompt-extras :excluded t)))
+    (eshell-prompt-extras :excluded t)
+    (cb-eshell-prompt :location local)))
 
 ;; Disable company for eshell.
 (with-eval-after-load 'company
@@ -34,15 +35,6 @@
       (setq eshell-error-if-no-glob t)
       (setq eshell-glob-case-insensitive t)
       (setq eshell-scroll-to-bottom-on-input t)
-      (setq eshell-prompt-function 'cb-eshell--prompt)
-
-      ;; See ./funcs.el for definition.
-      (setq eshell-prompt-regexp (rx bol (or
-                                          ;; default
-                                          (and (* space) "λ" (or ">" "#") " ")
-                                          ;; boot2docker
-                                          (and "@" (+ nonl) ":" (+ nonl) "$" space))))
-
       (evil-set-initial-state 'eshell-mode 'insert)
 
       (defun cb-eshell/ret ()
@@ -66,5 +58,10 @@
                  (while (pcomplete-here*
                          (funcall pcomplete-command-completion-function)
                          (pcomplete-arg 'last) t)))))))))
+
+(defun cb-eshell/init-cb-eshell-prompt ()
+  (use-package cb-eshell-prompt
+    :after eshell
+    :config (cb-eshell-prompt-init)))
 
 ;;; packages.el ends here
