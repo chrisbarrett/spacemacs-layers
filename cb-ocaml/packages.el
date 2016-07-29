@@ -28,8 +28,8 @@
       (setq tuareg-function-indent 2)
       (setq tuareg-match-indent 0)
 
-      (core/remap-face 'tuareg-font-lock-governing-face 'font-lock-keyword-face)
-      (core/remap-face 'tuareg-font-lock-operator-face 'default)
+      (cb-remap-face 'tuareg-font-lock-governing-face 'font-lock-keyword-face)
+      (cb-remap-face 'tuareg-font-lock-operator-face 'default)
 
       (font-lock-add-keywords
        'tuareg-mode
@@ -68,7 +68,7 @@
     (:state normal :map merlin-mode-map ("M-." . merlin-locate))
     :config
     (progn
-      (core/remap-face 'merlin-type-face 'cb-faces-bg-hl-ok)
+      (cb-remap-face 'merlin-type-face 'cb-faces-bg-hl-ok)
       (add-to-list 'company-backends 'merlin-company-backend))))
 
 (defun cb-ocaml/init-flycheck-ocaml ()

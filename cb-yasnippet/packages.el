@@ -50,7 +50,7 @@
 
       (cb-yas/register-snippets-dir cb-yasnippet/main-snippets-dir)
 
-      (core/remap-face 'yas-field-highlight-face 'cb-faces-bg-hl-template)
+      (cb-remap-face 'yas-field-highlight-face 'cb-faces-bg-hl-template)
 
       (add-hook 'yas-minor-mode-hook #'cb-yas/sync-with-yasnippet)
       (add-hook 'snippet-mode-hook (lambda () (setq-local require-final-newline nil)))

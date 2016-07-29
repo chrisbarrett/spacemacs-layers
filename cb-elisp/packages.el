@@ -134,8 +134,8 @@
 
 (defun cb-elisp/post-init-eval-sexp-fu ()
   (defun cb-elisp/configure-eval-sexp-fu ()
-    (core/remap-face 'eval-sexp-fu-flash 'cb-faces-bg-flash)
-    (core/remap-face 'eval-sexp-fu-flash-error 'cb-faces-bg-flash-red)
+    (cb-remap-face 'eval-sexp-fu-flash 'cb-faces-bg-flash)
+    (cb-remap-face 'eval-sexp-fu-flash-error 'cb-faces-bg-flash-red)
     (turn-on-eval-sexp-fu-flash-mode))
 
   (add-hook 'emacs-lisp-mode-hook #'cb-elisp/configure-eval-sexp-fu)
@@ -158,7 +158,7 @@
     :defer t
     :init (add-hook 'emacs-lisp-mode-hook #'hl-sexp-mode)
     :config
-    (core/remap-face 'hl-sexp-face 'cb-faces-bg-hl-ok)))
+    (cb-remap-face 'hl-sexp-face 'cb-faces-bg-hl-ok)))
 
 (defun cb-elisp/init-highlight-defined ()
   (use-package highlight-defined

@@ -199,7 +199,7 @@
     :defer t
     :config
     (progn
-      (core/remap-face 'neo-dir-link-face 'default)
+      (cb-remap-face 'neo-dir-link-face 'default)
       (set-face-foreground neo-file-link-face cb-vars-solarized-hl-orange)
       (set-face-foreground neo-root-dir-face cb-vars-solarized-hl-blue))))
 

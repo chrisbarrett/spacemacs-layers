@@ -8,7 +8,7 @@
   (require 'use-package))
 
 (autoload 'evil-define-key "evil-core")
-(autoload 'core/remap-face "config")
+(autoload 'cb-remap-face "config")
 
 (defconst cb-proof-packages
   '(flycheck
@@ -35,11 +35,11 @@
        '(proof-error-face
          ((t (:background nil)))))
 
-      (core/remap-face 'proof-queue-face 'cb-faces-bg-flash)
-      (core/remap-face 'proof-locked-face 'cb-faces-bg-hl-ok)
-      (core/remap-face 'proof-warning-face 'flycheck-warning)
-      (core/remap-face 'proof-script-sticky-error-face 'flycheck-error)
-      (core/remap-face 'proof-script-highlight-error-face 'flycheck-error))))
+      (cb-remap-face 'proof-queue-face 'cb-faces-bg-flash)
+      (cb-remap-face 'proof-locked-face 'cb-faces-bg-hl-ok)
+      (cb-remap-face 'proof-warning-face 'flycheck-warning)
+      (cb-remap-face 'proof-script-sticky-error-face 'flycheck-error)
+      (cb-remap-face 'proof-script-highlight-error-face 'flycheck-error))))
 
 (defun cb-proof/post-init-aggressive-indent ()
   (use-package aggressive-indent

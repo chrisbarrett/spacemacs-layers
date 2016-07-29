@@ -69,15 +69,15 @@
 
       ;; Remap faces
 
-      (core/remap-face 'agda2-highlight-error-face 'flycheck-error)
-      (core/remap-face 'agda2-highlight-keyword-face 'font-lock-keyword-face)
-      (core/remap-face 'agda2-highlight-bound-variable-face 'font-lock-variable-name-face)
-      (core/remap-face 'agda2-highlight-module-face 'font-lock-constant-face)
-      (core/remap-face 'agda2-highlight-datatype-face 'font-lock-type-face)
-      (core/remap-face 'agda2-highlight-record-face 'font-lock-type-face)
-      (core/remap-face 'agda2-highlight-function-face 'default)
-      (core/remap-face 'agda2-highlight-primitive-type-face 'font-lock-builtin-face)
-      (core/remap-face 'agda2-highlight-symbol-face 'default)
+      (cb-remap-face 'agda2-highlight-error-face 'flycheck-error)
+      (cb-remap-face 'agda2-highlight-keyword-face 'font-lock-keyword-face)
+      (cb-remap-face 'agda2-highlight-bound-variable-face 'font-lock-variable-name-face)
+      (cb-remap-face 'agda2-highlight-module-face 'font-lock-constant-face)
+      (cb-remap-face 'agda2-highlight-datatype-face 'font-lock-type-face)
+      (cb-remap-face 'agda2-highlight-record-face 'font-lock-type-face)
+      (cb-remap-face 'agda2-highlight-function-face 'default)
+      (cb-remap-face 'agda2-highlight-primitive-type-face 'font-lock-builtin-face)
+      (cb-remap-face 'agda2-highlight-symbol-face 'default)
 
       (custom-set-faces
        `(agda2-highlight-number-face

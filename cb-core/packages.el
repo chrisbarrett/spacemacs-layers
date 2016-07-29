@@ -51,7 +51,8 @@
     (cb-rotate-window-split :location local)
     (cb-exit-emacs :location local)
     (cb-generate-password :location local)
-    (cb-font-lock-replace-match :location local)))
+    (cb-font-lock-replace-match :location local)
+    (cb-remap-face :location local)))
 
 (defun cb-core/user-config ()
   "This procedure should be called in `dotspacemacs/user-config'."
@@ -155,8 +156,8 @@
       (setq helm-gtags-suggested-key-mapping t)))
 
   (with-eval-after-load 'pulse
-    (core/remap-face 'pulse-highlight-face 'cb-faces-bg-flash)
-    (core/remap-face 'pulse-highlight-start-face 'cb-faces-bg-flash)))
+    (cb-remap-face 'pulse-highlight-face 'cb-faces-bg-flash)
+    (cb-remap-face 'pulse-highlight-start-face 'cb-faces-bg-flash)))
 
 (defun cb-core/init-world-time-mode ()
   (use-package world-time-mode
@@ -338,5 +339,14 @@
 
 (defun cb-core/init-cb-font-lock-replace-match ()
   (use-package cb-font-lock-replace-match))
+
+(defun cb-core/init-cb-remap-face ()
+  (use-package cb-remap-face
+    :functions (cb-remap-face cb-remap-face-restore)
+    :config
+    (progn
+      (advice-add #'spacemacs//ido-navigation-ms-on-exit :after #'cb-remap-face-restore)
+      (advice-add #'spacemacs//ido-setup :after #'cb-remap-face-restore)
+      (advice-add #'spacemacs//helm-before-initialize :after #'cb-remap-face-restore))))
 
 ;;; packages.el ends here

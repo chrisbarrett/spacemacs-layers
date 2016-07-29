@@ -77,12 +77,12 @@
         :group 'idris)
 
 
-      (core/remap-face 'idris-semantic-type-face 'font-lock-type-face)
-      (core/remap-face 'idris-semantic-data-face 'font-lock-string-face)
-      (core/remap-face 'idris-semantic-function-face 'cb-idris-function)
-      (core/remap-face 'idris-semantic-bound-face 'font-lock-variable-name-face)
-      (core/remap-face 'idris-semantic-implicit-face 'font-lock-comment-face)
-      (core/remap-face 'idris-repl-output-face 'compilation-info)
+      (cb-remap-face 'idris-semantic-type-face 'font-lock-type-face)
+      (cb-remap-face 'idris-semantic-data-face 'font-lock-string-face)
+      (cb-remap-face 'idris-semantic-function-face 'cb-idris-function)
+      (cb-remap-face 'idris-semantic-bound-face 'font-lock-variable-name-face)
+      (cb-remap-face 'idris-semantic-implicit-face 'font-lock-comment-face)
+      (cb-remap-face 'idris-repl-output-face 'compilation-info)
 
       (add-to-list 'font-lock-keywords-alist
                    '(idris-mode

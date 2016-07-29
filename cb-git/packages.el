@@ -33,8 +33,8 @@
 
     :config
     (progn
-      (core/remap-face 'magit-section-highlight 'cb-faces-bg-hl-ok)
-      (core/remap-face 'magit-diff-context-highlight 'cb-faces-bg-hl-ok))))
+      (cb-remap-face 'magit-section-highlight 'cb-faces-bg-hl-ok)
+      (cb-remap-face 'magit-diff-context-highlight 'cb-faces-bg-hl-ok))))
 
 (defun cb-git/post-init-git-commit ()
   (use-package git-commit
