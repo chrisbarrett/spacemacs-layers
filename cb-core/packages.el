@@ -221,7 +221,7 @@
 
       (setq recentf-exclude
             (-distinct (-concat recentf-exclude
-                                (cb-core-regexp-quoted-ignored-dirs)
+                                (--map (format "/%s/" (regexp-quote it)) cb-vars-ignored-dirs)
                                 cb-vars-ignored-files-regexps)))
       (recentf-cleanup))))
 

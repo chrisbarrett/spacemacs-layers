@@ -7,6 +7,7 @@
   (require 'hydra nil t)
   (require 's)
   (require 'f)
+  (require 'cb-vars)
   (require 'cb-use-package-extensions)
   (require 'use-package))
 
@@ -20,6 +21,9 @@
     neotree
     (cb-project-show-project :location local)))
 
+(defun cb-project/regexp-quoted-ignored-dirs ()
+  (--map (format "/%s/" (regexp-quote it)) cb-vars-ignored-dirs))
+
 (defun cb-project/user-config ()
   (setq projectile-completion-system 'helm)
   (with-eval-after-load 'projectile
@@ -28,7 +32,7 @@
 (defun cb-project/post-init-recentf ()
   (use-package recentf
     :config
-    (setq recentf-exclude (-union recentf-exclude (cb-core-regexp-quoted-ignored-dirs)))))
+    (setq recentf-exclude (-union recentf-exclude (cb-project/regexp-quoted-ignored-dirs)))))
 
 (defun cb-project/post-init-projectile ()
   (use-package projectile
@@ -108,7 +112,7 @@
           (->> (list
                 ag-ignore-list
                 cb-vars-ignored-files-regexps
-                (cb-core-regexp-quoted-ignored-dirs))
+                (cb-project/regexp-quoted-ignored-dirs))
                -flatten
                -uniq))))
 
@@ -121,7 +125,7 @@
             (->> (list
                   helm-ag-ignore-patterns
                   cb-vars-ignored-files-regexps
-                  (cb-core-regexp-quoted-ignored-dirs))
+                  (cb-project/regexp-quoted-ignored-dirs))
                  -flatten
                  -uniq))
 

@@ -3,19 +3,6 @@
 
 ;;; Code:
 
-(require 'cl-lib)
-(require 'dash)
-(require 'dash-functional)
-(require 'f)
-(require 's)
-
-(autoload 'helm "helm-command")
-
-;;; Exiting Emacs
-
-(defun cb-core-regexp-quoted-ignored-dirs ()
-  (--map (format "/%s/" (regexp-quote it)) cb-vars-ignored-dirs))
-
 ;;; HACK: override Spacemacs function to prevent M-RET from being bound.
 
 (defun spacemacs/activate-major-mode-leader ()
