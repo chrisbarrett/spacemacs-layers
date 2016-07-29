@@ -30,10 +30,6 @@
 (defalias 'qr  'query-replace)
 (defalias 'qrr 'query-replace-regexp)
 (defalias 'cal 'calendar)
-(defalias 'rfb 'cb-core-rename-file-and-buffer)
-(defalias 'rbf 'cb-core-rename-file-and-buffer)
-(defalias 'mv  'cb-core-move-file)
-
 
 ;;; Set variables
 

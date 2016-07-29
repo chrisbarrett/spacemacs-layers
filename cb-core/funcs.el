@@ -11,66 +11,8 @@
 
 (autoload 'ansi-color-apply-on-region "ansi-color")
 (autoload 'helm "helm-command")
-(autoload 'projectile-invalidate-cache "projectile")
-(autoload 'projectile-project-p "projectile")
-(autoload 'recentf-cleanup "recentf")
 
 ;;; File utils
-
-(defun cb-core-rename-file-and-buffer (buffer dest-dir dest-filename)
-  "Rename the current buffer and file it is visiting."
-  (interactive (let ((cur (cb-core--assert-file-exists-for-buffer)))
-                 (list (current-buffer)
-                       (read-directory-name "Move to directory: " (f-dirname cur))
-                       (read-string "New name: " (f-filename cur)))))
-  (let ((src (cb-core--assert-file-exists-for-buffer buffer))
-        (dest-path (f-join dest-dir dest-filename)))
-    (or (cb-core--try-move-file-with-vc src dest-path)
-        (cb-core--try-rename-file src dest-path))
-    (when (and (fboundp 'projectile-project-p) (projectile-project-p))
-      (call-interactively #'projectile-invalidate-cache))
-    (message "File '%s' moved to '%s'" (f-short (f-filename src)) (f-short dest-path))))
-
-(defun cb-core--assert-file-exists-for-buffer (&optional buf)
-  (let ((cur (buffer-file-name buf)))
-    (if (not (and cur (f-exists? cur)))
-        (error "Buffer is not visiting a file!")
-      cur)))
-
-(defun cb-core--try-move-file-with-vc (src dest)
-  (condition-case err
-      (when (vc-backend src)
-        (vc-rename-file src dest)
-        t)
-    (error
-     (let ((msg (error-message-string err)))
-       (cond
-        ((s-matches? "New file already exists" msg) nil)
-        ((s-matches? "Please update files" msg)
-         (unless (y-or-n-p "VC cannot track this change automatically. Continue?")
-           (error msg)))
-        (t
-         (error msg)))))))
-
-(defun cb-core--try-rename-file (src dest)
-  (when (and (f-exists? dest) (not (y-or-n-p "File exists. Overwrite?")))
-    (user-error "Aborted"))
-  (rename-file src dest t)
-  (-when-let (buf (get-file-buffer src))
-    (with-current-buffer buf
-      (rename-buffer dest)
-      (set-visited-file-name dest)
-      (set-buffer-modified-p nil))
-
-    (recentf-cleanup)
-    (when (projectile-project-p)
-      (projectile-invalidate-cache nil))))
-
-(defun cb-core-move-file (buffer to-dir)
-  "Move BUFFER's corresponding file to DEST."
-  (interactive (list (current-buffer) (read-directory-name "Move to: ")))
-  (let ((current-file-name (f-filename (cb-core--assert-file-exists-for-buffer buffer))))
-    (cb-core-rename-file-and-buffer buffer to-dir current-file-name)))
 
 ;;; Window management
 

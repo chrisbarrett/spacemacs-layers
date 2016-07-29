@@ -45,7 +45,8 @@
     (helm-http-status :location local)
     (indent-dwim :location local)
     (replace-smart-quotes :location local)
-    (cb-transpose-line :location local)))
+    (cb-transpose-line :location local)
+    (cb-core-rename-file-and-buffer :location local)))
 
 (defun cb-core/user-config ()
   "This procedure should be called in `dotspacemacs/user-config'."
@@ -296,5 +297,13 @@
     (:state normal
             ("C-<up>" . cb-transpose-line-up)
             ("C-<down>" . cb-transpose-line-down))))
+
+(defun cb-core/init-cb-core-rename-file-and-buffer ()
+  (use-package cb-core-rename-file-and-buffer
+    :config
+    (progn
+      (defalias 'rfb #'cb-core-rename-file-and-buffer)
+      (defalias 'rbf #'cb-core-rename-file-and-buffer)
+      (defalias 'mv  #'cb-core-rename-file-and-buffer-mv))))
 
 ;;; packages.el ends here
