@@ -3,16 +3,13 @@
 ;;; Code:
 
 (eval-when-compile
-  (require 'use-package nil t))
+  (require 'cb-use-package-extensions)
+  (require 'use-package))
 
 (defconst cb-sql-packages
-  '(aggressive-indent
-    sql))
-
-(defun cb-sql/post-init-aggressive-indent ()
-  (with-eval-after-load 'aggressive-indent
-    (add-to-list 'aggressive-indent-excluded-modes 'sql-interactive-mode)
-    (add-to-list 'aggressive-indent-excluded-modes 'sql-mode)))
+  '(sql
+    aggressive-indent
+    (cb-sql-find-attrs-with-type :location local)))
 
 (defun cb-sql/init-sql ()
   (use-package sql
@@ -22,3 +19,22 @@
     (progn
       (setq sql-product 'postgres)
       (add-hook 'sql-mode-hook 'sql-highlight-product))))
+
+(defun cb-sql/post-init-aggressive-indent ()
+  (with-eval-after-load 'aggressive-indent
+    (add-to-list 'aggressive-indent-excluded-modes 'sql-interactive-mode)
+    (add-to-list 'aggressive-indent-excluded-modes 'sql-mode)))
+
+(defun cb-sql/init-cb-sql-find-attrs-with-type ()
+  (use-package cb-sql-find-attrs-with-type
+    :commands cb-sql-find-attrs-with-type
+    :evil-bind
+    (:state normal :map cb-sql-find-attrs-with-type-mode-map
+            ("q" . quit-window)
+            ([down-mouse-1] . push-button))
+
+    :config
+    (with-eval-after-load 'aggressive-indent
+      (add-to-list 'aggressive-indent-excluded-modes 'cb-sql-find-attrs-with-type-mode))))
+
+;;; packages.el ends here
