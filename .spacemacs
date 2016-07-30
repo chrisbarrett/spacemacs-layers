@@ -102,8 +102,7 @@ values."
      cb-flycheck
      cb-git
      cb-groovy
-     ;;cb-haskell
-     cb-new-haskell
+     cb-haskell
      cb-ibuffer
      cb-idris
      cb-js

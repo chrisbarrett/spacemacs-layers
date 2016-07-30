@@ -3,6 +3,7 @@
 ;; Copyright (C) 2016  Chris Barrett
 
 ;; Author: Chris Barrett <chris.d.barrett@me.com>
+;; Package-Requires: ((s "1.10.0") (dash "2.12.1") (haskell-mode "16.1-git"))
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -28,7 +29,6 @@
 
 (autoload 'cb-buffers-current-line "cb-buffers")
 (autoload 'cb-buffers-in-string-or-comment? "cb-buffers")
-(autoload 'evil-define-key "evil-core")
 (autoload 'haskell-indentation-newline-and-indent "haskell-indentation")
 (autoload 'sp-get-enclosing-sexp "smartparens")
 
@@ -103,10 +103,6 @@ With prefix arg ARG, just insert a newline and indent."
 
      (t
       (call-interactively #'haskell-indentation-newline-and-indent)))))
-
-;;;###autoload
-(defun haskell-ret-init ()
-  (evil-define-key 'insert haskell-mode-map (kbd "<return>") #'haskell-ret))
 
 (provide 'haskell-ret)
 
