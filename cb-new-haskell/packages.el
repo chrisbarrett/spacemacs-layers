@@ -39,6 +39,7 @@
     indent-dwim
     intero
     llvm-mode
+    shm
 
     (ghc-dump :location local)
     (haskell-flyspell :location local)
@@ -50,7 +51,8 @@
     (haskell-autoinsert :location local)
     (cb-haskell-alignment :location local)
     (haskell-flycheck-holes :location local)
-    (cb-hasklig :location local))
+    (cb-hasklig :location local)
+    (cb-haskell-meta-ret :location local))
   "The list of Lisp packages required by the cb-new-haskell layer.
 
 Each entry is either:
@@ -184,6 +186,11 @@ Each entry is either:
      haskell-mode
      ("t" . intero-targets))))
 
+(defun cb-new-haskell/init-shm ()
+  ;; Only use SHM for buffer parsing utilities.
+  (use-package shm
+    :defer t))
+
 (defun cb-new-haskell/post-init-smart-ops ()
 
   (defun cb-new-haskell/reformat-comment-at-point ()
@@ -312,5 +319,10 @@ Each entry is either:
   (use-package cb-hasklig
     :after haskell-mode
     :config (cb-hasklig-init)))
+
+(defun cb-new-haskell/init-cb-haskell-meta-ret ()
+  (use-package cb-haskell-meta-ret
+    :after haskell-mode
+    :bind (:map haskell-mode-map ("M-RET" . cb-haskell-meta-ret))))
 
 ;;; packages.el ends here
