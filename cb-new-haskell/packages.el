@@ -36,7 +36,8 @@
     (haskell-flycheck-holes :location local)
     (cb-hasklig :location local)
     (cb-haskell-meta-ret :location local)
-    (cb-haskell-smart-ops :location local)))
+    (cb-haskell-smart-ops :location local)
+    (cb-haskell-ctrl-c-ctrl-c :location local)))
 
 (defun cb-new-haskell/init-haskell-mode ()
   (use-package haskell-mode
@@ -234,5 +235,10 @@
   (use-package cb-haskell-smart-ops
     :after haskell-mode
     :config (cb-haskell-smart-ops-init)))
+
+(defun cb-new-haskell/init-cb-haskell-ctrl-c-ctrl-c ()
+  (use-package cb-haskell-ctrl-c-ctrl-c
+    :after haskell-mode
+    :bind (:map haskell-mode-map ("C-c C-c" . cb-haskell-ctrl-c-ctrl-c))))
 
 ;;; packages.el ends here
