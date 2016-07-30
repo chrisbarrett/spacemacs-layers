@@ -299,8 +299,8 @@ Each entry is either:
 
 (defun cb-new-haskell/init-haskell-ret ()
   (use-package haskell-ret
-    :functions haskell-ret-init
-    :init (add-hook 'haskell-mode-hook #'haskell-ret-init)))
+    :after haskell-mode
+    :evil-bind (:map haskell-mode-map :state insert ("RET" . haskell-ret))))
 
 (defun cb-new-haskell/init-haskell-flycheck-holes ()
   (use-package haskell-flycheck-holes
