@@ -19,7 +19,6 @@
 
 (defconst cb-new-haskell-packages
   '(haskell-mode
-    smart-ops
     indent-dwim
     intero
     llvm-mode
@@ -36,7 +35,8 @@
     (cb-haskell-alignment :location local)
     (haskell-flycheck-holes :location local)
     (cb-hasklig :location local)
-    (cb-haskell-meta-ret :location local)))
+    (cb-haskell-meta-ret :location local)
+    (cb-haskell-smart-ops :location local)))
 
 (defun cb-new-haskell/init-haskell-mode ()
   (use-package haskell-mode
@@ -149,59 +149,6 @@
   (use-package shm
     :defer t))
 
-(defun cb-new-haskell/post-init-smart-ops ()
-
-  (defun cb-new-haskell/reformat-comment-at-point ()
-    (-when-let ((&plist :beg beg :end end :op op) (sp-get-enclosing-sexp))
-      (when (and (equal op "{")
-                 (s-matches? (rx bos "{" (* (any "-" space)) "}" eos)
-                             (buffer-substring beg end)))
-        (goto-char beg)
-        (delete-region beg end)
-        (insert "{- ")
-        (save-excursion (insert " -}")))))
-
-  (defun cb-new-haskell/reformat-pragma-at-point ()
-    (-when-let ((&plist :beg beg :end end :op op) (sp-get-enclosing-sexp))
-      (when (and (equal op "{")
-                 (s-matches? (rx bos "{" (* (any "-" space "#")) "}" eos)
-                             (buffer-substring beg end)))
-        (goto-char beg)
-        (delete-region beg end)
-        (insert "{-# ")
-        (save-excursion (insert " #-}")))))
-
-  (defun cb-new-haskell/indent-if-in-exports ()
-    (when (ignore-errors (s-matches? "ExportSpec" (elt (shm-current-node) 0)))
-      (haskell-indentation-indent-line)))
-
-  (defconst cb-new-haskell/smart-ops
-    (-flatten-n 1
-                (list
-                 (smart-ops "." :bypass? t)
-                 (smart-ops "->" "=>")
-                 (smart-ops "$" "=" "~" "^" ":" "?")
-                 (smart-ops "^." ".~" "^~" "%~" :pad-before t :pad-after t)
-                 (smart-op ";"
-                           :pad-before nil :pad-after t)
-                 (smart-ops ","
-                            :pad-before nil :pad-after t
-                            :action
-                            #'cb-new-haskell/indent-if-in-exports)
-                 (smart-op "-"
-                           :action #'cb-new-haskell/reformat-comment-at-point)
-                 (smart-op "#"
-                           :pad-before nil :pad-after nil
-                           :action #'cb-new-haskell/reformat-pragma-at-point)
-                 (smart-ops-default-ops))))
-
-  (define-smart-ops-for-mode 'haskell-mode
-    cb-new-haskell/smart-ops)
-
-  ;; HACK: Enable smart ops for `haskell-mode' manually, since it is not derived
-  ;; from `prog-mode'.
-  (add-hook 'haskell-mode-hook #'smart-ops-mode))
-
 (defun cb-new-haskell/post-init-indent-dwim ()
   (use-package indent-dwim
     :config
@@ -282,5 +229,10 @@
   (use-package cb-haskell-meta-ret
     :after haskell-mode
     :bind (:map haskell-mode-map ("M-RET" . cb-haskell-meta-ret))))
+
+(defun cb-new-haskell/init-cb-haskell-smart-ops ()
+  (use-package cb-haskell-smart-ops
+    :after haskell-mode
+    :config (cb-haskell-smart-ops-init)))
 
 ;;; packages.el ends here
