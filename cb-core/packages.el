@@ -87,7 +87,8 @@
      ("M-x" . helm-M-x)
      ("s-b" . helm-buffers-list))
     :leader-bind
-    (("oo" . helm-occur))
+    (("oo" . helm-occur)
+     ("RET" . helm-imenu))
     :config
     (progn
       (helm-autoresize-mode +1)
