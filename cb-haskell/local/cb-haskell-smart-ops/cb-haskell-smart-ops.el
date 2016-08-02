@@ -61,6 +61,15 @@
               (list
                (smart-ops "." :bypass? t)
                (smart-ops "->" "=>")
+               (smart-op "::!"
+                         :pad-before t
+                         :pad-after nil
+                         :action
+                         (lambda ()
+                           (save-excursion
+                             (skip-chars-backward "!")
+                             (just-one-space))))
+
                (smart-ops "$" "=" "~" "^" ":" "?")
                (smart-ops "^." ".~" "^~" "%~" :pad-before t :pad-after t)
                (smart-op ";"
