@@ -3,6 +3,10 @@
 # key: rc
 # --
 class ${1:Name} extends React.Component {
+  constructor(props){
+    super(props);
+  }
+
   render() {
     return (
       $0
