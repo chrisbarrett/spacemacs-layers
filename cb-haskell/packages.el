@@ -30,7 +30,6 @@
     (haskell-imports :location local)
     (haskell-pragmas :location local)
     (haskell-ret :location local)
-    (haskell-unicode :location local)
     (haskell-autoinsert :location local)
     (cb-haskell-alignment :location local)
     (haskell-flycheck-holes :location local)
@@ -153,16 +152,7 @@
 (defun cb-haskell/post-init-indent-dwim ()
   (use-package indent-dwim
     :config
-    (progn
-      (autoload 'haskell-unicode-apply-to-buffer "haskell-unicode")
-
-      (defun cb-haskell/format-dwim ()
-        "Reformat the buffer."
-        (interactive "*")
-        (haskell-mode-stylish-buffer)
-        (haskell-unicode-apply-to-buffer))
-
-      (add-to-list 'indent-dwim-commands-alist '(haskell-mode . cb-haskell/format-dwim)))))
+    (add-to-list 'indent-dwim-commands-alist '(haskell-mode . haskell-mode-stylish-buffer))))
 
 (defun cb-haskell/init-llvm-mode ()
   (use-package llvm-mode))
@@ -193,11 +183,6 @@
   (use-package haskell-pragmas
     :functions (haskell-pragmas-init)
     :init (add-hook 'haskell-mode-hook #'haskell-pragmas-init)))
-
-(defun cb-haskell/init-haskell-unicode ()
-  (use-package haskell-unicode
-    :functions haskell-unicode-init
-    :init (add-hook 'haskell-mode-hook #'haskell-unicode-init)))
 
 (defun cb-haskell/init-haskell-autoinsert ()
   (use-package haskell-autoinsert
