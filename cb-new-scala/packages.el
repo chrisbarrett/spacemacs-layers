@@ -132,7 +132,6 @@ See `ensime-goto-test-config-defaults' for possible template values.")
     (:map
      ensime-mode-map
      :state insert
-     ("." . scala/completing-dot)
      ("M-." . ensime-edit-definition)
      ("M-," . ensime-pop-find-definition-stack)
      :state normal
