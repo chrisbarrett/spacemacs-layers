@@ -1,7 +1,0 @@
-# -*- mode: snippet; require-final-newline: nil -*-
-# name: auxiliary constructor
-# key: ctor
-# binding: direct-keybinding
-# condition: (yas/bol?)
-# --
-def this(${1:params...}) = this(${2:paramas...})

@@ -1,9 +1,0 @@
-# -*- mode: snippet; require-final-newline: nil -*-
-# name: arbitrary val
-# key: varb
-# binding: direct-keybinding
-# condition: (yas/bol?)
-# --
-implicit val arbitrary${1:Type}: Arbitrary[$1] = Arbitrary {
-  $0
-}

@@ -1,5 +1,0 @@
-# key: d
-# name: def
-# condition: (yas/bol?)
-# --
-def ${1:fname}${2:(${3:params...})${4:: ${5:Type}}} = ${6:???}

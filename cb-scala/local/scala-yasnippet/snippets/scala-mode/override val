@@ -1,7 +1,0 @@
-# -*- mode: snippet; require-final-newline: nil -*-
-# name: override val
-# key: ov
-# binding: direct-keybinding
-# condition: (yas/bol?)
-# --
-override val ${1:ident} = $0

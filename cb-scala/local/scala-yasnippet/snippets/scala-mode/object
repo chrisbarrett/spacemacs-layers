@@ -1,8 +1,0 @@
-# -*- mode: snippet; require-final-newline: nil -*-
-# name: object
-# key: o
-# condition: (yas/bol?)
-# --
-object ${1:Name} {
-  $0
-}

@@ -1,4 +1,0 @@
-# key: cc
-# name: case class
-# --
-case class ${1:Case}(${2:params...})

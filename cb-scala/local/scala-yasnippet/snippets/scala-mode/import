@@ -1,7 +1,0 @@
-# -*- mode: snippet; require-final-newline: nil -*-
-# name: import
-# key: im
-# binding: direct-keybinding
-# condition: (yas/bol?)
-# --
-import $0

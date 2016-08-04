@@ -1,9 +1,0 @@
-# key: cl
-# name: scalatest class (WordSpec)
-# condition: (yas/bol?)
-# --
-import org.scalatest.{ Inspectors, Matchers, WordSpec }
-
-class ${1:$$(scala-yasnippet-test-fixture-name)} extends WordSpec with Matchers with Inspectors {
-  $0
-}

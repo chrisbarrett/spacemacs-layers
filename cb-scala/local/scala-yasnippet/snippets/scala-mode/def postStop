@@ -1,9 +1,0 @@
-# -*- mode: snippet; require-final-newline: nil -*-
-# name: def postStop
-# key: ps
-# binding: direct-keybinding
-# condition: (yas/bol?)
-# --
-override def postStop() = {
-  $0
-}

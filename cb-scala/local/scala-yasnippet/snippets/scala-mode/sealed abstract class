@@ -1,5 +1,0 @@
-# key: sac
-# name: abstract sealed class
-# condition: (yas/bol?)
-# --
-sealed abstract class ${1:Name}

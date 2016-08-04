@@ -1,9 +1,0 @@
-# -*- mode: snippet; require-final-newline: nil -*-
-# name: def preStart
-# key: ps
-# binding: direct-keybinding
-# condition: (yas/bol?)
-# --
-override def preStart() = {
-  $0
-}

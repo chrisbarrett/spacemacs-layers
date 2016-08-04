@@ -1,7 +1,0 @@
-# -*- mode: snippet; require-final-newline: nil -*-
-# name: implicit val
-# key: iv
-# binding: direct-keybinding
-# condition: (yas/bol?)
-# --
-implicit val ${1:name} = $0

@@ -1,7 +1,0 @@
-# key: ac
-# name: abstract class
-# condition: (yas/bol?)
-# --
-abstract class ${1:Name} {
-  $0
-}

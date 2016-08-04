@@ -1,7 +1,0 @@
-# key: ds
-# name: scalatest describe
-# condition: (yas/bol?)
-# --
-describe("${1:feature}") {
-  $0
-}

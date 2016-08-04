@@ -1,8 +1,0 @@
-# key: e
-# name: Enumeration
-# condition: (yas/bol?)
-# --
-object ${1:Name} extends Enumeration {
-  type T = Value
-  val ${2:ident} = Value
-}

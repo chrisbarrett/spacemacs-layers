@@ -1,6 +1,0 @@
-# -*- mode: snippet; require-final-newline: nil -*-
-# name: method signature
-# key: sig
-# binding: direct-keybinding
-# --
-def ${1:fname}${2:(${3:params...})}: ${4:T}

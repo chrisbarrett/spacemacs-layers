@@ -1,9 +1,0 @@
-# -*- mode: snippet; require-final-newline: nil -*-
-# name: implicit def
-# key: id
-# binding: direct-keybinding
-# condition: (yas/bol?)
-# --
-implicit def ${1:fname}(${2:params...})${3:: ${4:Type}} = ${5:{
-  $0
-}}

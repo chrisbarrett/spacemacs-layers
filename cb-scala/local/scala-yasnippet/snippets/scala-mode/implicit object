@@ -1,9 +1,0 @@
-# -*- mode: snippet; require-final-newline: nil -*-
-# name: implicit object
-# key: io
-# binding: direct-keybinding
-# condition: (yas/bol?)
-# --
-implicit object ${1:Name} {
-  $0
-}

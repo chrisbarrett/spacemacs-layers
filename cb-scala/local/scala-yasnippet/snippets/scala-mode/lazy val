@@ -1,7 +1,0 @@
-# -*- mode: snippet; require-final-newline: nil -*-
-# name: lazy val
-# key: lv
-# binding: direct-keybinding
-# condition: (yas/bol?)
-# --
-lazy val ${1:name} = $0

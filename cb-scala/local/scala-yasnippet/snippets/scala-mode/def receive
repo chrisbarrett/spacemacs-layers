@@ -1,6 +1,0 @@
-# key: dr
-# name: def receive
-# --
-override def receive = {
-  case ${1:binding} => $0
-}
