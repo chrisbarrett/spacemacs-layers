@@ -1,4 +1,4 @@
-;;; packages.el --- cb-new-scala layer packages file for Spacemacs.
+;;; packages.el --- cb-scala layer packages file for Spacemacs.
 ;;
 ;; Copyright (c) 2012-2016 Sylvain Benner & Contributors
 ;;
@@ -17,7 +17,7 @@
   (require 'cb-use-package-extensions)
   (require 'use-package))
 
-(defconst cb-new-scala-packages
+(defconst cb-scala-packages
   '(ensime
     flycheck
     aggressive-indent
@@ -35,14 +35,14 @@
     (sbt-file-mode :location local)
     (cb-scala-ligatures :location local)))
 
-(defun cb-new-scala/post-init-aggressive-indent ()
+(defun cb-scala/post-init-aggressive-indent ()
   (use-package aggressive-indent
     :config
     (progn
       (add-to-list 'aggressive-indent-excluded-modes 'scala-mode)
       (add-to-list 'aggressive-indent-excluded-modes 'sbt-file-mode))))
 
-(defun cb-new-scala/post-init-flycheck ()
+(defun cb-scala/post-init-flycheck ()
   (use-package flycheck
     :init
     (spacemacs/add-flycheck-hook 'scala-mode)
@@ -50,12 +50,12 @@
     (progn
       (setq flycheck-scalastylerc "~/.scalastyle.xml")
 
-      (defun cb-new-scala/disable-flycheck-scala ()
+      (defun cb-scala/disable-flycheck-scala ()
         (when (boundp 'flycheck-disabled-checkers)
           (push 'scala flycheck-disabled-checkers)))
-      (add-hook 'ensime-mode-hook #'cb-new-scala/disable-flycheck-scala))))
+      (add-hook 'ensime-mode-hook #'cb-scala/disable-flycheck-scala))))
 
-(defconst cb-new-scala/test-file-template
+(defconst cb-scala/test-file-template
   "import org.scalatest.{ BeforeAndAfter, BeforeAndAfterAll, Matchers, WordSpec }
 
 class %TESTCLASS% extends WordSpec with Matchers with BeforeAndAfter with BeforeAndAfterAll {
@@ -75,7 +75,7 @@ class %TESTCLASS% extends WordSpec with Matchers with BeforeAndAfter with Before
   "The default value to insert into new scala test buffers.
 See `ensime-goto-test-config-defaults' for possible template values.")
 
-(defun cb-new-scala/init-ensime ()
+(defun cb-scala/init-ensime ()
   (use-package ensime
     :after scala-mode
 
@@ -95,18 +95,18 @@ See `ensime-goto-test-config-defaults' for possible template values.")
                         ("my" . "scala/yank")))
         (spacemacs/declare-prefix-for-mode 'scala-mode (car prefix) (cdr prefix)))
 
-      (defun cb-new-scala/ensime-refactor-accept ()
+      (defun cb-scala/ensime-refactor-accept ()
         (interactive)
         (with-no-warnings (funcall continue-refactor))
         (ensime-popup-buffer-quit-function))
 
-      (defun cb-new-scala/ensime-refactor-cancel ()
+      (defun cb-scala/ensime-refactor-cancel ()
         (interactive)
         (with-no-warnings (funcall cancel-refactor))
         (ensime-popup-buffer-quit-function))
 
 
-      (defun cb-new-scala/ensime-gen-and-restart()
+      (defun cb-scala/ensime-gen-and-restart()
         "Regenerate `.ensime' file and restart the ensime server."
         (interactive)
         (progn
@@ -114,14 +114,14 @@ See `ensime-goto-test-config-defaults' for possible template values.")
           (ensime-shutdown)
           (ensime)))
 
-      (defun cb-new-scala/ensime-inf-eval-buffer-switch ()
+      (defun cb-scala/ensime-inf-eval-buffer-switch ()
         "Send buffer content to shell and switch to it in insert mode."
         (interactive)
         (ensime-inf-eval-buffer)
         (ensime-inf-switch)
         (evil-insert-state))
 
-      (defun cb-new-scala/ensime-inf-eval-region-switch (start end)
+      (defun cb-scala/ensime-inf-eval-region-switch (start end)
         "Send region content to shell and switch to it in insert mode."
         (interactive "r")
         (ensime-inf-switch)
@@ -154,9 +154,9 @@ See `ensime-goto-test-config-defaults' for possible template values.")
 
      :map ensime-refactor-info-map
      :state normal
-     ("q" . cb-new-scala/ensime-refactor-cancel)
-     ("c" . cb-new-scala/ensime-refactor-accept)
-     ("RET" . cb-new-scala/ensime-refactor-accept)
+     ("q" . cb-scala/ensime-refactor-cancel)
+     ("c" . cb-scala/ensime-refactor-accept)
+     ("RET" . cb-scala/ensime-refactor-accept)
 
      :map ensime-compile-result-map
      :state normal
@@ -202,7 +202,7 @@ See `ensime-goto-test-config-defaults' for possible template values.")
 
            ("nF" . ensime-reload-open-files)
            ("ns" . ensime)
-           ("nS" . cb-new-scala/ensime-gen-and-restart)
+           ("nS" . cb-scala/ensime-gen-and-restart)
 
            ("ra" . ensime-refactor-add-type-annotation)
            ("rd" . ensime-refactor-diff-inline-local)
@@ -220,10 +220,10 @@ See `ensime-goto-test-config-defaults' for possible template values.")
 
            ("sa" . ensime-inf-load-file)
            ("sb" . ensime-inf-eval-buffer)
-           ("sB" . cb-new-scala/ensime-inf-eval-buffer-switch)
+           ("sB" . cb-scala/ensime-inf-eval-buffer-switch)
            ("si" . ensime-inf-switch)
            ("sr" . ensime-inf-eval-region)
-           ("sR" . cb-new-scala/ensime-inf-eval-region-switch)
+           ("sR" . cb-scala/ensime-inf-eval-region-switch)
 
            ("z" . ensime-expand-selection-command))
 
@@ -259,7 +259,7 @@ See `ensime-goto-test-config-defaults' for possible template values.")
                   :impl-class-name-fn #'ensime-goto-test--impl-class-name
                   :impl-to-test-dir-fn #'ensime-goto-test--impl-to-test-dir
                   :is-test-dir-fn #'ensime-goto-test--is-test-dir
-                  :test-template-fn (lambda () cb-new-scala/test-file-template)))
+                  :test-template-fn (lambda () cb-scala/test-file-template)))
 
       (spacemacs/register-repl 'ensime #'ensime-inf-switch "ensime")))
 
@@ -278,7 +278,7 @@ See `ensime-goto-test-config-defaults' for possible template values.")
           (yas-minor-mode-on)
           (set (make-local-variable 'company-idle-delay) 0))))))
 
-(defun cb-new-scala/init-sbt-mode ()
+(defun cb-scala/init-sbt-mode ()
   (use-package sbt-mode
     :defer t
     :leader-bind (:mode scala-mode ("bb" . sbt-command))
@@ -295,23 +295,23 @@ See `ensime-goto-test-config-defaults' for possible template values.")
                         (and "[" (+ (any alpha "-")) "] $" (+ space))))
                 (* space)))
 
-      (defun cb-new-scala/sbt-send-ret ()
+      (defun cb-scala/sbt-send-ret ()
         "Send the current REPL contents to SBT."
         (interactive)
         (process-send-string (get-buffer-process (current-buffer)) "\n")
         (goto-char (point-max))
         (evil-insert-state))
 
-      (defun cb-new-scala/set-up-sbt-mode ()
+      (defun cb-scala/set-up-sbt-mode ()
         (aggressive-indent-mode -1)
         (show-smartparens-mode -1)
         (show-paren-mode -1)
         (local-set-key (kbd "C-l") #'spacemacs/comint-clear-buffer)
-        (local-set-key (kbd "C-c RET") #'cb-new-scala/sbt-send-ret))
+        (local-set-key (kbd "C-c RET") #'cb-scala/sbt-send-ret))
 
-      (add-hook 'sbt-mode-hook #'cb-new-scala/set-up-sbt-mode))))
+      (add-hook 'sbt-mode-hook #'cb-scala/set-up-sbt-mode))))
 
-(defun cb-new-scala/init-scala-mode ()
+(defun cb-scala/init-scala-mode ()
   (use-package scala-mode
     :mode ("\\.scala\\'" . scala-mode)
     :init
@@ -326,37 +326,37 @@ See `ensime-goto-test-config-defaults' for possible template values.")
        `(scala-font-lock:var-face
          ((t (:foreground ,(with-no-warnings cb-vars-solarized-hl-orange) :underline nil))))))))
 
-(defun cb-new-scala/init-cb-scala-flyspell ()
+(defun cb-scala/init-cb-scala-flyspell ()
   (use-package cb-scala-flyspell
     :after scala-mode
     :config (cb-scala-flyspell-init)))
 
-(defun cb-new-scala/init-cb-scala-join-line ()
+(defun cb-scala/init-cb-scala-join-line ()
   (use-package cb-scala-join-line
     :after scala-mode
     :evil-bind
     (:map scala-mode-map :state normal ("J" . cb-scala-join-line))))
 
-(defun cb-new-scala/init-cb-scala-smart-ops ()
+(defun cb-scala/init-cb-scala-smart-ops ()
   (use-package cb-scala-smart-ops
     :after scala-mode
     :config (cb-scala-smart-ops-init)))
 
-(defun cb-new-scala/init-cb-scala-yasnippet ()
+(defun cb-scala/init-cb-scala-yasnippet ()
   (use-package cb-scala-yasnippet
     :after scala-mode
     :config (cb-scala-yasnippet-init)))
 
-(defun cb-new-scala/init-cb-scala-autoinsert ()
+(defun cb-scala/init-cb-scala-autoinsert ()
   (use-package cb-scala-autoinsert
     :config (cb-scala-autoinsert-init)))
 
-(defun cb-new-scala/init-cb-scala-eldoc ()
+(defun cb-scala/init-cb-scala-eldoc ()
   (use-package cb-scala-eldoc
     :after scala-mode
     :config (cb-scala-eldoc-init)))
 
-(defun cb-new-scala/init-cb-scala-ret ()
+(defun cb-scala/init-cb-scala-ret ()
   (use-package cb-scala-ret
     :after scala-mode
     :evil-bind
@@ -370,26 +370,26 @@ See `ensime-goto-test-config-defaults' for possible template values.")
      ("M-RET" . cb-scala-meta-ret)
      ("RET" . cb-scala-ret))))
 
-(defun cb-new-scala/init-ensime-flycheck-integration ()
+(defun cb-scala/init-ensime-flycheck-integration ()
   (use-package ensime-flycheck-integration
     :after ensime
     :config (ensime-flycheck-integration-init)))
 
-(defun cb-new-scala/init-ensime-diminished-modeline ()
+(defun cb-scala/init-ensime-diminished-modeline ()
   (use-package ensime-diminished-modeline
     :after ensime))
 
-(defun cb-new-scala/post-init-indent-dwim ()
+(defun cb-scala/post-init-indent-dwim ()
   (use-package indent-dwim
     :after ensime
     :config
     (add-to-list 'indent-dwim-commands-alist '(scala-mode . ensime-format-source))))
 
-(defun cb-new-scala/init-sbt-file-mode ()
+(defun cb-scala/init-sbt-file-mode ()
   (use-package sbt-file-mode
     :mode ("\\.sbt\\'" . sbt-file-mode)))
 
-(defun cb-new-scala/init-cb-scala-ligatures ()
+(defun cb-scala/init-cb-scala-ligatures ()
   (use-package cb-scala-ligatures
     :after scala-mode
     :config (cb-scala-ligatures-init)))
