@@ -354,6 +354,7 @@ See `ensime-goto-test-config-defaults' for possible template values.")
 (defun cb-scala/init-cb-scala-eldoc ()
   (use-package cb-scala-eldoc
     :after scala-mode
+    :disabled t
     :config (cb-scala-eldoc-init)))
 
 (defun cb-scala/init-cb-scala-ret ()
