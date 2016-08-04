@@ -232,6 +232,7 @@ See `ensime-goto-test-config-defaults' for possible template values.")
       (setq ensime-startup-snapshot-notification nil)
       (setq ensime-auto-generate-config t)
       (setq ensime-implicit-gutter-icons nil)
+      (setq ensime-startup-dirname (f-join spacemacs-cache-directory "ensime"))
       (setq ensime-sem-high-faces
             `((var . scala-font-lock:var-face)
               ;; (val . (:inherit font-lock-constant-face :slant italic))
