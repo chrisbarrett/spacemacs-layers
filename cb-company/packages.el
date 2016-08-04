@@ -63,6 +63,8 @@ Each entry is either:
 
 (defun cb-company/post-init-company ()
   (use-package company
+    :bind
+    (("S-<return>" . company-complete))
     :config
     (progn
       (dolist (map (list company-active-map company-search-map company-filter-map))
