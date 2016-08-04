@@ -117,8 +117,7 @@ values."
      cb-proof
      ;; cb-rcirc
      cb-rust
-     ;;cb-scala
-     cb-new-scala
+     cb-scala
      cb-smartparens
      cb-sml
      cb-spelling
