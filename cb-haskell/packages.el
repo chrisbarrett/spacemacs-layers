@@ -36,7 +36,8 @@
     (cb-hasklig :location local)
     (cb-haskell-meta-ret :location local)
     (cb-haskell-smart-ops :location local)
-    (cb-haskell-ctrl-c-ctrl-c :location local)))
+    (cb-haskell-ctrl-c-ctrl-c :location local)
+    (cb-stack-hoogle :location local)))
 
 (defun cb-haskell/init-haskell-mode ()
   (use-package haskell-mode
@@ -50,8 +51,7 @@
      ("C-," . haskell-move-nested-left)
      ("C-." . haskell-move-nested-right)
      ("C-c C-d" . haskell-w3m-open-haddock)
-     ("C-c C-f" . haskell-cabal-visit-file)
-     ("C-c C-h" . haskell-hoogle))
+     ("C-c C-f" . haskell-cabal-visit-file))
 
     :evil-bind
     (:map
@@ -225,5 +225,11 @@
   (use-package cb-haskell-ctrl-c-ctrl-c
     :after haskell-mode
     :bind (:map haskell-mode-map ("C-c C-c" . cb-haskell-ctrl-c-ctrl-c))))
+
+(defun cb-haskell/init-cb-stack-hoogle ()
+  (use-package cb-stack-hoogle
+    :after haskell-mode
+    :bind
+    (:map haskell-mode-map ("C-c C-h" . cb-stack-hoogle))))
 
 ;;; packages.el ends here
