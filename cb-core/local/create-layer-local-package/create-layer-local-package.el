@@ -46,8 +46,9 @@
   ")
 
 (defun create-layer-local-package--layers ()
-  (--map (list :name (symbol-name (oref it name)) :dir (oref it dir))
-         (with-no-warnings configuration-layer--layers)))
+  (--map (list :name (symbol-name it)
+               :dir (configuration-layer/get-layer-path it))
+         (with-no-warnings configuration-layer--used-layers)))
 
 (defun create-layer-local-package--current-layer ()
   (-first (-lambda ((&plist :dir layer-dir))
