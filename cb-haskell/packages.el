@@ -33,7 +33,6 @@
     (haskell-autoinsert :location local)
     (cb-haskell-alignment :location local)
     (haskell-flycheck-holes :location local)
-    (cb-hasklig :location local)
     (cb-haskell-meta-ret :location local)
     (cb-haskell-smart-ops :location local)
     (cb-haskell-ctrl-c-ctrl-c :location local)
@@ -205,11 +204,6 @@
     :after (haskell-mode flycheck)
     :config
     (add-hook 'haskell-mode-hook #'haskell-flycheck-holes-init)))
-
-(defun cb-haskell/init-cb-hasklig ()
-  (use-package cb-hasklig
-    :after haskell-mode
-    :config (cb-hasklig-init)))
 
 (defun cb-haskell/init-cb-haskell-meta-ret ()
   (use-package cb-haskell-meta-ret

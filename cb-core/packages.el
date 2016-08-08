@@ -52,7 +52,8 @@
     (cb-exit-emacs :location local)
     (cb-generate-password :location local)
     (cb-font-lock-replace-match :location local)
-    (cb-remap-face :location local)))
+    (cb-remap-face :location local)
+    (cb-ligatures :location local)))
 
 (defun cb-core/user-config ()
   "This procedure should be called in `dotspacemacs/user-config'."
@@ -354,5 +355,14 @@
       (advice-add #'spacemacs//ido-navigation-ms-on-exit :after #'cb-remap-face-restore)
       (advice-add #'spacemacs//ido-setup :after #'cb-remap-face-restore)
       (advice-add #'spacemacs//helm-before-initialize :after #'cb-remap-face-restore))))
+
+(defun cb-core/init-cb-ligatures ()
+  (use-package cb-ligatures
+    :config
+    (progn
+      (cb-ligatures-init)
+      (global-prettify-symbols-mode +1)
+      (add-hook 'text-mode-hook #'prettify-symbols-mode)
+      (add-hook 'prog-mode-hook #'prettify-symbols-mode))))
 
 ;;; packages.el ends here

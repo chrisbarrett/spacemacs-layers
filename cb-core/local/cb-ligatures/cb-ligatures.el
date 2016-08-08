@@ -1,8 +1,9 @@
-;;; cb-scala-ligatures.el --- Use Hasklig to provide scala ligatures. -*- lexical-binding: t; -*-
+;;; cb-ligatures.el --- Use Hasklig to provide ligatures.  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2016  Chris Barrett
 
 ;; Author: Chris Barrett <chris.d.barrett@me.com>
+;; Package-Requires: ((dash "2.12.1"))
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -21,7 +22,9 @@
 
 ;;; Code:
 
-(defconst cb-scala-ligatures--alist
+(require 'dash)
+
+(defconst cb-ligatures--alist
   (list (cons "&&" (decode-char 'ucs #XE100))
         (cons "***" (decode-char 'ucs #XE101))
         (cons "*>" (decode-char 'ucs #XE102))
@@ -59,43 +62,12 @@
         (cons "+++" (decode-char 'ucs #XE122))
         (cons "/=" (decode-char 'ucs #XE123))))
 
-
-;; Taken from `haskell-font-lock'.
-(defun cb-scala-ligatures--compose-symbol (alist)
-  "Compose a sequence of ASCII chars into a symbol.
-Regexp match data 0 points to the chars."
-  ;; Check that the chars should really be composed into a symbol.
-  (let* ((start (match-beginning 0))
-         (end (match-end 0))
-         (syntaxes (cond
-                    ((eq (char-syntax (char-after start)) ?w) '(?w))
-                    ((eq (char-syntax (char-after start)) ?.) '(?.))
-                    ;; Special case for the . used for qualified names.
-                    ((and (eq (char-after start) ?\.) (= end (1+ start)))
-                     '(?_ ?\\ ?w))
-                    (t '(?_ ?\\))))
-         sym-data)
-    (if (or (memq (char-syntax (or (char-before start) ?\ )) syntaxes)
-            (memq (char-syntax (or (char-after end) ?\ )) syntaxes)
-            (or (elt (syntax-ppss) 3) (elt (syntax-ppss) 4))
-            (and (consp (setq sym-data (cdr (assoc (match-string 0) alist))))
-                 (let ((pred (cadr sym-data)))
-                   (setq sym-data (car sym-data))
-                   (funcall pred start))))
-        ;; No composition for you.  Let's actually remove any composition
-        ;; we may have added earlier and which is now incorrect.
-        (remove-text-properties start end '(composition))
-      ;; That's a symbol alright, so add the composition.
-      (compose-region start end sym-data)))
-  ;; Return nil because we're not adding any face property.
-  nil)
-
-(defun cb-scala-ligatures-init ()
+;;;###autoload
+(defun cb-ligatures-init ()
   (when (equal "Hasklig" (font-get (face-attribute 'default :font) :name))
-    (font-lock-add-keywords 'scala-mode
-                    `((,(regexp-opt (mapcar #'car cb-scala-ligatures--alist) t)
-                       (0 (cb-scala-ligatures--compose-symbol ',cb-scala-ligatures--alist) keep))))))
+    (setq-default prettify-symbols-alist (-union prettify-symbols-alist
+                                                 cb-ligatures--alist))))
 
-(provide 'cb-scala-ligatures)
+(provide 'cb-ligatures)
 
-;;; cb-scala-ligatures.el ends here
+;;; cb-ligatures.el ends here

@@ -32,8 +32,7 @@
     (cb-scala-ret :location local)
     (ensime-flycheck-integration :location local)
     (ensime-diminished-modeline :location local)
-    (sbt-file-mode :location local)
-    (cb-scala-ligatures :location local)))
+    (sbt-file-mode :location local)))
 
 (defun cb-scala/post-init-aggressive-indent ()
   (use-package aggressive-indent
@@ -389,10 +388,5 @@ See `ensime-goto-test-config-defaults' for possible template values.")
 (defun cb-scala/init-sbt-file-mode ()
   (use-package sbt-file-mode
     :mode ("\\.sbt\\'" . sbt-file-mode)))
-
-(defun cb-scala/init-cb-scala-ligatures ()
-  (use-package cb-scala-ligatures
-    :after scala-mode
-    :config (cb-scala-ligatures-init)))
 
 ;;; packages.el ends here
