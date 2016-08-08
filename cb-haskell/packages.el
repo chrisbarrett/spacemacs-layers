@@ -230,6 +230,8 @@
   (use-package cb-stack-hoogle
     :after haskell-mode
     :bind
-    (:map haskell-mode-map ("C-c C-h" . cb-stack-hoogle))))
+    (:map haskell-mode-map ("C-c C-h" . cb-stack-hoogle))
+    :evil-bind
+    (:map haskell-mode-map :state normal ("RET" . cb-stack-hoogle-info-at-pt))))
 
 ;;; packages.el ends here
