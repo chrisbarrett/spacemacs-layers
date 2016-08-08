@@ -3,7 +3,7 @@
 ;; Copyright (C) 2016  Chris Barrett
 
 ;; Author: Chris Barrett <chris.d.barrett@me.com>
-;; Package-Requires: ((dash "2.12.1") (haskell-mode "20160804.216"))
+;; Package-Requires: ((s "1.10.0") (dash "2.12.1") (haskell-mode "20160804.216"))
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@
 ;;; Code:
 
 (require 'dash)
+(require 's)
 (require 'haskell-hoogle)
 
 (defun cb-stack-hoogle--read-query ()
@@ -30,23 +31,18 @@
     (read-string (if def (format "Hoogle query (default %s): " def) "Hoogle query: ")
                  nil nil def)))
 
-(defun cb-stack-hoogle--font-lock-line-as-haskell ()
-  (let ((line (buffer-substring (line-beginning-position) (line-end-position))))
-    (when (cb-stack-hoogle--string-is-haskell-source? line)
-      (ignore-errors
-        (haskell-font-lock-fontify-block 'haskell-mode (line-beginning-position) (line-end-position))))))
-
 (defun cb-stack-hoogle--string-is-haskell-source? (s)
   (or (s-contains? "::" s)
       (s-matches? (rx bol (or "class" "module" "data") eow) s)))
 
 (defun cb-stack-hoogle--indent-section (start end)
   (indent-region start end 2)
+  (goto-char end)
   (fill-region start end))
 
 (defun cb-stack-hoogle--insert-header (s)
   (newline)
-  (insert (propertize s 'face 'font-lock-comment-face))
+  (insert (propertize s 'font-lock-face 'font-lock-comment-face))
   (newline))
 
 (defun cb-stack-hoogle--prettify-hoogle-info-results ()
@@ -55,7 +51,6 @@
     (save-excursion
       (cb-stack-hoogle--insert-header "Definition")
       (newline)
-      (cb-stack-hoogle--font-lock-line-as-haskell)
       (cb-stack-hoogle--indent-section (line-beginning-position) (line-end-position))
       (goto-char (line-end-position))
       (newline)
@@ -70,13 +65,6 @@
         (cb-stack-hoogle--insert-header "Description")
         (cb-stack-hoogle--indent-section (line-beginning-position) (point-max))))))
 
-(defun cb-stack-hoogle--prettify-hoogle-query-results ()
-  (goto-char (point-min))
-  (save-excursion
-    (cb-stack-hoogle--font-lock-line-as-haskell)
-    (while (and (not (eobp)) (forward-line))
-      (cb-stack-hoogle--font-lock-line-as-haskell))))
-
 ;;;###autoload
 (defun cb-stack-hoogle (query &optional info)
   "Do a Hoogle search for QUERY.
@@ -89,10 +77,10 @@ extra info for the items matching QUERY.."
                          (shell-quote-argument query))))
     (with-help-window "*stack hoogle*"
       (with-current-buffer standard-output
+        (prettify-symbols-mode +1)
         (insert (shell-command-to-string command))
-        (if info
-            (cb-stack-hoogle--prettify-hoogle-info-results)
-          (cb-stack-hoogle--prettify-hoogle-query-results))))))
+        (when info
+          (cb-stack-hoogle--prettify-hoogle-info-results))))))
 
 ;;;###autoload
 (defun cb-stack-hoogle-info-at-pt ()
