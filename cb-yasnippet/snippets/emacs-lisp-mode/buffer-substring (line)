@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: buffer-substring (line)
+# key: bsl
+# --
+(buffer-substring (line-beginning-position) (line-end-position))
