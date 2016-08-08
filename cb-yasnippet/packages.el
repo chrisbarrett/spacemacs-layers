@@ -71,6 +71,24 @@
       (advice-add 'yas-next-field :after #'cb-yasnippet/goto-field-end)
       (advice-add 'yas-prev-field :after #'cb-yasnippet/goto-field-end)
 
+      ;; Ensure yasnippet expansion preserves current indentation. This can be a
+      ;; problem in modes with significant whitespace, where the indentation
+      ;; command unconditionally indents one step.
+
+      (defun cb-yasnippet/preserve-indentation (f &rest args)
+        (let ((col
+               (save-excursion
+                 (back-to-indentation)
+                 (current-column))))
+          (apply f args)
+          (save-excursion
+            (atomic-change-group
+              (goto-char (line-beginning-position))
+              (delete-horizontal-space)
+              (indent-to col)))))
+
+      (advice-add 'yas--expand-or-prompt-for-template :around #'cb-yasnippet/preserve-indentation)
+
       (spacemacs|diminish yas-minor-mode " ⓨ" " y")
       (yas-reload-all)
       (yas-global-mode +1))))
