@@ -261,6 +261,7 @@ positive or backward if negative."
     (yas-expand-snippet "${1:pat} -> $0")
     (message "New pattern match case"))
    ((s-matches? (rx bol (? ">") (* space) "case" (+ space)) (cb-buffers-current-line))
+    (goto-char (line-end-position))
     (newline-and-indent)
     (yas-expand-snippet "${1:pat} -> $0")
     (message "New pattern match case"))
