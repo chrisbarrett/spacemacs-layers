@@ -36,7 +36,7 @@
 (defconst cb-circe-packages
   '(circe
     persp-mode
-    (circe-notifications :location local)
+    circe-notifications
     (circe-show-channels :location local))
   "The list of Lisp packages required by the cb-circe layer.
 
@@ -135,7 +135,8 @@ Each entry is either:
     :init
     (add-hook 'circe-server-connected-hook #'enable-circe-notifications)
     :config
-    (setq circe-notifications-backend "terminal-notifier")))
+    (when (eq system-type 'darwin)
+      (setq circe-notifications-alert-style 'osx-notifier))))
 
 (defun cb-circe/post-init-persp-mode ()
   (defun cb-circe/maybe-refresh-layout ()

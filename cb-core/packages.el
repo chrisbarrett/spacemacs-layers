@@ -130,7 +130,19 @@
   (use-package alert
     :defer t
     :config
-    (setq alert-default-style 'message)))
+    (progn
+      ;; HACK: Fix broken OSX implementation.
+      (defun alert-osx-notifier-notify (info)
+        (call-process "osascript" nil nil nil
+                      "-e"
+                      (format "display notification %S with title %S"
+                              (alert-encode-string (plist-get info :message))
+                              (alert-encode-string (plist-get info :title))))
+        (alert-message-notify info))
+
+      (if (eq system-type 'darwin)
+          (setq alert-default-style 'osx-notifier)
+        (setq alert-default-style 'libnotify)))))
 
 (defun cb-core/post-init-helm-gtags ()
   (use-package helm-gtags
