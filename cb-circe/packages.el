@@ -135,8 +135,17 @@ Each entry is either:
     :init
     (add-hook 'circe-server-connected-hook #'enable-circe-notifications)
     :config
-    (when (eq system-type 'darwin)
-      (setq circe-notifications-alert-style 'osx-notifier))))
+    (progn
+      ;;; HACK: Fix broken implementation of internal function.
+
+      (defun circe-notifications-nicks-on-all-networks ()
+        "Get a list of all nicks in use according to `circe-network-options'."
+        (delete-dups (mapcar (lambda (opt)
+                               (plist-get (cdr opt) :nick))
+                             circe-network-options)))
+
+      (when (eq system-type 'darwin)
+        (setq circe-notifications-alert-style 'osx-notifier)))))
 
 (defun cb-circe/post-init-persp-mode ()
   (defun cb-circe/maybe-refresh-layout ()
