@@ -175,14 +175,9 @@
 
 (defun cb-core/init-world-time-mode ()
   (use-package world-time-mode
-    :commands world-time-list
     :evil-bind
-    (:map
-     world-time-table-mode-map
-     :state normal
-     ("q" . quit-window))
-    :leader-bind
-    (("at" . world-time-list))
+    (:map world-time-table-mode-map :state normal ("q" . quit-window))
+    :leader-bind (("at" . world-time-list))
     :config
     (progn
       (setq display-time-world-list '(("Pacific/Auckland" "NZT")
