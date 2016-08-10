@@ -571,6 +571,7 @@ Do not scheduled items or repeating todos."
   :after org
   :config
   (progn
+    (setq org-odt-schema-dir (f-join user-home-directory "Code/org-mode/etc/schema/"))
     (setq org-export-backends '(ascii html latex gfm koma-letter odt))
     (setq org-export-exclude-tags '("noexport" "crypt"))
     (setq org-export-coding-system 'utf-8)
