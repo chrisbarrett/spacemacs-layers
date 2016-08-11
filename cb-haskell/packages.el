@@ -81,12 +81,6 @@
 
       (add-hook 'haskell-mode-hook #'cb-haskell/set-indentation-step)
 
-      ;; Make 3rd-party tools aware of common syntax extensions.
-
-      (setq haskell-language-extensions
-            '("-XUnicodeSyntax" "-XLambdaCase" "-XRankNTypes"))
-
-
       ;; Ignore generated files.
 
       (add-to-list 'completion-ignored-extensions ".hi")
