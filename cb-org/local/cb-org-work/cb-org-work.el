@@ -4,7 +4,7 @@
 
 ;; Author: Chris Barrett <chris.d.barrett@me.com>
 
-;; Package-Requires: ((f "0.17.2"))
+;; Package-Requires: ((s "1.10.0") (f "0.17.2") (dash "2.12.1"))
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -23,13 +23,20 @@
 
 ;;; Code:
 
+(require 'dash)
 (require 'f)
+(require 's)
 
 (autoload 'cb-org-directory "cb-org-directory")
 
 ;;;###autoload
 (defun cb-org-work-file ()
-  (f-join (cb-org-directory) "work.org"))
+  (-if-let (work-files (f-files (cb-org-directory)
+                                (lambda (file)
+                                  (and (s-starts-with? "work_" (f-filename file))
+                                       (f-ext? file "org")))))
+      (car work-files)
+    (f-join (cb-org-directory) "work.org")))
 
 (defconst cb-org-work-file (cb-org-work-file)
   "Defines the path to file for work-related todos, etc.")
