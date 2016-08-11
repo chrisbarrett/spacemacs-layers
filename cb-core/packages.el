@@ -53,7 +53,8 @@
     (cb-generate-password :location local)
     (cb-font-lock-replace-match :location local)
     (cb-remap-face :location local)
-    (cb-ligatures :location local)))
+    (cb-ligatures :location local)
+    (cb-helm-emoticons :location local)))
 
 (defun cb-core/user-config ()
   "This procedure should be called in `dotspacemacs/user-config'."
@@ -371,5 +372,9 @@
       (global-prettify-symbols-mode +1)
       (add-hook 'text-mode-hook #'prettify-symbols-mode)
       (add-hook 'prog-mode-hook #'prettify-symbols-mode))))
+
+(defun cb-core/init-cb-helm-emoticons ()
+  (use-package cb-helm-emoticons
+    :commands cb-helm-emoticons))
 
 ;;; packages.el ends here
