@@ -37,6 +37,7 @@
   '(circe
     persp-mode
     circe-notifications
+    helm
     (circe-show-channels :location local)))
 
 (defun cb-circe/init-circe ()
@@ -52,6 +53,7 @@
         "The face for the Circe prompt.")
 
       (setq circe-reduce-lurker-spam t)
+      (setq circe-use-cycle-completion t)
       (setq circe-active-users-timeout (* 60 30)) ; 30 minutes
       (setq circe-format-say "{nick}> {body}")
       (setq circe-format-self-say (concat (propertize ">>>" 'face 'cb-circe-self-say-face) " {body}"))
@@ -101,6 +103,13 @@
     :commands enable-lui-autopaste
     :init
     (add-hook 'circe-channel-mode-hook #'enable-lui-autopaste)))
+
+(defun cb-circe/post-init-helm ()
+  (use-package helm
+    :defer t
+    :config
+    (dolist (mode '(circe-channel-mode circe-query-mode circe-server-mode))
+      (add-to-list 'helm-mode-no-completion-in-region-in-modes mode))))
 
 (defun cb-circe/init-circe-notifications ()
   (use-package circe-notifications
