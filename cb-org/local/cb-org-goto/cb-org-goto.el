@@ -44,7 +44,7 @@
 (defun cb-org-goto-work ()
   "Switch to the work file."
   (interactive)
-  (find-file cb-org-work-file))
+  (find-file (cb-org-work-file)))
 
 ;;;###autoload
 (defun cb-org-goto-todo-list ()

@@ -26,8 +26,7 @@
 (require 'dash)
 (require 'f)
 (require 's)
-
-(autoload 'cb-org-directory "cb-org-directory")
+(require 'cb-org-directory)
 
 ;;;###autoload
 (defun cb-org-work-file ()
@@ -37,9 +36,6 @@
                                        (f-ext? file "org")))))
       (car work-files)
     (f-join (cb-org-directory) "work.org")))
-
-(defconst cb-org-work-file (cb-org-work-file)
-  "Defines the path to file for work-related todos, etc.")
 
 (provide 'cb-org-work)
 
