@@ -209,7 +209,10 @@
     :defer t
     :after flycheck
     :config
-    (flycheck-add-next-checker 'javascript-eslint 'javascript-flow)))
+    (progn
+      (add-hook 'cb-web-js-mode-hook (lambda ()
+                                       (flycheck-select-checker 'javascript-flow)))
+      (flycheck-add-next-checker 'javascript-flow 'javascript-eslint))))
 
 (defun cb-js/init-nodejs-repl ()
   (use-package nodejs-repl
