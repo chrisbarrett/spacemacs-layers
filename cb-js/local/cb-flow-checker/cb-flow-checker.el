@@ -89,6 +89,19 @@ already exists.
 Rename the previous binding or choose a different name."
           name))
 
+(defun cb-flow-checker--type-application-args-error-message (desc)
+  (format "%s
+
+As I infer the types of values in this program, I see a type
+constructor applied to the wrong number of types.
+
+Type constructors take take type names as parameters, which are
+written in angle brackets. e.g. `Array<string>'.
+
+The special token `*' can be used for type arguments that can be
+inferred."
+          (car (s-split "\\." desc))))
+
 (defun cb-flow-checker--suggested-modules (module)
   (let ((m (f-filename module)))
     (->> (projectile-current-project-files)
@@ -280,12 +293,16 @@ I must consider this an error." property type type))
                             :checker checker
                             :filename source))))
 
-(defun cb-flow-checker--single-message-error (level checker msgs msg-format-fn)
-  (-let [[(&alist
-           'descr descr
-           'loc (&alist 'start (&alist 'line line 'column col)
-                        'source source))]
-         msgs]
+(defun cb-flow-checker--single-message-error-parser (level checker msgs msg-format-fn)
+  (cb-flow-checker--indexed-error-and-message-parser level checker msgs 0 0 msg-format-fn))
+
+(defun cb-flow-checker--indexed-error-and-message-parser (level checker msgs desc-index pos-index msg-format-fn)
+  "Parse a vector of notes, where the position and description are in separate notes."
+  (-let (((&alist 'loc (&alist 'start (&alist 'line line 'column col)
+                               'source source))
+          (elt msgs pos-index))
+
+         ((&alist 'descr descr) (elt msgs desc-index)))
     (list
      (flycheck-error-new-at line col level
                             (funcall msg-format-fn descr)
@@ -307,74 +324,78 @@ I must consider this an error." property type type))
       (cb-flow-checker--type-error level "Type error with expected return type" checker msgs))
 
      ((member "This type is incompatible with an implicitly-returned undefined." comments)
-      (cb-flow-checker--single-message-error level checker msgs
-                              #'cb-flow-checker--unify-implicit-undefined-error-message))
+      (cb-flow-checker--single-message-error-parser level checker msgs
+                                     #'cb-flow-checker--unify-implicit-undefined-error-message))
 
      ((member "This type is incompatible with" comments)
       (cb-flow-checker--type-error level "Type error in argument" checker msgs))
 
      ((--any? (s-starts-with-p "Unexpected token" it) comments)
-      (cb-flow-checker--single-message-error level checker msgs
-                              #'cb-flow-checker--unexpected-token-error-message))
+      (cb-flow-checker--single-message-error-parser level checker msgs
+                                     #'cb-flow-checker--unexpected-token-error-message))
 
      ((member "Method cannot be called on possibly null value" comments)
-      (cb-flow-checker--single-message-error level checker msgs
-                              #'cb-flow-checker--method-call-on-null-or-undefined-error-message))
+      (cb-flow-checker--single-message-error-parser level checker msgs
+                                     #'cb-flow-checker--method-call-on-null-or-undefined-error-message))
 
      ((member "Method cannot be called on possibly undefined value" comments)
-      (cb-flow-checker--single-message-error level checker msgs
-                              #'cb-flow-checker--method-call-on-null-or-undefined-error-message))
+      (cb-flow-checker--single-message-error-parser level checker msgs
+                                     #'cb-flow-checker--method-call-on-null-or-undefined-error-message))
 
      ((member "Property not found in" comments)
       (cb-flow-checker--property-not-found-error level checker msgs))
 
      ((member "Property cannot be accessed on possibly null value" comments)
-      (cb-flow-checker--single-message-error level checker msgs
-                              #'cb-flow-checker--property-on-null-or-undefined-value-error-message))
+      (cb-flow-checker--single-message-error-parser level checker msgs
+                                     #'cb-flow-checker--property-on-null-or-undefined-value-error-message))
 
      ((member "Property cannot be accessed on possibly undefined value" comments)
-      (cb-flow-checker--single-message-error level checker msgs
-                              #'cb-flow-checker--property-on-null-or-undefined-value-error-message))
+      (cb-flow-checker--single-message-error-parser level checker msgs
+                                     #'cb-flow-checker--property-on-null-or-undefined-value-error-message))
 
      ((member "Computed property/element cannot be accessed on possibly undefined value" comments)
-      (cb-flow-checker--single-message-error level checker msgs
-                              #'cb-flow-checker--property-or-element-on-null-or-undefined-value-error-message))
+      (cb-flow-checker--single-message-error-parser level checker msgs
+                                     #'cb-flow-checker--property-or-element-on-null-or-undefined-value-error-message))
 
      ((member "Computed property/element cannot be accessed on possibly null value" comments)
-      (cb-flow-checker--single-message-error level checker msgs
-                              #'cb-flow-checker--property-or-element-on-null-or-undefined-value-error-message))
+      (cb-flow-checker--single-message-error-parser level checker msgs
+                                     #'cb-flow-checker--property-or-element-on-null-or-undefined-value-error-message))
 
      ((member "Missing annotation" comments)
-      (cb-flow-checker--single-message-error level checker msgs
-                              #'cb-flow-checker--missing-annotation-error-message))
+      (cb-flow-checker--single-message-error-parser level checker msgs
+                                     #'cb-flow-checker--missing-annotation-error-message))
 
      ((member "Unexpected identifier" comments)
-      (cb-flow-checker--single-message-error level checker msgs
-                              #'cb-flow-checker--unexpected-ident-error-message))
+      (cb-flow-checker--single-message-error-parser level checker msgs
+                                     #'cb-flow-checker--unexpected-ident-error-message))
 
      ((member "Required module not found" comments)
-      (cb-flow-checker--single-message-error level checker msgs
-                              #'cb-flow-checker--module-not-found-error-message))
+      (cb-flow-checker--single-message-error-parser level checker msgs
+                                     #'cb-flow-checker--module-not-found-error-message))
 
      ((and (member "Could not resolve name" comments)
            (--any? (s-starts-with? "type " it) comments))
-      (cb-flow-checker--single-message-error level checker msgs
-                              #'cb-flow-checker--unresolved-type-error-message))
+      (cb-flow-checker--single-message-error-parser level checker msgs
+                                     #'cb-flow-checker--unresolved-type-error-message))
 
      ((and (member "Could not resolve name" comments)
            (--any? (s-starts-with? "identifier " it) comments))
-      (cb-flow-checker--single-message-error level checker msgs
-                              #'cb-flow-checker--unresolved-identifier-error-message))
+      (cb-flow-checker--single-message-error-parser level checker msgs
+                                     #'cb-flow-checker--unresolved-identifier-error-message))
 
      ((member "This type cannot be added to" comments)
       (cb-flow-checker--intersection-type-error level checker msgs))
 
      ((member "type referenced from value position" comments)
-      (cb-flow-checker--single-message-error level checker msgs
-                              #'cb-flow-checker--type-in-value-position-error-message))
+      (cb-flow-checker--single-message-error-parser level checker msgs
+                                     #'cb-flow-checker--type-in-value-position-error-message))
 
      ((member "name is already bound" comments)
       (cb-flow-checker--ident-already-bound-error level checker msgs))
+
+     ((--any? (s-starts-with? "Application of polymorphic type needs" it) comments)
+      (cb-flow-checker--indexed-error-and-message-parser level checker msgs 1 0
+                                          #'cb-flow-checker--type-application-args-error-message))
 
      (t
       (when (<= 1 cb-flow-checker--logging-verbosity)
