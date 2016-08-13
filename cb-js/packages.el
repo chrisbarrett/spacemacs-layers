@@ -144,6 +144,20 @@
                              (just-one-space)
                              (backward-char))))
 
+              ;; KLUDGE: Handle type annotation insertion.
+              (smart-ops ":," ":="
+                         :pad-before nil
+                         :action (lambda (&rest _)
+                                   (skip-chars-backward ",=")
+                                   (just-one-space)))
+              (smart-ops ":=>"
+                         :pad-before nil
+                         :action (lambda (&rest _)
+                                   (skip-chars-backward ",=>")
+                                   (just-one-space)
+                                   (save-excursion
+                                     (insert " "))))
+
               (smart-ops ";" ":" "," :pad-before nil)
               (smart-ops "++" "--" "++;" "--;" :pad-before nil :pad-after nil)
               (smart-ops ">=")
