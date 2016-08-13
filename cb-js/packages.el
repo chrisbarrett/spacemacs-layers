@@ -6,6 +6,7 @@
   (require 'dash nil t)
   (require 'smartparens nil t)
   (require 'skeletor nil t)
+  (require 'cb-use-package-extensions)
   (require 'use-package nil t))
 
 (defconst cb-js-packages
@@ -193,6 +194,9 @@
 (defun cb-js/init-cb-flow ()
   (use-package cb-flow
     :after cb-web-modes
+    :leader-bind
+    (:map cb-web-js-mode-map
+          ("if" . cb-flow-insert-flow-annotation))
     :bind (:map cb-web-js-mode-map
                 ("C-c C-t" . cb-flow-type-at))))
 

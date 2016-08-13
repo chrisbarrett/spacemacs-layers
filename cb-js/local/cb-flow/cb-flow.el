@@ -4,6 +4,8 @@
 
 ;; Author: Chris Barrett <chris.d.barrett@me.com>
 
+;; Package-Requires: ((s "1.10.0") (dash "2.12.1"))
+
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
 ;; the Free Software Foundation, either version 3 of the License, or
@@ -21,8 +23,9 @@
 
 ;;; Code:
 
-(require 'json)
 (require 'dash)
+(require 'json)
+(require 's)
 
 (defun cb-flow-type-at (file line col)
   "Return the inferred type for FILE at the given LINE and COL.
@@ -49,6 +52,18 @@ Otherwise return the parsed JSON response."
         (if (called-interactively-p nil)
             (message "%s" type)
           parsed)))))
+
+(defun cb-flow-insert-flow-annotation ()
+  "Insert a flow annotation at the start of this file."
+  (interactive)
+  (save-excursion
+    (goto-char (point-min))
+    (if (s-matches? (rx (or (and "//" (* space) "@flow")
+                            (and "/*" (* space) "@flow" (* space) "*/")))
+                    (buffer-substring (line-beginning-position) (line-end-position)))
+        (user-error "Buffer already contains an @flow annotation")
+      (insert "// @flow\n")
+      (message "Inserted @flow annotation."))))
 
 (provide 'cb-flow)
 
