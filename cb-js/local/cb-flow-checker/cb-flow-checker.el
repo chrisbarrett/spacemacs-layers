@@ -30,6 +30,9 @@
 (require 's)
 (require 'json)
 
+(defvar cb-flow-checker--logging-verbosity 2
+  "Set to zero to disable logging.")
+
 (defun cb-flow-checker--type-error-message (msg type-expected type-actual)
   (format "%s.
 
@@ -129,6 +132,15 @@ As I parse your program I encounter a type name that I cannot
 find the definition for.
 
 Import the type if it exists or write a suitable type
+definition." msg))
+
+(defun cb-flow-checker--unresolved-identifier-error-message (msg)
+  (format "Unknown identifier `%s'.
+
+As I parse your program I encounter a identifier name that I
+cannot find the definition for.
+
+Import the identifier if it exists or write a suitable identifier
 definition." msg))
 
 (defun cb-flow-checker--property-not-found-error-message (property type)
@@ -254,6 +266,20 @@ I must consider this an error." property type type))
                             :checker checker
                             :filename source))))
 
+(defun cb-flow-checker--unresolved-identifier-error (level checker msgs)
+  (-let* (([(&alist 'descr desc
+                    'loc
+                    (&alist 'start (&alist 'line line 'column col)
+                            'source source))]
+           msgs)
+          ((_ identifier) (s-match (rx "identifier `" (group (+ (not (any "`")))))
+                                   desc)))
+    (list
+     (flycheck-error-new-at line col level
+                            (cb-flow-checker--unresolved-identifier-error-message identifier)
+                            :checker checker
+                            :filename source))))
+
 (defun cb-flow-checker--unexpected-token-error (checker msgs)
   (-let [[(&alist 'descr descr
                   'loc (&alist 'start (&alist 'line msg-line 'column msg-col)
@@ -330,8 +356,14 @@ I must consider this an error." property type type))
      ((member "Missing annotation" comments)
       (cb-flow-checker--missing-annotation-error level checker msgs))
 
-     ((member "Could not resolve name" comments)
+     ((and (member "Could not resolve name" comments)
+           (--any? (s-starts-with? "type " it) comments))
       (cb-flow-checker--unresolved-type-error level checker msgs))
+
+     ((and (member "Could not resolve name" comments)
+           (--any? (s-starts-with? "identifier " it) comments))
+      (cb-flow-checker--unresolved-identifier-error level checker msgs))
+
 
      ((member "This type cannot be added to" comments)
       (cb-flow-checker--intersection-type-error level checker msgs))
@@ -343,12 +375,27 @@ I must consider this an error." property type type))
       (cb-flow-checker--ident-already-bound-error level checker msgs))
 
      (t
-      ;; If this branch gets used, create a new handler.
-      (display-warning "Unknown Flow error" (pp-to-string msgs))
+      (when (<= 1 cb-flow-checker--logging-verbosity)
+        ;; If this branch gets used, a new handler should be implemented.
+        (display-warning "Unknown Flow error" (pp-to-string msgs)))
+
       nil))))
+
+(defvar-local cb-flow-checker--prev-output nil)
+
+(defun cb-flow-checker--display-output (json)
+  (with-current-buffer (get-buffer-create "*flow output*")
+    (save-excursion
+      (unless (equal json cb-flow-checker--prev-output)
+        (setq cb-flow-checker--prev-output json)
+        (erase-buffer)
+        (insert json)
+        (json-pretty-print-buffer)))))
 
 (defun cb-flow-checker--error-parser (output checker _buffer)
   (-let [(&alist 'errors errors) (json-read-from-string output)]
+    (when (>= 2 cb-flow-checker--logging-verbosity)
+      (cb-flow-checker--display-output output))
     (-non-nil (-uniq (-flatten (--map (cb-flow-checker--parse-error-entry it checker) errors))))))
 
 
