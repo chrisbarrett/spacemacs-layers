@@ -27,8 +27,8 @@
 
 (require 'dash)
 (require 'flycheck)
-(require 's)
 (require 'json)
+(require 's)
 
 (defvar cb-flow-checker--logging-verbosity 2
   "Set how much additional info gets logged after type-checking.
@@ -74,7 +74,7 @@ already exists.
 Rename the previous binding or choose a different name."
           name))
 
-(defun cb-flow-checker--unexpected-ident-error-message ()
+(defun cb-flow-checker--unexpected-ident-error-message (_)
   "Unexpected identifier.
 
 As I parse your program I find an identifier in an unexpected
@@ -98,7 +98,7 @@ As I parse your program I see a reference to a type at the value
 level. This is an error because the name of a type is not a
 value." type))
 
-(defun cb-flow-checker--missing-annotation-error-message ()
+(defun cb-flow-checker--missing-annotation-error-message (_)
   "Destructuring site lacks type annotations.
 
 As I parse your program I find a destructuring site missing type
@@ -107,7 +107,7 @@ annotations.
 Add type annotations so that I can collect type information for
 these bindings.")
 
-(defun cb-flow-checker--property-on-null-value-error-message ()
+(defun cb-flow-checker--property-on-null-value-error-message (_)
   "Accessing property on value that could be null.
 
 As a infer the types of values in this program, I see an attempt
@@ -118,7 +118,7 @@ To prove that the value is not null
   - check it explicitly using `if', or
   - use it as the first argument to a ternary expression.")
 
-(defun cb-flow-checker--property-on-undefined-value-error-message ()
+(defun cb-flow-checker--property-on-undefined-value-error-message (_)
   "Accessing property on value that could be undefined.
 
 As a infer the types of values in this program, I see an attempt
@@ -147,14 +147,16 @@ find the definition for.
 Import the type if it exists or write a suitable type
 definition." msg))
 
-(defun cb-flow-checker--unresolved-identifier-error-message (msg)
-  (format "Unknown identifier `%s'.
+(defun cb-flow-checker--unresolved-identifier-error-message (desc)
+  (-let [(_ identifier) (s-match (rx "identifier `" (group (+ (not (any "`")))))
+                                 desc)]
+    (format "Unknown identifier `%s'.
 
 As I parse your program I encounter an identifier that I cannot
 find the definition for.
 
 Import the identifier if it exists or write a suitable identifier
-definition." msg))
+definition." identifier)))
 
 (defun cb-flow-checker--property-not-found-error-message (property type)
   (format "Property `%s' not defined for type `%s'.
@@ -240,106 +242,15 @@ I must consider this an error." property type type))
                             :checker checker
                             :filename source))))
 
-(defun cb-flow-checker--parse-unify-implicit-undefined-error (level checker msgs)
-  (-let [[(&alist 'descr type
-                  'loc (&alist 'start (&alist 'line line 'column col)
-                               'source source))]
+(defun cb-flow-checker--single-message-error (level checker msgs msg-format-fn)
+  (-let [[(&alist
+           'descr descr
+           'loc (&alist 'start (&alist 'line line 'column col)
+                        'source source))]
          msgs]
     (list
      (flycheck-error-new-at line col level
-                            (cb-flow-checker--unify-implicit-undefined-error-message type)
-                            :checker checker
-                            :filename source))))
-
-(defun cb-flow-checker--missing-annotation-error (level checker msgs)
-  (-let [[(&alist 'loc
-                  (&alist 'start (&alist 'line line 'column col)
-                          'source source))]
-         msgs]
-    (list
-     (flycheck-error-new-at line col level
-                            (cb-flow-checker--missing-annotation-error-message)
-                            :checker checker
-                            :filename source))))
-
-(defun cb-flow-checker--unresolved-type-error (level checker msgs)
-  (-let* (([(&alist 'descr desc
-                    'loc
-                    (&alist 'start (&alist 'line line 'column col)
-                            'source source))]
-           msgs)
-          ((_ type) (s-match (rx "identifier `" (group (+ (not (any "`")))))
-                             desc)))
-    (list
-     (flycheck-error-new-at line col level
-                            (cb-flow-checker--unresolved-type-error-message type)
-                            :checker checker
-                            :filename source))))
-
-(defun cb-flow-checker--unresolved-identifier-error (level checker msgs)
-  (-let* (([(&alist 'descr desc
-                    'loc
-                    (&alist 'start (&alist 'line line 'column col)
-                            'source source))]
-           msgs)
-          ((_ identifier) (s-match (rx "identifier `" (group (+ (not (any "`")))))
-                                   desc)))
-    (list
-     (flycheck-error-new-at line col level
-                            (cb-flow-checker--unresolved-identifier-error-message identifier)
-                            :checker checker
-                            :filename source))))
-
-(defun cb-flow-checker--unexpected-token-error (checker msgs)
-  (-let [[(&alist 'descr descr
-                  'loc (&alist 'start (&alist 'line msg-line 'column msg-col)
-                               'source source))]
-         msgs]
-
-    (list
-     (flycheck-error-new-at msg-line msg-col 'error
-                            (cb-flow-checker--unexpected-token-error-message descr)
-                            :checker checker
-                            :filename source))))
-
-(defun cb-flow-checker--type-in-value-position-error (level checker msgs)
-  (-let [[(&alist 'descr type
-                  'loc (&alist 'start (&alist 'line line 'column col)
-                               'source source))]
-         msgs]
-    (list
-     (flycheck-error-new-at line col level
-                            (cb-flow-checker--type-in-value-position-error-message type)
-                            :checker checker
-                            :filename source))))
-
-(defun cb-flow-checker--property-on-null-value-error (level checker msgs)
-  (-let [[(&alist 'loc (&alist 'start (&alist 'line line 'column col)
-                               'source source))]
-         msgs]
-    (list
-     (flycheck-error-new-at line col level
-                            (cb-flow-checker--property-on-null-value-error-message)
-                            :checker checker
-                            :filename source))))
-
-(defun cb-flow-checker--property-on-undefined-value-error (level checker msgs)
-  (-let [[(&alist 'loc (&alist 'start (&alist 'line line 'column col)
-                               'source source))]
-         msgs]
-    (list
-     (flycheck-error-new-at line col level
-                            (cb-flow-checker--property-on-undefined-value-error-message)
-                            :checker checker
-                            :filename source))))
-
-(defun cb-flow-checker--unexpected-ident-error (level checker msgs)
-  (-let [[(&alist 'loc (&alist 'start (&alist 'line line 'column col)
-                               'source source))]
-         msgs]
-    (list
-     (flycheck-error-new-at line col level
-                            (cb-flow-checker--unexpected-ident-error-message)
+                            (funcall msg-format-fn descr)
                             :checker checker
                             :filename source))))
 
@@ -356,43 +267,53 @@ I must consider this an error." property type type))
     (cond
      ((member "This type is incompatible with the expected return type of" comments)
       (cb-flow-checker--type-error level "Type error with expected return type" checker msgs))
+
      ((member "This type is incompatible with an implicitly-returned undefined." comments)
-      (cb-flow-checker--parse-unify-implicit-undefined-error level checker msgs))
+      (cb-flow-checker--single-message-error level checker msgs
+                              #'cb-flow-checker--unify-implicit-undefined-error-message))
+
      ((member "This type is incompatible with" comments)
       (cb-flow-checker--type-error level "Type error in argument" checker msgs))
 
      ((--any? (s-starts-with-p "Unexpected token" it) comments)
-      (cb-flow-checker--unexpected-token-error checker msgs))
+      (cb-flow-checker--single-message-error level checker msgs
+                              #'cb-flow-checker--unexpected-token-error-message))
 
      ((member "Property not found in" comments)
       (cb-flow-checker--property-not-found-error level checker msgs))
 
      ((member "Property cannot be accessed on possibly null value" comments)
-      (cb-flow-checker--property-on-null-value-error level checker msgs))
+      (cb-flow-checker--single-message-error level checker msgs
+                              #'cb-flow-checker--property-not-found-error-message))
 
      ((member "Property cannot be accessed on possibly undefined value" comments)
-      (cb-flow-checker--property-on-undefined-value-error level checker msgs))
+      (cb-flow-checker--single-message-error level checker msgs
+                              #'cb-flow-checker--property-on-undefined-value-error-message))
 
      ((member "Missing annotation" comments)
-      (cb-flow-checker--missing-annotation-error level checker msgs))
+      (cb-flow-checker--single-message-error level checker msgs
+                              #'cb-flow-checker--missing-annotation-error-message))
 
      ((member "Unexpected identifier" comments)
-      (cb-flow-checker--unexpected-ident-error level checker msgs))
+      (cb-flow-checker--single-message-error level checker msgs
+                              #'cb-flow-checker--unexpected-ident-error-message))
 
      ((and (member "Could not resolve name" comments)
            (--any? (s-starts-with? "type " it) comments))
-      (cb-flow-checker--unresolved-type-error level checker msgs))
+      (cb-flow-checker--single-message-error level checker msgs
+                              #'cb-flow-checker--unresolved-type-error-message))
 
      ((and (member "Could not resolve name" comments)
            (--any? (s-starts-with? "identifier " it) comments))
-      (cb-flow-checker--unresolved-identifier-error level checker msgs))
-
+      (cb-flow-checker--single-message-error level checker msgs
+                              #'cb-flow-checker--unresolved-identifier-error-message))
 
      ((member "This type cannot be added to" comments)
       (cb-flow-checker--intersection-type-error level checker msgs))
 
      ((member "type referenced from value position" comments)
-      (cb-flow-checker--type-in-value-position-error level checker msgs))
+      (cb-flow-checker--single-message-error level checker msgs
+                              #'cb-flow-checker--type-in-value-position-error-message))
 
      ((member "name is already bound" comments)
       (cb-flow-checker--ident-already-bound-error level checker msgs))
@@ -403,6 +324,9 @@ I must consider this an error." property type type))
         (display-warning "Unknown Flow error" (pp-to-string msgs)))
 
       nil))))
+
+
+;;; Logger utilities
 
 (defvar-local cb-flow-checker--prev-output nil)
 
