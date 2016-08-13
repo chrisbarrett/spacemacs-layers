@@ -39,6 +39,7 @@
 
 (defun cb-rust/post-init-rust-mode ()
   (use-package rust-mode
+    :defer t
     :init
     (defun cb-rust/join-line ()
       "Join lines, deleting intermediate spaces for chained function calls."
