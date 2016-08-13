@@ -74,6 +74,28 @@ already exists.
 Rename the previous binding or choose a different name."
           name))
 
+(defun cb-flow-checker--suggested-modules (module)
+  (let ((m (f-filename module)))
+    (->> (projectile-current-project-files)
+         (--filter (equal m (f-filename (f-no-ext it))))
+         (--map (f-relative (f-join (projectile-project-p) (f-no-ext it))
+                            default-directory)))))
+
+(defun cb-flow-checker--module-not-found-error-message (module)
+  (format "The required module `%s' was not found.
+
+As I parse your program I find an attempt to load a module at a
+given path, but it does not exist there.%s
+
+To fix this error
+  - check that the file is named correctly
+  - check that the path is correct."
+          module
+          (-if-let (candidates (-take 3 (cb-flow-checker--suggested-modules module)))
+              (concat "\n\nDid you mean one of the following?"
+                      "\n  - " (s-join "\n  - " candidates))
+            "")))
+
 (defun cb-flow-checker--unexpected-ident-error-message (_)
   "Unexpected identifier.
 
@@ -306,6 +328,10 @@ I must consider this an error." property type type))
      ((member "Unexpected identifier" comments)
       (cb-flow-checker--single-message-error level checker msgs
                               #'cb-flow-checker--unexpected-ident-error-message))
+
+     ((member "Required module not found" comments)
+      (cb-flow-checker--single-message-error level checker msgs
+                              #'cb-flow-checker--module-not-found-error-message))
 
      ((and (member "Could not resolve name" comments)
            (--any? (s-starts-with? "type " it) comments))
