@@ -20,7 +20,8 @@
     (cb-flow-checker :location local)
     (cb-web-modes :location local)
     (js-yasnippet :location local)
-    (cb-emmet-tolerant-expansion :location local)))
+    (cb-emmet-tolerant-expansion :location local)
+    (cb-flow :location local)))
 
 (defun cb-js/post-init-smartparens ()
   (use-package smartparens
@@ -277,5 +278,10 @@
     :after emmet-mode
     :functions cb-emmet-tolerant-expansion-init
     :config (cb-emmet-tolerant-expansion-init)))
+
+(defun cb-js/init-cb-flow ()
+  (use-package cb-flow
+    :bind (:map cb-web-js-mode-map
+                ("C-c C-t" . cb-flow-type-at))))
 
 ;;; packages.el ends here
