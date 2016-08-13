@@ -171,21 +171,15 @@ I must consider this an error." property type type))
                   'loc (&alist 'start (&alist 'line line-actual 'column col-actual)
                                'source source-actual))]
          msgs]
-    (if (s-contains? "too few arguments" type-expected)
-        (list
-         (flycheck-error-new-at line-expected col-expected level
-                                (cadr (s-match (rx bos (+? nonl) "(" (group (+? nonl)) ")" eos) type-expected))
-                                :checker checker
-                                :filename source-expected))
-      (list
-       (flycheck-error-new-at line-expected col-expected level
-                              (cb-flow-checker--type-error-message msg type-expected type-actual)
-                              :checker checker
-                              :filename source-expected)
-       (flycheck-error-new-at line-actual col-actual 'info
-                              "A type error I detected arose from the type constraint here."
-                              :checker checker
-                              :filename source-actual)))))
+    (list
+     (flycheck-error-new-at line-expected col-expected level
+                            (cb-flow-checker--type-error-message msg type-expected type-actual)
+                            :checker checker
+                            :filename source-expected)
+     (flycheck-error-new-at line-actual col-actual 'info
+                            "A type error I detected arose from the type constraint here."
+                            :checker checker
+                            :filename source-actual))))
 
 (defun cb-flow-checker--intersection-type-error (level checker msgs)
   (-let [[(&alist 'descr type-1
