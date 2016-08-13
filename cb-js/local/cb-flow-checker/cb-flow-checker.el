@@ -137,8 +137,8 @@ definition." msg))
 (defun cb-flow-checker--unresolved-identifier-error-message (msg)
   (format "Unknown identifier `%s'.
 
-As I parse your program I encounter a identifier name that I
-cannot find the definition for.
+As I parse your program I encounter an identifier that I cannot
+find the definition for.
 
 Import the identifier if it exists or write a suitable identifier
 definition." msg))
