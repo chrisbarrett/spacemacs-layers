@@ -48,6 +48,7 @@
 (require 'f)
 (require 'ox)
 (require 's)
+(require 'ox-odt)
 
 (defgroup cb-org-gdrive nil
   "Google Drive importer for orgmode's export dispatcher."
@@ -172,15 +173,14 @@ Return a plist with the following keys:
                   (error "Could not determine Drive URL for exported file")))))
     (cb-org-gdrive--run-exporter cont subtreep visible-only ext-plist)))
 
-(org-export-define-derived-backend 'gdrive 'odt
-  :export-block '("GDRIVE" "GOOGLE DRIVE")
-  :menu-entry
-  '(?d "Import to Google Drive"
-       ((?d "Import" cb-org-gdrive--export-to-odt-and-import)
-        (?o "Import and open" cb-org-gdrive--export-to-odt-and-open))))
-
 ;;;###autoload
 (defun cb-org-gdrive-init ()
+  (org-export-define-derived-backend 'gdrive 'odt
+    :export-block '("GDRIVE" "GOOGLE DRIVE")
+    :menu-entry
+    '(?d "Import to Google Drive"
+         ((?d "Import" cb-org-gdrive--export-to-odt-and-import)
+          (?o "Import and open" cb-org-gdrive--export-to-odt-and-open))))
   (add-to-list 'org-export-backends 'gdrive))
 
 (provide 'cb-org-gdrive)

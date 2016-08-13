@@ -16,6 +16,9 @@
   '(org
     gnuplot
     org-present
+    auto-highlight-symbol
+    evil
+    (flyspell :location built-in)
     (cb-org-latex-preview-retina :location local)
     (org-autoinsert :location local)
     (cb-org-clock-cascade :location local)
@@ -30,7 +33,6 @@
     (cb-org-directory :location local)
     (cb-org-ctrl-c-ret :location local)
     (cb-org-ctrl-c-ctrl-k :location local)))
-
 
 (defun cb-org/init-cb-org-directory ()
   (use-package cb-org-directory
@@ -250,57 +252,437 @@ Do not scheduled items or repeating todos."
       (org-toggle-latex-fragment)
       t))
 
-  (add-hook 'org-ctrl-c-ctrl-c-hook #'cb-org/latex-preview-fragment-at-pt t))
+  (add-hook 'org-ctrl-c-ctrl-c-hook #'cb-org/latex-preview-fragment-at-pt t)
 
-(use-package flyspell
-  :defer t
-  :config
-  ;; HACK: Override clashing keybinding
-  (define-key flyspell-mode-map (kbd "C-c $") nil))
+  (use-package org-agenda
+    :after org
+    :bind (:map org-agenda-mode-map ("J" . org-agenda-goto-date))
+    :config
+    (progn
+      (define-key org-agenda-mode-map (kbd "C-f" ) #'evil-scroll-page-down)
+      (define-key org-agenda-mode-map (kbd "C-b") #'evil-scroll-page-up)
 
-(use-package auto-highlight-symbol
-  :defer t
-  :config
-  (progn
-    ;; Remove ahs keys that override org keybindings
-    (define-key auto-highlight-symbol-mode-map (kbd "M-<left>") nil)
-    (define-key auto-highlight-symbol-mode-map (kbd "M-<right>") nil)
-    (define-key auto-highlight-symbol-mode-map (kbd "M-S-<left>") nil)
-    (define-key auto-highlight-symbol-mode-map (kbd "M-S-<right>") nil)))
+      (defun cb-org/exclude-tasks-on-hold (tag)
+        (and (equal tag "hold") (concat "-" tag)))
 
+      (setq org-agenda-include-diary nil)
+      (setq org-agenda-start-on-weekday nil)
+      (setq org-agenda-auto-exclude-function #'cb-org/exclude-tasks-on-hold)
+      (setq org-agenda-files (f-files (cb-org-directory) (lambda (f) (f-ext? f "org"))))
+      (setq org-agenda-diary-file (f-join (cb-org-directory) "diary.org"))
+      (setq org-agenda-hide-tags-regexp (rx (or "noexport" "someday" "project")))
+      (setq org-agenda-insert-diary-extract-time t)
+      (setq org-agenda-span 'week)
+      (setq org-agenda-search-view-always-boolean t)
+      (setq org-agenda-show-all-dates nil)
+      (setq org-agenda-show-inherited-tags nil)
+      (setq org-agenda-skip-deadline-if-done t)
+      (setq org-agenda-skip-deadline-prewarning-if-scheduled t)
+      (setq org-agenda-skip-scheduled-if-done t)
+      (setq org-agenda-sorting-strategy
+            '((agenda time-up priority-down category-keep)
+              (todo priority-down category-keep scheduled-up)
+              (tags priority-down category-keep)
+              (search category-keep)))
+      (setq org-agenda-text-search-extra-files '(agenda-archives))
+      (setq org-agenda-use-time-grid nil)
+      (setq org-agenda-inhibit-startup t)
+      (setq org-agenda-tags-column -100)
 
-(use-package evil
-  :config
-  (progn
-    ;; Enter evil insert state when creating new headings.
+      (setq org-agenda-clockreport-parameter-plist
+            (list
+             :compact t
+             :maxlevel 5
+             :fileskip0 t
+             :step 'week))
 
-    (defun cb-org/ad-evil-insert-state (&rest _)
-      (when (called-interactively-p nil)
-        (evil-insert-state)))
+      (setq org-time-clocksum-format
+            (list :hours "%d" :require-hours t
+                  :minutes ":%02d" :require-minutes t))
 
-    (advice-add 'org-insert-heading :after #'cb-org/ad-evil-insert-state)
-    (advice-add 'org-insert-heading-respect-content :after #'cb-org/ad-evil-insert-state)
-    (advice-add 'org-insert-todo-heading-respect-content :after #'cb-org/ad-evil-insert-state)
-    (advice-add 'org-insert-todo-heading :after #'cb-org/ad-evil-insert-state)
+      (setq appt-message-warning-time 60)
+      (setq appt-display-interval 5)
 
-    ;; Add a blank line of padding below new headings.
+      (add-hook 'org-finalize-agenda-hook #'org-agenda-to-appt)
 
-    (defun cb-org/ad-blank-line-after-heading (&rest _)
-      (when (and (called-interactively-p nil)
-                 (org-at-heading-p))
-        (let ((next-line-blank?
-               (save-excursion
-                 (forward-line)
-                 (s-blank? (buffer-substring (line-beginning-position) (line-end-position))))))
-          (unless next-line-blank?
-            (save-excursion
-              (goto-char (line-end-position))
-              (open-line 1))))))
+      (setq org-agenda-custom-commands
+            '(("A" "Agenda and next actions"
+               ((tags-todo "-study-someday-media/NEXT"
+                           ((org-agenda-overriding-header "Next Actions")))
+                (agenda "")
+                (todo "WAITING"
+                      ((org-agenda-overriding-header "Waiting")))
+                (stuck "")
+                (tags-todo "media|study/NEXT"
+                           ((org-agenda-overriding-header "Media & Study"))))
+               ((org-agenda-tag-filter-preset '("-ignore"))
+                (org-agenda-files (list org-default-notes-file org-agenda-diary-file))
+                (org-agenda-dim-blocked-tasks nil)
+                (org-agenda-archives-mode nil)
+                (org-agenda-ignore-drawer-properties '(effort appt))))
 
-    (advice-add 'org-insert-heading :after #'cb-org/ad-blank-line-after-heading)
-    (advice-add 'org-insert-heading-respect-content :after #'cb-org/ad-blank-line-after-heading)
-    (advice-add 'org-insert-todo-heading-respect-content :after #'cb-org/ad-blank-line-after-heading)
-    (advice-add 'org-insert-todo-heading :after #'cb-org/ad-blank-line-after-heading)))
+              ("n" "Next actions"
+               ((tags-todo "-study-someday/NEXT"))
+               ((org-agenda-overriding-header "Next Actions")))
+
+              ("r" "Weekly Review"
+               ((agenda ""
+                        ((org-agenda-overriding-header "Review Previous Week")
+                         (org-agenda-ndays 7)
+                         (org-agenda-start-day "-7d")))
+                (agenda ""
+                        ((org-agenda-overriding-header "Review Upcoming Events")
+                         (org-agenda-ndays 14)))
+                (stuck ""
+                       ((org-agenda-overriding-header "Review Stuck Projects")))
+                (todo "WAITING"
+                      ((org-agenda-overriding-header "Review Tasks on Hold")))
+
+                (tags-todo "-someday-media/NEXT"
+                           ((org-agenda-overriding-header "Next Actions")))
+                (tags-todo "+goals+3_months+project/NEXT"
+                           ((org-agenda-overriding-header "Review 3 Month Goals")))
+                (tags-todo "+goals+1_year+project/NEXT"
+                           ((org-agenda-overriding-header "Review 1 Year Goals")))
+                (tags-todo "+goals+3_years+project/MAYBE|SOMEDAY|NEXT"
+                           ((org-agenda-overriding-header "Review 3 Year Goals")))
+                (tags-todo "someday-skill/MAYBE|NEXT"
+                           ((org-agenda-overriding-header "Decide whether to promote any SOMEDAY items to NEXT actions")))
+                (tags-todo "someday&skill"
+                           ((org-agenda-overriding-header "Decide whether to promote any learning tasks to NEXT actions"))))
+               ((org-agenda-tag-filter-preset
+                 '("-drill" "-gtd" "-ignore"))
+                (org-agenda-include-inactive-timestamps t)
+                (org-agenda-files (list org-default-notes-file (cb-org-work-file) org-agenda-diary-file))
+                (org-agenda-archives-mode nil)
+                (org-agenda-dim-blocked-tasks nil)))
+
+              ("w" "Work actions"
+               ((tags-todo "-study-someday-media/NEXT"
+                           ((org-agenda-overriding-header "Next Actions")))
+                (todo "WAITING"
+                      ((org-agenda-overriding-header "Waiting")))
+                (stuck "")
+                (agenda "")
+                (tags "+standup"
+                      ((org-agenda-overriding-header "Standup"))))
+               ((org-agenda-tag-filter-preset '("-ignore"))
+                (org-agenda-use-tag-inheritance nil)
+                (org-agenda-files (list (cb-org-work-file) org-agenda-diary-file))
+                (org-agenda-dim-blocked-tasks nil)
+                (org-agenda-archives-mode nil)
+                (org-agenda-ignore-drawer-properties '(effort appt))))))))
+
+  (use-package org-indent
+    :after org
+    :diminish org-indent-mode)
+
+  (use-package org-archive
+    :after org
+    :config
+    (progn
+
+      (defun cb-org/archive-done-tasks ()
+        (interactive)
+        (atomic-change-group
+          (org-map-entries (lambda ()
+                             ;; HACK: Ensure point does not move past the next
+                             ;; item to archive.
+                             (let ((org-map-continue-from (point)))
+                               (org-archive-subtree)))
+                           "/DONE|PAID|VOID|CANCELLED" 'tree)))
+
+      (setq org-archive-default-command 'cb-org/archive-done-tasks)
+
+      ;; Apply inherited tags when archiving.
+
+      (defun cb-org/ad-apply-inherited-tags (&rest _)
+        (org-set-tags-to (org-get-tags-at)))
+
+      (advice-add 'org-archive-subtree :before #'cb-org/ad-apply-inherited-tags)))
+
+  (use-package org-src
+    :after org
+    :config
+    (progn
+      (setq org-src-fontify-natively t)
+
+      ;; Remove trailing newline in src blocks.
+
+      (defun cb-org/suppress-final-newline ()
+        (setq-local require-final-newline nil))
+
+      (add-hook 'org-src-mode-hook #'cb-org/suppress-final-newline)
+
+      ;; Delete trailing whitespace when exiting src blocks.
+
+      (defun cb-org/ad-org-src-delete-trailing-space (&rest _)
+        (delete-trailing-whitespace))
+
+      (advice-add 'org-edit-src-exit :before #'cb-org/ad-org-src-delete-trailing-space)))
+
+  (use-package org-clock
+    :after org
+    :config
+    (progn
+      (setq org-clock-persist t)
+      (setq org-clock-persist-query-resume nil)
+      (setq org-clock-history-length 20)
+      (setq org-clock-in-resume t)
+      (setq org-clock-report-include-clocking-task t)
+      (setq org-clock-out-remove-zero-time-clocks t)
+
+      (org-clock-persistence-insinuate)
+
+      (defun cb-org/remove-empty-clock-drawers ()
+        "Remove empty clock drawers at point."
+        (save-excursion
+          (beginning-of-line 0)
+          (org-remove-empty-drawer-at (point))))
+
+      (add-hook 'org-clock-out-hook #'cb-org/remove-empty-clock-drawers t)))
+
+  (use-package org-crypt
+    :after org
+    :config
+    (progn
+      (setq org-crypt-disable-auto-save 'encypt)
+      (org-crypt-use-before-save-magic)
+      (add-to-list 'org-tags-exclude-from-inheritance "crypt")))
+
+  (use-package org-drill
+    :after (org cb-org-directory)
+    :commands (org-drill
+               org-drill-strip-all-data
+               org-drill-cram
+               org-drill-tree
+               org-drill-resume
+               org-drill-merge-buffers
+               org-drill-entry
+               org-drill-directory
+               org-drill-again)
+    :config
+    (progn
+      (defconst cb-org-drill-file (f-join (cb-org-directory) "drill" "drill.org"))
+
+      (defun cb-org/org-drill-files ()
+        (f-files (f-join (cb-org-directory) "drill")))
+
+      (setq org-drill-scope (cb-org/org-drill-files))
+
+      (add-to-list 'org-refile-targets '(cb-org/org-drill-files :maxlevel . 3))
+
+      (setq org-drill-learn-fraction 0.25)
+      (setq org-drill-adjust-intervals-for-early-and-late-repetitions-p t)
+      (setq org-drill-add-random-noise-to-intervals-p t)
+      (setq org-drill-save-buffers-after-drill-sessions-p nil)))
+
+  (use-package ox
+    :after org
+    :config
+    (progn
+      (with-eval-after-load 'ox-odt
+        (add-to-list 'org-export-backends 'odt)
+        (setq org-odt-schema-dir (f-join user-home-directory "Code/org-mode/etc/schema/")))
+      (setq org-export-backends '(ascii html latex gfm koma-letter))
+      (setq org-export-exclude-tags '("noexport" "crypt"))
+      (setq org-export-coding-system 'utf-8)
+      (setq org-html-html5-fancy t)
+      (setq org-html-postamble nil)
+      (setq org-html-table-row-tags
+            (cons
+             '(cond
+               (top-row-p "<tr class=\"tr-top\">")
+               (bottom-row-p "<tr class=\"tr-bottom\">")
+               (t
+                (if
+                    (=
+                     (mod row-number 2)
+                     1)
+                    "<tr class=\"tr-odd\">" "<tr class=\"tr-even\">")))
+             "</tr>"))
+      (setq org-html-head-extra
+            "
+<style type=\"text/css\">
+table tr.tr-odd td {
+      background-color: #FCF6CF;
+}
+table tr.tr-even td {
+      background-color: #FEFEF2;
+}
+</style>
+")))
+
+  (use-package org-capture
+    :after org
+    :config
+    (progn
+      (defun cb-org/capture-template-entry (key label form template &rest kws)
+        (-concat
+         (list key label 'entry form template
+               :clock-keep t
+               :empty-lines 1
+               :prepend t)
+         kws))
+
+      (setq org-capture-templates
+            (list
+             (cb-org/capture-template-entry
+              "t" "Todo"
+              '(file org-default-notes-file) "* TODO %?")
+
+             (cb-org/capture-template-entry
+              "T" "Todo (work)"
+              `(file ,(cb-org-work-file)) "* TODO %?")
+
+             (cb-org/capture-template-entry
+              "n" "Next"
+              '(file org-default-notes-file) "* NEXT %?")
+
+             (cb-org/capture-template-entry
+              "N" "Next (work)"
+              `(file (cb-org-work-file)) "* NEXT %?")
+
+             (cb-org/capture-template-entry
+              "d" "Diary"
+              '(file+datetree org-agenda-diary-file) "* %?\n%^t")
+
+             (cb-org/capture-template-entry
+              "D" "Diary (work)"
+              `(file+datetree (cb-org-work-file)) "* %?\n%^t")
+
+             (cb-org/capture-template-entry
+              "l" "Link"
+              '(file+olp org-default-notes-file "Links")
+              '(function cb-org-capture-url-read-url)
+              :immediate-finish t)
+
+             (cb-org/capture-template-entry
+              "L" "Link (work)"
+              `(file+olp (cb-org-work-file) "Links")
+              '(function cb-org-capture-url-read-url)
+              :immediate-finish t)
+
+             (cb-org/capture-template-entry
+              "s" "Someday"
+              '(file+olp org-default-notes-file "Someday")
+              "* SOMEDAY %?")
+
+             (cb-org/capture-template-entry
+              "m" "Listening"
+              '(file+olp org-default-notes-file "Media" "Listening")
+              "* MAYBE Listen to %i%?")
+
+             (cb-org/capture-template-entry
+              "v" "Viewing"
+              '(file+olp org-default-notes-file "Media" "Viewing")
+              "* MAYBE Watch %i%?")
+
+             (cb-org/capture-template-entry
+              "r" "Reading"
+              '(file+olp org-default-notes-file "Media" "Reading")
+              "* MAYBE Read %i%?")
+
+             (cb-org/capture-template-entry
+              "0" "Drill (item)"
+              '(file+olp cb-org-drill-file "Uncategorised")
+              "* Item                :drill:
+
+%?
+"
+              :jump-to-captured t)
+
+             (cb-org/capture-template-entry
+              "1" "Drill (question)"
+              '(file+olp cb-org-drill-file "Uncategorised")
+              "* Question                :drill:
+
+%?
+
+** Answer
+"
+              :jump-to-captured t)
+
+             (cb-org/capture-template-entry
+              "2" "Drill (two-sided)"
+              '(file+olp cb-org-drill-file "Uncategorised")
+              "* Question                :drill:
+:PROPERTIES:
+:DRILL_CARD_TYPE: twosided
+:END:
+
+%?
+
+** Side 1
+
+** Side 2
+"
+              :jump-to-captured t)
+
+             (cb-org/capture-template-entry
+              "e" "Email task"
+              '(file org-default-notes-file) "* TODO %?\n%a")
+
+             (cb-org/capture-template-entry
+              "E" "Email task (work)"
+              `(file (cb-org-work-file)) "* TODO %?\n%a")))))
+
+  (use-package org-download
+    :after org
+    :config
+    (setq org-download-method 'attach)))
+
+(defun cb-org/post-init-flyspell ()
+  (use-package flyspell
+    :defer t
+    :config
+    ;; HACK: Override clashing keybinding
+    (define-key flyspell-mode-map (kbd "C-c $") nil)))
+
+(defun cb-org/post-init-auto-highlight-symbol ()
+  (use-package auto-highlight-symbol
+    :defer t
+    :config
+    (progn
+      ;; Remove ahs keys that override org keybindings
+      (define-key auto-highlight-symbol-mode-map (kbd "M-<left>") nil)
+      (define-key auto-highlight-symbol-mode-map (kbd "M-<right>") nil)
+      (define-key auto-highlight-symbol-mode-map (kbd "M-S-<left>") nil)
+      (define-key auto-highlight-symbol-mode-map (kbd "M-S-<right>") nil))))
+
+(defun cb-org/post-init-evil ()
+  (use-package evil
+    :config
+    (progn
+      ;; Enter evil insert state when creating new headings.
+
+      (defun cb-org/ad-evil-insert-state (&rest _)
+        (when (called-interactively-p nil)
+          (evil-insert-state)))
+
+      (advice-add 'org-insert-heading :after #'cb-org/ad-evil-insert-state)
+      (advice-add 'org-insert-heading-respect-content :after #'cb-org/ad-evil-insert-state)
+      (advice-add 'org-insert-todo-heading-respect-content :after #'cb-org/ad-evil-insert-state)
+      (advice-add 'org-insert-todo-heading :after #'cb-org/ad-evil-insert-state)
+
+      ;; Add a blank line of padding below new headings.
+
+      (defun cb-org/ad-blank-line-after-heading (&rest _)
+        (when (and (called-interactively-p nil)
+                   (org-at-heading-p))
+          (let ((next-line-blank?
+                 (save-excursion
+                   (forward-line)
+                   (s-blank? (buffer-substring (line-beginning-position) (line-end-position))))))
+            (unless next-line-blank?
+              (save-excursion
+                (goto-char (line-end-position))
+                (open-line 1))))))
+
+      (advice-add 'org-insert-heading :after #'cb-org/ad-blank-line-after-heading)
+      (advice-add 'org-insert-heading-respect-content :after #'cb-org/ad-blank-line-after-heading)
+      (advice-add 'org-insert-todo-heading-respect-content :after #'cb-org/ad-blank-line-after-heading)
+      (advice-add 'org-insert-todo-heading :after #'cb-org/ad-blank-line-after-heading))))
 
 (defun cb-org/post-init-org-present ()
   (use-package org-present
@@ -344,382 +726,6 @@ Do not scheduled items or repeating todos."
   (use-package cb-org-latex-preview-retina
     :after org))
 
-(use-package org-agenda
-  :after org
-  :bind (:map org-agenda-mode-map ("J" . org-agenda-goto-date))
-  :config
-  (progn
-    (define-key org-agenda-mode-map (kbd "C-f" ) #'evil-scroll-page-down)
-    (define-key org-agenda-mode-map (kbd "C-b") #'evil-scroll-page-up)
-
-    (defun cb-org/exclude-tasks-on-hold (tag)
-      (and (equal tag "hold") (concat "-" tag)))
-
-    (setq org-agenda-include-diary nil)
-    (setq org-agenda-start-on-weekday nil)
-    (setq org-agenda-auto-exclude-function #'cb-org/exclude-tasks-on-hold)
-    (setq org-agenda-files (f-files (cb-org-directory) (lambda (f) (f-ext? f "org"))))
-    (setq org-agenda-diary-file (f-join (cb-org-directory) "diary.org"))
-    (setq org-agenda-hide-tags-regexp (rx (or "noexport" "someday" "project")))
-    (setq org-agenda-insert-diary-extract-time t)
-    (setq org-agenda-span 'week)
-    (setq org-agenda-search-view-always-boolean t)
-    (setq org-agenda-show-all-dates nil)
-    (setq org-agenda-show-inherited-tags nil)
-    (setq org-agenda-skip-deadline-if-done t)
-    (setq org-agenda-skip-deadline-prewarning-if-scheduled t)
-    (setq org-agenda-skip-scheduled-if-done t)
-    (setq org-agenda-sorting-strategy
-          '((agenda time-up priority-down category-keep)
-            (todo priority-down category-keep scheduled-up)
-            (tags priority-down category-keep)
-            (search category-keep)))
-    (setq org-agenda-text-search-extra-files '(agenda-archives))
-    (setq org-agenda-use-time-grid nil)
-    (setq org-agenda-inhibit-startup t)
-    (setq org-agenda-tags-column -100)
-
-    (setq org-agenda-clockreport-parameter-plist
-          (list
-           :compact t
-           :maxlevel 5
-           :fileskip0 t
-           :step 'week))
-
-    (setq org-time-clocksum-format
-          (list :hours "%d" :require-hours t
-                :minutes ":%02d" :require-minutes t))
-
-    (setq appt-message-warning-time 60)
-    (setq appt-display-interval 5)
-
-    (add-hook 'org-finalize-agenda-hook #'org-agenda-to-appt)
-
-    (setq org-agenda-custom-commands
-          '(("A" "Agenda and next actions"
-             ((tags-todo "-study-someday-media/NEXT"
-                         ((org-agenda-overriding-header "Next Actions")))
-              (agenda "")
-              (todo "WAITING"
-                    ((org-agenda-overriding-header "Waiting")))
-              (stuck "")
-              (tags-todo "media|study/NEXT"
-                         ((org-agenda-overriding-header "Media & Study"))))
-             ((org-agenda-tag-filter-preset '("-ignore"))
-              (org-agenda-files (list org-default-notes-file org-agenda-diary-file))
-              (org-agenda-dim-blocked-tasks nil)
-              (org-agenda-archives-mode nil)
-              (org-agenda-ignore-drawer-properties '(effort appt))))
-
-            ("n" "Next actions"
-             ((tags-todo "-study-someday/NEXT"))
-             ((org-agenda-overriding-header "Next Actions")))
-
-            ("r" "Weekly Review"
-             ((agenda ""
-                      ((org-agenda-overriding-header "Review Previous Week")
-                       (org-agenda-ndays 7)
-                       (org-agenda-start-day "-7d")))
-              (agenda ""
-                      ((org-agenda-overriding-header "Review Upcoming Events")
-                       (org-agenda-ndays 14)))
-              (stuck ""
-                     ((org-agenda-overriding-header "Review Stuck Projects")))
-              (todo "WAITING"
-                    ((org-agenda-overriding-header "Review Tasks on Hold")))
-
-              (tags-todo "-someday-media/NEXT"
-                         ((org-agenda-overriding-header "Next Actions")))
-              (tags-todo "+goals+3_months+project/NEXT"
-                         ((org-agenda-overriding-header "Review 3 Month Goals")))
-              (tags-todo "+goals+1_year+project/NEXT"
-                         ((org-agenda-overriding-header "Review 1 Year Goals")))
-              (tags-todo "+goals+3_years+project/MAYBE|SOMEDAY|NEXT"
-                         ((org-agenda-overriding-header "Review 3 Year Goals")))
-              (tags-todo "someday-skill/MAYBE|NEXT"
-                         ((org-agenda-overriding-header "Decide whether to promote any SOMEDAY items to NEXT actions")))
-              (tags-todo "someday&skill"
-                         ((org-agenda-overriding-header "Decide whether to promote any learning tasks to NEXT actions"))))
-             ((org-agenda-tag-filter-preset
-               '("-drill" "-gtd" "-ignore"))
-              (org-agenda-include-inactive-timestamps t)
-              (org-agenda-files (list org-default-notes-file (cb-org-work-file) org-agenda-diary-file))
-              (org-agenda-archives-mode nil)
-              (org-agenda-dim-blocked-tasks nil)))
-
-            ("w" "Work actions"
-             ((tags-todo "-study-someday-media/NEXT"
-                         ((org-agenda-overriding-header "Next Actions")))
-              (todo "WAITING"
-                    ((org-agenda-overriding-header "Waiting")))
-              (stuck "")
-              (agenda "")
-              (tags "+standup"
-                    ((org-agenda-overriding-header "Standup"))))
-             ((org-agenda-tag-filter-preset '("-ignore"))
-              (org-agenda-use-tag-inheritance nil)
-              (org-agenda-files (list (cb-org-work-file) org-agenda-diary-file))
-              (org-agenda-dim-blocked-tasks nil)
-              (org-agenda-archives-mode nil)
-              (org-agenda-ignore-drawer-properties '(effort appt))))))))
-
-(use-package org-indent
-  :after org
-  :diminish org-indent-mode)
-
-(use-package org-archive
-  :after org
-  :config
-  (progn
-
-    (defun cb-org/archive-done-tasks ()
-      (interactive)
-      (atomic-change-group
-        (org-map-entries (lambda ()
-                           ;; HACK: Ensure point does not move past the next
-                           ;; item to archive.
-                           (let ((org-map-continue-from (point)))
-                             (org-archive-subtree)))
-                         "/DONE|PAID|VOID|CANCELLED" 'tree)))
-
-    (setq org-archive-default-command 'cb-org/archive-done-tasks)
-
-    ;; Apply inherited tags when archiving.
-
-    (defun cb-org/ad-apply-inherited-tags (&rest _)
-      (org-set-tags-to (org-get-tags-at)))
-
-    (advice-add 'org-archive-subtree :before #'cb-org/ad-apply-inherited-tags)))
-
-(use-package org-src
-  :after org
-  :config
-  (progn
-    (setq org-src-fontify-natively t)
-
-    ;; Remove trailing newline in src blocks.
-
-    (defun cb-org/suppress-final-newline ()
-      (setq-local require-final-newline nil))
-
-    (add-hook 'org-src-mode-hook #'cb-org/suppress-final-newline)
-
-    ;; Delete trailing whitespace when exiting src blocks.
-
-    (defun cb-org/ad-org-src-delete-trailing-space (&rest _)
-      (delete-trailing-whitespace))
-
-    (advice-add 'org-edit-src-exit :before #'cb-org/ad-org-src-delete-trailing-space)))
-
-(use-package org-clock
-  :after org
-  :config
-  (progn
-    (setq org-clock-persist t)
-    (setq org-clock-persist-query-resume nil)
-    (setq org-clock-history-length 20)
-    (setq org-clock-in-resume t)
-    (setq org-clock-report-include-clocking-task t)
-    (setq org-clock-out-remove-zero-time-clocks t)
-
-    (org-clock-persistence-insinuate)
-
-    (defun cb-org/remove-empty-clock-drawers ()
-      "Remove empty clock drawers at point."
-      (save-excursion
-        (beginning-of-line 0)
-        (org-remove-empty-drawer-at (point))))
-
-    (add-hook 'org-clock-out-hook #'cb-org/remove-empty-clock-drawers t)))
-
-(use-package org-crypt
-  :after org
-  :config
-  (progn
-    (setq org-crypt-disable-auto-save 'encypt)
-    (org-crypt-use-before-save-magic)
-    (add-to-list 'org-tags-exclude-from-inheritance "crypt")))
-
-(use-package org-drill
-  :after (org cb-org-directory)
-  :commands (org-drill
-             org-drill-strip-all-data
-             org-drill-cram
-             org-drill-tree
-             org-drill-resume
-             org-drill-merge-buffers
-             org-drill-entry
-             org-drill-directory
-             org-drill-again)
-  :config
-  (progn
-    (defconst cb-org-drill-file (f-join (cb-org-directory) "drill" "drill.org"))
-
-    (defun cb-org/org-drill-files ()
-      (f-files (f-join (cb-org-directory) "drill")))
-
-    (setq org-drill-scope (cb-org/org-drill-files))
-
-    (add-to-list 'org-refile-targets '(cb-org/org-drill-files :maxlevel . 3))
-
-    (setq org-drill-learn-fraction 0.25)
-    (setq org-drill-adjust-intervals-for-early-and-late-repetitions-p t)
-    (setq org-drill-add-random-noise-to-intervals-p t)
-    (setq org-drill-save-buffers-after-drill-sessions-p nil)))
-
-(use-package ox
-  :after org
-  :config
-  (progn
-    (setq org-odt-schema-dir (f-join user-home-directory "Code/org-mode/etc/schema/"))
-    (setq org-export-backends '(ascii html latex gfm koma-letter odt))
-    (setq org-export-exclude-tags '("noexport" "crypt"))
-    (setq org-export-coding-system 'utf-8)
-    (setq org-html-html5-fancy t)
-    (setq org-html-postamble nil)
-    (setq org-html-table-row-tags
-          (cons
-           '(cond
-             (top-row-p "<tr class=\"tr-top\">")
-             (bottom-row-p "<tr class=\"tr-bottom\">")
-             (t
-              (if
-                  (=
-                   (mod row-number 2)
-                   1)
-                  "<tr class=\"tr-odd\">" "<tr class=\"tr-even\">")))
-           "</tr>"))
-    (setq org-html-head-extra
-          "
-<style type=\"text/css\">
-table tr.tr-odd td {
-      background-color: #FCF6CF;
-}
-table tr.tr-even td {
-      background-color: #FEFEF2;
-}
-</style>
-")))
-
-(use-package org-capture
-  :after org
-  :config
-  (progn
-    (defun cb-org/capture-template-entry (key label form template &rest kws)
-      (-concat
-       (list key label 'entry form template
-             :clock-keep t
-             :empty-lines 1
-             :prepend t)
-       kws))
-
-    (setq org-capture-templates
-          (list
-           (cb-org/capture-template-entry
-            "t" "Todo"
-            '(file org-default-notes-file) "* TODO %?")
-
-           (cb-org/capture-template-entry
-            "T" "Todo (work)"
-            `(file ,(cb-org-work-file)) "* TODO %?")
-
-           (cb-org/capture-template-entry
-            "n" "Next"
-            '(file org-default-notes-file) "* NEXT %?")
-
-           (cb-org/capture-template-entry
-            "N" "Next (work)"
-            `(file (cb-org-work-file)) "* NEXT %?")
-
-           (cb-org/capture-template-entry
-            "d" "Diary"
-            '(file+datetree org-agenda-diary-file) "* %?\n%^t")
-
-           (cb-org/capture-template-entry
-            "D" "Diary (work)"
-            `(file+datetree (cb-org-work-file)) "* %?\n%^t")
-
-           (cb-org/capture-template-entry
-            "l" "Link"
-            '(file+olp org-default-notes-file "Links")
-            '(function cb-org-capture-url-read-url)
-            :immediate-finish t)
-
-           (cb-org/capture-template-entry
-            "L" "Link (work)"
-            `(file+olp (cb-org-work-file) "Links")
-            '(function cb-org-capture-url-read-url)
-            :immediate-finish t)
-
-           (cb-org/capture-template-entry
-            "s" "Someday"
-            '(file+olp org-default-notes-file "Someday")
-            "* SOMEDAY %?")
-
-           (cb-org/capture-template-entry
-            "m" "Listening"
-            '(file+olp org-default-notes-file "Media" "Listening")
-            "* MAYBE Listen to %i%?")
-
-           (cb-org/capture-template-entry
-            "v" "Viewing"
-            '(file+olp org-default-notes-file "Media" "Viewing")
-            "* MAYBE Watch %i%?")
-
-           (cb-org/capture-template-entry
-            "r" "Reading"
-            '(file+olp org-default-notes-file "Media" "Reading")
-            "* MAYBE Read %i%?")
-
-           (cb-org/capture-template-entry
-            "0" "Drill (item)"
-            '(file+olp cb-org-drill-file "Uncategorised")
-            "* Item                :drill:
-
-%?
-"
-            :jump-to-captured t)
-
-           (cb-org/capture-template-entry
-            "1" "Drill (question)"
-            '(file+olp cb-org-drill-file "Uncategorised")
-            "* Question                :drill:
-
-%?
-
-** Answer
-"
-            :jump-to-captured t)
-
-           (cb-org/capture-template-entry
-            "2" "Drill (two-sided)"
-            '(file+olp cb-org-drill-file "Uncategorised")
-            "* Question                :drill:
-:PROPERTIES:
-:DRILL_CARD_TYPE: twosided
-:END:
-
-%?
-
-** Side 1
-
-** Side 2
-"
-            :jump-to-captured t)
-
-           (cb-org/capture-template-entry
-            "e" "Email task"
-            '(file org-default-notes-file) "* TODO %?\n%a")
-
-           (cb-org/capture-template-entry
-            "E" "Email task (work)"
-            `(file (cb-org-work-file)) "* TODO %?\n%a")))))
-
-(use-package org-download
-  :after org
-  :config
-  (setq org-download-method 'attach))
-
 (defun cb-org/init-org-autoinsert ()
   (use-package org-autoinsert
     :functions (org-autoinsert-init)
@@ -761,7 +767,7 @@ table tr.tr-even td {
 
 (defun cb-org/init-cb-org-gdrive ()
   (use-package cb-org-gdrive
-    :after org
+    :after ox
     :config
     (add-hook 'org-mode-hook #'cb-org-gdrive-init)))
 
