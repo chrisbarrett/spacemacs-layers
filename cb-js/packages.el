@@ -192,6 +192,7 @@
 
 (defun cb-js/init-cb-flow ()
   (use-package cb-flow
+    :after cb-web-modes
     :bind (:map cb-web-js-mode-map
                 ("C-c C-t" . cb-flow-type-at))))
 
