@@ -65,6 +65,21 @@ to combine these two types that cannot be satisfied.%s"
               "\n\nCall `toString()' explicitly when interpolating values into strings."
             "")))
 
+(defun cb-flow-checker--method-call-on-null-or-undefined-error-message (method-desc)
+  (-let [(_ method) (s-match (rx "`" (group (+ (not (any "`"))))) method-desc)]
+    (format "Method `%s' called with value that could be null or undefined.
+
+As I parse your program I find an attempt to call a method with a
+value that could be null or undefined. This is an error because
+the method's type signature specifies that this argument cannot
+be null.
+
+To prove that the value is defined
+
+  - check it explicitly using `if', or
+  - use it as the first argument to a ternary expression."
+            method)))
+
 (defun cb-flow-checker--ident-already-bound-error-message (name)
   (format "The identifier `%s' is already bound.
 
@@ -302,12 +317,20 @@ I must consider this an error." property type type))
       (cb-flow-checker--single-message-error level checker msgs
                               #'cb-flow-checker--unexpected-token-error-message))
 
+     ((member "Method cannot be called on possibly null value" comments)
+      (cb-flow-checker--single-message-error level checker msgs
+                              #'cb-flow-checker--method-call-on-null-or-undefined-error-message))
+
+     ((member "Method cannot be called on possibly undefined value" comments)
+      (cb-flow-checker--single-message-error level checker msgs
+                              #'cb-flow-checker--method-call-on-null-or-undefined-error-message))
+
      ((member "Property not found in" comments)
       (cb-flow-checker--property-not-found-error level checker msgs))
 
      ((member "Property cannot be accessed on possibly null value" comments)
       (cb-flow-checker--single-message-error level checker msgs
-                              #'cb-flow-checker--property-not-found-error-message))
+                              #'cb-flow-checker--property-on-null-or-undefined-value-error-message))
 
      ((member "Property cannot be accessed on possibly undefined value" comments)
       (cb-flow-checker--single-message-error level checker msgs
