@@ -78,8 +78,8 @@ Rename the previous binding or choose a different name."
   (let ((m (f-filename module)))
     (->> (projectile-current-project-files)
          (--filter (equal m (f-filename (f-no-ext it))))
-         (--map (f-relative (f-join (projectile-project-p) (f-no-ext it))
-                            default-directory)))))
+         (--map (concat "./" (f-relative (f-join (projectile-project-p) (f-no-ext it))
+                                         default-directory))))))
 
 (defun cb-flow-checker--module-not-found-error-message (module)
   (format "The required module `%s' was not found.

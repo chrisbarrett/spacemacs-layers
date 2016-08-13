@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: import type
+# key: it
+# --
+import type { ${1:T} } from '$0';
