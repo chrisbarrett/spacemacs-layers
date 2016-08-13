@@ -21,7 +21,8 @@
     (cb-web-modes :location local)
     (js-yasnippet :location local)
     (cb-emmet-tolerant-expansion :location local)
-    (cb-flow :location local)))
+    (cb-flow :location local)
+    (cb-js-smart-ops :location local)))
 
 (defun cb-js/post-init-smartparens ()
   (use-package smartparens
@@ -77,97 +78,7 @@
 (defun cb-js/post-init-smart-ops ()
   (use-package smart-ops
     :defer t
-    :config
-    (progn
-      (add-hook 'web-mode-hook
-                (lambda ()
-                  (smart-ops-mode +1)))
-
-      (defun cb-js/inside-angles? (&rest _)
-        ;; HACK: smartparens doesn't always detect angles correctly, so just
-        ;; look for the start of a tag on the current line.
-        (or (s-matches? (rx bol (* space) "<")
-                        (buffer-substring (line-beginning-position)
-                                          (line-end-position)))
-            (-when-let ((&plist :op op) (sp-get-enclosing-sexp))
-              (equal op "<"))))
-
-      (defun cb-js/inside-squares? (&rest _)
-        (-when-let ((&plist :op op) (sp-get-enclosing-sexp))
-          (equal op "[")))
-
-      (defun cb-js/move-between-angles-insert-slash (&rest _)
-        (when (smart-ops-after-match? (rx "<" (* space) ">"))
-          (search-backward ">")
-          (delete-horizontal-space)
-          (unless (s-matches? ":" (buffer-substring (line-beginning-position) (point)))
-            (save-excursion
-              (insert " /")))))
-
-      (define-smart-ops-for-mode 'cb-web-html-mode
-        (smart-op "<>"
-                  :pad-before nil :pad-after nil
-                  :action #'cb-js/move-between-angles-insert-slash))
-
-      (define-smart-ops-for-mode 'cb-web-json-mode
-        (smart-ops ":" "," :pad-before nil))
-
-      (let ((js-ops
-             (list
-              (smart-op "*" :pad-before-unless (smart-ops-after-match? (rx (or "yield" "function"))))
-              (smart-op "<>"
-                        :pad-before nil :pad-after nil
-                        :action #'cb-js/move-between-angles-insert-slash)
-
-              (smart-ops "<" ">" :pad-unless #'cb-js/inside-angles?)
-
-              (smart-ops "=" "/" :pad-unless (-orfn #'cb-js/inside-squares?
-                                                    #'cb-js/inside-angles?))
-
-              ;; KLUDGE: This is the pair when inserting <tag attr=|/>
-              (smart-ops "=/>" "=/>,"
-                         :pad-before nil
-                         :pad-after nil
-                         :action
-                         (lambda (&rest _)
-                           (skip-chars-backward ">/ ")
-                           (just-one-space)
-                           (backward-char)))
-
-              ;; KLUDGE: Could be an arrow, but could be inserting an attribute
-              ;; inside a tag.
-              (smart-ops "=>"
-                         :pad-before-unless #'cb-js/inside-angles?
-                         :action
-                         (lambda (&rest _)
-                           (when (cb-js/inside-angles?)
-                             (skip-chars-backward "> ")
-                             (just-one-space)
-                             (backward-char))))
-
-              ;; KLUDGE: Handle type annotation insertion.
-              (smart-ops ":," ":="
-                         :pad-before nil
-                         :action (lambda (&rest _)
-                                   (skip-chars-backward ",=")
-                                   (just-one-space)))
-              (smart-ops ":=>"
-                         :pad-before nil
-                         :action (lambda (&rest _)
-                                   (skip-chars-backward ",=>")
-                                   (just-one-space)
-                                   (save-excursion
-                                     (insert " "))))
-
-              (smart-ops ";" ":" "," :pad-before nil)
-              (smart-ops "++" "--" "++;" "--;" :pad-before nil :pad-after nil)
-              (smart-ops ">=")
-              (smart-op "!" :bypass? t)
-              (smart-ops-default-ops :pad-unless #'cb-js/inside-angles?))))
-
-        (apply #'define-smart-ops-for-mode 'cb-web-js-mode js-ops)
-        (apply #'define-smart-ops-for-mode 'nodejs-repl-mode js-ops)
-        (add-hook 'nodejs-repl-mode-hook #'smart-ops-mode)))))
+    :config (add-hook 'web-mode-hook (lambda () (smart-ops-mode +1)))))
 
 (defun cb-js/post-init-web-mode ()
   ;; HACK: Delete web-mode auto-mode config set by Spacemacs so that I can use
@@ -283,5 +194,10 @@
   (use-package cb-flow
     :bind (:map cb-web-js-mode-map
                 ("C-c C-t" . cb-flow-type-at))))
+
+(defun cb-js/init-cb-js-smart-ops ()
+  (use-package cb-js-smart-ops
+    :after smart-ops
+    :config (cb-js-smart-ops-init)))
 
 ;;; packages.el ends here
