@@ -31,7 +31,14 @@
 (require 'json)
 
 (defvar cb-flow-checker--logging-verbosity 2
-  "Set to zero to disable logging.")
+  "Set how much additional info gets logged after type-checking.
+
+0 = disabled
+1 = show unknown errors in warning buffer
+2 = show pretty-printed JSON output.")
+
+
+;;; Functions for building error message strings.
 
 (defun cb-flow-checker--type-error-message (msg type-expected type-actual)
   (format "%s.
@@ -151,6 +158,9 @@ to access a property which I cannot prove to be defined.
 
 Since I cannot prove that values of type `%s' have this property,
 I must consider this an error." property type type))
+
+
+;;; Error parsers
 
 (defun cb-flow-checker--type-error (level msg checker msgs)
   (-let [[(&alist 'descr type-expected
