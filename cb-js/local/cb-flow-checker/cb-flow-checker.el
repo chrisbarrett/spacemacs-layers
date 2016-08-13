@@ -110,7 +110,7 @@ these bindings.")
 (defun cb-flow-checker--property-on-null-value-error-message (_)
   "Accessing property on value that could be null.
 
-As a infer the types of values in this program, I see an attempt
+As I infer the types of values in this program, I see an attempt
 to access a property on a value which could be null.
 
 To prove that the value is not null
@@ -121,7 +121,7 @@ To prove that the value is not null
 (defun cb-flow-checker--property-on-undefined-value-error-message (_)
   "Accessing property on value that could be undefined.
 
-As a infer the types of values in this program, I see an attempt
+As I infer the types of values in this program, I see an attempt
 to access a property on a value which could be undefined.
 
 To prove that the value is not undefined
@@ -161,7 +161,7 @@ definition." identifier)))
 (defun cb-flow-checker--property-not-found-error-message (property type)
   (format "Property `%s' not defined for type `%s'.
 
-As a infer the types of values in this program, I see an attempt
+As I infer the types of values in this program, I see an attempt
 to access a property which I cannot prove to be defined.
 
 Since I cannot prove that values of type `%s' have this property,
