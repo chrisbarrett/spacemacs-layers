@@ -129,6 +129,30 @@ To prove that the value is not undefined
   - check it explicitly using `if', or
   - use it as the first argument to a ternary expression.")
 
+(defun cb-flow-checker--property-or-element-on-undefined-value-error-message (_)
+  "Accessing property or element on a value that could be undefined.
+
+As I infer the types of values in this program, I see an attempt
+to access a property or element of a value which could be
+undefined.
+
+To prove that the value is not undefined
+
+  - check it explicitly using `if', or
+  - use it as the first argument to a ternary expression.")
+
+(defun cb-flow-checker--property-or-element-on-null-value-error-message (_)
+  "Accessing property or element on a value that could be null.
+
+As I infer the types of values in this program, I see an attempt
+to access a property or element of a value which could be
+null.
+
+To prove that the value is not null
+
+  - check it explicitly using `if', or
+  - use it as the first argument to a ternary expression.")
+
 (defun cb-flow-checker--unexpected-token-error-message (msg)
   (let ((tok (-last-item (s-split (rx space) msg))))
     (format "Unexpected token: %s
@@ -289,6 +313,14 @@ I must consider this an error." property type type))
      ((member "Property cannot be accessed on possibly undefined value" comments)
       (cb-flow-checker--single-message-error level checker msgs
                               #'cb-flow-checker--property-on-undefined-value-error-message))
+
+     ((member "Computed property/element cannot be accessed on possibly undefined value" comments)
+      (cb-flow-checker--single-message-error level checker msgs
+                              #'cb-flow-checker--property-or-element-on-undefined-value-error-message))
+
+     ((member "Computed property/element cannot be accessed on possibly null value" comments)
+      (cb-flow-checker--single-message-error level checker msgs
+                              #'cb-flow-checker--property-or-element-on-null-value-error-message))
 
      ((member "Missing annotation" comments)
       (cb-flow-checker--single-message-error level checker msgs
