@@ -99,8 +99,9 @@
         (when (smart-ops-after-match? (rx "<" (* space) ">"))
           (search-backward ">")
           (delete-horizontal-space)
-          (save-excursion
-            (insert " /"))))
+          (unless (s-matches? ":" (buffer-substring (line-beginning-position) (point)))
+            (save-excursion
+              (insert " /")))))
 
       (define-smart-ops-for-mode 'cb-web-html-mode
         (smart-op "<>"
@@ -109,7 +110,6 @@
 
       (define-smart-ops-for-mode 'cb-web-json-mode
         (smart-ops ":" "," :pad-before nil))
-
 
       (let ((js-ops
              (list
