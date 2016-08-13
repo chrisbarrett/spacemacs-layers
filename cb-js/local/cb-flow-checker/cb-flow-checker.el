@@ -74,6 +74,12 @@ already exists.
 Rename the previous binding or choose a different name."
           name))
 
+(defun cb-flow-checker--unexpected-ident-error-message ()
+  "Unexpected identifier.
+
+As I parse your program I find an identifier in an unexpected
+position, which prevents me from continuing.")
+
 (defun cb-flow-checker--unify-implicit-undefined-error-message (type)
   (format "This function implicitly returns undefined.
 
@@ -327,6 +333,16 @@ I must consider this an error." property type type))
                             :checker checker
                             :filename source))))
 
+(defun cb-flow-checker--unexpected-ident-error (level checker msgs)
+  (-let [[(&alist 'loc (&alist 'start (&alist 'line line 'column col)
+                               'source source))]
+         msgs]
+    (list
+     (flycheck-error-new-at line col level
+                            (cb-flow-checker--unexpected-ident-error-message)
+                            :checker checker
+                            :filename source))))
+
 (defun cb-flow-checker--message-comments (msgs)
   (--map (if (listp it)
              (-let [(&alist 'descr d) it] d)
@@ -359,6 +375,9 @@ I must consider this an error." property type type))
 
      ((member "Missing annotation" comments)
       (cb-flow-checker--missing-annotation-error level checker msgs))
+
+     ((member "Unexpected identifier" comments)
+      (cb-flow-checker--unexpected-ident-error level checker msgs))
 
      ((and (member "Could not resolve name" comments)
            (--any? (s-starts-with? "type " it) comments))
