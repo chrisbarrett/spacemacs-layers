@@ -81,6 +81,15 @@
                 (just-one-space)
                 (backward-char)))
 
+   ;; KLUDGE: This is the pair when inserting = <|>
+   (smart-ops "=<>"
+              :pad-after nil
+              :action
+              (lambda (&rest _)
+                (skip-chars-backward "<>")
+                (just-one-space)
+                (search-forward "<")))
+
    ;; KLUDGE: Could be an arrow, but could be inserting an attribute
    ;; inside a tag.
    (smart-ops "=>"
