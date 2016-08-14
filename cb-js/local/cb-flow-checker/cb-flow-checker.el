@@ -320,6 +320,19 @@ I must consider this an error." property type type))
           (level (intern level))
           (comments (cb-flow-checker--message-comments msgs)))
     (cond
+
+     ;; Parse errors
+
+     ((--any? (s-starts-with-p "Unexpected token" it) comments)
+      (cb-flow-checker--single-message-error-parser level checker msgs
+                                     #'cb-flow-checker--unexpected-token-error-message))
+
+     ((member "Unexpected identifier" comments)
+      (cb-flow-checker--single-message-error-parser level checker msgs
+                                     #'cb-flow-checker--unexpected-ident-error-message))
+
+     ;; Type errors
+
      ((member "This type is incompatible with the expected return type of" comments)
       (cb-flow-checker--type-error level "Type error with expected return type" checker msgs))
 
@@ -329,10 +342,6 @@ I must consider this an error." property type type))
 
      ((member "This type is incompatible with" comments)
       (cb-flow-checker--type-error level "Type error in argument" checker msgs))
-
-     ((--any? (s-starts-with-p "Unexpected token" it) comments)
-      (cb-flow-checker--single-message-error-parser level checker msgs
-                                     #'cb-flow-checker--unexpected-token-error-message))
 
      ((member "Method cannot be called on possibly null value" comments)
       (cb-flow-checker--single-message-error-parser level checker msgs
@@ -364,10 +373,6 @@ I must consider this an error." property type type))
      ((member "Missing annotation" comments)
       (cb-flow-checker--single-message-error-parser level checker msgs
                                      #'cb-flow-checker--missing-annotation-error-message))
-
-     ((member "Unexpected identifier" comments)
-      (cb-flow-checker--single-message-error-parser level checker msgs
-                                     #'cb-flow-checker--unexpected-ident-error-message))
 
      ((member "Required module not found" comments)
       (cb-flow-checker--single-message-error-parser level checker msgs
