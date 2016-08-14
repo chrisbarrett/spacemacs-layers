@@ -153,10 +153,10 @@ which require an initialization must be listed explicitly in the list.")
 (defun cb-ledger/init-cb-ledger-reports ()
   (use-package cb-ledger-reports
     :after ledger-mode
+    :init
+    (add-hook 'ledger-mode-hook #'cb-ledger-reports-init)
     :config
-    (progn
-      (cb-ledger-reports-init)
-      (setq cb-ledger-reports-income-payee-name "Income:Movio"))))
+    (setq cb-ledger-reports-income-payee-name "Income:Movio")))
 
 (defun cb-ledger/init-cb-ledger-format ()
   (use-package cb-ledger-format
