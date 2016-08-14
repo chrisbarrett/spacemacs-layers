@@ -87,6 +87,8 @@
       (add-to-list 'org-refile-targets `(,(cb-org-work-file) :maxlevel . 3))
       (add-to-list 'org-tags-exclude-from-inheritance "project")
 
+      (setf (cdr (assoc 'file org-link-frame-setup)) #'find-file-other-window)
+
       (setq org-M-RET-may-split-line nil)
       (setq org-attach-directory (f-join (cb-org-directory) "data"))
       (setq org-catch-invisible-edits 'smart)
