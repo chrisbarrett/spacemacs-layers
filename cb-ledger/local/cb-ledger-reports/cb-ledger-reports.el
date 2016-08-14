@@ -100,13 +100,14 @@
              args))))
 
 (defun cb-ledger-reports--report-shell-cmd-from-spec (spec)
-  (s-join " && "
-          (-tree-map-nodes
-           (lambda (node)
-             (and (listp node)
-                  (symbolp (car node))))
-           #'cb-ledger-reports--node-to-shell-cmd
-           spec)))
+  (substring-no-properties
+   (s-join " && "
+           (-tree-map-nodes
+            (lambda (node)
+              (and (listp node)
+                   (symbolp (car node))))
+            #'cb-ledger-reports--node-to-shell-cmd
+            spec))))
 
 (defconst cb-ledger-reports-weekly-review
   '((paragraph "Skim over balances to make sure they look right.")
@@ -167,7 +168,7 @@ These balances show the remaining available balance for each category.")
 (defun cb-ledger-reports--alist-insert (k v alist)
   (if (rassoc k alist)
       (setf (cdr (rassoc k alist)) v)
-    (setq alist (cons (cons k v) alist))))
+    (nconc alist `(,(cons k v)))))
 
 (defun cb-ledger-reports--list-insert (k v ls)
   (cl-delete-if (lambda (it) (equal k (car it))) ls)
