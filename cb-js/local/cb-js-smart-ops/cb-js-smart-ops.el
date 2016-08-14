@@ -90,6 +90,15 @@
                 (just-one-space)
                 (search-forward "<")))
 
+   ;; KLUDGE: This is the pair when inserting e.g. foo: Array<|> =
+   (smart-ops "<>="
+              :pad-before nil
+              :action
+              (lambda (&rest _)
+                (skip-chars-backward "=")
+                (just-one-space)
+                (search-backward ">")))
+
    ;; KLUDGE: Could be an arrow, but could be inserting an attribute
    ;; inside a tag.
    (smart-ops "=>"
