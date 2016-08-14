@@ -33,7 +33,7 @@
       (unless quiet (message "<no information>"))
     (let ((count 0)
           (pos   0))
-      (merlin--type-display-in-buffer type)
+      (merlin/display-in-type-buffer type)
       (while (and (<= count 8)
                   (string-match "\n" type pos))
         (setq pos (match-end 0))
