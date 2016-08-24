@@ -92,6 +92,7 @@
       (setq mu4e-headers-unread-mark (purecopy '("u" . "●")))
       (setq mu4e-hide-index-messages t)
 
+      (setq mu4e-view-prefer-html t)
       (setq mu4e-view-show-images t)
       (setq mu4e-view-show-addresses t)
       (setq message-kill-buffer-on-exit t)
