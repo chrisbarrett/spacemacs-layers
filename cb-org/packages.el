@@ -156,20 +156,24 @@
 
       ;; Override themes which set weird headline properties.
 
-      (let ((class '((class color) (min-colors 89))))
-        (custom-set-faces
-         `(org-level-1 ((,class (:background nil :overline nil :height 1.0))))
-         `(org-level-2 ((,class (:background nil :height 1.0))))
-         `(org-level-3 ((,class (:background nil :height 1.0))))
-         `(org-level-4 ((,class (:background nil :height 1.0))))
-         `(org-level-5 ((,class (:background nil :height 1.0))))
-         `(org-level-6 ((,class (:background nil :height 1.0))))
-         `(org-level-7 ((,class (:background nil :height 1.0))))
-         `(org-level-8 ((,class (:background nil :height 1.0))))
+      (defun cb-org/set-org-faces ()
+        (let ((class '((class color) (min-colors 89))))
+          (custom-set-faces
+           `(org-level-1 ((,class (:inherit nil :background nil :overline nil :height 1.0))))
+           `(org-level-2 ((,class (:inherit nil :background nil :height 1.0))))
+           `(org-level-3 ((,class (:inherit nil :background nil :height 1.0))))
+           `(org-level-4 ((,class (:inherit nil :background nil :height 1.0))))
+           `(org-level-5 ((,class (:inherit nil :background nil :height 1.0))))
+           `(org-level-6 ((,class (:inherit nil :background nil :height 1.0))))
+           `(org-level-7 ((,class (:inherit nil :background nil :height 1.0))))
+           `(org-level-8 ((,class (:inherit nil :background nil :height 1.0))))
 
-         `(org-agenda-done ((,class (:background nil :height 1.0))))
-         `(org-scheduled-today ((,class (:background nil :height 1.0))))
-         `(org-scheduled-previously ((,class (:background nil :height 1.0))))))))
+           `(org-agenda-done ((,class (:background nil :height 1.0))))
+           `(org-scheduled-today ((,class (:background nil :height 1.0))))
+           `(org-scheduled-previously ((,class (:background nil :height 1.0)))))))
+
+      (cb-org/set-org-faces)
+      (add-hook 'org-mode-hook #'cb-org/set-org-faces)))
 
   ;; Exit minibuffer before adding notes.
 
