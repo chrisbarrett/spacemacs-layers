@@ -62,8 +62,7 @@
 
       (unless (s-blank? (s-trim (buffer-substring (point) (point-max))))
         (newline)
-        (cb-stack-hoogle--insert-header "Description")
-        (cb-stack-hoogle--indent-section (line-beginning-position) (point-max))))))
+        (cb-stack-hoogle--insert-header "Description")))))
 
 ;;;###autoload
 (defun cb-stack-hoogle (query &optional info)
