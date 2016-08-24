@@ -791,11 +791,13 @@ table tr.tr-even td {
 (defun cb-org/init-cb-org-ctrl-c-ret ()
   (use-package cb-org-ctrl-c-ret
     :after org
-    :bind (:map org-mode-map ("C-c RET" . cb-org-ctrl-c-ret))))
+    :evil-bind (:map org-mode-map
+                     :state normal ("C-c RET" . cb-org-ctrl-c-ret)
+                     :state emacs ("C-c RET" . cb-org-ctrl-c-ret))))
 
 (defun cb-org/init-cb-org-ctrl-c-ctrl-k ()
   (use-package cb-org-ctrl-c-ctrl-k
     :after org
-    :bind (:map org-mode-map ("C-c C-k" . cb-org-ctrl-c-ctrl-k))))
+    :evil-bind (:map org-mode-map :state normal ("C-c C-k" . cb-org-ctrl-c-ctrl-k))))
 
 ;;; packages.el ends here
