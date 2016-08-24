@@ -129,13 +129,13 @@
 These balances show the remaining available balance for each category.")
 
     (header-1 "Budget Last 7 Days")
-    "ledger -f %(ledger-file) bal 'Assets:Checking' --sort total -p 'last 7 days' --invert --budget"
+    "ledger -f %(ledger-file) bal expenses --sort total -p 'last 7 days' --invert --budget"
     (header "Budget Last 30 Days")
-    "ledger -f %(ledger-file) bal 'Assets:Checking' --sort total -p 'last 30 days' --invert --budget"
+    "ledger -f %(ledger-file) bal expenses --sort total -p 'last 30 days' --invert --budget"
     (header "Budget Since Payday")
-    "ledger -f %(ledger-file) bal 'Assets:Checking' --sort total -b %(last-payday) --invert --budget"
+    "ledger -f %(ledger-file) bal expenses --sort total -b %(last-payday) --invert --budget"
     (header "Budget Last Pay Period")
-    "ledger -f %(ledger-file) bal 'Assets:Checking' --sort total -p %(prev-pay-period) --invert --budget"
+    "ledger -f %(ledger-file) bal expenses --sort total -p %(prev-pay-period) --invert --budget"
 
     (separator)
     (paragraph "The payees below are organised by total spending against the budget.
