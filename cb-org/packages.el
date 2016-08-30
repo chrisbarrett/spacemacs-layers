@@ -487,12 +487,11 @@ Do not scheduled items or repeating todos."
     :after org
     :config
     (progn
-      (with-eval-after-load 'ox-odt
-        (add-to-list 'org-export-backends 'odt)
-        (setq org-odt-schema-dir (f-join user-home-directory "Code/org-mode/etc/schema/")))
-      (setq org-export-backends '(ascii html latex gfm koma-letter))
+      (require 'ox-odt)
+      (setq org-export-backends '(ascii html latex gfm koma-letter ox-odt))
       (setq org-export-exclude-tags '("noexport" "crypt"))
       (setq org-export-coding-system 'utf-8)
+      (setq org-odt-schema-dir (f-join user-home-directory "Code/org-mode/etc/schema/"))
       (setq org-html-html5-fancy t)
       (setq org-html-postamble nil)
       (setq org-html-table-row-tags
