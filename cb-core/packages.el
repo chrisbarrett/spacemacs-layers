@@ -34,6 +34,7 @@
     (compile :location built-in)
 
     (cb-buffers :location local)
+    (cb-subr-x :location local)
     (locate-key-binding :location local)
     (smart-ops :location local)
     (case :location local)
@@ -64,6 +65,9 @@
 (defun cb-core/init-dash-functional ()
   (use-package dash-functional
     :config (require 'dash-functional)))
+
+(defun cb-core/init-cb-subr-x ()
+  (use-package cb-subr-x))
 
 (defun cb-core/post-init-diminish ()
   (diminish 'auto-fill-function " ≣"))
