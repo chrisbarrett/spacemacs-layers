@@ -31,6 +31,7 @@
     recentf
     neotree
     time
+    persp-mode
     (compile :location built-in)
 
     (cb-buffers :location local)
@@ -81,9 +82,8 @@
 (defun cb-core/post-init-helm ()
   (use-package helm
     :bind
-    (("C-SPC" . helm-for-files)
-     ("C-@" . helm-for-files)
-     :map helm-map
+    (:map
+     helm-map
      ("<tab>" . helm-execute-persistent-action)
      ("C-i" . helm-execute-persistent-action)
      ("C-z" . helm-select-action)
@@ -123,6 +123,12 @@
       (progn
         (add-to-list 'aggressive-indent-excluded-modes 'restclient-mode)
         (global-aggressive-indent-mode)))))
+
+(defun cb-core/post-init-persp-mode ()
+  (use-package persp-mode
+    :defer t
+    :config
+    (bind-key "C-SPC" #'spacemacs/persp-helm-mini)))
 
 (defun cb-core/init-ag ()
   (use-package ag :commands ag))

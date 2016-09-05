@@ -61,11 +61,17 @@
 (defun cb-buffers-maybe-kill ()
   "Kill or bury the current buffer."
   (interactive)
-  (if (cb-buffers--buffer-ignored-or-live? (current-buffer))
-      (bury-buffer)
+  (cond
+   ((cb-buffers--buffer-ignored-or-live? (current-buffer))
+    (bury-buffer))
+
+   ((and (boundp 'persp-mode) persp-mode)
+    (persp-kill-buffer (current-buffer)))
+
+   (t
     ;; HACK: Avoid read-only text property errors.
     (let ((inhibit-read-only t))
-      (kill-buffer (current-buffer)))))
+      (kill-buffer (current-buffer))))))
 
 (defun cb-buffers-maybe-kill-all ()
   "Close all buffers not in the ignore list."
