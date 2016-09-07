@@ -49,66 +49,74 @@
   (s-matches? (rx bol (* space) "scala>" (* space))
               (buffer-substring (line-beginning-position) (point))))
 
+(defconst cb-scala-smart-ops--ops
+  (list
+   (smart-ops "???" "?" "=" "==" "+" "-" "*" "/" "<" ">" "|" "$" "&" "%" "!" "~")
+   (smart-ops ":" "," :pad-before nil)
+   (smart-ops "@" :pad-after nil)
+   (smart-ops ":=")
+
+   ;; Inserting this op means you're probably editing a
+   ;; function return type. Pad internally and move point
+   ;; inside.
+   (let ((inserting-type? (smart-ops-before-match? (rx bos (* space) "="))))
+     (smart-ops ":="
+                :action
+                (lambda (&rest _)
+                  (when (funcall inserting-type? (point))
+                    (just-one-space)
+                    (save-excursion
+                      (insert " ")
+                      (search-backward ":")
+                      (delete-horizontal-space))))))
+
+
+   ;; Reformat ':_*' as ': _*'
+   (smart-ops ":_*"
+              :pad-before nil
+              :pad-after nil
+              :action
+              (lambda (&rest _)
+                (save-excursion
+                  (search-backward "_")
+                  (just-one-space))))
+   (smart-ops ":=>"
+              :pad-before nil
+              :action
+              (lambda (&rest _)
+                (save-excursion
+                  (search-backward "=")
+                  (just-one-space))))
+   (smart-ops "_=>"
+              :action
+              (lambda (&rest _)
+                (save-excursion
+                  (search-backward "=")
+                  (just-one-space))))
+   (smart-ops "_<-"
+              :action
+              (lambda (&rest _)
+                (save-excursion
+                  (search-backward "<")
+                  (just-one-space))))
+
+
+   ;; Prevent above smart ops from breaking underscores in
+   ;; symbols.
+   (smart-ops "_" :bypass? t)
+   (smart-ops "__" :bypass? t)
+   (smart-ops "___" :bypass? t)
+
+   ;; Reformat '=???' as '= ???'
+   (smart-ops "=???" "=???," "=>???"
+              :action
+              (lambda (&rest _)
+                (save-excursion
+                  (skip-chars-backward ",? ")
+                  (just-one-space))))))
+
 (defun cb-scala-smart-ops-init ()
-  (let ((ops (-flatten-n 1
-                         (list
-                          (smart-ops "???" "?" "=" "==" "+" "-" "*" "/" "<" ">" "|" "$" "&" "%" "!" "~")
-                          (smart-ops ":" "," :pad-before nil)
-                          (smart-ops "@" :pad-after nil)
-                          (smart-ops ":=")
-
-                          ;; Inserting this op means you're probably editing a
-                          ;; function return type. Pad internally and move point
-                          ;; inside.
-                          (let ((inserting-type? (smart-ops-before-match? (rx bos (* space) "="))))
-                            (smart-ops ":="
-                                       :action
-                                       (lambda (&rest _)
-                                         (when (funcall inserting-type? (point))
-                                           (just-one-space)
-                                           (save-excursion
-                                             (insert " ")
-                                             (search-backward ":")
-                                             (delete-horizontal-space))))))
-
-
-                          ;; Reformat ':_*' as ': _*'
-                          (smart-ops ":_*"
-                                     :pad-before nil
-                                     :pad-after nil
-                                     :action
-                                     (lambda (&rest _)
-                                       (save-excursion
-                                         (search-backward "_")
-                                         (just-one-space))))
-                          (smart-ops ":=>"
-                                     :pad-before nil
-                                     :action
-                                     (lambda (&rest _)
-                                       (save-excursion
-                                         (search-backward "=")
-                                         (just-one-space))))
-                          (smart-ops "_=>"
-                                     :action
-                                     (lambda (&rest _)
-                                       (save-excursion
-                                         (search-backward "=")
-                                         (just-one-space))))
-
-
-                          ;; Prevent above smart ops from breaking underscores in
-                          ;; symbols.
-                          (smart-ops "_" :bypass? t)
-                          (smart-ops "__" :bypass? t)
-                          (smart-ops "___" :bypass? t)
-
-                          ;; Reformat '=???' as '= ???'
-                          (smart-ops "=???" "=???,"
-                                     :action
-                                     (lambda (&rest _)
-                                       (save-excursion
-                                         (skip-chars-backward ",? ")
-                                         (just-one-space))))))))
+  (let ((ops (-flatten-n 1 cb-scala-smart-ops--ops)))
 
     (define-smart-ops-for-mode 'scala-mode
       (smart-op "///" :action 'cb-scala-smart-ops--replace-slashes-with-doc)
