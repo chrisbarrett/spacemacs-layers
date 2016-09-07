@@ -24,15 +24,20 @@
 
 (require 's)
 
-(autoload 'org-kill-note-or-show-branches "org")
+(autoload 'org-capture-kill "org-capture")
 (autoload 'org-cut-subtree "org")
+(autoload 'org-kill-note-or-show-branches "org")
 
 (defun cb-org-ctrl-c-ctrl-k (&optional n)
   "Kill subtrees, unless we're in a special buffer where it should cancel."
   (interactive "p")
-  (if (s-starts-with? "*Org" (buffer-name))
-      (org-kill-note-or-show-branches)
-    (org-cut-subtree n)))
+  (cond
+   ((and (boundp 'org-capture-mode) org-capture-mode)
+    (org-capture-kill))
+   ((s-starts-with? "*Org" (buffer-name))
+    (org-kill-note-or-show-branches))
+   (t
+    (org-cut-subtree n))))
 
 (provide 'cb-org-ctrl-c-ctrl-k)
 
