@@ -18,6 +18,7 @@
     org-present
     auto-highlight-symbol
     evil
+    evil-org
     (flyspell :location built-in)
     (cb-org-latex-preview-retina :location local)
     (org-autoinsert :location local)
@@ -786,6 +787,17 @@ table tr.tr-even td {
      ("ow" . cb-org-goto-work)
      ("ot" . cb-org-goto-todo-list)
      ("ov" . cb-org-goto-tags-list))))
+
+(defun cb-org/post-init-evil-org ()
+  (use-package evil-org
+    :evil-bind
+    (:map evil-org-mode-map
+          :state normal
+          ("M-l" . nil)
+          ("M-h" . nil)
+          :state insert
+          ("M-l" . nil)
+          ("M-h" . nil))))
 
 (defun cb-org/init-cb-org-ctrl-c-ret ()
   (use-package cb-org-ctrl-c-ret
