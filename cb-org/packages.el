@@ -487,8 +487,8 @@ Do not scheduled items or repeating todos."
     :after org
     :config
     (progn
-      (require 'ox-odt)
-      (setq org-export-backends '(ascii html latex gfm koma-letter ox-odt))
+      (require 'ox-gfm)
+      (setq org-export-backends '(ascii html latex odt gfm koma-letter))
       (setq org-export-exclude-tags '("noexport" "crypt"))
       (setq org-export-coding-system 'utf-8)
       (setq org-odt-schema-dir (f-join user-home-directory "Code/org-mode/etc/schema/"))
