@@ -273,7 +273,17 @@
 (defun cb-core/post-init-neotree ()
   (use-package neotree
     :config
-    (setq neo-theme 'arrow)))
+    (progn
+      (setq neo-theme 'arrow)
+
+      ;; HACK: prevent neotree from moving cursor after hitting <RET>.
+
+      (defun cb-core--restoring-pos (f &rest args)
+        (let ((p (point)))
+          (apply f args)
+          (goto-char p)))
+
+      (advice-add #'neotree-enter :around #'cb-core--restoring-pos))))
 
 (defun cb-core/init-create-layer-local-package ()
   (use-package create-layer-local-package
