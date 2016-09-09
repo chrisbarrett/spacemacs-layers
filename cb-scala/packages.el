@@ -80,6 +80,8 @@ See `ensime-goto-test-config-defaults' for possible template values.")
 
     :init
     (progn
+      (add-hook 'scala-mode-hook #'ensime-mode)
+
       (dolist (prefix '(("mb" . "scala/build")
                         ("mc" . "scala/check")
                         ("md" . "scala/debug")
@@ -103,7 +105,6 @@ See `ensime-goto-test-config-defaults' for possible template values.")
         (interactive)
         (with-no-warnings (funcall cancel-refactor))
         (ensime-popup-buffer-quit-function))
-
 
       (defun cb-scala/ensime-gen-and-restart()
         "Regenerate `.ensime' file and restart the ensime server."
