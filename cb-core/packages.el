@@ -33,6 +33,7 @@
     time
     persp-mode
     (compile :location built-in)
+    (tramp :location built-in)
 
     (cb-buffers :location local)
     (cb-subr-x :location local)
@@ -392,6 +393,12 @@
       (global-prettify-symbols-mode +1)
       (add-hook 'text-mode-hook #'prettify-symbols-mode)
       (add-hook 'prog-mode-hook #'prettify-symbols-mode))))
+
+(defun cb-core/init-tramp ()
+  (use-package tramp
+    :defer t
+    :config
+    (setq vc-ignore-dir-regexp (format "\\(%s\\)\\|\\(%s\\)" vc-ignore-dir-regexp tramp-file-name-regexp))))
 
 (defun cb-core/init-cb-helm-emoticons ()
   (use-package cb-helm-emoticons
