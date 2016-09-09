@@ -9,48 +9,8 @@
   (require 'spaceline nil t))
 
 (defconst cb-mu4e-packages
-  '(async
-    (mu4e :location local)
+  '((mu4e :location local)
     (mu4e-unread-messages :location local)))
-
-(defun cb-mu4e/init-async ()
-  ;; Send mail asynchronously.
-  (use-package async
-    :init
-    (setq sendmail-program "msmtp")
-    :config
-    (progn
-      (require 'smtpmail-async)
-
-      ;; Tweaks to smtpmail-async so that I can inject msmtp as the sendmail
-      ;; program.
-      (defun cb-async-smtpmail-send-it ()
-        (let ((to          (message-field-value "To"))
-              (buf-content (buffer-substring-no-properties (point-min) (point-max))))
-          (message "Delivering message to %s..." to)
-          (async-start
-           `(lambda ()
-              (require 'smtpmail)
-              (condition-case err
-                  (with-temp-buffer
-                    (insert ,buf-content)
-                    (set-buffer-multibyte nil)
-                    ;; Pass in the variable environment for smtpmail
-                    ,(async-inject-variables
-                      "\\`\\(smtpmail\\|sendmail\\|async-smtpmail\\|\\(user-\\)?mail\\)-\\|auth-sources"
-                      nil "\\`\\(mail-header-format-function\\|smtpmail-address-buffer\\|mail-mode-abbrev-table\\)")
-                    (run-hooks 'async-smtpmail-before-send-hook)
-                    (smtpmail-send-it)
-                    (cons t nil))
-                (error
-                 (cons nil err))))
-           `(-lambda ((success? . err))
-              (if success?
-                  (message "Delivering message to %s...done" ,to)
-                (message "Delivering message to %s...FAILED. Error: %s" ,to err))))))
-
-      (setq send-mail-function #'cb-async-smtpmail-send-it)
-      (setq message-send-mail-function #'cb-async-smtpmail-send-it))))
 
 (defun cb-mu4e/init-mu4e ()
   (use-package org-mu4e
