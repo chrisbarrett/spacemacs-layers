@@ -200,6 +200,12 @@
     :config
     (progn
       (cb-remap-face 'neo-dir-link-face 'default)
+      (setq neo-hidden-regexp-list
+            (-union
+             (--map (format "^%s$" (regexp-quote it)) cb-vars-ignored-dirs)
+             cb-vars-ignored-files-regexps))
+
+      (setq neo-show-hidden-files nil)
       (set-face-foreground neo-file-link-face cb-vars-solarized-hl-orange)
       (set-face-foreground neo-root-dir-face cb-vars-solarized-hl-blue))))
 
