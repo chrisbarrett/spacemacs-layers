@@ -117,8 +117,9 @@
       ;; Update every 5 minutes.
       (setq mu4e-update-interval (* 60 5))
 
-      ;; Disable autofill in compose buffers
+      ;; Use word wrap instead of auto-fill.
       (add-hook 'mu4e-compose-mode-hook #'turn-off-auto-fill)
+      (add-hook 'mu4e-compose-mode-hook (lambda () (setq word-wrap t)))
 
       ;; use imagemagick, if available
       (when (fboundp 'imagemagick-register-types)
