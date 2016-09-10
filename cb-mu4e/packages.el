@@ -58,7 +58,9 @@
       (setq message-kill-buffer-on-exit t)
       (setq mu4e-compose-signature-auto-include t)
 
-      (setq mu4e-get-mail-command "mbsync -a -q")
+      ;; All my mailservers use IMAP. Use mbsync to synchronise mail between the
+      ;; server and my local machine.
+      (setq mu4e-get-mail-command "mbsync -V -q -a")
       (setq mu4e-change-filenames-when-moving t)
 
       (setq smtpmail-queue-mail nil)
