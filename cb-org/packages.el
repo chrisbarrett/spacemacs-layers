@@ -12,6 +12,8 @@
   (let ((this-dir (f-dirname (or load-file-name (buffer-file-name)))))
     (format "%s/local/cb-org-directory/cb-org-directory.el" this-dir)))
 
+(setq org-odt-schema-dir (f-join user-home-directory "Code/org-mode/etc/schema/"))
+
 (defconst cb-org-packages
   '(org
     gnuplot
@@ -492,7 +494,6 @@ Do not scheduled items or repeating todos."
       (setq org-export-backends '(ascii html latex odt gfm koma-letter))
       (setq org-export-exclude-tags '("noexport" "crypt"))
       (setq org-export-coding-system 'utf-8)
-      (setq org-odt-schema-dir (f-join user-home-directory "Code/org-mode/etc/schema/"))
       (setq org-html-html5-fancy t)
       (setq org-html-postamble nil)
       (setq org-html-table-row-tags
