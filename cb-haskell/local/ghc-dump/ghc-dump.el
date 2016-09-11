@@ -156,7 +156,7 @@
 (put 'ghc-stg-mode 'mode-class 'special)
 
 ;;;###autoload
-(define-derived-mode ghc-type-dump-mode haskell-parent-mode "GHC-Types"
+(define-derived-mode ghc-type-dump-mode haskell-mode "GHC-Types"
   (setq-local font-lock-defaults
               '(haskell-font-lock-choose-keywords
                 nil nil ((?\' . "w") (?_  . "w")) nil
