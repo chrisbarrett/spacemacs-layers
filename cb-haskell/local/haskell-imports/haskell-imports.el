@@ -25,7 +25,6 @@
 (require 'haskell-mode)
 (require 's)
 
-(autoload 'cb-buffers-current-line "cb-buffers")
 (autoload 'haskell-navigate-imports-go "haskell-navigate-imports")
 (autoload 'haskell-session-all-modules "haskell-modules")
 (autoload 'haskell-session-maybe "haskell-session")
