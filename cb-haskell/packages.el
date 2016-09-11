@@ -164,8 +164,7 @@
 
 (defun cb-haskell/init-haskell-ghc-opts ()
   (use-package haskell-ghc-opts
-    :functions (haskell-ghc-opts-init)
-    :init (add-hook 'haskell-mode-hook #'haskell-ghc-opts-init)))
+    :leader-bind (haskell-mode ("io" . haskell-ghc-opts-insert))))
 
 (defun cb-haskell/init-haskell-imports ()
   (use-package haskell-imports

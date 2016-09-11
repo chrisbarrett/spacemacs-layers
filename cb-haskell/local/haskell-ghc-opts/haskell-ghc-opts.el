@@ -25,8 +25,6 @@
 (require 'haskell-mode)
 (require 's)
 
-(autoload 'evil-define-key "evil-core")
-
 (defconst haskell-ghc-opts
   '("-fcase-merge"
     "-fcse"
@@ -117,7 +115,6 @@
        (-flatten)
        (--mapcat (s-split (rx (* space) "," (* space)) it))))
 
-;;;###autoload
 (defun haskell-ghc-opts--goto-buffer-start ()
   (goto-char (point-min))
 
@@ -146,6 +143,7 @@
       (when (s-blank? (buffer-substring (line-beginning-position) (line-end-position)))
         (join-line)))))
 
+;;;###autoload
 (defun haskell-ghc-opts-insert (opt)
   "Insert OPT into the GHC options list for the current file."
   (interactive (list (completing-read "GHC Option: " haskell-ghc-opts nil t)))
@@ -153,10 +151,6 @@
     (if (--any? (s-matches? opt it) cur-opts)
         (user-error "Option %s already set" opt)
       (haskell-ghc-opts-set (cons opt cur-opts)))))
-
-;;;###autoload
-(defun haskell-ghc-opts-init ()
-  (evil-define-key 'normal haskell-mode-map (kbd "SPC i o") #'haskell-ghc-opts-insert))
 
 (provide 'haskell-ghc-opts)
 
