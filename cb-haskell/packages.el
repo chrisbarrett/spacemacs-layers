@@ -157,10 +157,9 @@
 
 (defun cb-haskell/init-ghc-dump ()
   (use-package ghc-dump
-    :config
-    (progn
-      (spacemacs/set-leader-keys-for-major-mode 'haskell-mode "D" #'ghc-dump-popup)
-      (bind-key "q" #'cb-buffers-maybe-kill ghc-dump-popup-mode-map))))
+    :after haskell-mode
+    :leader-bind (:mode haskell-mode ("d" . ghc-dump-popup))
+    :bind (:map ghc-dump-popup-mode-map ("q" . quit-window))))
 
 (defun cb-haskell/init-haskell-flyspell ()
   (use-package haskell-flyspell
@@ -169,17 +168,17 @@
 
 (defun cb-haskell/init-haskell-ghc-opts ()
   (use-package haskell-ghc-opts
-    :leader-bind (haskell-mode ("io" . haskell-ghc-opts-insert))))
+    :leader-bind (:mode haskell-mode ("io" . haskell-ghc-opts-insert))))
 
 (defun cb-haskell/init-haskell-imports ()
   (use-package haskell-imports
-    :leader-bind (haskell-mode
-                  ("ii" . haskell-imports-insert-unqualified)
-                  ("iq" . haskell-imports-insert-qualified))))
+    :leader-bind (:mode haskell-mode
+                        ("ii" . haskell-imports-insert-unqualified)
+                        ("iq" . haskell-imports-insert-qualified))))
 
 (defun cb-haskell/init-haskell-pragmas ()
   (use-package haskell-pragmas
-    :leader-bind (:mode haskell-mode ("i l" . haskell-pragmas-insert))))
+    :leader-bind (:mode haskell-mode ("il" . haskell-pragmas-insert))))
 
 (defun cb-haskell/init-haskell-autoinsert ()
   (use-package haskell-autoinsert
