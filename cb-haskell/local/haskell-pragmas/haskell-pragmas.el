@@ -25,51 +25,40 @@
 (require 'haskell-mode)
 (require 's)
 
-(autoload 'cb-buffers-current-line "cb-buffers")
 (autoload 'evil-define-key "evil-core")
 
-(defvar haskell-pragmas--language-pragmas nil)
-
 (defun haskell-pragmas-language-pragmas ()
-  (unless haskell-pragmas--language-pragmas
-    ;; Retrieve list of language pragmas from GHC.
-    (let ((str (s-split "\n" (s-trim (shell-command-to-string "ghc --supported-languages")))))
-      (setq haskell-pragmas--language-pragmas str)))
+  (s-split "\n" (s-trim (shell-command-to-string "stack ghc -- --supported-languages"))))
 
-  haskell-pragmas--language-pragmas)
-
-(defun haskell-pragmas-in-file ()
-  (--filter (s-matches?
-             (rx-to-string `(and "{-# LANGUAGE" (+ space) (* nonl) ,it))
-             (buffer-string))
-            (haskell-pragmas-language-pragmas)))
+(defun haskell-pragmas-in-buffer-string (s ps)
+  (--filter (s-matches? (rx-to-string `(and "{-# LANGUAGE" (+ space) (* nonl) ,it)) s)
+            ps))
 
 (defun haskell-pragmas--available-language-pragmas ()
-  (-difference (haskell-pragmas-language-pragmas) (haskell-pragmas-in-file)))
+  (let ((ps (haskell-pragmas-language-pragmas)))
+    (-difference ps (haskell-pragmas-in-buffer-string (buffer-string) ps))))
 
 (defun haskell-pragmas--goto-buffer-start ()
   (goto-char (point-min))
 
   ;; Skip #! line
-  (when (and (s-matches? (rx bol "#!") (cb-buffers-current-line))
+  (when (and (s-matches? (rx bol "#!")
+                         (buffer-substring (line-beginning-position) (line-end-position)))
              (search-forward "#!" nil t))
     (goto-char (line-end-position))
     (forward-char 1))
 
   (while (and (not (eobp))
-              (s-blank? (cb-buffers-current-line)))
+              (s-blank? (buffer-substring (line-beginning-position) (line-end-position))))
     (forward-line 1)))
 
 ;;;###autoload
 (defun haskell-pragmas-insert (pragma)
   "Read a language PRAGMA to be inserted at the start of this file."
-  (interactive (list (completing-read "Pragma: "
-                                      (haskell-pragmas--available-language-pragmas)
-                                      nil t)))
+  (interactive (list (completing-read "Pragma: " (haskell-pragmas--available-language-pragmas) nil t)))
   (let ((s (format "{-# LANGUAGE %s #-}\n" pragma)))
     (save-excursion
       (haskell-pragmas--goto-buffer-start)
-
       (insert s))))
 
 ;;;###autoload
