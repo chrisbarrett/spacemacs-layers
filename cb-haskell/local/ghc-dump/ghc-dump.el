@@ -120,11 +120,44 @@
   (interactive (list (ghc-dump-arguments)))
   (ghc-dump--command-with-buffer-setup #'asm-mode "*ghc-asm*" args "-ddump-asm"))
 
+(defconst ghc-type-dump-headers
+  '("TYPE SIGNATURES"
+    "TYPE CONSTRUCTORS"
+    "COERCION AXIOMS"
+    "INSTANCES"
+    "FAMILY INSTANCES"
+    "Dependent modules:"
+    "Dependent packages:"))
+
 ;;;###autoload
 (defun ghc-dump-types (&optional args)
   "Dump the types and signatures defined by the current file."
   (interactive (list (ghc-dump-arguments)))
-  (ghc-dump--command-with-buffer-setup #'ghc-type-dump-mode "*ghc-types*" args "-ddump-types"))
+  (ghc-dump--command-with-buffer-setup
+   (lambda ()
+     (ghc-type-dump-mode)
+     ;; Pad headers with spaces
+     (message "%s" (current-buffer))
+     (save-excursion
+       (goto-char (point-min))
+       (while (search-forward-regexp (regexp-opt ghc-type-dump-headers) nil t)
+         (save-excursion
+           (goto-char (line-beginning-position))
+           (newline))
+         (let ((col (current-column)))
+           (newline)
+           (unless (s-blank? (buffer-substring (point) (line-end-position)))
+             (indent-to col))))
+
+       ;; Replace non-uniform headings.
+       (goto-char (point-min))
+       (when (search-forward "Dependent modules:")
+         (replace-match "DEPENDENT MODULES"))
+       (goto-char (point-min))
+       (when (search-forward "Dependent packages:")
+         (replace-match "DEPENDENT PACKAGES"))))
+
+   "*ghc-types*" args "-ddump-types"))
 
 ;;;###autoload
 (defun ghc-dump-splices (&optional args)
@@ -156,38 +189,14 @@
 (put 'ghc-stg-mode 'mode-class 'special)
 
 ;;;###autoload
-(define-derived-mode ghc-type-dump-mode haskell-mode "GHC-Types"
-  (setq-local font-lock-defaults
-              '(haskell-font-lock-choose-keywords
-                nil nil ((?\' . "w") (?_  . "w")) nil
-                (font-lock-syntactic-keywords
-                 . haskell-font-lock-choose-syntactic-keywords)
-                (font-lock-syntactic-face-function
-                 . haskell-syntactic-face-function)
-                ;; Get help from font-lock-syntactic-keywords.
-                (parse-sexp-lookup-properties . t))))
+(define-derived-mode ghc-type-dump-mode haskell-mode "GHC-Types")
 
 (put 'ghc-type-dump-mode 'mode-class 'special)
-
-(defconst ghc-type-dump-headers
-  '("TYPE SIGNATURES"
-    "TYPE CONSTRUCTORS"
-    "COERCION AXIOMS"
-    "INSTANCES"
-    "FAMILY INSTANCES"))
-
-(defface ghc-type-dump-section-header
-  '((((background light))
-     (:bold t :foreground "#2f96dc" :height 1.3 :overline t))
-    (((background dark))
-     (:bold t :foreground "#2f96dc" :height 1.3 :overline t)))
-  "The face used for section headers in a GHC type dump."
-  :group 'ghc-dump)
 
 (font-lock-add-keywords
  'ghc-type-dump-mode
  `((,(rx bol (* space) "-- " (* nonl) eol) (0 '(face nil invisible t)))
-   (,(concat "^" (regexp-opt ghc-type-dump-headers 'words)) . 'ghc-type-dump-section-header)
+   (,(concat "^" (regexp-opt ghc-type-dump-headers 'words)) . font-lock-comment-face)
    (,(rx bol (* space) "axiom" eow) . font-lock-keyword-face)))
 
 ;;;###autoload
