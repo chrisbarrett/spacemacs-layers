@@ -153,6 +153,8 @@
 ;;;###autoload
 (define-derived-mode ghc-stg-mode ghc-core-mode "GHC-STG")
 
+(put 'ghc-stg-mode 'mode-class 'special)
+
 ;;;###autoload
 (define-derived-mode ghc-type-dump-mode haskell-parent-mode "GHC-Types"
   (setq-local font-lock-defaults
@@ -164,6 +166,8 @@
                  . haskell-syntactic-face-function)
                 ;; Get help from font-lock-syntactic-keywords.
                 (parse-sexp-lookup-properties . t))))
+
+(put 'ghc-type-dump-mode 'mode-class 'special)
 
 (defconst ghc-type-dump-headers
   '("TYPE SIGNATURES"
@@ -188,6 +192,8 @@
 
 ;;;###autoload
 (define-derived-mode ghc-cmm-mode c-mode "C--")
+
+(put 'ghc-cmm-mode 'mode-class 'special)
 
 (defconst ghc-cmm-keywords
   '("aborts" "align" "aligned" "also" "as" "big" "bits" "byteorder" "case"
