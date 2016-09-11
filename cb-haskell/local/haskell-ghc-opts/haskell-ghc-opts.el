@@ -25,7 +25,6 @@
 (require 'haskell-mode)
 (require 's)
 
-(autoload 'cb-buffers-current-line "cb-buffers")
 (autoload 'evil-define-key "evil-core")
 
 (defconst haskell-ghc-opts
@@ -123,13 +122,13 @@
   (goto-char (point-min))
 
   ;; Skip #! line
-  (when (and (s-matches? (rx bol "#!") (cb-buffers-current-line))
+  (when (and (s-matches? (rx bol "#!") (buffer-substring (line-beginning-position) (line-end-position)))
              (search-forward "#!" nil t))
     (goto-char (line-end-position))
     (forward-char 1))
 
   (while (and (not (eobp))
-              (s-blank? (cb-buffers-current-line)))
+              (s-blank? (buffer-substring (line-beginning-position) (line-end-position))))
     (forward-line 1)))
 
 (defun haskell-ghc-opts-set (opts)
@@ -144,7 +143,7 @@
     (haskell-ghc-opts--goto-buffer-start)
     (while (search-forward-regexp haskell-ghc-opts--regex nil t)
       (replace-match "")
-      (when (s-blank? (cb-buffers-current-line))
+      (when (s-blank? (buffer-substring (line-beginning-position) (line-end-position)))
         (join-line)))))
 
 (defun haskell-ghc-opts-insert (opt)
