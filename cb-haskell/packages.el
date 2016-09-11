@@ -169,13 +169,13 @@
 
 (defun cb-haskell/init-haskell-imports ()
   (use-package haskell-imports
-    :functions (haskell-imports-init)
-    :init (add-hook 'haskell-mode-hook #'haskell-imports-init)))
+    :leader-bind (haskell-mode
+                  ("ii" . haskell-imports-insert-unqualified)
+                  ("iq" . haskell-imports-insert-qualified))))
 
 (defun cb-haskell/init-haskell-pragmas ()
   (use-package haskell-pragmas
-    :functions (haskell-pragmas-init)
-    :init (add-hook 'haskell-mode-hook #'haskell-pragmas-init)))
+    :leader-bind (:mode haskell-mode ("i l" . haskell-pragmas-insert))))
 
 (defun cb-haskell/init-haskell-autoinsert ()
   (use-package haskell-autoinsert

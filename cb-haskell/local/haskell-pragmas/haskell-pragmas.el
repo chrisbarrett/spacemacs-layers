@@ -24,8 +24,6 @@
 (require 'dash)
 (require 's)
 
-(autoload 'evil-define-key "evil-core")
-
 (defun haskell-pragmas-language-pragmas ()
   (s-split "\n" (s-trim (shell-command-to-string "stack ghc -- --supported-languages"))))
 
@@ -59,14 +57,6 @@
     (save-excursion
       (haskell-pragmas--goto-buffer-start)
       (insert s))))
-
-;;;###autoload
-(defun haskell-pragmas-init ()
-  (when (fboundp 'evil-define-key)
-    (evil-define-key 'normal haskell-mode-map
-      (kbd "SPC i L") #'haskell-pragmas-insert))
-  (when (fboundp 'spacemacs/set-leader-keys-for-major-mode)
-    (spacemacs/set-leader-keys-for-major-mode 'haskell-mode "il" #'haskell-pragmas-insert)))
 
 (provide 'haskell-pragmas)
 

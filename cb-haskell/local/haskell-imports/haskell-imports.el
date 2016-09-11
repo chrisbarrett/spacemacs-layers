@@ -26,7 +26,6 @@
 (require 's)
 
 (autoload 'cb-buffers-current-line "cb-buffers")
-(autoload 'evil-define-key "evil-core")
 (autoload 'haskell-navigate-imports-go "haskell-navigate-imports")
 (autoload 'haskell-session-all-modules "haskell-modules")
 (autoload 'haskell-session-maybe "haskell-session")
@@ -102,18 +101,6 @@
         (message "Module '%s' is already imported" module))
 
     (haskell-imports--insert-at-imports (format "import %s" module))))
-
-;;;###autoload
-(defun haskell-imports-init ()
-  (when (fboundp 'evil-define-key)
-    (evil-define-key 'normal haskell-mode-map
-      (kbd "SPC i i") #'haskell-imports-insert-unqualified
-      (kbd "SPC i q") #'haskell-imports-insert-qualified))
-
-  (when (fboundp 'spacemacs/set-leader-keys-for-major-mode)
-    (spacemacs/set-leader-keys-for-major-mode 'haskell-mode
-      "ii" #'haskell-imports-insert-unqualified
-      "iq" #'haskell-imports-insert-qualified)))
 
 (provide 'haskell-imports)
 
