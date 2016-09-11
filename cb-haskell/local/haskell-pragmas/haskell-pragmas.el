@@ -22,7 +22,6 @@
 ;;; Code:
 
 (require 'dash)
-(require 'haskell-mode)
 (require 's)
 
 (autoload 'evil-define-key "evil-core")
