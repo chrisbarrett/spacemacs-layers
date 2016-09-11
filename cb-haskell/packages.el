@@ -159,7 +159,15 @@
   (use-package ghc-dump
     :after haskell-mode
     :leader-bind (:mode haskell-mode ("d" . ghc-dump-popup))
-    :bind (:map ghc-dump-popup-mode-map ("q" . quit-window))))
+    :bind (:map ghc-dump-popup-mode-map ("q" . quit-window))
+    :config
+    (with-eval-after-load 'aggressive-indent
+      (add-to-list 'aggressive-indent-excluded-modes 'asm-mode)
+      (add-to-list 'aggressive-indent-excluded-modes 'llvm-mode)
+      (add-to-list 'aggressive-indent-excluded-modes 'ghc-core-mode)
+      (add-to-list 'aggressive-indent-excluded-modes 'ghc-type-dump-mode)
+      (add-to-list 'aggressive-indent-excluded-modes 'ghc-stg-mode)
+      (add-to-list 'aggressive-indent-excluded-modes 'ghc-cmm-mode))))
 
 (defun cb-haskell/init-haskell-flyspell ()
   (use-package haskell-flyspell

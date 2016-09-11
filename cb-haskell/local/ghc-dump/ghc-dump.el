@@ -217,14 +217,6 @@
 (font-lock-add-keywords 'ghc-stg-mode `((,(rx bol "=====" (* nonl)) . font-lock-comment-face)))
 (font-lock-add-keywords 'llvm-mode `((,(rx bol "=====" (* nonl)) . font-lock-comment-face)))
 
-(with-eval-after-load 'aggressive-indent
-  (add-to-list 'aggressive-indent-excluded-modes 'asm-mode)
-  (add-to-list 'aggressive-indent-excluded-modes 'llvm-mode)
-  (add-to-list 'aggressive-indent-excluded-modes 'ghc-core-mode)
-  (add-to-list 'aggressive-indent-excluded-modes 'ghc-type-dump-mode)
-  (add-to-list 'aggressive-indent-excluded-modes 'ghc-stg-mode)
-  (add-to-list 'aggressive-indent-excluded-modes 'ghc-cmm-mode))
-
 (provide 'ghc-dump)
 
 ;;; ghc-dump.el ends here
