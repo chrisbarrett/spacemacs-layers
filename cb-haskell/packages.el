@@ -117,7 +117,12 @@
 (defun cb-haskell/init-intero ()
   (use-package intero
     :init
-    (add-hook 'haskell-mode-hook #'intero-mode)
+    (progn
+      (defun cb-haskell/maybe-intero-mode ()
+        (unless (or (derived-mode-p 'ghc-core-mode)
+                    (equal (get major-mode 'mode-class) 'special))
+          (intero-mode +1)))
+      (add-hook 'haskell-mode-hook #'cb-haskell/maybe-intero-mode))
 
     :bind
     (:map
