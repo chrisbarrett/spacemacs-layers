@@ -64,7 +64,7 @@
 
 ;;;###autoload
 (defun cb-ligatures-init ()
-  (when (equal "Hasklig" (font-get (face-attribute 'default :font) :name))
+  (when (equal "Hasklig" (ignore-errors (font-get (face-attribute 'default :font)k :name)))
     (setq-default prettify-symbols-alist (-union prettify-symbols-alist
                                                  cb-ligatures--alist))))
 
