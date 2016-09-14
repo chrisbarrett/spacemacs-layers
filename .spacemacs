@@ -206,15 +206,11 @@ values."
    dotspacemacs-colorize-cursor-according-to-state t
    ;; Default font. `powerline-scale' allows to quickly tweak the mode-line
    ;; size to make separators look not too crappy.
-   dotspacemacs-default-font (list
-                              (let ((hasklig (find-font (font-spec :name "Hasklig"))))
-                                (if hasklig
-                                    (font-get hasklig :name)
-                                  "Source Code Pro"))
-                              :size 14
-                              :weight 'normal
-                              :width 'normal
-                              :powerline-scale 1.2)
+   dotspacemacs-default-font (list "Hasklig"
+                                   :size 14
+                                   :weight 'normal
+                                   :width 'normal
+                                   :powerline-scale 1.2)
    ;; The leader key
    dotspacemacs-leader-key "SPC"
    ;; The leader key accessible in `emacs state' and `insert state'
