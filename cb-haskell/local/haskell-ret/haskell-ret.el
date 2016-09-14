@@ -82,7 +82,7 @@
 
 With prefix arg ARG, just insert a newline and indent."
   (interactive "P")
-  (let ((sexp (sp-get-enclosing-sexp)))
+  (let ((sexp (ignore-errors (sp-get-enclosing-sexp))))
     (cond
      (arg
       (newline-and-indent))
@@ -90,11 +90,13 @@ With prefix arg ARG, just insert a newline and indent."
      ((s-matches? (rx bol (? ">") (* space) "--") (cb-buffers-current-line))
       (insert "\n-- "))
 
-     ((or (haskell-ret--sp-inside-curly-braces? t sexp)
-          (haskell-ret--sp-inside-square-braces? t sexp))
+     ((and sexp
+           (or (haskell-ret--sp-inside-curly-braces? t sexp)
+               (haskell-ret--sp-inside-square-braces? t sexp)))
       (haskell-ret--split-braced-expression-over-new-lines sexp))
 
-     ((and (or (haskell-ret--sp-inside-curly-braces? nil sexp)
+     ((and sexp
+           (or (haskell-ret--sp-inside-curly-braces? nil sexp)
                (haskell-ret--sp-inside-square-braces? nil sexp))
            (thing-at-point-looking-at (rx (or "[" "{") (* space))))
       (goto-char (1+ (haskell-ret--sp-beg sexp)))
