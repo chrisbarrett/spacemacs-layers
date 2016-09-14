@@ -151,10 +151,10 @@
 
        ;; Replace non-uniform headings.
        (goto-char (point-min))
-       (when (search-forward "Dependent modules:")
+       (when (search-forward "Dependent modules:" nil t)
          (replace-match "DEPENDENT MODULES"))
        (goto-char (point-min))
-       (when (search-forward "Dependent packages:")
+       (when (search-forward "Dependent packages:" nil t)
          (replace-match "DEPENDENT PACKAGES"))))
 
    "*ghc-types*" args "-ddump-types"))
