@@ -94,6 +94,7 @@
 
 (flycheck-define-generic-checker 'sml-nj
   "Source checker using SML/NJ."
+  :modes 'sml-mode
   :start #'flycheck-sml--process-start
   :interrupt #'flycheck-sml--process-interrupt
   :predicate (lambda ()
