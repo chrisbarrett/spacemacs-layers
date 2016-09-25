@@ -32,7 +32,8 @@
             ("table flip 1" . "(╯°□°）╯︵ ┻━┻")
             ("table flip 2" . "(ノಠ益ಠ)ノ彡┻━┻")
             ("put that table back" . "┬──┬ ノ( ゜-゜ノ)")
-            ("give" . "༼ つ ◕_◕ ༽つ"))))
+            ("give" . "༼ つ ◕_◕ ༽つ")
+            ("cry" . "༼ ༎ຶ ෴ ༎ຶ༽"))))
 
 (defconst cb-helm-emoticons--source
   (helm-build-sync-source "Emoticons"
