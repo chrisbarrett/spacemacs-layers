@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# key: ts
+# name: type...struct
+# condition: (yas/bol?)
+# --
+type ${1:name} struct {
+  $0
+}

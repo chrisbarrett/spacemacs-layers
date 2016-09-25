@@ -100,6 +100,7 @@ values."
      cb-evil
      ;; cb-extempore
      cb-flycheck
+     cb-go
      cb-git
      cb-groovy
      cb-haskell

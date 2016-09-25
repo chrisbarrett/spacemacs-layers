@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# key: ti
+# name: type...interface
+# condition: (yas/bol?)
+# --
+type ${1:name} interface {
+  $0
+}

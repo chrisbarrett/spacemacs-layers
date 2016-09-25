@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: func
+# key: f
+# condition: (yas/bol?)
+# --
+func ${1:name}($2) $3{
+  $0
+}

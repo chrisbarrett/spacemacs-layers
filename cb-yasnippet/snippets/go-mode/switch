@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# key: s
+# name: switch
+# condition: (yas/bol?)
+# --
+switch $1 {
+  case $2:
+    $0
+}

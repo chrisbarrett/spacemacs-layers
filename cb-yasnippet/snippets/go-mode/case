@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# key: c
+# name: case
+# condition: (yas/bol?)
+# --
+case $1:
+  $0
