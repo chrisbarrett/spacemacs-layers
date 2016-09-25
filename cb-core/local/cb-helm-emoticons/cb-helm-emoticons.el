@@ -28,7 +28,7 @@
 
 (defconst cb-helm-emoticons-alist
   (mapcar (lambda (it) (cb-helm-emoticons-entry (car it) (cdr it)))
-          '(("shrug" . "¯\_(ツ)_/¯")
+          '(("shrug" . "¯\\_(ツ)_/¯")
             ("table flip 1" . "(╯°□°）╯︵ ┻━┻")
             ("table flip 2" . "(ノಠ益ಠ)ノ彡┻━┻")
             ("put that table back" . "┬──┬ ノ( ゜-゜ノ)")
