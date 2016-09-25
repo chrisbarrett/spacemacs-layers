@@ -213,9 +213,11 @@
                  (lambda (&rest _)
                    (when (funcall inserting-type? (point))
                      (just-one-space)
+                     (skip-chars-backward " =")
+                     (just-one-space)
                      (save-excursion
                        (insert " ")
-                       (search-backward ":&")
+                       (skip-chars-backward " :")
                        (delete-horizontal-space))))))
 
     (smart-ops-default-ops)))
