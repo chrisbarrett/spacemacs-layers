@@ -43,7 +43,8 @@
     autoinsert
     smartparens
     (cb-go-smart-ops :location local)
-    (cb-go-run :location local)))
+    (cb-go-run :location local)
+    (cb-go-flycheck-metalinter-unique-errors :location local)))
 
 (defun cb-go/init-go-mode ()
   (use-package go-mode
@@ -65,6 +66,8 @@
       (spacemacs/declare-prefix-for-mode 'go-mode "mg" "goto")
       (spacemacs/declare-prefix-for-mode 'go-mode "mh" "help")
       (spacemacs/declare-prefix-for-mode 'go-mode "mi" "imports")
+
+      (setq gofmt-show-errors nil)
 
       (defun cb-go--set-local-vars ()
         (setq-local tab-width 4)
@@ -174,5 +177,11 @@
     (progn
       (spacemacs/declare-prefix-for-mode 'go-mode "mt" "test")
       (spacemacs/declare-prefix-for-mode 'go-mode "mx" "execute"))))
+
+(defun cb-go/init-cb-go-flycheck-metalinter-unique-errors ()
+  (use-package cb-go-flycheck-metalinter-unique-errors
+    :after go-mode
+    :config
+    (cb-go-flycheck-metalinter-unique-errors-init)))
 
 ;;; packages.el ends here
