@@ -83,7 +83,9 @@
     (progn
       (require 'company)
       (setq company-go-show-annotation t)
-      (push 'company-go company-backends-go-mode))))
+      (add-hook 'go-mode-hook (lambda ()
+                                (setq-local company-backends '(company-go))
+                                (company-mode))))))
 
 (defun cb-go/post-init-flycheck ()
   (use-package flycheck
@@ -180,7 +182,7 @@
 
 (defun cb-go/init-cb-go-flycheck-metalinter-unique-errors ()
   (use-package cb-go-flycheck-metalinter-unique-errors
-    :after go-mode
+    :after flycheck-gometalinter
     :config
     (cb-go-flycheck-metalinter-unique-errors-init)))
 

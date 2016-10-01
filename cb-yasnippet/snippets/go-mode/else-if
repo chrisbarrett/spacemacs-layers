@@ -1,7 +1,7 @@
 # -*- mode: snippet -*-
 # name: else-if
 # key: ei
-# condition: (yas/bol?)
+# condition: (or (yas/bol?) (s-matches? (rx (* space) "}" (* space) "ei" (* space) eos) (buffer-substring (line-beginning-position) (point))))
 # --
 else if $1 {
   $0

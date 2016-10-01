@@ -1,7 +1,8 @@
 # -*- mode: snippet -*-
-# key: ca
-# name: case
+# name: main
+# key: main
 # condition: (yas/bol?)
 # --
-case $1:
-  $0
+func main() {
+    $0
+}

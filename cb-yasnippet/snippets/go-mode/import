@@ -2,7 +2,8 @@
 # name: import
 # key: im
 # condition: (yas/bol?)
+# expand-env: ((yas-indent-line 'fixed) (yas-wrap-around-region 't))
 # --
 import (
-  $0
+  "$0"
 )
