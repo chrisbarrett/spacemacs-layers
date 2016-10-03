@@ -87,7 +87,13 @@
                (smart-ops-default-ops))))
 
 (defun cb-haskell-smart-ops-init ()
+  (add-hook 'haskell-cabal-mode-hook #'smart-ops-mode)
   (with-eval-after-load 'smart-ops
+
+    (define-smart-ops-for-mode 'haskell-cabal-mode
+      (smart-op ","
+                :pad-before nil :pad-after t))
+
     (define-smart-ops-for-mode 'haskell-mode
       (cb-haskell-smart-ops--ops))))
 
