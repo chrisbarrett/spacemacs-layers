@@ -35,13 +35,13 @@ values."
    dotspacemacs-configuration-layer-path (list user-layers-directory)
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
-   '(html
-     yaml
+   '(
      (auto-completion
       :variables
       auto-completion-enable-help-tooltip t
       auto-completion-return-key-behavior 'complete
       auto-completion-tab-key-behavior 'complete)
+     config-files
      (c-c++
       :variables
       c-c++-default-mode-for-headers 'c++-mode
@@ -54,6 +54,7 @@ values."
      (git
       :variables
       git-magit-status-fullscreen t)
+     github
      gtags
      (ibuffer
       :variables
@@ -61,6 +62,7 @@ values."
      (latex
       :variables
       latex-enable-auto-fill nil)
+     html
      markdown
      ocaml
      org
@@ -82,6 +84,7 @@ values."
       :variables
       syntax-checking-enable-tooltips t)
      version-control
+     yaml
 
      ;; cb-agda
      cb-autoinsert
