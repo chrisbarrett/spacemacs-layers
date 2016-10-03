@@ -70,9 +70,9 @@
 (defun cb-bootstrap/initialize-packages ()
   (dolist (archive cb-bootstrap-package-archives)
     (add-to-list 'package-archives archive))
+  (package-initialize)
   (unless (file-exists-p (concat user-emacs-directory "elpa"))
     (package-refresh-contents))
-  (package-initialize)
   (dolist (pkg cb-bootstrap-packages)
     (cb-bootstrap--install-package pkg)))
 
