@@ -63,7 +63,8 @@ values."
       :variables
       latex-enable-auto-fill nil)
      html
-     markdown
+     (markdown
+      :variables markdown-live-preview-engine 'vmd)
      ocaml
      org
      osx
