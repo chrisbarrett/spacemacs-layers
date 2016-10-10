@@ -28,11 +28,9 @@
 (require 'dash)
 (require 'eieio)
 (require 'f)
-(require 'rx)
 (require 's)
 
 (autoload 'configuration-layer/get-layer-path "core-configuration-layer")
-(autoload 'helm "helm-descbinds")
 (autoload 'sp-down-sexp "smartparens")
 (autoload 'sp-end-of-previous-sexp "smartparens")
 (autoload 'sp-end-of-sexp "smartparens")
@@ -58,7 +56,7 @@
           (create-layer-local-package--layers)))
 
 (defun create-layer-local-package--new-elisp-file-path (package-name layer)
-  (format "%s%s" (f-join (plist-get layer :dir) "local" package-name package-name) ".el"))
+  (f-join (plist-get layer :dir) "local" package-name (concat package-name ".el")))
 
 (defun create-layer-local-package--create-elisp-file-at-path (elisp-file-path)
   (unless (f-exists? elisp-file-path)
@@ -137,13 +135,24 @@
   (find-file (create-layer-local-package--new-elisp-file-path package-name layer))
   (display-buffer (find-file-noselect (create-layer-local-package--layer-packages-file layer))))
 
+(defvar create-layer-local-package--bad-input-wait-period 1.2
+  "Time to block after bad user input so the user has time to
+read the error message.")
+
 (defun create-layer-local-package--read-package-name (&optional initial-input)
   (let ((input (read-string "Package name: " initial-input)))
     (if (s-matches? (rx bos (+ (any alnum "-")) eos) input)
         input
       (message "Invalid package name. May contain only hyphens and alphanumeric chars")
-      (sit-for 1.2)
+      (sit-for create-layer-local-package--bad-input-wait-period)
       (create-layer-local-package--read-package-name input))))
+
+(defun create-layer-local-package--choose-layer-by-name ()
+  (let* ((layers (create-layer-local-package--layers))
+         (choices (--map (plist-get it :name) layers))
+         (default (plist-get (create-layer-local-package--current-layer) :name))
+         (layer-name (completing-read "Create local package for layer: " choices nil t nil nil default)))
+    (create-layer-local-package--layer-with-name layers layer-name)))
 
 (defun create-layer-local-package--layer-with-name (layers layer-name)
   (--first (equal layer-name (plist-get it :name)) layers))
@@ -167,22 +176,19 @@
     (message "%s" (s-join "\n" padded))))
 
 ;;;###autoload
-(defun create-layer-local-package ()
-  "Interactively create a new local package."
-  (interactive)
-  (let* ((layers (create-layer-local-package--layers))
-         (source `((name . "Layers")
-                   (candidates . ,(--map (plist-get it :name) layers))
-                   (action . ,(-lambda (layer-name)
-                                (let* ((package-name (create-layer-local-package--read-package-name))
-                                       (layer (create-layer-local-package--layer-with-name layers layer-name))
-                                       (results (create-layer-local-package--make-local-package package-name layer)))
-                                  (create-layer-local-package--display-package-file-and-initialiser package-name layer)
-                                  (create-layer-local-package--report-results results)))))))
-    (helm :sources (list source)
-          :preselect (plist-get (create-layer-local-package--current-layer) :name)
-          :buffer "*create local package*"
-          :prompt "Create in layer: ")))
+(defun create-layer-local-package (package-name layer)
+  "Interactively create a new local package for a layer.
+The package will be created in the layer's `local' directory, and
+the layer's `packages.el' will be updated to reference it.
+
+PACKAGE-NAME is the name to use for the new package.
+
+LAYER is a Spacemacs layer object under which the new package
+will be created."
+  (interactive (list (create-layer-local-package--read-package-name) (create-layer-local-package--choose-layer-by-name)))
+  (let ((results (create-layer-local-package--make-local-package package-name layer)))
+    (create-layer-local-package--display-package-file-and-initialiser package-name layer)
+    (create-layer-local-package--report-results results)))
 
 (provide 'create-layer-local-package)
 
