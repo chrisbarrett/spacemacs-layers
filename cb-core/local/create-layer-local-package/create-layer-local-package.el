@@ -31,6 +31,7 @@
 (require 'rx)
 (require 's)
 
+(autoload 'configuration-layer/get-layer-path "core-configuration-layer")
 (autoload 'helm "helm-descbinds")
 (autoload 'sp-down-sexp "smartparens")
 (autoload 'sp-end-of-previous-sexp "smartparens")
