@@ -41,7 +41,6 @@ values."
       auto-completion-enable-help-tooltip t
       auto-completion-return-key-behavior 'complete
       auto-completion-tab-key-behavior 'complete)
-     config-files
      (c-c++
       :variables
       c-c++-default-mode-for-headers 'c++-mode
