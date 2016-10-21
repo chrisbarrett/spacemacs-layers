@@ -99,9 +99,7 @@
     :config
     (progn
       (helm-autoresize-mode +1)
-      (setq helm-buffers-fuzzy-matching t)
-      (setq helm-recentf-fuzzy-match t)
-      (setq helm-imenu-fuzzy-match t)
+      (setq helm-mode-fuzzy-match t)
 
       (setq helm-locate-command
             (pcase system-type
