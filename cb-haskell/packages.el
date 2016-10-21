@@ -23,6 +23,7 @@
     intero
     llvm-mode
     shm
+    hindent
 
     (ghc-dump :location local)
     (haskell-flyspell :location local)
@@ -232,5 +233,11 @@
     (:map haskell-mode-map ("C-c C-h" . cb-stack-hoogle))
     :evil-bind
     (:map haskell-mode-map :state normal ("RET" . cb-stack-hoogle-info-at-pt))))
+
+(defun cb-haskell/init-hindent ()
+  (use-package hindent
+    :after haskell-mode
+    :config
+    (add-hook 'haskell-mode-hook #'hindent-mode)))
 
 ;;; packages.el ends here
