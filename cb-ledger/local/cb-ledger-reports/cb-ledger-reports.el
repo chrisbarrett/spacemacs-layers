@@ -112,8 +112,8 @@
 (defconst cb-ledger-reports-weekly-review
   '((paragraph "Skim over balances to make sure they look right.")
 
-    (header-1 "Assets")
-    "ledger -f %(ledger-file) bal Assets --depth 2"
+    (header-1 "Assets & Liabilities")
+    "ledger -f %(ledger-file) bal '^Assets' '^Liabilities' --depth 2"
 
     (header "Expenses Last 7 Days")
     "ledger -f %(ledger-file) bal expenses --sort total -p 'last 7 days' --invert"
