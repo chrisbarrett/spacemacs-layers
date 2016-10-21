@@ -127,7 +127,8 @@
   (use-package persp-mode
     :defer t
     :config
-    (bind-key "C-SPC" #'spacemacs/persp-helm-mini)))
+    (bind-key "C-SPC" #'spacemacs/persp-helm-mini)
+    (bind-key "C-@" #'spacemacs/persp-helm-mini)))
 
 (defun cb-core/init-ag ()
   (use-package ag :commands ag))
