@@ -4,4 +4,4 @@
 # binding: direct-keybinding
 # --
 (eval-when-compile
-  (require 'use-package nil t))
+  (require 'use-package))

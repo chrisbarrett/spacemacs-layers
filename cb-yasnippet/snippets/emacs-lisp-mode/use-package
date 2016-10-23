@@ -4,8 +4,6 @@
 # condition: (yas/bol?)
 # --
 (use-package `(yas/find-ident-for-use-package)`
-  :commands nil
-  :init nil
   :config
   (progn
     $0

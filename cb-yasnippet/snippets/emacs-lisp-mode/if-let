@@ -2,5 +2,5 @@
 # name: if-let
 # key: il
 # --
-(-if-let ($0)
+(if-let (($0))
 )
