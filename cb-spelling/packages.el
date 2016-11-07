@@ -11,6 +11,7 @@
 
 (defun cb-spelling/init-ispell ()
   (use-package ispell
+    :functions (ispell-find-aspell-dictionaries)
     :init
     (progn
       (add-hook 'text-mode-hook #'flyspell-mode)
@@ -21,6 +22,7 @@
     (progn
       (setq ispell-program-name "aspell")
       (setq ispell-dictionary "british")
+      (setq ispell-dictionary-alist (ispell-find-aspell-dictionaries))
       (setq ispell-silently-savep t))))
 
 (defun cb-spelling/init-cb-evil-ispell ()
